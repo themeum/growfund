@@ -1,0 +1,130 @@
+.growfund-page-container .growfund-payment-method-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 16px 0;
+  line-height: 1.4;
+}
+
+.growfund-page-container .growfund-payment-method-list {
+  display: flex;
+  flex-direction: column;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.growfund-page-container .growfund-payment-method-option {
+  background-color: #ffffff;
+  display: block;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  border-left: 1px solid #e5e7eb;
+  border-top: 1px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
+  border-bottom: 1px solid transparent;
+}
+
+.growfund-page-container .growfund-payment-method-option:first-child {
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+.growfund-page-container .growfund-payment-method-option:last-child {
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.growfund-page-container .growfund-payment-method-radio {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.growfund-page-container .growfund-payment-method-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: inherit;
+}
+
+.growfund-page-container .growfund-payment-method-option:hover {
+  background-color: #f9fafb;
+}
+
+.growfund-page-container .growfund-payment-method-option.selected {
+  border-radius: 6px;
+  border: 1px solid var(--growfund-green-4);
+  background-color: #e3ffed;
+}
+
+.growfund-page-container .growfund-payment-method-label {
+  font-weight: var(--growfund-font-weight-medium);
+  color: var(--growfund-gray-15);
+  line-height: 24px;
+  flex-grow: 1;
+}
+
+.growfund-page-container .growfund-payment-method-content .growfund-payment-method-icon {
+  width: auto;
+  height: 30px !important;
+}
+
+.growfund-page-container .growfund-payment-method-icon img {
+  width: 100%;
+  height: 100% !important;
+  object-fit: contain;
+}
+
+.growfund-page-container .growfund-payment-method-empty-card {
+  background-color: var(--growfund-gray-1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  width: 100%;
+  text-align: center;
+  box-sizing: border-box;
+  border-radius: var(--growfund-radius-3);
+  padding: var(--growfund-spacing-6);
+  border: 1px solid var(--growfund-gray-8);
+}
+
+.growfund-page-container .growfund-payment-method-empty-card .growfund-payment-method-empty-content .growfund-payment-method-empty-title {
+  font-size: var(--growfund-font-size-4);
+  font-weight: var(--growfund-font-weight-semibold);
+  line-height: 1.25;
+  margin-bottom: var(--growfund-spacing-1-5);
+}
+
+.growfund-page-container .growfund-payment-method-empty-card .growfund-payment-method-empty-content .growfund-payment-method-empty-subtitle {
+  font-size: var(--growfund-font-size-3);
+  font-weight: var(--growfund-font-weight-normal);
+  line-height: 1.5;
+}
+
+/* Focus state for accessibility */
+.growfund-page-container .growfund-payment-method-option:focus-within .growfund-payment-method-content {
+  outline: none;
+  box-shadow: inset 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+
+/* Responsive design */
+@media (max-width: 1023px) {
+  .growfund-page-container .growfund-payment-method-content {
+    padding: 14px 16px;
+  }
+
+  .growfund-page-container .growfund-payment-method-title {
+    font-size: 16px;
+  }
+
+  .growfund-page-container .growfund-payment-method-icon {
+    height: 20px;
+  }
+}

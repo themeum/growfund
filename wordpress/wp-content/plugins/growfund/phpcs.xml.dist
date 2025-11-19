@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<ruleset name="Growfund Plugin Ruleset">
+  <description>
+    PHPCS ruleset for Growfund plugin. Enforces WordPress coding standards,
+    text-domain checks, while excluding noisy or conflicting rules.
+  </description>
+
+  <!-- WordPress Coding Standards -->
+  <rule ref="WordPress-Core"/>
+  <rule ref="WordPress-Docs"/>
+  <rule ref="WordPress-Extra">
+    <!-- Excluded rules from WordPress-Extra -->
+    <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
+    <exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+    <exclude name="WordPress.NamingConventions.ValidFunctionName"/>
+    <exclude name="WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents"/>
+    <exclude name="WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase"/>
+    <exclude name="WordPress.NamingConventions.ValidVariableName.PropertyNotSnakeCase"/>
+    <exclude name="WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase"/>
+
+    <exclude name="Squiz.Commenting"/>
+    <exclude name="Squiz.Functions" />
+    <exclude name="Squiz.WhiteSpace" />
+    <exclude name="Generic.WhiteSpace.DisallowSpaceIndent.SpacesUsed"/>
+    <exclude name="Generic.Functions.OpeningFunctionBraceKernighanRitchie" />
+    <exclude name="Generic.Classes.OpeningBraceSameLine" />
+    <exclude name="Generic.Commenting" />
+    <exclude name="Squiz.Strings.DoubleQuoteUsage" />
+    <exclude name="Squiz.PHP.CommentedOutCode.Found" />
+    <exclude name="Generic.Formatting.MultipleStatementAlignment" />
+    
+  </rule>
+
+  <!-- Internationalization: enforce correct text-domain -->
+  <rule ref="WordPress.WP.I18n">
+    <properties>
+      <property name="text_domain" type="array">
+        <element value="growfund"/>
+        <element value="growfund-pro"/>
+      </property>
+    </properties>
+  </rule>
+
+  <rule ref="Generic.Arrays"><severity>0</severity></rule>
+  <rule ref="NormalizedArrays.Arrays"><severity>0</severity></rule>
+  <rule ref="WordPress.WhiteSpace"><severity>0</severity></rule>
+  <rule ref="PEAR.Functions.FunctionCallSignature"><severity>0</severity></rule>
+  <rule ref="WordPress.PHP.DiscouragedPHPFunctions"><severity>0</severity></rule>
+  <rule ref="WordPress.PHP.YodaConditions"><severity>0</severity></rule>
+  <rule ref="Universal.Arrays.DisallowShortArraySyntax"><severity>0</severity></rule>
+  <rule ref="WordPress.Arrays.MultipleStatementAlignment"><severity>0</severity></rule>
+  <rule ref="WordPress.Arrays.ArrayKeySpacingRestrictions"><severity>0</severity></rule>
+  <rule ref="Generic.NamingConventions.UpperCaseConstantName.ClassConstantNotUpperCase"><severity>0</severity></rule>
+  <rule ref="Generic.WhiteSpace.ArbitraryParenthesesSpacing"><severity>0</severity></rule>
+  <rule ref="Universal.NamingConventions.NoReservedKeywordParameterNames"><severity>0</severity></rule>
+  
+  
+
+  <!-- Scan plugin root -->
+  <directory>.</directory>
+
+  <!-- Restrict file types -->
+  <arg name="extensions" value="php"/>
+
+  <!-- Exclude vendor, node_modules, tests, assets -->
+  <exclude-pattern>*/vendor/*</exclude-pattern>
+  <exclude-pattern>*/node_modules/*</exclude-pattern>
+  <exclude-pattern>*/apps/*</exclude-pattern>
+  <exclude-pattern>*/resources/ts/*</exclude-pattern>
+  <exclude-pattern>*/resources/assets/*</exclude-pattern>
+</ruleset>

@@ -1,0 +1,21 @@
+.growfund-page-container .growfund-tab-content--faq {
+  padding-top: var(--growfund-spacing-16);
+}
+
+.growfund-page-container .growfund-faq-title {
+  font-size: var(--growfund-font-size-11);
+  font-weight: var(--growfund-font-weight-semibold);
+  line-height: 36px;
+  color: var(--growfund-gray-15);
+}
+
+@media (max-width: 1023px) {
+  .growfund-page-container .growfund-tab-content--faq {
+    padding-top: var(--growfund-spacing-4);
+  }
+
+  .growfund-page-container .growfund-faq-title {
+    font-size: var(--growfund-font-size-8);
+    line-height: 30px;
+  }
+}

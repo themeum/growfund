@@ -1,0 +1,6 @@
+.growfund-page-container .growfund-donation-list__navigation {
+  display: flex;
+  gap: var(--growfund-spacing-3);
+  height: 36px;
+  margin-bottom: var(--growfund-spacing-4);
+}

@@ -1,0 +1,41 @@
+{
+  "name": "growfund-gateway-paypal",
+  "download_url": "/download/growfund-gateway-paypal.zip",
+  "type": "online-payment",
+  "supports_future_payments": true,
+  "frontend_script": "",
+  "form_file": "",
+  "class": "Growfund\\Payment\\Gateways\\Paypal\\Paypal",
+  "config": {
+    "label": "PayPal",
+    "logo": "logo.png"
+  },
+  "is_installed": false,
+  "is_enabled": false,
+  "fields": [
+    {
+      "name": "client_id",
+      "label": "Client ID",
+      "placeholder": "sk_1234...",
+      "type": "text"
+    },
+    {
+      "name": "client_secret",
+      "label": "Client Secret",
+      "placeholder": "whsec_1234...",
+      "type": "text"
+    },
+    {
+      "name": "webhook_id",
+      "label": "Webhook ID",
+      "placeholder": "whsec_1234...",
+      "type": "text"
+    },
+    {
+      "name": "sandbox",
+      "label": "Is Sandbox",
+      "placeholder": "True/False",
+      "type": "switch"
+    }
+  ]
+}

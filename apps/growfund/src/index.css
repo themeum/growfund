@@ -1,0 +1,352 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* The color variables from the design system */
+    --growfund-spacing: 1rem;
+    --growfund-red-1: 2 100% 95%;
+    --growfund-red-2: 0 70% 71%;
+    --growfund-red-3: 0 100% 42%;
+    --growfund-green-1: 141 100% 95%;
+    --growfund-green-2: 149 49% 92%;
+    --growfund-green-3: 145 36% 44%;
+    --growfund-green-4: 145 47% 37%;
+    --growfund-green-5: 134 61% 41%;
+    --growfund-green-6: 134 61% 28%;
+    --growfund-green-7: 80 100% 94%;
+    --growfund-green-8: 145 42% 54%;
+    --growfund-green-9: 148 79% 81%;
+    --growfund-green-10: 144 61% 89%;
+    --growfund-green-11: 124 59% 83%;
+    --growfund-green-12: 158 54% 76%;
+    --growfund-green-13: 153 31% 35%;
+    --growfund-yellow-1: 61 100% 89%;
+    --growfund-yellow-2: 54 100% 15%;
+    --growfund-yellow-3: 45 100% 51%;
+    --growfund-yellow-4: 54 99% 31%;
+    --growfund-yellow-5: 49 100% 88%;
+    --growfund-orange-1: 37 100% 92%;
+    --growfund-orange-2: 42 100% 18%;
+    --growfund-orange-3: 19 100% 94%;
+    --growfund-orange-4: 38 100% 88%;
+    --growfund-pink-1: 311 100% 65%;
+    --growfund-pink-2: 311 100% 53%;
+    --growfund-pink-3: 290 100% 89%;
+    --growfund-blue-1: 187 100% 93%;
+    --growfund-blue-2: 205 100% 40%;
+    --growfund-blue-3: 220 100% 50%;
+    --growfund-blue-4: 201 100% 95%;
+    --growfund-blue-5: 220 100% 94%;
+    --growfund-blue-6: 202 100% 85%;
+    --growfund-blue-7: 205 40% 76%;
+    --growfund-blue-8: 231 49% 92%;
+    --growfund-violet-1: 266 100% 95%;
+    --growfund-violet-2: 266 100% 64%;
+    --growfund-violet-3: 266 93% 95%;
+    --growfund-gray-1: 0 0% 100%;
+    --growfund-gray-2: 0 0% 99%;
+    --growfund-gray-3: 0 0% 98%;
+    --growfund-gray-4: 0 0% 97%;
+    --growfund-gray-5: 0 0% 96%;
+    --growfund-gray-6: 0 0% 94%;
+    --growfund-gray-7: 0 0% 93%;
+    --growfund-gray-8: 0 0% 90%;
+    --growfund-gray-9: 0 0% 84%;
+    --growfund-gray-10: 0 0% 81%;
+    --growfund-gray-11: 0 0% 72%;
+    --growfund-gray-12: 0 0% 55%;
+    --growfund-gray-13: 0 0% 39%;
+    --growfund-gray-14: 0 0% 30%;
+    --growfund-gray-15: 0 0% 20%;
+    --growfund-gray-16: 0 0% 11%;
+    --growfund-gray-17: 240 6% 10%;
+    --growfund-accent: 240 5% 96%;
+    --growfund-accent-dark: 240 4% 46%;
+    --ring: 0 0% 30%;
+    --growfund-white: 0 0% 100%;
+    --growfund-black: 0 0% 0%;
+
+    /* Branding color variables */
+    --growfund-brand-bg: 145 47% 37%;
+    --growfund-brand-bg-hover: 145 36% 44%;
+    --growfund-sidebar-bg: 141 100% 95%;
+    --growfund-sidebar-alt: 134 61% 41%;
+    --growfund-sidebar-fg: 134 61% 28%;
+    --growfund-brand-foreground: 0 0% 100%;
+
+    --growfund-container-width-lg: 72rem;
+    /* 1152px */
+    --growfund-container-width: 64rem;
+    /* 1024px */
+    --growfund-container-width-sm: 48rem;
+    /* 768px */
+    --growfund-container-width-xs: 36rem;
+    /* 576px */
+
+    --growfund-topbar-height-sm: 3rem;
+    /* 48px */
+    --growfund-topbar-height: 3.75rem;
+    /* 60px */
+    --growfund-wp-topbar-height: 2rem;
+    /* 32px */
+
+    --growfund-sidebar-width: 13.25rem;
+    /* 212px */
+
+    --growfund-radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply growfund-border-border growfund-outline-ring/50;
+  }
+
+  ::selection {
+    background-color: hsl(var(--growfund-green-5));
+    color: #fff;
+  }
+
+  body {
+    font-size: 16px;
+    @apply growfund-font-inter growfund-bg-background-secondary growfund-text-fg-primary growfund-leading-lg growfund-tracking-normal;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply growfund-font-inter growfund-font-semibold growfund-tracking-normal growfund-normal-case;
+  }
+
+  h1 {
+    @apply growfund-text-3xl growfund-leading-3xl;
+  }
+
+  h2 {
+    @apply growfund-text-2xl growfund-leading-2xl;
+  }
+
+  h3 {
+    @apply growfund-text-xl growfund-leading-xl;
+  }
+
+  h4 {
+    @apply growfund-text-lg growfund-leading-lg;
+  }
+
+  h5 {
+    @apply growfund-text-md growfund-leading-md;
+  }
+
+  h6 {
+    @apply growfund-text-base growfund-leading-sm;
+  }
+}
+
+@layer components {
+  .growfund-typo-h1 {
+    @apply growfund-text-3xl growfund-font-semibold growfund-leading-3xl;
+  }
+
+  .growfund-typo-h2 {
+    @apply growfund-text-2xl growfund-font-semibold growfund-leading-2xl;
+  }
+
+  .growfund-typo-h3 {
+    @apply growfund-text-xl growfund-font-semibold growfund-leading-xl;
+  }
+
+  .growfund-typo-h4 {
+    @apply growfund-text-lg growfund-font-semibold growfund-leading-lg;
+  }
+
+  .growfund-typo-h5 {
+    @apply growfund-text-md growfund-font-semibold growfund-leading-md;
+  }
+
+  .growfund-typo-h6 {
+    @apply growfund-text-base growfund-font-semibold growfund-leading-sm;
+  }
+
+  .growfund-typo-paragraph {
+    @apply growfund-text-base growfund-font-normal growfund-leading-lg;
+  }
+
+  .growfund-typo-small {
+    @apply growfund-text-sm growfund-font-normal growfund-leading-md;
+  }
+
+  .growfund-typo-tiny {
+    @apply growfund-text-xs growfund-font-normal growfund-leading-sm;
+  }
+
+  .growfund-truncate-2-lines {
+    @apply growfund-overflow-hidden growfund-text-ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .growfund-hide-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .growfund-pro-badge {
+    background: conic-gradient(from 28.54deg at 57.25% 59.25%,
+        #ffb413 0deg,
+        #fff9bf 360deg,
+        #ffb413 360deg);
+    border: 1px solid hsla(44, 100%, 51%, 1);
+    @apply growfund-inline growfund-typo-tiny growfund-text-fg-primary growfund-px-3 growfund-py-px growfund-rounded-full;
+  }
+}
+
+.wp-editor-container .mce-toolbar-grp {
+  @apply growfund-bg-background-surface growfund-border-none growfund-border-b growfund-border-b-border growfund-rounded-tl-md growfund-rounded-tr-md;
+}
+
+.wp-editor-container {
+  @apply growfund-rounded-md growfund-rounded-tr-none growfund-overflow-hidden growfund-shadow-none;
+}
+
+.wp-editor-tabs {
+  @apply growfund-mt-[2px];
+}
+
+.wp-editor-tabs>button {
+  @apply growfund-rounded-tl-md growfund-rounded-tr-md growfund-bg-background-surface;
+}
+
+.wp-media-buttons>button.insert-media {
+  @apply growfund-inline-flex growfund-items-center growfund-justify-center growfund-gap-2 growfund-typo-small growfund-font-medium growfund-leading-[1] growfund-whitespace-nowrap growfund-bg-background-surface growfund-border-border growfund-rounded-md growfund-transition-colors hover:growfund-text-fg-primary hover:growfund-border-border hover:growfund-bg-background-fill-hover focus-visible:growfund-outline-none focus-visible:growfund-ring-2 focus-visible:growfund-ring-ring focus-visible:growfund-ring-offset-2 disabled:growfund-pointer-events-none disabled:growfund-opacity-50 [&_span]:growfund-text-icon-primary [&_span]:growfund-pointer-events-none [&_span]:growfund-size-4 [&_span]:growfund-shrink-0 growfund-relative growfund-text-fg-primary growfund-h-8 growfund-px-3 growfund-typo-tiny;
+}
+
+.html-active .wp-editor-container textarea {
+  @apply growfund-border-border !growfund-visible focus:growfund-shadow-none;
+}
+
+.wp-editor-container .mce-top-part::before {
+  @apply growfund-shadow-none;
+}
+
+.wp-editor-container .mce-top-part>div {
+  @apply growfund-border-solid growfund-border-b growfund-border-b-border;
+}
+
+.wp-editor-container .mce-toolbar .mce-ico {
+  @apply growfund-text-icon-neutral-tertiary;
+}
+
+.wp-editor-container .mce-toolbar .mce-btn-group .mce-btn {
+  @apply hover:growfund-shadow-none focus:growfund-shadow-none active:growfund-border-none growfund-outline-none growfund-border-none;
+}
+
+.wp-editor-container .mce-toolbar .mce-btn-group .mce-btn.mce-active:hover .mce-ico {
+  @apply growfund-text-fg-primary;
+}
+
+.wp-editor-container .mce-toolbar .mce-btn-group .mce-btn.mce-listbox {
+  @apply growfund-rounded-sm growfund-border-solid !growfund-border !growfund-border-border;
+}
+
+.wp-editor-container .mce-toolbar .mce-btn-group>div:has(.mce-btn) {
+  @apply growfund-flex growfund-items-center growfund-gap-1;
+}
+
+.growfund-color-picker-layout .react-colorful {
+  @apply growfund-w-64 growfund-h-56 growfund-space-y-4;
+}
+
+.growfund-color-picker-layout .react-colorful__saturation {
+  @apply growfund-rounded-md growfund-border growfund-border-border growfund-shadow-md;
+}
+
+.growfund-color-picker-layout .react-colorful__saturation-pointer {
+  @apply growfund-size-4;
+}
+
+.growfund-color-picker-layout .react-colorful__hue {
+  @apply growfund-h-4 growfund-rounded-lg;
+}
+
+.growfund-color-picker-layout .react-colorful__hue-pointer {
+  @apply growfund-size-4;
+}

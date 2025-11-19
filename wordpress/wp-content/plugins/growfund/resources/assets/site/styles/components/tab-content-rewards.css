@@ -1,0 +1,29 @@
+.growfund-page-container .growfund-tab-content--rewards {
+  padding: var(--growfund-spacing-12) 0;
+}
+
+.growfund-page-container .growfund-rewards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 410px));
+  gap: var(--growfund-spacing-6);
+  padding-right: var(--growfund-spacing-2);
+  justify-content: start;
+}
+
+.growfund-page-container .growfund-rewards-grid .growfund-campaign-reward {
+  width: 100%;
+  max-width: 400px;
+}
+
+@media (max-width: 1023px) {
+  .growfund-page-container .growfund-rewards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+    padding-right: 0;
+  }
+
+  .growfund-page-container .growfund-rewards-grid .growfund-reward-tier {
+    width: 100%;
+    max-width: none;
+  }
+}

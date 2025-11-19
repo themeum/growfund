@@ -1,0 +1,319 @@
+.growfund-page-container .growfund-campaign-slider__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--growfund-spacing-5);
+}
+
+.growfund-page-container .growfund-campaign-slider__navigation {
+  display: flex;
+  gap: var(--growfund-spacing-6);
+}
+
+.growfund-page-container .growfund-campaign-slider__button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  position: relative;
+  padding: var(--growfund-spacing-2);
+  border: 1px solid transparent;
+  border-radius: 100%;
+}
+
+.growfund-page-container .growfund-campaign-slider__button:hover {
+  background: none;
+  border: 1px solid var(--growfund-green-4);
+}
+
+.growfund-page-container .growfund-campaign-slider__button:hover svg path {
+  stroke: var(--growfund-green-4);
+}
+
+.growfund-page-container .growfund-campaign-slider__button--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.growfund-page-container .growfund-campaign-slider__track {
+  display: flex;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  gap: var(--growfund-spacing-6);
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+  transform: translateX(0);
+  min-width: fit-content;
+}
+
+.growfund-page-container .growfund-campaign-slider__item {
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  min-width: 0;
+  overflow: visible;
+}
+
+.growfund-page-container .growfund-campaign-slider__item--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.growfund-page-container .growfund-campaign-slider--featured {
+  min-height: 680px;
+}
+
+.growfund-page-container .growfund-campaign-slider--featured .growfund-campaign-slider__item {
+  min-height: 595px;
+  width: 648px;
+  flex-shrink: 0;
+}
+
+.growfund-page-container
+  .growfund-campaign-slider--featured
+  .growfund-campaign-slider__item
+  a.growfund-campaign-card--featured {
+  width: 100%;
+  flex-basis: 100%;
+  max-width: 100%;
+  display: block;
+}
+
+.growfund-page-container .growfund-campaign-slider--featured .growfund-campaign-card--list .growfund-campaign-card__image {
+  height: auto;
+}
+
+@media (max-width: 768px) {
+  .growfund-page-container .growfund-campaign-slider__item {
+    min-height: auto;
+    width: 100%;
+  }
+}
+
+.growfund-page-container .growfund-campaign-slider__grid {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--growfund-spacing-4);
+  overflow: visible;
+}
+
+.growfund-page-container .growfund-campaign-slider__grid > * {
+  flex: 0 0 auto;
+  width: calc((100% - 3rem) / 4);
+  box-sizing: border-box;
+}
+
+.growfund-page-container .growfund-campaign-slider--featured .growfund-campaign-slider__grid > * {
+  min-height: auto;
+  width: calc(50% - 0.5rem);
+}
+
+.growfund-page-container .growfund-campaign-slider--featured .growfund-campaign-card--list .growfund-campaign-card__image {
+  height: auto;
+}
+
+@media (max-width: 1023px) {
+  .growfund-page-container .growfund-campaign-slider {
+    padding-top: var(--growfund-spacing-6);
+    margin-bottom: var(--growfund-spacing-8);
+  }
+
+  .growfund-page-container .growfund-campaign-slider__track {
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    gap: var(--growfund-spacing-3);
+    padding-bottom: var(--growfund-spacing-2);
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+    transform: translateX(0);
+  }
+
+  .growfund-page-container .growfund-campaign-slider__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .growfund-page-container .growfund-campaign-slider__item {
+    flex: 0 0 280px;
+    max-width: 280px;
+  }
+
+  .growfund-page-container .growfund-campaign-slider--featured .growfund-campaign-slider__item {
+    min-height: auto;
+    width: 280px;
+    max-width: 280px;
+    flex-shrink: 0;
+  }
+
+  .growfund-page-container
+    .growfund-campaign-slider--featured
+    .growfund-campaign-slider__item
+    a.growfund-campaign-card--featured {
+    width: 100%;
+    flex-basis: 100%;
+    max-width: 100%;
+    display: block;
+  }
+
+  .growfund-page-container
+    .growfund-campaign-slider--featured
+    .growfund-campaign-card--list
+    .growfund-campaign-card__image {
+    height: auto;
+  }
+
+  .growfund-page-container .growfund-campaign-slider .growfund-campaign-card-wrapper .growfund-campaign-card:hover {
+    transform: none;
+    position: relative;
+    z-index: auto;
+    box-shadow: none;
+    overflow: hidden;
+  }
+
+  .growfund-page-container .growfund-campaign-slider .growfund-campaign-card-wrapper .growfund-campaign-card__content {
+    overflow: hidden;
+  }
+
+  .growfund-page-container
+    .growfund-campaign-slider
+    .growfund-campaign-card-wrapper
+    .growfund-campaign-card:hover
+    .growfund-campaign-card__content {
+    overflow: hidden;
+  }
+
+  .growfund-page-container
+    .growfund-campaign-slider
+    .growfund-campaign-card-wrapper
+    .growfund-campaign-card:hover
+    .growfund-campaign-description {
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+    max-height: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  .growfund-page-container
+    .growfund-campaign-slider
+    .growfund-campaign-card-wrapper
+    .growfund-campaign-card:hover
+    .growfund-campaign-card__bottom-line {
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+    height: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  .growfund-page-container
+    .growfund-campaign-slider
+    .growfund-campaign-card-wrapper
+    .growfund-campaign-card--featured:hover,
+  .growfund-page-container .growfund-campaign-slider .growfund-campaign-card-wrapper .growfund-campaign-card--list:hover {
+    transform: none;
+    position: relative;
+    z-index: auto;
+    box-shadow: none;
+    overflow: hidden;
+  }
+}
+
+.growfund-page-container .growfund-campaign-slider .growfund-campaign-card-wrapper {
+  overflow: visible;
+  position: relative;
+}
+
+.growfund-page-container .growfund-campaign-slider .growfund-campaign-card {
+  overflow: visible;
+}
+
+.growfund-page-container .growfund-campaign-slider .growfund-campaign-card:hover {
+  z-index: 1000;
+  overflow: visible;
+}
+
+.growfund-page-container .growfund-campaign-slider .growfund-campaign-card__content {
+  overflow: visible;
+}
+
+.growfund-page-container .growfund-campaign-slider .growfund-campaign-card:hover .growfund-campaign-card__content {
+  overflow: visible;
+}
+
+.growfund-page-container .growfund-campaign-slider--featured .growfund-campaign-card-wrapper {
+  overflow: visible;
+}
+
+.growfund-page-container .growfund-campaign-slider--featured .growfund-campaign-card {
+  overflow: visible;
+}
+
+.growfund-page-container .growfund-campaign-slider--featured .growfund-campaign-card:hover {
+  z-index: 1000;
+  overflow: visible;
+}
+
+.growfund-page-container .growfund-campaign-slider--featured .growfund-campaign-card__content {
+  overflow: visible;
+}
+
+.growfund-page-container
+  .growfund-campaign-slider--featured
+  .growfund-campaign-card:hover
+  .growfund-campaign-card__content {
+  overflow: visible;
+}
+
+.growfund-page-container .growfund-campaign-slider .growfund-campaign-card--featured,
+.growfund-page-container .growfund-campaign-slider .growfund-campaign-card--list {
+  overflow: visible;
+}
+
+.growfund-page-container .growfund-campaign-slider .growfund-campaign-card--featured:hover,
+.growfund-page-container .growfund-campaign-slider .growfund-campaign-card--list:hover {
+  z-index: 1000;
+  overflow: visible;
+}
+
+.growfund-page-container .growfund-campaign-slider .growfund-campaign-card:hover .growfund-campaign-description {
+  opacity: 1;
+  visibility: visible;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* show max 3 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: pre-line;
+}
+
+.growfund-page-container .growfund-campaign-slider .growfund-campaign-card:hover .growfund-campaign-card__bottom-line {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+}
+
+.growfund-page-container .growfund-campaign-slider,
+.growfund-page-container .growfund-campaign-slider__track,
+.growfund-page-container .growfund-campaign-slider__grid {
+  overflow: visible;
+}
+
+.growfund-page-container .growfund-campaign-slider__item {
+  overflow: visible;
+}
+
+@media (max-width: 768px) {
+  .growfund-page-container .growfund-campaign-slider,
+  .growfund-page-container .growfund-campaign-slider__track,
+  .growfund-page-container .growfund-campaign-slider__grid {
+    overflow: hidden;
+  }
+}

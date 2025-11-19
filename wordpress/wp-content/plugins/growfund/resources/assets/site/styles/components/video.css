@@ -1,0 +1,162 @@
+.growfund-page-container .growfund-video-container {
+  position: relative;
+  width: 100%;
+  background-color: var(--growfund-gray-16);
+  border-radius: var(--growfund-radius-4);
+  overflow: hidden;
+}
+
+.growfund-page-container .growfund-video {
+  width: 100%;
+  aspect-ratio: var(--growfund-video-aspect-ratio);
+  display: block;
+  border-radius: var(--growfund-radius-4);
+  object-fit: cover;
+}
+
+.growfund-page-container .growfund-video-hidden {
+  display: none;
+}
+
+/* YouTube and Vimeo iframes */
+.growfund-page-container .growfund-video-container iframe {
+  width: 100%;
+  aspect-ratio: var(--growfund-video-aspect-ratio);
+  display: block;
+  border-radius: var(--growfund-radius-4);
+  border: none;
+}
+
+/* YouTube iframe specific styles for better accessibility */
+.growfund-page-container .growfund-youtube-iframe {
+  /* Ensure proper focus indicators */
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.growfund-page-container .growfund-youtube-iframe:focus {
+  outline: 2px solid var(--growfund-primary-color, #007cba);
+  outline-offset: 2px;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  /* Play Button Overlay */
+  .growfund-page-container .growfund-video-play-overlay {
+    transition: none;
+  }
+
+  .growfund-page-container .growfund-video-play-btn {
+    transition: none;
+  }
+
+  .growfund-page-container .growfund-video-play-btn:hover {
+    transform: none;
+  }
+
+  .growfund-page-container .growfund-video-play-btn:active {
+    transform: none;
+  }
+}
+
+.growfund-page-container .growfund-video-container .growfund-video-thumb {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+}
+
+.growfund-page-container .growfund-video-container .growfund-video-thumb img {
+  object-fit: contain;
+  display: block;
+  aspect-ratio: var(--growfund-media-aspect-ratio);
+  border-radius: var(--growfund-radius-sm, 8px);
+  background-color: var(--growfund-video-thumb-shadow);
+}
+
+.growfund-page-container .growfund-video-container.playing .growfund-video-thumb,
+.growfund-page-container .growfund-video-container.playing .growfund-video-play-overlay {
+  opacity: 0;
+  pointer-events: none;
+}
+.growfund-page-container .growfund-video-container .growfund-video-thumb.hidden {
+  display: none;
+  pointer-events: none;
+}
+
+.growfund-page-container .growfund-video-play-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.growfund-page-container .growfund-video-play-overlay:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.growfund-page-container .growfund-video-play-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  display: none;
+}
+
+/* Play Button */
+.growfund-page-container .growfund-video-play-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3));
+}
+
+.growfund-page-container .growfund-video-play-btn:hover {
+  transform: scale(1.1);
+}
+
+.growfund-page-container .growfund-video-play-btn:active {
+  transform: scale(0.95);
+}
+
+/* Play Icon */
+.growfund-page-container .growfund-video-play-icon {
+  display: block;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .growfund-page-container .growfund-video-play-btn .growfund-video-play-icon {
+    width: 60px !important;
+    height: 60px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Loading State */
+  .growfund-page-container .growfund-video-play-btn .growfund-video-play-icon {
+    width: 50px !important;
+    height: 50px !important;
+  }
+}
+
+.growfund-page-container .growfund-video-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--growfund-gray-1);
+  font-size: var(--growfund-font-size-3);
+  z-index: 5;
+}

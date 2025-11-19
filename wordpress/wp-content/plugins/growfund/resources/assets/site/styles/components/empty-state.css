@@ -1,0 +1,52 @@
+.growfund-page-container .growfund-empty-state {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--growfund-spacing-4);
+  padding: var(--growfund-spacing-4);
+  background: transparent;
+  border: 1px solid var(--growfund-gray-6);
+  border-radius: var(--growfund-radius-4);
+}
+
+.growfund-page-container .growfund-empty-icon {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.growfund-page-container .growfund-empty-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.growfund-page-container .growfund-empty-title {
+  font-weight: var(--growfund-font-weight-semibold);
+  color: var(--growfund-gray-15);
+  line-height: 20px;
+}
+
+.growfund-page-container .growfund-empty-message {
+  margin-top: var(--growfund-spacing-2);
+  font-size: var(--growfund-font-size-2);
+  color: var(--growfund-gray-13);
+  line-height: 18px;
+}
+
+.growfund-page-container .growfund-empty-action {
+  margin-top: var(--growfund-spacing-4);
+  color: var(--growfund-green-4);
+  font-weight: var(--growfund-font-weight-medium);
+  font-size: var(--growfund-font-size-2);
+  text-decoration: none;
+  margin-left: 0;
+  transition: text-decoration 0.2s;
+}
+
+.growfund-page-container .growfund-empty-action:hover {
+  text-decoration: underline;
+}

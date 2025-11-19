@@ -1,0 +1,301 @@
+/* =========================================
+   CHECKOUT COMPONENT STYLES
+   ========================================= */
+
+.growfund-main-container {
+  max-width: var(--growfund-max-width);
+  margin: 0 auto;
+  padding: var(--growfund-spacing-16) 0;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: var(--growfund-spacing-10);
+  align-items: flex-start;
+}
+.growfund-reward-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--growfund-spacing-8);
+  min-width: 0;
+}
+.growfund-reward-column {
+  border-radius: var(--growfund-radius-6);
+  border: 1px solid var(--growfund-gray-8);
+  padding: var(--growfund-spacing-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--growfund-spacing-8);
+}
+.growfund-sidebar {
+  border-radius: var(--growfund-radius-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--growfund-spacing-8);
+}
+
+.growfund-form-builder-card {
+  padding: var(--growfund-spacing-6);
+  border-radius: var(--growfund-radius-4);
+}
+
+/* Prevent form sections from being scrollable */
+.growfund-form-builder-card .growfund-form-section {
+  overflow: visible;
+  max-height: none;
+  height: auto;
+}
+
+/* Specifically prevent shipping address section from being scrollable */
+.growfund-form-builder-card .growfund-form-section {
+  overflow: visible;
+  max-height: none;
+  height: auto;
+}
+
+/* Target shipping address section by its title text */
+.growfund-form-builder-card .growfund-form-section h2.growfund-form-title {
+  overflow: visible;
+}
+
+/* Ensure all form fields are visible and not scrollable */
+.growfund-form-builder-card .growfund-form-field {
+  overflow: visible;
+  max-height: none;
+  height: auto;
+}
+
+/* Prevent any overflow issues in form groups */
+.growfund-form-builder-card .growfund-form-section .growfund-form-row-half {
+  overflow: visible;
+  max-height: none;
+  height: auto;
+}
+
+/* Additional rules to prevent scrollable behavior */
+.growfund-form-builder-card .growfund-form-section,
+.growfund-form-builder-card .growfund-form-section * {
+  overflow: visible;
+  max-height: none;
+  height: auto;
+}
+
+/* Ensure dropdowns and inputs don't cause scrollable behavior */
+.growfund-form-builder-card .growfund-dropdown,
+.growfund-form-builder-card .growfund-textarea {
+  overflow: visible;
+  max-height: none;
+  height: auto;
+}
+
+/* Maintain input height constraints while allowing overflow visibility */
+.growfund-form-builder-card .growfund-input {
+  overflow: visible;
+  height: 40px;
+  max-height: 40px;
+  box-sizing: border-box;
+}
+
+/* Specific targeting for shipping address section using the new class */
+.growfund-shipping-address-section {
+  overflow: visible;
+  max-height: none;
+  height: auto;
+}
+
+.growfund-shipping-address-section * {
+  overflow: visible;
+  max-height: none;
+  height: auto;
+}
+
+/* Ensure shipping address form fields are not scrollable */
+.growfund-shipping-address-section .growfund-form-field {
+  overflow: visible;
+  max-height: none;
+  height: auto;
+}
+
+.growfund-shipping-address-section .growfund-form-row-half {
+  overflow: visible;
+  max-height: none;
+  height: auto;
+}
+
+.growfund-checkout-header {
+  display: flex;
+  align-items: center;
+  gap: var(--growfund-spacing-5);
+  max-width: var(--growfund-max-width);
+}
+
+.growfund-back-button-wrapper {
+  width: var(--growfund-spacing-11);
+  height: var(--growfund-spacing-11);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.growfund-section-title {
+  font-size: var(--growfund-font-size-8);
+  font-weight: var(--growfund-font-weight-bold);
+  margin: 0;
+  color: var(--growfund-gray-16);
+  flex: 1;
+}
+
+.growfund-form-builder-footer-text {
+  font-size: var(--growfund-font-size-3);
+  color: var(--growfund-accent-dark);
+  line-height: 21px;
+  margin-top: var(--growfund-spacing-4);
+}
+
+.growfund-guarantee-section {
+  background: var(--growfund-gray-2);
+  border-radius: var(--growfund-radius-4);
+  border: 1px solid var(--growfund-gray-6);
+  padding: var(--growfund-spacing-5) var(--growfund-spacing-4);
+}
+.growfund-guarantee-header {
+  display: flex;
+  align-items: center;
+  gap: var(--growfund-spacing-2);
+  margin-bottom: var(--growfund-spacing-2);
+}
+.growfund-guarantee-icon {
+  font-size: var(--growfund-font-size-6);
+}
+.growfund-guarantee-title {
+  font-size: var(--growfund-font-size-5);
+  font-weight: var(--growfund-font-weight-semibold);
+  color: var(--growfund-gray-15);
+}
+.growfund-guarantee-text {
+  font-size: var(--growfund-font-size-3);
+  color: var(--growfund-gray-15);
+  line-height: 21px;
+  margin-bottom: var(--growfund-spacing-2);
+  padding-left: var(--growfund-spacing-8);
+}
+.growfund-guarantee-link {
+  color: var(--growfund-green-5);
+  text-decoration: none;
+  font-size: var(--growfund-font-size-3);
+  padding-left: var(--growfund-spacing-8);
+}
+.growfund-guarantee-link:hover {
+  text-decoration: underline;
+}
+.growfund-faq-section {
+  border: 1px solid var(--growfund-gray-6);
+  border-radius: var(--growfund-radius-4);
+  padding: var(--growfund-spacing-6);
+  background: var(--growfund-gray-2);
+}
+.growfund-faq-section-title {
+  font-size: var(--growfund-font-size-5);
+  font-weight: var(--growfund-font-weight-semibold);
+  line-height: 24px;
+  color: var(--growfund-gray-15);
+  margin-bottom: var(--growfund-spacing-8);
+}
+.growfund-info-section {
+  background: var(--growfund-gray-2);
+  border-radius: var(--growfund-radius-4);
+  padding: var(--growfund-spacing-6);
+}
+.growfund-info-text {
+  font-size: var(--growfund-font-size-3);
+  color: var(--growfund-gray-13);
+  line-height: 21px;
+  margin-bottom: var(--growfund-spacing-2);
+}
+.growfund-info-text:last-child {
+  margin-bottom: 0;
+}
+.growfund-email-highlight {
+  font-weight: var(--growfund-font-weight-semibold);
+  color: var(--growfund-gray-16);
+}
+.growfund-main-container .growfund-faq-question {
+  font-size: var(--growfund-font-size-3);
+}
+.growfund-main-container .growfund-faq-answer-content p {
+  font-size: var(--growfund-font-size-3);
+}
+
+/* =========================================
+   SHIPPING CALCULATION STYLES
+   ========================================= */
+
+.growfund-country-calculating {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.growfund-shipping-message {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.growfund-message-error {
+  background-color: #f8d7da !important;
+  color: #721c24 !important;
+  border: 1px solid #f5c6cb !important;
+}
+
+@media (max-width: 1023px) {
+  .growfund-main-container {
+    grid-template-columns: 1fr;
+    gap: var(--growfund-spacing-6);
+    padding: var(--growfund-spacing-3) var(--growfund-spacing-4) 0;
+  }
+  .growfund-reward-wrapper {
+    order: 1;
+    gap: var(--growfund-spacing-6);
+  }
+
+  .growfund-info-section {
+    padding: var(--growfund-spacing-4);
+  }
+
+  .growfund-form-builder-card {
+    padding: var(--growfund-spacing-4);
+  }
+  .growfund-sidebar {
+    order: 2;
+    max-width: 100%;
+    padding: var(--growfund-spacing-5) var(--growfund-spacing-2);
+  }
+  .growfund-reward-column {
+    padding: var(--growfund-spacing-4);
+  }
+  .growfund-checkout-header {
+    gap: var(--growfund-spacing-4);
+  }
+  .growfund-section-title {
+    font-size: var(--growfund-font-size-8);
+    line-height: 32px;
+    font-weight: var(--growfund-font-weight-semibold);
+  }
+
+  .growfund-form-builder-footer-text {
+    font-size: var(--growfund-font-size-2);
+    line-height: 18px;
+  }
+
+  .growfund-guarantee-section {
+    padding: var(--growfund-spacing-4);
+  }
+}

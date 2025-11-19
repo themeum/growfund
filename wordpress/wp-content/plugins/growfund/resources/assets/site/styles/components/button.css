@@ -1,0 +1,281 @@
+/* =========================================
+ BUTTON COMPONENTS
+ ========================================= */
+ 
+/* Legacy button styles (for backward compatibility) */
+
+.growfund-page-container .growfund-btn {
+  width: 100%;
+  height: 100%;
+  padding: var(--growfund-spacing-3) 0;
+  border-radius: var(--growfund-radius-3);
+  font-weight: var(--growfund-font-weight-medium);
+  font-size: var(--growfund-font-size-3);
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--growfund-spacing-1);
+  text-align: center;
+  justify-content: center;
+  line-height: 20px;
+}
+
+.growfund-page-container .growfund-btn--primary {
+  background-color: var(--growfund-green-4);
+  color: var(--growfund-gray-1);
+}
+
+.growfund-page-container .growfund-btn--primary:hover {
+  background-color: var(--growfund-green-6);
+}
+
+.growfund-page-container .growfund-btn--outline {
+  background-color: transparent;
+  border: 1px solid var(--growfund-gray-9);
+  color: var(--growfund-gray-13);
+}
+
+.growfund-page-container .growfund-btn--outline:hover {
+  border-color: var(--growfund-gray-11);
+  background-color: var(--growfund-gray-2);
+}
+
+.growfund-page-container .growfund-btn--share {
+  background-color: transparent;
+  color: var(--growfund-gray-13);
+  border: none;
+  padding: 0;
+  font-weight: 400;
+  border-radius: 0;
+}
+
+.growfund-page-container .growfund-btn--share:hover {
+  background-color: transparent;
+  color: var(--growfund-gray-16);
+  text-decoration: underline;
+}
+
+.growfund-page-container .growfund-btn--large {
+  padding: var(--growfund-spacing-4) var(--growfund-spacing-6);
+  font-size: var(--growfund-font-size-md);
+  font-weight: 600;
+}
+
+.growfund-page-container .growfund-btn--fixed-width {
+  min-width: 144px;
+}
+
+.growfund-page-container .growfund-btn--gray {
+  background-color: var(--growfund-gray-1);
+  color: var(--growfund-gray-15);
+  border: 1px solid var(--growfund-gray-8);
+}
+
+.growfund-page-container .growfund-btn--gray-5 {
+  background-color: var(--growfund-gray-5);
+  border: unset;
+}
+
+.growfund-page-container .growfund-btn--gray:hover {
+  background-color: var(--growfund-gray-2);
+  color: var(--growfund-gray-14);
+}
+
+/* Amount selector button variant */
+.growfund-page-container .growfund-amount-selector-btn {
+  background-color: var(--growfund-gray-1);
+  color: var(--growfund-gray-15);
+  border: 1px solid var(--growfund-gray-8);
+  transition: all 0.2s ease;
+}
+
+.growfund-page-container .growfund-amount-selector-btn:hover {
+  background-color: var(--growfund-green-4);
+  color: var(--growfund-gray-1);
+  border-color: var(--growfund-green-4);
+}
+
+.growfund-page-container .growfund-amount-selector-btn.selected,
+.growfund-page-container .growfund-amount-selector-btn.growfund-btn--primary {
+  background-color: var(--growfund-green-4);
+  color: var(--growfund-gray-1);
+  border-color: var(--growfund-green-4);
+}
+
+.growfund-page-container .growfund-amount-selector-btn.selected:hover,
+.growfund-page-container .growfund-amount-selector-btn.growfund-btn--primary:hover {
+  background-color: var(--growfund-green-6);
+  border-color: var(--growfund-green-6);
+}
+
+.growfund-page-container .growfund-btn--reward {
+  background-color: var(--growfund-gray-1);
+  color: var(--growfund-gray-15);
+  border: 1px solid var(--growfund-border-primary);
+}
+
+.growfund-page-container .growfund-btn--reward:hover {
+  background-color: var(--growfund-green-4);
+  color: var(--growfund-gray-3);
+}
+
+/* =========================================
+ DISABLED BUTTON STATES
+ ========================================= */
+.growfund-page-container .growfund-btn--disabled,
+.growfund-page-container .growfund-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.growfund-page-container .growfund-btn--disabled:hover,
+.growfund-page-container .growfund-btn:disabled:hover {
+  background-color: inherit;
+  color: inherit;
+  border-color: inherit;
+  transform: none;
+}
+
+/* =========================================
+ BUTTON VARIANTS
+ ========================================= */
+/* Icon-only buttons */
+.growfund-page-container .growfund-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--growfund-spacing-2);
+  border-radius: var(--growfund-radius-3);
+  background: none;
+  border: none;
+  color: var(--growfund-gray-12);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+}
+
+.growfund-page-container .growfund-icon-btn .growfund-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: unset;
+}
+
+.growfund-page-container .growfund-icon-btn:hover {
+  color: var(--growfund-gray-14);
+  background-color: var(--growfund-gray-4);
+}
+
+.growfund-page-container .growfund-icon-btn:focus {
+  outline: none;
+  color: var(--growfund-gray-16);
+}
+
+/* Bookmark button */
+.growfund-page-container .growfund-bookmark-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--growfund-spacing-2);
+  border-radius: var(--growfund-radius-3);
+  background: none;
+  border: none;
+  color: var(--growfund-gray-12);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+}
+
+.growfund-page-container .growfund-bookmark-btn .growfund-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: unset;
+}
+
+.growfund-page-container .growfund-bookmark-btn:hover {
+  color: var(--growfund-gray-14);
+  background-color: var(--growfund-gray-4);
+}
+
+.growfund-page-container .growfund-bookmark-btn:focus {
+  outline: none;
+  color: var(--growfund-gray-16);
+}
+
+/* Bookmark button variant - for save/bookmark functionality */
+.growfund-page-container .growfund-btn--bookmark {
+  background-color: var(--growfund-gray-1);
+  color: var(--growfund-gray-15);
+  border: 1px solid var(--growfund-gray-8);
+  transition: all 0.2s ease;
+}
+
+.growfund-page-container .growfund-btn--bookmark:hover {
+  background-color: var(--growfund-gray-2);
+  color: var(--growfund-gray-14);
+}
+
+.growfund-page-container .growfund-btn--bookmark.bookmarked {
+  background-color: var(--growfund-gray-1);
+  color: var(--growfund-green-4);
+  border: 1px solid var(--growfund-gray-8);
+}
+
+.growfund-page-container .growfund-btn--bookmark.bookmarked:hover {
+  background-color: var(--growfund-gray-2);
+  color: var(--growfund-green-4);
+}
+
+.growfund-page-container .growfund-btn--bookmark.bookmarked .growfund-icon {
+  color: var(--growfund-green-4);
+}
+
+/* Ensure proper icon positioning */
+.growfund-page-container .growfund-btn--bookmark .growfund-icon {
+  flex-shrink: 0;
+  margin-right: var(--growfund-spacing-1);
+}
+
+.growfund-page-container .growfund-btn--bookmark .growfund-icon--bookmark,
+.growfund-page-container .growfund-btn--bookmark .growfund-icon--check-circled {
+  width: 16px;
+  height: 16px;
+}
+
+/* Back button */
+.growfund-page-container .growfund-back-btn {
+  border: 1px solid var(--growfund-gray-8);
+  padding: var(--growfund-spacing-3);
+  background: transparent;
+  border-radius: var(--growfund-radius-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--growfund-gray-10);
+}
+
+.growfund-page-container .growfund-back-btn:hover {
+  background: var(--growfund-gray-3);
+  color: var(--growfund-gray-13);
+}
+
+.growfund-page-container .growfund-back-btn:active {
+  background: var(--growfund-gray-4);
+}
+
+.growfund-page-container .growfund-back-btn .growfund-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: unset;
+}

@@ -1,0 +1,87 @@
+name: Sync to Growfund Pro
+
+on:
+  push:
+    branches:
+      - sync/to-growfund-pro
+
+jobs:
+  sync-to-pro:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GROWFUND_SYNC_TOKEN_FREE }}
+
+    steps:
+      - name: Checkout Growfund Free
+        uses: actions/checkout@v4
+        with:
+          repository: themeum/growfund
+          ref: sync/to-growfund-pro
+          token: ${{ secrets.GROWFUND_SYNC_TOKEN_FREE }}
+          path: growfund-free
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Checkout Growfund Pro
+        uses: actions/checkout@v4
+        with:
+          repository: themeum/growfund-pro
+          token: ${{ secrets.GROWFUND_SYNC_TOKEN_FREE }}
+          path: growfund-pro
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Override free-configs
+        run: |
+          cp "$GITHUB_WORKSPACE/growfund-free/docker-compose.yml" "$GITHUB_WORKSPACE/growfund-pro/free-config/docker-compose.yml"
+          cp "$GITHUB_WORKSPACE/growfund-free/.gitignore" "$GITHUB_WORKSPACE/growfund-pro/free-config/free.gitignore"
+
+      - name: Wire Free as remote and fetch
+        run: |
+          cd growfund-pro
+          git remote add free "https://oauth2:${GH_TOKEN}@github.com/themeum/growfund.git" || git remote set-url free "https://oauth2:${GH_TOKEN}@github.com/themeum/growfund.git"
+          git fetch free sync/to-growfund-pro
+          git fetch origin main
+
+      - name: Prepare target branch
+        run: |
+          cd growfund-pro
+          git config user.name "growfund-sync-bot"
+          git config user.email "growfund-sync-bot@growfund.com"
+          if git show-ref --verify --quiet "refs/heads/target/to-growfund-pro"; then
+            git checkout target/to-growfund-pro
+            git reset --hard origin/main
+          else
+            git checkout -b target/to-growfund-pro origin/main
+          fi
+
+      - name: Merge Free into Pro (prefer Free by default)
+        run: |
+          cd growfund-pro
+          git merge free/sync/to-growfund-pro --allow-unrelated-histories -X theirs
+
+      - name: Force Pro versions for docker-compose.yml and apps/package.json
+        run: |
+          cd growfund-pro
+          git restore --source=origin/main -- docker-compose.yml apps/package.json .gitignore readme.md
+          git add docker-compose.yml apps/package.json .gitignore readme.md
+          git commit -m "Sync: force Pro versions for config files" || true
+
+      - name: Push sync branch
+        run: |
+          cd growfund-pro
+          git remote set-url origin "https://oauth2:${GH_TOKEN}@github.com/themeum/growfund-pro.git"
+          git push origin target/to-growfund-pro --force-with-lease
+
+      - name: Create pull request
+        env:
+          GH_TOKEN: ${{ secrets.GROWFUND_SYNC_TOKEN_FREE }}
+        run: |
+          cd growfund-pro
+          gh pr create \
+            --repo themeum/growfund-pro \
+            --head target/to-growfund-pro \
+            --base main \
+            --title "Sync to Growfund Pro ($GITHUB_SHA)" \
+            --body "Syncs from Free. Keeps Pro's config files; stores Free variants under free-config." \
+          || gh pr view --repo themeum/growfund-pro --web || true

@@ -1,0 +1,9 @@
+import './badge.spec';
+import './button.spec';
+import './card.spec';
+import './checkbox.spec';
+import './input.spec';
+import './progress.spec';
+import './select.spec';
+import './switch.spec';
+import './textarea.spec';

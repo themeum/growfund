@@ -1,0 +1,157 @@
+.growfund-page-container .growfund-support-section {
+  padding: var(--growfund-spacing-8);
+  border-radius: var(--growfund-radius-4);
+  margin-bottom: var(--growfund-spacing-8);
+}
+
+.growfund-page-container .growfund-support-section__title {
+  padding-bottom: var(--growfund-spacing-3);
+  color: var(--growfund-gray-15);
+  font-size: var(--growfund-font-size-6);
+  font-weight: var(--growfund-font-weight-semibold);
+  line-height: 28px;
+}
+
+.growfund-page-container .growfund-support-subtitle {
+  color: var(--growfund-gray-15);
+  font-size: var(--growfund-font-size-5);
+  line-height: 27px;
+  padding-bottom: var(--growfund-spacing-8);
+}
+
+.growfund-page-container .growfund-pledge-form {
+  margin-bottom: var(--growfund-spacing-8);
+}
+
+.growfund-page-container .growfund-pledge-form__label {
+  display: block;
+  color: var(--growfund-gray-15);
+  font-size: var(--growfund-font-size-4);
+  font-weight: var(--growfund-font-weight-medium);
+  margin-bottom: var(--growfund-spacing-3);
+}
+
+/* Currency Input Styles */
+.growfund-page-container .growfund-amount-input {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--growfund-gray-8);
+  border-radius: var(--growfund-radius-3);
+  font-size: var(--growfund-font-size-3);
+  line-height: 21px;
+  color: var(--growfund-gray-13);
+  height: 40px;
+  max-height: 40px;
+  box-sizing: border-box;
+}
+
+.growfund-page-container .growfund-currency {
+  padding: var(--growfund-spacing-3);
+  color: var(--growfund-gray-13);
+  position: relative;
+  line-height: 21px;
+}
+
+.growfund-page-container .growfund-currency::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 16px;
+  background-color: var(--growfund-gray-8);
+}
+
+.growfund-page-container .growfund-amount-input input {
+  border: none;
+  padding: var(--growfund-spacing-3);
+  font-size: var(--growfund-font-size-md);
+  line-height: 21px;
+  color: var(--growfund-gray-13);
+  background: transparent;
+  flex: 1;
+  outline: none;
+  height: 40px;
+  max-height: 40px;
+  box-sizing: border-box;
+}
+
+.growfund-page-container .growfund-support-message {
+  background: linear-gradient(99.24deg, #f6f6f6 -6.28%, #d8d7d7 125.62%);
+  padding: var(--growfund-spacing-6);
+  border-radius: var(--growfund-radius-3);
+}
+
+.growfund-page-container .growfund-support-message__title {
+  color: var(--growfund-gray-15);
+  font-size: var(--growfund-font-size-4);
+  font-weight: var(--growfund-font-weight-medium);
+  line-height: 24px;
+  margin-bottom: var(--growfund-spacing-3);
+}
+
+.growfund-page-container .growfund-support-message__description {
+  color: var(--growfund-gray-14);
+  line-height: 21px;
+}
+
+/* Pledge Continue Button */
+.growfund-page-container .growfund-pledge-continue {
+  margin-top: var(--growfund-spacing-4);
+  display: none;
+}
+
+/* Hidden by default */
+.growfund-page-container .growfund-pledge-continue button,
+.growfund-page-container .growfund-pledge-continue a {
+  width: 100%;
+  justify-content: center;
+}
+
+/* Responsive Design */
+@media (max-width: 1023px) {
+  .growfund-page-container .growfund-support-section {
+    padding: var(--growfund-spacing-4);
+    margin-bottom: var(--growfund-spacing-5);
+  }
+
+  .growfund-page-container .growfund-support-section__title {
+    padding-bottom: var(--growfund-spacing-2);
+    font-size: var(--growfund-font-size-5);
+    font-weight: var(--growfund-font-weight-medium);
+    line-height: 26px;
+  }
+
+  .growfund-page-container .growfund-support-subtitle {
+    font-size: var(--growfund-font-size-4);
+    line-height: 122%;
+    padding-bottom: var(--growfund-spacing-5);
+  }
+
+  .growfund-page-container .growfund-pledge-form {
+    margin-bottom: var(--growfund-spacing-5);
+  }
+
+  .growfund-page-container .growfund-pledge-form__label {
+    display: block;
+    font-size: var(--growfund-font-size-3);
+    line-height: 122%;
+  }
+
+  .growfund-page-container .growfund-support-message__title {
+    font-size: var(--growfund-font-size-3);
+    line-height: 122%;
+    margin-bottom: var(--growfund-spacing-2);
+  }
+
+  .growfund-page-container .growfund-support-message__description {
+    font-size: var(--growfund-font-size-2);
+    line-height: 132%;
+  }
+
+  .growfund-page-container .growfund-support-message {
+    padding: var(--growfund-spacing-4);
+  }
+}

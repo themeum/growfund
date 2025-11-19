@@ -1,0 +1,76 @@
+services:
+  wordpress:
+    build:
+      context: .
+    restart: always
+    ports:
+      - 8090:80
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: growfund
+      WORDPRESS_DEBUG: true
+      XDEBUG_MODE: debug
+      XDEBUG_CONFIG: client_host=host.docker.internal client_port=9003 start_with_request=yes
+    volumes:
+      - ./wordpress:/var/www/html
+      - ./conf/php.ini:/usr/local/etc/php/conf.d/99-custom-php.ini
+      - ./conf/xdebug.ini:/usr/local/etc/php/conf.d/99-custom-xdebug.ini
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+      - 'localhost:127.0.0.1'
+    networks:
+      - wordpress_network
+    # Add this new service for cron
+
+  wpcli:
+    image: wordpress:cli
+    depends_on:
+      - db
+      - wordpress
+    user: 'www-data'
+    working_dir: /var/www/html
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: growfund
+    volumes:
+      - ./wordpress:/var/www/html
+      - ./conf/php.ini:/usr/local/etc/php/conf.d/99-custom-php.ini
+    networks:
+      - wordpress_network
+
+  db:
+    image: mariadb:10.6
+    restart: always
+    environment:
+      MYSQL_DATABASE: growfund
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - db:/var/lib/mysql
+    networks:
+      - wordpress_network
+
+  phpmyadmin:
+    depends_on:
+      - db
+    image: phpmyadmin:fpm-alpine
+    restart: always
+    ports:
+      - 8091:80
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: wordpress
+    networks:
+      - wordpress_network
+
+volumes:
+  wordpress:
+  db:
+
+networks:
+  wordpress_network:

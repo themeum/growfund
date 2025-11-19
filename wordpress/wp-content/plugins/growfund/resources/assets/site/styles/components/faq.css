@@ -1,0 +1,221 @@
+.growfund-page-container .growfund-faq-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: var(--growfund-spacing-3xl);
+  align-items: start;
+}
+
+.growfund-page-container .growfund-faq-header {
+  position: sticky;
+  top: var(--growfund-spacing-8);
+}
+
+.growfund-page-container .growfund-faq-content {
+  width: 100%;
+}
+
+.growfund-page-container .growfund-faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* FAQ Item Container */
+.growfund-page-container .growfund-faq-item {
+  will-change: transform;
+}
+
+/* Optimize for animations */
+/* Question Wrapper - Semantic heading */
+.growfund-page-container .growfund-faq-question-wrapper {
+  margin: 0;
+  padding: 0;
+}
+
+/* Question Button */
+.growfund-page-container .growfund-faq-question {
+  width: 100%;
+  padding: var(--growfund-spacing-10) 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: transparent;
+  border: none;
+  text-align: left;
+  font-size: var(--growfund-font-size-5);
+  font-weight: var(--growfund-font-weight-semibold);
+  color: var(--growfund-gray-15);
+  transition: color 0.2s ease;
+  position: relative;
+  outline-offset: 2px;
+  gap: 20px;
+}
+
+.growfund-page-container .growfund-faq-question:first-child {
+  padding-top: 0;
+}
+
+.growfund-page-container .growfund-faq-question:hover {
+  color: var(--growfund-gray-14);
+}
+
+.growfund-page-container .growfund-faq-question:focus-visible {
+  outline: 2px solid var(--growfund-blue-3);
+  border-radius: var(--growfund-radius-2);
+}
+
+/* Question Text */
+.growfund-page-container .growfund-faq-question-text {
+  flex: 1;
+  margin-right: 0;
+  line-height: 1.4;
+  /* Custom Plus/Minus Icon */
+}
+
+.growfund-page-container .growfund-faq-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.growfund-page-container .growfund-faq-icon-line {
+  position: absolute;
+  background-color: var(--growfund-gray-15);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 1px;
+}
+
+.growfund-page-container .growfund-faq-icon-line--horizontal {
+  width: 14px;
+  height: 2px;
+}
+
+.growfund-page-container .growfund-faq-icon-line--vertical {
+  width: 2px;
+  height: 14px;
+  transform-origin: center;
+}
+
+/* Rotate vertical line to create minus when active */
+.growfund-page-container .growfund-faq-item.active .growfund-faq-icon-line--vertical {
+  transform: rotate(90deg);
+  opacity: 0;
+}
+
+/* Answer Wrapper - Controls the height animation */
+.growfund-page-container .growfund-faq-answer-wrapper {
+  overflow: hidden;
+  transition: height 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  height: 0;
+}
+
+.growfund-page-container .growfund-faq-item.active .growfund-faq-answer-wrapper {
+  height: auto;
+}
+
+/* Answer Content - Contains the actual content */
+.growfund-page-container .growfund-faq-answer-content {
+  padding: 0 0 var(--growfund-spacing-10) 0;
+  color: var(--growfund-gray-15);
+  line-height: 1.6;
+}
+
+.growfund-page-container .growfund-faq-answer-content p {
+  margin: 0;
+  font-size: var(--growfund-font-size-4);
+  line-height: 1.6;
+  padding-left: var(--growfund-spacing-11);
+}
+
+/* Active State Adjustments */
+.growfund-page-container .growfund-faq-item.active .growfund-faq-question {
+  padding-bottom: var(--growfund-spacing-4);
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+
+  /* High Contrast Mode Support */
+  .growfund-page-container .growfund-faq-answer-wrapper,
+  .growfund-page-container .growfund-faq-icon-line {
+    transition: none;
+  }
+
+  .growfund-page-container .growfund-faq-item.active .growfund-faq-answer-wrapper {
+    height: auto;
+  }
+}
+
+@media (prefers-contrast: high) {
+
+  /* FAQ responsive */
+  .growfund-page-container .growfund-faq-question {
+    border: 1px solid transparent;
+  }
+
+  .growfund-page-container .growfund-faq-question:focus-visible {
+    border-color: currentColor;
+  }
+
+  .growfund-page-container .growfund-faq-icon-line {
+    background-color: currentColor;
+  }
+}
+
+@media (max-width: 1023px) {
+  .growfund-page-container .growfund-faq-layout {
+    grid-template-columns: 1fr;
+    gap: var(--growfund-spacing-6);
+  }
+
+  .growfund-page-container .growfund-faq-header {
+    position: static;
+  }
+
+  .growfund-page-container .growfund-faq-question {
+    line-height: 1.4;
+    padding: var(--growfund-spacing-6) 0;
+    font-size: var(--growfund-font-size-4);
+    gap: 16px;
+  }
+
+  .growfund-page-container .growfund-faq-question:first-child {
+    padding-top: 0;
+  }
+
+  .growfund-page-container .growfund-faq-answer-content {
+    font-size: var(--growfund-font-size-3);
+    padding-bottom: var(--growfund-spacing-6);
+  }
+
+  .growfund-page-container .growfund-faq-item.active .growfund-faq-question {
+    padding-bottom: var(--growfund-spacing-3);
+  }
+
+  .growfund-page-container .growfund-faq-question-text {
+    margin-right: 0;
+  }
+
+  .growfund-page-container .growfund-faq-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .growfund-page-container .growfund-faq-icon-line--horizontal {
+    width: 12px;
+  }
+
+  .growfund-page-container .growfund-faq-icon-line--vertical {
+    height: 12px;
+  }
+
+  .growfund-page-container .growfund-faq-answer-content p {
+    padding-left: var(--growfund-spacing-9);
+  }
+}

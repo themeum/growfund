@@ -1,0 +1,501 @@
+/* =========================================
+ CAMPAIGN CARD COMPONENT (REDESIGNED)
+ ========================================= */
+
+.growfund-page-container .growfund-campaign-card-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  min-height: 390px;
+}
+
+.growfund-page-container .growfund-campaign-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  width: 100%;
+  transition: all 0.3s cubic-bezier(0.3, 0, 0, 1.3);
+  cursor: pointer;
+  border-radius: var(--growfund-radius-5);
+  border: 1px solid var(--growfund-gray-8);
+  box-sizing: border-box;
+  position: relative;
+  isolation: isolate;
+  transform: none;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-border-radius: var(--growfund-radius-5);
+  -moz-border-radius: var(--growfund-radius-5);
+}
+
+.growfund-page-container .growfund-campaign-card:hover {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  box-shadow: 0px 10px 15px -3px hsla(0, 0%, 0%, 0.1);
+  overflow: visible;
+  z-index: 9999;
+  height: fit-content;
+}
+
+.growfund-page-container .growfund-campaign-card:not(:hover) {
+  z-index: auto;
+}
+
+.growfund-page-container .growfund-campaign-card--list {
+  max-width: 312px;
+  height: auto;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.3, 0, 0, 1.3);
+  box-sizing: border-box;
+  transform: none;
+  will-change: transform;
+}
+
+.growfund-page-container .growfund-campaign-card__image {
+  position: relative;
+  height: auto;
+  width: 100%;
+  aspect-ratio: var(--growfund-campaign-card-image-aspect-ratio);
+  overflow: hidden;
+  background-color: var(--growfund-gray-6);
+  border-radius: var(--growfund-radius-5) var(--growfund-radius-5) 0 0;
+}
+
+.growfund-page-container .growfund-campaign-card--list .growfund-campaign-card__image {
+  height: auto;
+}
+
+.growfund-page-container .growfund-campaign-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.growfund-page-container .growfund-campaign-card__placeholder {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 48px;
+}
+
+.growfund-page-container .growfund-campaign-card:hover .growfund-campaign-card__image img {
+  transform: scale(1.05);
+}
+
+.growfund-page-container .growfund-funding-badge {
+  position: absolute;
+  top: var(--growfund-spacing-5);
+  left: var(--growfund-spacing-4);
+  background-color: var(--growfund-gray-1-5);
+  color: var(--growfund-green-4);
+  font-size: var(--growfund-font-size-2);
+  padding: var(--growfund-spacing-1) var(--growfund-spacing-2);
+  border-radius: var(--growfund-radius-3);
+  font-weight: var(--growfund-font-weight-semibold);
+}
+
+.growfund-page-container .growfund-time-badge {
+  position: absolute;
+  top: var(--growfund-spacing-5);
+  left: var(--growfund-spacing-4);
+  background-color: var(--growfund-gray-1-5);
+  color: var(--growfund-green-4);
+  font-size: var(--growfund-font-size-2);
+  padding: var(--growfund-spacing-1) var(--growfund-spacing-2);
+  border-radius: var(--growfund-radius-3);
+  font-weight: var(--growfund-font-weight-semibold);
+}
+
+.growfund-page-container .growfund-bookmark-btn {
+  position: absolute;
+  top: var(--growfund-spacing-4);
+  right: var(--growfund-spacing-4);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--growfund-gray-1-5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--growfund-gray-12);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.growfund-page-container .growfund-bookmark-btn:hover {
+  background-color: var(--growfund-gray-1);
+  color: var(--growfund-red-3);
+  transform: scale(1.1);
+}
+
+.growfund-page-container .growfund-campaign-card--list .growfund-bookmark-btn {
+  background-color: var(--growfund-gray-1-5);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.growfund-page-container .growfund-campaign-card__content {
+  padding: var(--growfund-spacing-6) var(--growfund-spacing-6) var(--growfund-spacing-6);
+  background-color: var(--growfund-gray-1);
+  position: relative;
+  overflow: hidden;
+  transition: padding 0.3s ease;
+  border-radius: 0 0 var(--growfund-radius-5) var(--growfund-radius-5);
+}
+
+.growfund-page-container .growfund-campaign-card--list .growfund-campaign-card__content {
+  padding: var(--growfund-spacing-6) var(--growfund-spacing-5) var(--growfund-spacing-6);
+}
+
+.growfund-page-container .growfund-creator-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--growfund-spacing-2);
+  margin-bottom: var(--growfund-spacing-2);
+  font-size: var(--growfund-font-size-2);
+}
+
+.growfund-page-container .growfund-creator-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--growfund-gray-8);
+}
+
+.growfund-page-container .growfund-campaign-card--featured .growfund-creator-avatar {
+  width: 40px;
+  height: 40px;
+}
+
+.growfund-page-container .growfund-campaign-card--list .growfund-creator-avatar {
+  width: 32px;
+  height: 32px;
+}
+
+.growfund-page-container .growfund-creator-avatar--placeholder {
+  background: #667eea;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.growfund-page-container .growfund-creator-name {
+  color: var(--growfund-text-primary-80);
+  font-size: var(--growfund-font-size-3);
+  font-weight: var(--growfund-font-weight-normal);
+  line-height: 20px;
+}
+
+.growfund-page-container .growfund-campaign-card--featured .growfund-creator-name {
+  font-size: var(--growfund-font-size-6);
+  line-height: 30px;
+}
+
+.growfund-page-container .growfund-creator-name--list {
+  color: var(--growfund-text-primary-80);
+  font-size: var(--growfund-font-size-3);
+  font-weight: var(--growfund-font-weight-normal);
+  line-height: 20px;
+}
+
+.growfund-page-container .growfund-time-left {
+  color: var(--growfund-gray-1);
+  line-height: 20px;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.growfund-page-container .growfund-time-left::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-image: url('../../icon/time.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.growfund-page-container .growfund-campaign-title {
+  font-size: var(--growfund-font-size-5);
+  color: var(--growfund-gray-15);
+  font-weight: var(--growfund-font-weight-medium);
+  line-height: 26px;
+  letter-spacing: -0.45px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  transition: color 1s ease, text-decoration 1s ease;
+}
+
+.growfund-page-container .growfund-campaign-card:hover .growfund-campaign-title {
+  color: var(--growfund-blue-3);
+}
+
+.growfund-page-container .growfund-campaign-card--list:hover .growfund-campaign-title {
+  color: var(--growfund-blue-3);
+}
+
+.growfund-page-container .growfund-campaign-title:hover {
+  text-decoration: underline;
+}
+
+.growfund-page-container .growfund-progress-bar {
+  width: 100%;
+  height: 6px;
+  background-color: var(--growfund-green-2-2);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: var(--growfund-spacing-2);
+}
+
+.growfund-page-container .growfund-progress-fill {
+  height: 100%;
+  background: var(--growfund-green-2);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.growfund-page-container .growfund-funding-amount {
+  font-size: var(--growfund-font-size-3);
+  font-weight: var(--growfund-font-weight-medium);
+  color: var(--growfund-gray-15);
+  line-height: 118%;
+}
+
+.growfund-page-container .growfund-campaign-card--featured .growfund-funding-amount {
+  font-size: var(--growfund-font-size-6);
+  line-height: 118%;
+  font-weight: var(--growfund-font-weight-semibold);
+}
+
+.growfund-page-container .growfund-funding-progress {
+  margin-top: var(--growfund-spacing-5);
+}
+
+.growfund-page-container .growfund-campaign-card--featured {
+  border-radius: var(--growfund-radius-5);
+  border: 1px solid var(--growfund-gray-8);
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.3, 0, 0, 1.3);
+  transform: none;
+  will-change: transform;
+}
+
+.growfund-page-container .growfund-campaign-card--featured .growfund-campaign-card__image {
+  height: auto;
+}
+
+.growfund-page-container .growfund-campaign-card--featured .growfund-campaign-card__content {
+  padding: var(--growfund-spacing-6);
+}
+
+.growfund-page-container .growfund-campaign-card--featured .growfund-campaign-title {
+  height: auto;
+  -webkit-line-clamp: 2;
+  font-size: var(--growfund-font-size-10);
+  letter-spacing: -0.7px;
+  line-height: 38px;
+  overflow: hidden;
+}
+
+.growfund-page-container .growfund-campaign-card--featured .growfund-campaign-description {
+  font-size: var(--growfund-font-size-5);
+}
+
+.growfund-page-container .growfund-campaign-description {
+  font-size: var(--growfund-font-size-3);
+  color: var(--growfund-gray-15);
+  line-height: 20px;
+  margin: 0;
+  padding: 0;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: opacity 0.3s ease, max-height 0.3s ease, margin 0.3s ease;
+  pointer-events: none;
+}
+
+.growfund-page-container .growfund-campaign-card:hover .growfund-campaign-description {
+  opacity: 1;
+  visibility: visible;
+  max-height: none;
+  height: auto;
+  margin-top: var(--growfund-spacing-3);
+  display: block;
+  pointer-events: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  border-top: 1px solid var(--growfund-gray-8);
+  padding-top: var(--growfund-spacing-5);
+  margin-top: var(--growfund-spacing-5);
+}
+
+.growfund-page-container .growfund-campaign-card:hover .growfund-campaign-card__content {
+  overflow: visible;
+}
+
+.growfund-page-container .growfund-campaign-card__bottom-line {
+  width: 100%;
+  height: 0;
+  background-color: var(--growfund-gray-8);
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease, height 0.3s ease, margin 0.3s ease;
+  visibility: hidden;
+  pointer-events: none;
+  position: relative;
+}
+
+.growfund-page-container .growfund-campaign-card--list .growfund-campaign-card__bottom-line {
+  width: auto;
+  left: auto;
+}
+
+.growfund-page-container .growfund-campaign-card:hover .growfund-campaign-card__bottom-line {
+  opacity: 1;
+  visibility: visible;
+  height: 1px;
+  margin-top: var(--growfund-spacing-3);
+  display: block;
+  pointer-events: auto;
+  z-index: 1;
+}
+
+.growfund-page-container .growfund-campaign-card--list:hover .growfund-campaign-card__content {
+  overflow: visible;
+}
+
+/* Ensure featured variant content can expand fully on hover */
+.growfund-page-container .growfund-campaign-card--featured:hover .growfund-campaign-card__content {
+  overflow: visible;
+}
+
+@media (max-width: 768px) {
+  .growfund-page-container .growfund-campaign-card-wrapper {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 1023px) {
+  .growfund-page-container .growfund-campaign-card {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .growfund-page-container .growfund-campaign-card--featured {
+    min-height: unset;
+    overflow: hidden;
+  }
+
+  .growfund-page-container .growfund-campaign-card:hover .growfund-campaign-description,
+  .growfund-page-container .growfund-campaign-card--list:hover .growfund-campaign-description,
+  .growfund-page-container .growfund-campaign-card--featured:hover .growfund-campaign-description {
+    /* display: none; */
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .growfund-page-container .growfund-campaign-card:hover .growfund-campaign-card__content,
+  .growfund-page-container .growfund-campaign-card--list:hover .growfund-campaign-card__content {
+    overflow: hidden;
+  }
+
+  .growfund-page-container .growfund-campaign-card__content {
+    padding: var(--growfund-spacing-3);
+  }
+
+  .growfund-page-container .growfund-campaign-card--list .growfund-campaign-card__content {
+    padding: var(--growfund-spacing-3);
+  }
+
+  .growfund-page-container .growfund-campaign-card--list .growfund-campaign-card__image {
+    height: auto;
+  }
+
+  .growfund-page-container .growfund-campaign-card--featured .growfund-campaign-title {
+    font-size: var(--growfund-font-size-4);
+    line-height: 24px;
+    font-weight: var(--growfund-font-weight-medium);
+    height: fit-content;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+  }
+
+  .growfund-page-container .growfund-creator-name {
+    color: var(--growfund-gray-13);
+    font-size: var(--growfund-font-size-2);
+    line-height: 16px;
+  }
+
+  .growfund-page-container .growfund-time-left {
+    color: var(--growfund-gray-13);
+    font-size: var(--growfund-font-size-2);
+    line-height: 16px;
+  }
+
+  .growfund-page-container .growfund-time-left::before {
+    background-image: url('../../icon/time-gray.svg');
+  }
+
+  .growfund-page-container .growfund-campaign-card--featured .growfund-creator-name {
+    font-size: var(--growfund-font-size-3);
+    line-height: 20px;
+  }
+
+  .growfund-page-container .growfund-campaign-card--featured .growfund-creator-avatar {
+    width: 20px;
+    height: 20px;
+  }
+
+  .growfund-page-container .growfund-campaign-card--featured .growfund-funding-amount {
+    font-size: var(--growfund-font-size-3);
+  }
+
+  .growfund-page-container .growfund-campaign-card--featured:hover .growfund-campaign-card__content {
+    overflow: hidden;
+    padding: var(--growfund-spacing-6);
+  }
+
+  .growfund-page-container .growfund-campaign-card--featured:hover .growfund-campaign-title {
+    color: var(--growfund-gray-15);
+    text-decoration: none;
+  }
+
+  .growfund-page-container .growfund-campaign-card--featured:hover .growfund-campaign-card__image img {
+    transform: none;
+  }
+}

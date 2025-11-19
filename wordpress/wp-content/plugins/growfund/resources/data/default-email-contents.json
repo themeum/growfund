@@ -1,0 +1,2158 @@
+{
+  "growfund_admin_email_new_user_registration": {
+    "subject": "New User Registration",
+    "heading": "New User Registration",
+    "message": "<p>Hi there! </p><br /><p>New user registration on the site {site_name:}</p><br /><p>{user_table}</p>",
+    "shortcodes": [
+      {
+        "label": "User Table",
+        "value": "{user_table}"
+      },
+      {
+        "label": "First Name",
+        "value": "{first_name}"
+      },
+      {
+        "label": "Last Name",
+        "value": "{last_name}"
+      },
+      {
+        "label": "Username",
+        "value": "{user_name}"
+      },
+      {
+        "label": "User Email",
+        "value": "{user_email}"
+      },
+      {
+        "label": "Site Name",
+        "value": "{site_name}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      },
+      {
+        "label": "Login Button",
+        "value": "{login_button}"
+      }
+    ]
+  },
+  "growfund_admin_email_password_reset_request": {
+    "subject": "Password Reset Request",
+    "heading": "Password Reset Request",
+    "message": "<p>Hi <strong>{admin_name}</strong>!</p><br /><p>Someone has requested a new password for the following account on {site_name}:</p><br /><p>{password_reset_table}</p><br /><p>If you didn't make this request, just ignore this email. If you'd like to proceed:</p><br /><p>{password_reset_button}</p>",
+    "shortcodes": [
+      {
+        "label": "Password Reset Table",
+        "value": "{password_reset_table}"
+      },
+      {
+        "label": "User Name",
+        "value": "{admin_name}"
+      },
+      {
+        "label": "Site Name",
+        "value": "{site_name}"
+      },
+      {
+        "label": "Reset Password URL",
+        "value": "{reset_password_url}"
+      },
+      {
+        "label": "Password Reset Button",
+        "value": "{password_reset_button}"
+      }
+    ]
+  },
+  "growfund_admin_email_campaign_post_update": {
+    "subject": "Campaign Update",
+    "heading": "Updated Campaign Status",
+    "message": "<p>Hi <strong>{admin_name}</strong>,</p><br /><p>A status updated in the campaign “{campaign_title}”</p><br /><p>{campaign_details_card}</p><br /><p>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</p>",
+    "shortcodes": [
+      {
+        "label": "Campaign Details Card",
+        "value": "{campaign_details_card}"
+      },
+      {
+        "label": "Admin Name",
+        "value": "{admin_name}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      }
+    ]
+  },
+  "growfund_admin_email_campaign_submitted_for_review": {
+    "subject": "New Campaign Submitted for Review",
+    "heading": "New Campaign Submitted for Review",
+    "message": "<p>Hi there,</p><div><br /><div>Your campaign has submitted for review. Once approved you will get notified.</div></div><div><br /><div><div>{campaign_card}</div></div><div><br /><div><div>{campaign_link_button}</div><div><br />If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</div></div></div></div>",
+    "shortcodes": [
+      {
+        "label": "Campaign Review Card",
+        "value": "{campaign_card}"
+      },
+      {
+        "label": "Campaign Link Button",
+        "value": "{campaign_link_button}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Campaign Creator",
+        "value": "{campaign_creator}"
+      },
+      {
+        "label": "Campaign Start Date",
+        "value": "{campaign_start_date}"
+      },
+      {
+        "label": "Funded Percent",
+        "value": "{funded_percent}"
+      },
+      {
+        "label": "Campaign Goal",
+        "value": "{campaign_goal}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
+  "growfund_admin_email_campaign_funded": {
+    "subject": "Campaign Funded",
+    "heading": "🎉 Congratulations, Your Campaign Funded Successfully!",
+    "message": "<p>Hi <strong>{admin_name},</strong></p><br /><p>Your campaign “<span style=\"color: #0055ff;\">{campaign_title}</span>” was successfully funded. Your pledges are currently being processed and your funds will be available soon.</p><br /><p>{campaign_funded_card}</p><br /><p>Right now, it’s time to celebrate- and thank your backers by posting an update!</p><br /><p>{campaign_link_button}</p><div><br /><div>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span></div></div><p> </p>",
+    "shortcodes": [
+      {
+        "label": "Campaign Funded Card",
+        "value": "{campaign_funded_card}"
+      },
+      {
+        "label": "Admin Name",
+        "value": "{admin_name}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Backers Count",
+        "value": "{backers_count}"
+      },
+      {
+        "label": "Funds Raised",
+        "value": "{fund_raised}"
+      },
+      {
+        "label": "Campaign Link Button",
+        "value": "{campaign_link_button}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
+  "growfund_admin_email_new_pledge": {
+    "subject": "New Pledge!",
+    "heading": "New Pledge!",
+    "message": "<p>Hi <strong>{admin_name}</strong>,</p><br/><p>This email is to inform you that <span style=\"color: #0055ff;\">{backer_name}</span> is a new backer on “<strong>{campaign_title}</strong>”!</p><br/><p>{pledge_summary_card}</p><br/><p>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</p>",
+    "shortcodes": [
+      {
+        "label": "Pledge Summary Card",
+        "value": "{pledge_summary_card}"
+      },
+      {
+        "label": "Admin Name",
+        "value": "{admin_name}"
+      },
+      {
+        "label": "Backer Name",
+        "value": "{backer_name}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Pledge Amount",
+        "value": "{pledge_amount}"
+      },
+      {
+        "label": "Payment Method",
+        "value": "{payment_method}"
+      },
+      {
+        "label": "Pledge ID",
+        "value": "{pledge_id}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
+  "growfund_admin_email_new_offline_pledge": {
+    "subject": "New Offline Pledge!",
+    "heading": "New Offline Pledge!",
+    "message": "<p>Hi <strong>{admin_name}</strong>,</p><br/><p>This email is to inform you that a pledge from the backer <span style=\"color: #0055ff;\">{backer_name}</span> on “<strong>{campaign_title}</strong>” was manually created.</p><br/><p>{pledge_summary_card}</p><br/><p>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</p>",
+    "shortcodes": [
+      {
+        "label": "Pledge Summary Card",
+        "value": "{pledge_summary_card}"
+      },
+      {
+        "label": "Backer Name",
+        "value": "{backer_name}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Pledge Amount",
+        "value": "{pledge_amount}"
+      },
+      {
+        "label": "Payment Method",
+        "value": "{payment_method}"
+      },
+      {
+        "label": "Pledge ID",
+        "value": "{pledge_id}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
+  "growfund_admin_email_reward_delivered": {
+    "subject": "Rewards has been delivered successfully",
+    "heading": "Rewards has been delivered successfully",
+    "message": "<p>Hi {admin_name},</p><br/><p>This email is to inform you that the reward has been shipped and delivered to {backer_name} for the campaign {campaign_title}!</p><br/><p>{reward_delivered_card}</p><br/><p>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</p>",
+    "shortcodes": [
+      {
+        "label": "Reward Delivered Card",
+        "value": "{reward_delivered_card}"
+      },
+      {
+        "label": "Admin Name",
+        "value": "{admin_name}"
+      },
+      {
+        "label": "Backer Name",
+        "value": "{backer_name}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Reward Title",
+        "value": "{reward_title}"
+      },
+      {
+        "label": "Pledge Amount",
+        "value": "{pledge_amount}"
+      },
+      {
+        "label": "Pledge ID",
+        "value": "{pledge_id}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Reward Delivered Date",
+        "value": "{reward_delivered_date}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
+  "growfund_admin_email_new_donation": {
+    "subject": "New Donation!",
+    "heading": "New Donation!",
+    "message": "<p>This email is to inform you that a new donation has been made on your website: <span style=\"color: #0055ff\">{site_name}</span></p><br /><p>{donation_card}</p>",
+    "shortcodes": [
+      {
+        "label": "Donation Card",
+        "value": "{donation_card}"
+      },
+      {
+        "label": "Tribute",
+        "value": "{tribute}"
+      },
+      {
+        "label": "Site Name",
+        "value": "{site_name}"
+      },
+      {
+        "label": "Donation Amount",
+        "value": "{donation_amount}"
+      },
+      {
+        "label": "Donor Name",
+        "value": "{donor_name}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Donation Date",
+        "value": "{donation_date}"
+      },
+      {
+        "label": "Payment Method",
+        "value": "{payment_method}"
+      },
+      {
+        "label": "Payment ID",
+        "value": "{payment_id}"
+      }
+    ]
+  },
+  "growfund_admin_email_new_offline_donation": {
+    "subject": "New Manual/ Offline Donation!",
+    "heading": "New Manual/ Offline Donation!",
+    "message": "<p>This email is to inform you that a new donation has been made on your website: <span style=\"color: #0055ff\">{site_name}</span></p><br /><p>{donation_card}</p>",
+    "shortcodes": [
+      {
+        "label": "Donation Card",
+        "value": "{donation_card}"
+      },
+      {
+        "label": "Tribute",
+        "value": "{tribute}"
+      },
+      {
+        "label": "Site Name",
+        "value": "{site_name}"
+      },
+      {
+        "label": "Donation Amount",
+        "value": "{donation_amount}"
+      },
+      {
+        "label": "Donor Name",
+        "value": "{donor_name}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Donation Date",
+        "value": "{donation_date}"
+      },
+      {
+        "label": "Payment Method",
+        "value": "{payment_method}"
+      },
+      {
+        "label": "Payment ID",
+        "value": "{payment_id}"
+      }
+    ]
+  },
+  "growfund_admin_email_campaign_ended": {
+    "subject": "🎉 Campaign Ended Successfully!",
+    "heading": "🎉 Campaign Ended Successfully!",
+    "message": "<p>Dear <strong>{admin_name}</strong>!</p><br /><p>The campaign you supported has ended successfully. Thank you for your generous donation. It wouldn't have been possible without your support.</p><br /><p>{campaign_ended_card}</p><br /><p>{campaign_link_button}</p><div><br /><div>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span></div></div>",
+    "shortcodes": [
+      {
+        "label": "Admin Name",
+        "value": "{admin_name}"
+      },
+      {
+        "label": "Campaign Ended Card",
+        "value": "{campaign_ended_card}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Funds Raised",
+        "value": "{funds}"
+      },
+      {
+        "label": "Campaign Link Button",
+        "value": "{campaign_link_button}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Current Year",
+        "value": "{year}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
+  "growfund_fundraiser_email_donation_amount_charged": {
+    "subject": "Donation Charged!",
+    "heading": "Donation Charged!",
+    "message": "<p>Dear <strong>{fundraiser_name}</strong>!</p><br/><p> Your donation has been charged.</p><br/><p>{campaign_funded_card}</p><br/><p>{donation_card}</p><br/><p>{campaign_link_button}</p><br/><p>If you have any questions about your donation, please contact us at <span style=\"color: #0000ff;\">{support_email}</span>.</p><p></p>",
+    "shortcodes": [
+      {
+        "label": "Donation Card",
+        "value": "{donation_card}"
+      },
+      {
+        "label": "Campaign Funded Card",
+        "value": "{campaign_funded_card}"
+      },
+      {
+        "label": "Fundraiser Name",
+        "value": "{fundraiser_name}"
+      },
+      {
+        "label": "Donation Amount",
+        "value": "{donation_amount}"
+      },
+      {
+        "label": "Tribute",
+        "value": "{tribute}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Campaign Start Date",
+        "value": "{campaign_start_date}"
+      },
+      {
+        "label": "Payment Method",
+        "value": "{payment_method}"
+      },
+      {
+        "label": "Payment ID",
+        "value": "{payment_id}"
+      },
+      {
+        "label": "Campaign Link Button",
+        "value": "{campaign_link_button}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
+  "growfund_fundraiser_email_donation_cancelled": {
+    "subject": "Donation Cancelled!",
+    "heading": "Donation Cancelled!",
+    "message": "<p>Dear <strong>{donor_name}</strong>!</p><br/><p> We're confirming that you've cancelled your donation to “{campaign_title}”.</p><br/><p>{donation_card}</p><div><br /><div>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span></div></div>",
+    "shortcodes": [
+      {
+        "label": "Donation Amount",
+        "value": "{donation_amount}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Payment Method",
+        "value": "{payment_method}"
+      },
+      {
+        "label": "Donation Card",
+        "value": "{donation_card}"
+      },
+      {
+        "label": "Donor Name",
+        "value": "{donor_name}"
+      },
+      {
+        "label": "Tribute",
+        "value": "{tribute}"
+      }
+    ]
+  },
+  "growfund_fundraiser_email_account_approved": {
+    "subject": "Account Approved",
+    "heading": "Account Approved",
+    "message": "<p>Hi {first_name} {last_name},<\/p><p>\u00a0<\/p><p>Your account is approved and ready to use.<\/p><p>\u00a0<\/p><p>{user_table}<\/p>",
+    "shortcodes": [
+      {
+        "label": "User Table",
+        "value": "{user_table}"
+      },
+      {
+        "label": "First Name",
+        "value": "{first_name}"
+      },
+      {
+        "label": "Last Name",
+        "value": "{last_name}"
+      },
+      {
+        "label": "Username",
+        "value": "{user_name}"
+      },
+      {
+        "label": "User Email",
+        "value": "{user_email}"
+      },
+      {
+        "label": "Site Name",
+        "value": "{site_name}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Login Button",
+        "value": "{login_button}"
+      }
+    ]
+  },
+  "growfund_fundraiser_email_account_declined": {
+    "subject": "Account Declined",
+    "heading": "Your Fundraiser Account is Declined",
+    "message": "<p>Hi {first_name} {last_name},<\/p><p>\u00a0<\/p><p>Thanks for interest to join {site_name}!<\/p><p>We would like to inform you that your account has been declined.<\/p><p>\u00a0<\/p><p>Please contact us at <span style=\"color: #0055ff;\">{support_email}<\/span> if you have any questions.<\/p>",
+    "shortcodes": [
+      {
+        "label": "User Table",
+        "value": "{user_table}"
+      },
+      {
+        "label": "First Name",
+        "value": "{first_name}"
+      },
+      {
+        "label": "Last Name",
+        "value": "{last_name}"
+      },
+      {
+        "label": "Username",
+        "value": "{user_name}"
+      },
+      {
+        "label": "User Email",
+        "value": "{user_email}"
+      },
+      {
+        "label": "Site Name",
+        "value": "{site_name}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Login Button",
+        "value": "{login_button}"
+      }
+    ]
+  },
+  "growfund_fundraiser_email_new_user_registration": {
+    "subject": "New User Registration",
+    "heading": "New User Registration",
+    "message": "<p>Hi there!</p><p>New user registration on the site {site_name:}</p><p>{user_table}</p>",
+    "shortcodes": [
+      {
+        "label": "User Table",
+        "value": "{user_table}"
+      },
+      {
+        "label": "First Name",
+        "value": "{first_name}"
+      },
+      {
+        "label": "Last Name",
+        "value": "{last_name}"
+      },
+      {
+        "label": "Username",
+        "value": "{user_name}"
+      },
+      {
+        "label": "User Email",
+        "value": "{user_email}"
+      },
+      {
+        "label": "Site Name",
+        "value": "{site_name}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Login Button",
+        "value": "{login_button}"
+      }
+    ]
+  },
+  "growfund_fundraiser_email_password_reset_request": {
+    "subject": "Reset Password",
+    "heading": "Password Reset Request",
+    "message": "<p>Hi <strong>{fundraiser_name}</strong>!</p><br /><p>Someone has requested a new password for the following account on {site_name}:</p><br /><p>{password_reset_table}</p><br /><p>If you didn't make this request, just ignore this email. If you'd like to proceed:</p><br /><p>{password_reset_button}</p>",
+    "shortcodes": [
+      {
+        "label": "Password Reset Table",
+        "value": "{password_reset_table}"
+      },
+      {
+        "label": "Fundraiser Name",
+        "value": "{fundraiser_name}"
+      },
+      {
+        "label": "Site Name",
+        "value": "{site_name}"
+      },
+      {
+        "label": "Reset Password URL",
+        "value": "{reset_password_url}"
+      },
+      {
+        "label": "Password Reset Button",
+        "value": "{password_reset_button}"
+      }
+    ]
+  },
+  "growfund_fundraiser_email_campaign_approved": {
+    "subject": "Campaign is Approved & Published!",
+    "heading": "Your Campaign is Approved & Published!",
+    "message": "<p>Hi <strong>{fundraiser_name}</strong>,</p><br /><p>We're excited to announce that your campaign,Your campaign “<span style=\"color: #0055ff;\">{campaign_title}</span>” has been successfully approved and is now live on {site_name}!</p><br /><p>{campaign_card}</p><br /><p>{campaign_link_button}</p><div><br /><div>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span></div></div>",
+    "shortcodes": [
+      {
+        "label": "Campaign Card",
+        "value": "{campaign_card}"
+      },
+      {
+        "label": "Fundraiser Name",
+        "value": "{fundraiser_name}"
+      },
+      {
+        "label": "Site Name",
+        "value": "{site_name}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Campaign Creator",
+        "value": "{campaign_creator}"
+      },
+      {
+        "label": "Campaign Start Date",
+        "value": "{campaign_start_date}"
+      },
+      {
+        "label": "Funded Percent",
+        "value": "{funded_percent}"
+      },
+      {
+        "label": "Campaign Goal",
+        "value": "{campaign_goal}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Campaign Link Button",
+        "value": "{campaign_link_button}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
+  "growfund_fundraiser_email_campaign_declined": {
+    "subject": "Campaign Declined!",
+    "heading": "Your Campaign is Declined!",
+    "message": "<p>Hi there,</p><br/><p>Your campaign submission has been reviewed and requires some changes before it can be approved.</p><br/><p>{campaign_card}</p><br/><p>{admin_feedback_card}</p><br/><p>You will find the declined campaign in the Draft campaigns. Edit campaign to make the requested changes resubmit for review when complete.</p><br/><p>{campaign_link_button}</p><div><br/><div>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}.</span></div></div>",
+    "shortcodes": [
+      {
+        "label": "Campaign Card",
+        "value": "{campaign_card}"
+      },
+      {
+        "label": "Admin Feedback Card",
+        "value": "{admin_feedback_card}"
+      },
+      {
+        "label": "Fundraiser Name",
+        "value": "{fundraiser_name}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Campaign Url",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Campaign Creator",
+        "value": "{campaign_creator}"
+      },
+      {
+        "label": "Campaign Start Date",
+        "value": "{campaign_start_date}"
+      },
+      {
+        "label": "Funded Percent",
+        "value": "{funded_percent}"
+      },
+      {
+        "label": "Campaign Goal",
+        "value": "{campaign_goal}"
+      },
+      {
+        "label": "Campaign Link Button",
+        "value": "{campaign_link_button}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
+  "growfund_fundraiser_email_campaign_post_update": {
+    "subject": "Updated Campaign Status",
+    "heading": "Updated Campaign Status",
+    "message": "<p>Hi there!</p><br /><p> A status updated in the campaign “{campaign_title}”</p><br/><p>{campaign_details_card}</p><br/><p>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</p>",
+    "shortcodes": [
+      {
+        "label": "Campaign Details Card",
+        "value": "{campaign_details_card}"
+      },
+      {
+        "label": "Fundraiser Name",
+        "value": "{fundraiser_name}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Campaign Start Date",
+        "value": "{campaign_start_date}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      }
+    ]
+  },
+  "growfund_fundraiser_email_campaign_funded": {
+    "subject": "🎉 Congratulations, Your Campaign is Funded Successfully!",
+    "heading": "🎉 Congratulations, Your Campaign is Funded Successfully!",
+    "message": "<p>Hi, there!</p><br/><p>Your campaign “<span style=\"color: #0055ff;\">{campaign_title}</span>” was successfully funded. Your pledges are currently being processed and your funds will be available soon.</p><br/><p>{campaign_funded_card}</p><br/><p>Right now, it’s time to celebrate- and thank your backers by posting an update!</p><br/><p>{campaign_link_button}</p><div><br/><div>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span></div></p>",
+    "shortcodes": [
+      {
+        "label": "Campaign Funded Card",
+        "value": "{campaign_funded_card}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Funds Raised",
+        "value": "{fund_raised}"
+      },
+      {
+        "label": "Campaign Link Button",
+        "value": "{campaign_link_button}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Current Year",
+        "value": "{year}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
+  "growfund_fundraiser_email_new_pledge": {
+    "subject": "New Pledge",
+    "heading": "New Pledge",
+    "message": "<p>Hi there!</p><br/><p>This email is to inform you that <span style=\"color: #0000ff;\">{backer_name}</span> is a new backer on “<strong>{campaign_title}</strong>”!</p><br/><p>{pledge_summary_card}</p><br/><p>If you have any questions about your donation, please contact us at <span style=\"color: #0000ff;\">{support_email}</span>.</p><p> </p>",
+    "shortcodes": [
+      {
+        "label": "Pledge Summary Card",
+        "value": "{pledge_summary_card}"
+      },
+      {
+        "label": "Backer Name",
+        "value": "{backer_name}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Pledge Amount",
+        "value": "{pledge_amount}"
+      },
+      {
+        "label": "Payment Method",
+        "value": "{payment_method}"
+      },
+      {
+        "label": "Pledge ID",
+        "value": "{pledge_id}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
+  "growfund_fundraiser_email_pledge_amount_charged": {
+    "subject": "Pledge amount has been charged",
+    "heading": "Pledge amount has been charged",
+    "message": "<p>Hi there!</p><br/><p>This email is to inform you pledge amount has been charged from {backer_name} on the campaign {campaign_title}!</p><br/><p>{charged_pledge_summary}</p><br/><p>If you have any questions about your donation, please contact us at <span style=\"color: #0000ff;\">{support_email}</span>.</p><p> </p>",
+    "shortcodes": [
+      {
+        "label": "Charged Pledge Summary",
+        "value": "{charged_pledge_summary}"
+      },
+      {
+        "label": "Pledge Amount",
+        "value": "{pledge_amount}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Payment Method",
+        "value": "{payment_method}"
+      },
+      {
+        "label": "Reward Title",
+        "value": "{reward_title}"
+      },
+      {
+        "label": "Shipping Destination",
+        "value": "{shipping_destination}"
+      },
+      {
+        "label": "Estimated Delivery",
+        "value": "{estimated_delivery}"
+      },
+      {
+        "label": "(Pledge Number)",
+        "value": "{pledge_id}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
+  "growfund_fundraiser_email_pledge_cancelled": {
+    "subject": "Pledge Cancelled",
+    "heading": "Pledge Cancellation Notification",
+    "message": "<p>Hi there!</p><br/><p>This is an automated notification to inform you a backer {backer_name} has cancelled their pledge for the campaign “<span style=\"color: #0055ff;\">{campaign_title}</span>”</p><div><br/><div>{pledge_cancelled_card}</div></div><br/><div> </div><div>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</div>",
+    "shortcodes": [
+      {
+        "label": "Pledge Cancelled Card",
+        "value": "{pledge_cancelled_card}"
+      },
+      {
+        "label": "Pledge Amount",
+        "value": "{pledge_amount}"
+      },
+      {
+        "label": "Backer Name",
+        "value": "{backer_name}"
+      },
+      {
+        "label": "Reward Title",
+        "value": "{reward_title}"
+      },
+      {
+        "label": "Cancellation Date",
+        "value": "{cancelled_date}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      }
+    ]
+  },
+  "growfund_fundraiser_email_new_offline_pledge": {
+    "subject": "New Offline Pledge",
+    "heading": "New Offline Pledge",
+    "message": "<p>Hi there!</p><p> This email is to inform you that a new backer has been created on your campaign “{campaign_title}”!</p><p>{pledge_summary_card}</p>",
+    "shortcodes": [
+      {
+        "label": "Pledge Summary Card",
+        "value": "{pledge_summary_card}"
+      },
+      {
+        "label": "Backer Name",
+        "value": "{backer_name}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Pledge Amount",
+        "value": "{pledge_amount}"
+      },
+      {
+        "label": "Payment Method",
+        "value": "{payment_method}"
+      },
+      {
+        "label": "Pledge ID",
+        "value": "{pledge_id}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
+  "growfund_fundraiser_email_reward_delivered": {
+    "subject": "Rewards Delivered",
+    "heading": "Rewards has been delivered successfully",
+    "message": "<p>Hi there,</p><br/><p>This email is to inform you that the reward has been shipped and delivered to {backer_name} for the campaign {campaign_title}!</p><br/><p>{reward_delivered_card}</p><br/><p>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</p>",
+    "shortcodes": [
+      {
+        "label": "Reward Delivered Card",
+        "value": "{reward_delivered_card}"
+      },
+      {
+        "label": "Fundraiser Name",
+        "value": "{fundraiser_name}"
+      },
+      {
+        "label": "Backer Name",
+        "value": "{backer_name}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Reward Title",
+        "value": "{reward_title}"
+      },
+      {
+        "label": "Pledge Amount",
+        "value": "{pledge_amount}"
+      },
+      {
+        "label": "Pledge ID",
+        "value": "{pledge_id}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Reward Delivered Date",
+        "value": "{reward_delivered_date}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
+  "growfund_fundraiser_email_new_donation": {
+    "subject": "New Donation!",
+    "heading": "New Donation!",
+    "message": "<p>This email is to inform you that a new donation has been made on your website: {site_name}</p><p>{donation_card}</p>",
+    "shortcodes": [
+      {
+        "label": "Donation Card",
+        "value": "{donation_card}"
+      },
+      {
+        "label": "Tribute",
+        "value": "{tribute}"
+      },
+      {
+        "label": "Site Name",
+        "value": "{site_name}"
+      },
+      {
+        "label": "Donation Amount",
+        "value": "{donation_amount}"
+      },
+      {
+        "label": "Donor Name",
+        "value": "{donor_name}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Donation Date",
+        "value": "{donation_date}"
+      },
+      {
+        "label": "Payment Method",
+        "value": "{payment_method}"
+      },
+      {
+        "label": "Payment ID",
+        "value": "{payment_id}"
+      }
+    ]
+  },
+  "growfund_fundraiser_email_new_offline_donation": {
+    "subject": "New Manual/ Offline Donation!",
+    "heading": "New Manual/ Offline Donation!",
+    "message": "<p>This email is to inform you that a new donation has been made on your website: {site_name}</p><p>{donation_card}</p>",
+    "shortcodes": [
+      {
+        "label": "Donation Card",
+        "value": "{donation_card}"
+      },
+      {
+        "label": "Site URL",
+        "value": "{site_url}"
+      },
+      {
+        "label": "Donation Amount",
+        "value": "{donation_amount}"
+      },
+      {
+        "label": "Donation Title",
+        "value": "{donation_title}"
+      },
+      {
+        "label": "Donation URL",
+        "value": "{donation_url}"
+      },
+      {
+        "label": "Donation Date",
+        "value": "{donation_date}"
+      },
+      {
+        "label": "Payment Method",
+        "value": "{payment_method}"
+      },
+      {
+        "label": "Payment ID",
+        "value": "{payment_id}"
+      }
+    ]
+  },
+  "growfund_donor_email_donation_receipt": {
+    "subject": "Donation Receipt",
+    "heading": "Donation Receipt",
+    "message": "<p>Dear <strong>{donor_name}</strong>,</p><br/><p>Thank you for your generous donation! Your kindness makes a difference. Here are the details of your contribution:</p><br/><p>{donation_receipt_card}</p><br/><p>This email serves as your official donation receipt. You can download the receipt for your tax records.</p><br/><p>{receipt_download_button}</p><div><br/><div>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}.</span></div></div>",
+    "shortcodes": [
+      {
+        "label": "Donation Receipt Card",
+        "value": "{donation_receipt_card}"
+      },
+      {
+        "label": "Tribute",
+        "value": "{tribute}"
+      },
+      {
+        "label": "Donor Name",
+        "value": "{donor_name}"
+      },
+      {
+        "label": "Donation Amount",
+        "value": "{donation_amount}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Donation Date",
+        "value": "{donation_date}"
+      },
+      {
+        "label": "Payment Method",
+        "value": "{payment_method}"
+      },
+      {
+        "label": "Payment ID",
+        "value": "{payment_id}"
+      },
+      {
+        "label": "Receipt Download Button",
+        "value": "{receipt_download_button}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
+  "growfund_donor_email_donation_failed": {
+    "subject": "Donation Unsuccessful",
+    "heading": "Donation Unsuccessful",
+    "message": "<p>Dear {donor_name},</p><br/><p>We regret to inform you that your recent {donation_amount} donation to {campaign_title} was not successfully processed and has failed to complete.</p><br/><p>{donation_card}</p><br/><p>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</p>",
+    "shortcodes": [
+      {
+        "label": "Donation Card",
+        "value": "{donation_card}"
+      },
+      {
+        "label": "Donor Name",
+        "value": "{donor_name}"
+      },
+      {
+        "label": "Donation Amount",
+        "value": "{donation_amount}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Donation Date",
+        "value": "{donation_date}"
+      },
+      {
+        "label": "Payment Method",
+        "value": "{payment_method}"
+      },
+      {
+        "label": "Payment ID",
+        "value": "{payment_id}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
+  "growfund_donor_email_new_donor_registration": {
+    "subject": "Welcome to {organization_name}",
+    "heading": "Welcome to {organization_name}",
+    "message": "<p>Dear <strong>{first_name} {last_name}</strong>!</p><br/><p>Thank you for registering with us.</p><br/><p>{user_table}</p><br/><p>We’re excited to have you on board! Log in to your account</p><br/><p>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</p>",
+    "shortcodes": [
+      {
+        "label": "User Table",
+        "value": "{user_table}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      },
+      {
+        "label": "First Name",
+        "value": "{first_name}"
+      },
+      {
+        "label": "Last Name",
+        "value": "{last_name}"
+      },
+      {
+        "label": "Username",
+        "value": "{user_name}"
+      },
+      {
+        "label": "User Email",
+        "value": "{user_email}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Login Button",
+        "value": "{login_button}"
+      }
+    ]
+  },
+  "growfund_donor_email_password_reset_request": {
+    "subject": "Password Reset Request",
+    "heading": "Password Reset Request",
+    "message": "<p>Hi <strong>{donor_name}</strong>!</p><br /><p>Someone has requested a new password for the following account on {site_name}:</p><br /><p>{password_reset_table}</p><br /><p>If you didn't make this request, just ignore this email. If you'd like to proceed:</p><br /><p>{password_reset_button}</p>",
+    "shortcodes": [
+      {
+        "label": "Password Reset Table",
+        "value": "{password_reset_table}"
+      },
+      {
+        "label": "Backer Name",
+        "value": "{donor_name}"
+      },
+      {
+        "label": "Site Name",
+        "value": "{site_name}"
+      },
+      {
+        "label": "Reset Password URL",
+        "value": "{reset_password_url}"
+      },
+      {
+        "label": "Reset Button Text",
+        "value": "{password_reset_button}"
+      }
+    ]
+  },
+  "growfund_donor_email_offline_donation_instructions": {
+    "subject": "Welcome to {organization_name}",
+    "heading": "Welcome to {organization_name}",
+    "message": "<p>Dear<strong> {donor_name}</strong>!,</p><br/><p>Thank you for choosing to donate offline! Please follow these steps:</p><br/><p>{offline_donation_instructions_table}</p><br/><p>f you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</p>",
+    "shortcodes": [
+      {
+        "label": "Offline Donation Instructions Table",
+        "value": "{offline_donation_instructions_table}"
+      },
+      {
+        "label": "Tribute",
+        "value": "{tribute}"
+      },
+      {
+        "label": "Donor Name",
+        "value": "{donor_name}"
+      },
+      {
+        "label": "Donation Amount",
+        "value": "{donation_amount}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Payment Instructions",
+        "value": "{payment_instructions}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
+  "growfund_donor_email_campaign_post_update": {
+    "subject": "Updated Campaign Status",
+    "heading": "Updated Campaign Status",
+    "message": "<p>Dear {donor_name},</p><p> The status of a campaign you supported has been updated.</p><p>{campaign_details_card}</p>",
+    "shortcodes": [
+      {
+        "label": "Campaign Card",
+        "value": "{campaign_details_card}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Donor Name",
+        "value": "{donor_name}"
+      },
+      {
+        "label": "Campaign Start Date",
+        "value": "{campaign_start_date}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      }
+    ]
+  },
+  "growfund_donor_email_campaign_half_milestone_achieved": {
+    "subject": "50% Milestone Achieved",
+    "heading": "We've Hit 50% of Our Goal for the School for Underprivileged Children!",
+    "message": "<p>Dear<strong> {donor_name}</strong>,</p><br/><p>We're thrilled to share some fantastic news! Thanks to your incredible support, we've reached a major milestone in our campaign {campaign_title}.</p><br/><p>But we're not done yet! We still need your help to reach our final goal and fully fund the school.</p><br/><p>{campaign_card}</p><br/><p>{campaign_link_button}</p><br/><p>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</p>",
+    "shortcodes": [
+      {
+        "label": "Campaign Card",
+        "value": "{campaign_card}"
+      },
+      {
+        "label": "Donor Name",
+        "value": "{donor_name}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Campaign Creator",
+        "value": "{campaign_creator}"
+      },
+      {
+        "label": "Campaign Start Date",
+        "value": "{campaign_start_date}"
+      },
+      {
+        "label": "Fund Raised",
+        "value": "{fund_raised}"
+      },
+      {
+        "label": "Campaign Goal",
+        "value": "{campaign_goal}"
+      },
+      {
+        "label": "Funded Percent",
+        "value": "{funded_percent}"
+      },
+      {
+        "label": "Campaign Link Button",
+        "value": "{campaign_link_button}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
+  "growfund_backer_email_pledge_created": {
+    "subject": "Your Pledge Has Been Received",
+    "heading": "Thank You For Your Pledge!",
+    "message": "<p>Dear <strong>{backer_name}</strong>!</p><p> </p><p>We're excited to confirm that you've successfully pledged to back the {campaign_title}! Your pledge brings us one step closer to our funding goal.</p><p> </p><p>{pledge_amount_card}</p><p>{campaign_card}</p><p>{pledge_summary_card}</p><p>{information_card}</p><p>{alert_card}</p><p>{campaign_link_button}</p><p> </p><p>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</p>",
+    "shortcodes": [
+      {
+        "label": "Pledge Summary Card",
+        "value": "{pledge_summary_card}"
+      },
+      {
+        "label": "Pledge Amount Card",
+        "value": "{pledge_amount_card}"
+      },
+      {
+        "label": "Information Card",
+        "value": "{information_card}"
+      },
+      {
+        "label": "Alert Card",
+        "value": "{alert_card}"
+      },
+      {
+        "label": "Campaign Card",
+        "value": "{campaign_card}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Campaign Creator",
+        "value": "{campaign_creator}"
+      },
+      {
+        "label": "Backer Count",
+        "value": "{backer_count}"
+      },
+      {
+        "label": "Funded Percent",
+        "value": "{funded_percent}"
+      },
+      {
+        "label": "Campaign Goal",
+        "value": "{campaign_goal}"
+      },
+      {
+        "label": "Campaign Start Date",
+        "value": "{campaign_start_date}"
+      },
+      {
+        "label": "Campaign End Date",
+        "value": "{campaign_end_date}"
+      },
+      {
+        "label": "Backer Name",
+        "value": "{backer_name}"
+      },
+      {
+        "label": "Pledge Amount",
+        "value": "{pledge_amount}"
+      },
+      {
+        "label": "Payment Method",
+        "value": "{payment_method}"
+      },
+      {
+        "label": "Pledge ID",
+        "value": "{pledge_id}"
+      },
+      {
+        "label": "Campaign Link Button",
+        "value": "{campaign_link_button}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
+  "growfund_backer_email_offline_pledge_request": {
+    "subject": "New Offline Pledge Request",
+    "heading": "New Offline Pledge Request",
+    "message": "<p>Dear {backer_name}!</p><br /><p>This email is to inform you that a new pledge has been created on your campaign <span style=\"color: #0055ff\">{campaign_title}</span></p><br /><p>{pledge_summary_card}</p><br/><p>If you have any questions about your donation, please contact us at <span style=\"color: #0000ff;\">{support_email}</span>.</p><p> </p>",
+    "shortcodes": [
+      {
+        "label": "Pledge Summary Card",
+        "value": "{pledge_summary_card}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Backer Count",
+        "value": "{backer_count}"
+      },
+      {
+        "label": "Backer Name",
+        "value": "{backer_name}"
+      },
+      {
+        "label": "Pledge Amount",
+        "value": "{pledge_amount}"
+      },
+      {
+        "label": "Payment Method",
+        "value": "{payment_method}"
+      },
+      {
+        "label": "Pledge ID",
+        "value": "{pledge_id}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
+  "growfund_backer_email_pledge_paid": {
+    "subject": "Pledged Amount Successfully Paid!",
+    "heading": "Pledged Amount Successfully Paid!",
+    "message": "<p>Dear <strong>{backer_name}</strong>!</p><br /><p> You have successfully paid the pledged amount</p><br /><p>{pledge_summary_card}</p><br /><p>This email serves as your official donation receipt. You can download the receipt for your tax records.</p><br /><p>{receipt_download_button}</p><br /><p>If you have any questions about your donation, please contact us at <span style=\"color: #0000ff;\">{support_email}</span>.</p>",
+    "shortcodes": [
+      {
+        "label": "Pledge Summary Card",
+        "value": "{pledge_summary_card}"
+      },
+      {
+        "label": "Campaign Card",
+        "value": "{campaign_card}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Campaign Creator",
+        "value": "{campaign_creator}"
+      },
+      {
+        "label": "Funded Percent",
+        "value": "{funded_percent}"
+      },
+      {
+        "label": "Backer Count",
+        "value": "{backer_count}"
+      },
+      {
+        "label": "Backer Name",
+        "value": "{backer_name}"
+      },
+      {
+        "label": "Pledge Amount",
+        "value": "{pledge_amount}"
+      },
+      {
+        "label": "Payment Method",
+        "value": "{payment_method}"
+      },
+      {
+        "label": "Pledge ID",
+        "value": "{pledge_id}"
+      },
+      {
+        "label": "Receipt Download Button",
+        "value": "{receipt_download_button}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
+  "growfund_backer_email_new_backer_registration": {
+    "subject": "Welcome to {organization_name}",
+    "heading": "Welcome to {organization_name}",
+    "message": "<p>Dear <strong> {first_name} {last_name}</strong>!</p><br/><p>Thank you for registering with us.</p><br/><p>{user_table}</p>",
+    "shortcodes": [
+      {
+        "label": "User Table",
+        "value": "{user_table}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      },
+      {
+        "label": "First Name",
+        "value": "{first_name}"
+      },
+      {
+        "label": "Last Name",
+        "value": "{last_name}"
+      },
+      {
+        "label": "Username",
+        "value": "{user_name}"
+      },
+      {
+        "label": "User Email",
+        "value": "{user_email}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Login Button",
+        "value": "{login_button}"
+      }
+    ]
+  },
+  "growfund_backer_email_campaign_post_update": {
+    "subject": "Your Pledged Campaign “{campaign_title}” has an Update!",
+    "heading": "Your Pledged Campaign “{campaign_title}” has an Update!",
+    "message": "<p>Dear <strong>{backer_name}</strong>!</p><br /><p> The status of a campaign you pledged has been updated.</p><br /><p>{campaign_details_card}</p><br /><p>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</p>",
+    "shortcodes": [
+      {
+        "label": "Campaign Card",
+        "value": "{campaign_details_card}"
+      },
+      {
+        "label": "Backer Name",
+        "value": "{backer_name}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Campaign Start Date",
+        "value": "{campaign_start_date}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      }
+    ]
+  },
+  "growfund_backer_email_payment_unsuccessful": {
+    "subject": "Payment Unsuccessful",
+    "heading": "Payment Unsuccessful",
+    "message": "<p>Dear <strong>{backer_name}</strong>!</p><br/><p> We regret to inform you that your recent {pledge_amount} pledge amount to {campaign_name} was not successfully processed and has failed to complete.</p><br/><p>{pledge_summary_card}</p><br /><p>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</p>",
+    "shortcodes": [
+      {
+        "label": "Pledge Summary Card",
+        "value": "{pledge_summary_card}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Backer Name",
+        "value": "{backer_name}"
+      },
+      {
+        "label": "Pledge Amount",
+        "value": "{pledge_amount}"
+      },
+      {
+        "label": "Payment Method",
+        "value": "{payment_method}"
+      },
+      {
+        "label": "Pledge ID",
+        "value": "{pledge_id}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
+  "growfund_backer_email_password_reset_request": {
+    "subject": "Password Reset Request",
+    "heading": "Password Reset Request",
+    "message": "<p>Hi <strong>{backer_name}</strong>!</p><br /><p>Someone has requested a new password for the following account on {site_name}:</p><br /><p>{password_reset_table}</p><br /><p>If you didn't make this request, just ignore this email. If you'd like to proceed:</p><br /><p>{password_reset_button}</p>",
+    "shortcodes": [
+      {
+        "label": "Password Reset Table",
+        "value": "{password_reset_table}"
+      },
+      {
+        "label": "Backer Name",
+        "value": "{backer_name}"
+      },
+      {
+        "label": "Site Name",
+        "value": "{site_name}"
+      },
+      {
+        "label": "Reset Password URL",
+        "value": "{reset_password_url}"
+      },
+      {
+        "label": "Password Reset Button",
+        "value": "{password_reset_button}"
+      }
+    ]
+  },
+  "growfund_backer_email_campaign_half_funded": {
+    "subject": "We've Hit 50% of Our Goal for “{campaign_title}”!",
+    "heading": "We've Hit 50% of Our Goal for “{campaign_title}”!",
+    "message": "<p>Dear <strong>{backer_name}</strong>,</p><br/><p> We're thrilled to share some fantastic news! Thanks to your incredible support, we've reached a major milestone in our campaign for “{campaign_title}”.</p><br/><p> But we're not done yet! We still need your help to reach our final goal and fully fund the campaign.</p><p>{campaign_card}</p><br/><p>{campaign_link_button}</p><br/><p>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</p>",
+    "shortcodes": [
+      {
+        "label": "Campaign Card",
+        "value": "{campaign_card}"
+      },
+      {
+        "label": "Backer Name",
+        "value": "{backer_name}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Campaign Creator",
+        "value": "{campaign_creator}"
+      },
+      {
+        "label": "Campaign Start Date",
+        "value": "{campaign_start_date}"
+      },
+      {
+        "label": "Fund Raised",
+        "value": "{fund_raised}"
+      },
+      {
+        "label": "Campaign Goal",
+        "value": "{campaign_goal}"
+      },
+      {
+        "label": "Funded Percent",
+        "value": "{funded_percent}"
+      },
+      {
+        "label": "Button Text",
+        "value": "{campaign_link_button}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
+  "growfund_backer_email_pledge_cancelled": {
+    "subject": "Your pledge has been cancelled",
+    "heading": "Your pledge has been cancelled",
+    "message": "<p>Dear <strong>{backer_name}</strong>!</p><br/><p> We're confirming that you've cancelled your pledge to “{campaign_title}”. Your card will not be charged, and you will not receive any rewards associated with this project.</p><br/><p>{pledge_cancelled_card}</p><br/><p>If you didn't intend to cancel your pledge, you can still support this project by making a new pledge before the campaign ends.</p><br/><p>{campaign_link_button}</p><br/><p>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</p>",
+    "shortcodes": [
+      {
+        "label": "Pledge Cancelled Card",
+        "value": "{pledge_cancelled_card}"
+      },
+      {
+        "label": "Pledge Amount",
+        "value": "{pledge_amount}"
+      },
+      {
+        "label": "Backer Name",
+        "value": "{backer_name}"
+      },
+      {
+        "label": "Reward Title",
+        "value": "{reward_title}"
+      },
+      {
+        "label": "Cancellation Date",
+        "value": "{cancelled_date}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Campaign Link Button",
+        "value": "{campaign_link_button}"
+      }
+    ]
+  },
+  "growfund_backer_email_reward_delivered": {
+    "subject": "Rewards has been delivered",
+    "heading": "Rewards has been delivered",
+    "message": "<p>Dear <strong>{backer_name}</strong>!</p><br/><p> We're confirming that your reward from the campaign “{campaign_title}” has been shipped and successfully delivered to you. Thank you for backing the campaign and being a part of something special!</p><br/><p>{reward_delivered_card}</p><br/><p>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</p>",
+    "shortcodes": [
+      {
+        "label": "Reward Delivered Card",
+        "value": "{reward_delivered_card}"
+      },
+      {
+        "label": "Backer Name",
+        "value": "{backer_name}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Reward Title",
+        "value": "{reward_title}"
+      },
+      {
+        "label": "Pledge Amount",
+        "value": "{pledge_amount}"
+      },
+      {
+        "label": "Pledge ID",
+        "value": "{pledge_id}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Reward Delivered Date",
+        "value": "{reward_delivered_date}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
+  "growfund_email_verification": {
+    "subject": "Email Verification",
+    "heading": "Email Verification",
+    "message": "<p>Hi <strong>{first_name} {last_name}</strong>,</p><p>Please confirm that you would like to use this email address for your {site_name} donor account.</p><p> </p><p>{verification_link_button}</p><p> </p><p>Or paste this link into your browser:</p><p>{verification_link}</p>",
+    "shortcodes": [
+      {
+        "label": "First Name",
+        "value": "{first_name}"
+      },
+      {
+        "label": "Last Name",
+        "value": "{last_name}"
+      },
+      {
+        "label": "Verification Link",
+        "value": "{verification_link}"
+      },
+      {
+        "label": "Verification Link Button",
+        "value": "{verification_link_button}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      },
+      {
+        "label": "Site Name",
+        "value": "{site_name}"
+      },
+      {
+        "label": "Site URL",
+        "value": "{site_url}"
+      }
+    ]
+  },
+  "growfund_donor_email_tribute_mail": {
+    "subject": "E-Card",
+    "heading": "",
+    "message": "<p>Dear {notification_receiver_name}!</p><p>We are delighted to inform you that a generous donation was made,</p><p>{tribute}</p><p>{donation_amount_card}</p><p>This thoughtful tribute ensures that {tribute_to}’s legacy lives on. Every contribution fuels hope, progress, and lasting change.</p><p>{download_ecard_button}</p><p> </p><p>If you have any questions about your donation, please contact us at {support_email}.</p>",
+    "shortcodes": [
+      {
+        "label": "Notification Receiver Name",
+        "value": "{notification_receiver_name}"
+      },
+      {
+        "label": "Tribute",
+        "value": "{tribute}"
+      },
+      {
+        "label": "Tribute To",
+        "value": "{tribute_to}"
+      },
+      {
+        "label": "Donation Amount Card",
+        "value": "{donation_amount_card}"
+      },
+      {
+        "label": "Download Ecard Button",
+        "value": "{download_ecard_button}"
+      },
+      {
+        "label": "Donation Amount",
+        "value": "{donation_amount}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
+  "growfund_backer_email_pledge_paid_with_giving_thanks": {
+    "subject": "Your Pledge Has Been Received",
+    "heading": "Thank You For Your Pledge!",
+    "message": "<p>Dear <strong>{backer_name}</strong>!</p><p> </p><p>We're excited to confirm that you've successfully pledged to back the {campaign_title}! Your pledge brings us one step closer to our funding goal.</p><p> </p><p>{pledge_amount_card}</p><p>{giving_thanks}</p><p>{campaign_card}</p><p>{pledge_summary_card}</p><p>{alert_card}</p><p>{campaign_link_button}</p><p> </p><p>If you have any questions about your pledge, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</p>",
+    "shortcodes": [
+      {
+        "label": "Pledge Summary Card",
+        "value": "{pledge_summary_card}"
+      },
+      {
+        "label": "Pledge Amount Card",
+        "value": "{pledge_amount_card}"
+      },
+      {
+        "label": "Giving Thanks",
+        "value": "{giving_thanks}"
+      },
+      {
+        "label": "Alert Card",
+        "value": "{alert_card}"
+      },
+      {
+        "label": "Campaign Card",
+        "value": "{campaign_card}"
+      },
+      {
+        "label": "Campaign URL",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Campaign Creator",
+        "value": "{campaign_creator}"
+      },
+      {
+        "label": "Backer Count",
+        "value": "{backer_count}"
+      },
+      {
+        "label": "Funded Percent",
+        "value": "{funded_percent}"
+      },
+      {
+        "label": "Campaign Goal",
+        "value": "{campaign_goal}"
+      },
+      {
+        "label": "Campaign Start Date",
+        "value": "{campaign_start_date}"
+      },
+      {
+        "label": "Campaign End Date",
+        "value": "{campaign_end_date}"
+      },
+      {
+        "label": "Backer Name",
+        "value": "{backer_name}"
+      },
+      {
+        "label": "Pledge Amount",
+        "value": "{pledge_amount}"
+      },
+      {
+        "label": "Payment Method",
+        "value": "{payment_method}"
+      },
+      {
+        "label": "Pledge ID",
+        "value": "{pledge_id}"
+      },
+      {
+        "label": "Campaign Link Button",
+        "value": "{campaign_link_button}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  }
+}

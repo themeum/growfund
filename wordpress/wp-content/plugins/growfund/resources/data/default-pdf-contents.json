@@ -1,0 +1,194 @@
+{
+  "growfund_pdf_pledge_receipt_template": {
+    "media": {
+      "image": null,
+      "height": "48",
+      "position": "center"
+    },
+    "content": {
+      "greetings": "",
+      "signature": {
+        "is_available": false,
+        "image": null,
+        "details": null
+      },
+      "tax_information": {
+        "is_available": false,
+        "details": null
+      },
+      "footer": null
+    },
+    "colors": {
+      "background": "#ffffff",
+      "primary_text": "#000000",
+      "secondary_text": "#686868"
+    },
+    "short_codes": [
+      {
+        "label": "Campaign Name",
+        "value": "{campaign_name}"
+      },
+      {
+        "label": "Backer Name",
+        "value": "{backer_name}"
+      },
+      {
+        "label": "Pledge Amount",
+        "value": "{pledge_amount}"
+      },
+      {
+        "label": "Payment Method",
+        "value": "{payment_method}"
+      },
+      {
+        "label": "Pledge Date & Time",
+        "value": "{pledge_date_time}"
+      }
+    ]
+  },
+  "growfund_pdf_donation_receipt_template": {
+    "media": {
+      "image": null,
+      "height": "48",
+      "position": "center"
+    },
+    "content": {
+      "greetings": null,
+      "signature": {
+        "is_available": false,
+        "image": null,
+        "details": null
+      },
+      "tax_information": {
+        "is_available": false,
+        "details": null
+      },
+      "footer": null
+    },
+    "colors": {
+      "background": "#ffffff",
+      "primary_text": "#000000",
+      "secondary_text": "#686868"
+    },
+    "short_codes": [
+      {
+        "label": "Campaign Name",
+        "value": "{campaign_name}"
+      },
+      {
+        "label": "Fund Name",
+        "value": "{fund_name}"
+      },
+      {
+        "label": "Donor Name",
+        "value": "{donor_name}"
+      },
+      {
+        "label": "Donation Amount",
+        "value": "{donation_amount}"
+      },
+      {
+        "label": "Payment Method",
+        "value": "{payment_method}"
+      },
+      {
+        "label": "Donation Date & Time",
+        "value": "{donation_date_time}"
+      }
+    ]
+  },
+  "growfund_pdf_annual_receipt_template": {
+    "media": {
+      "image": null,
+      "height": "48",
+      "position": "center"
+    },
+    "content": {
+      "greetings": "<p>Dear {donor_name},</p><p>Your donation on {site_url} in {year} is greatly appreciated. This is an official annual receipt issued by {organization_name} - a non-profit organization.</p>",
+      "signature": {
+        "is_available": false,
+        "image": null,
+        "details": null
+      },
+      "footer": null
+    },
+    "colors": {
+      "background": "#ffffff",
+      "primary_text": "#000000",
+      "secondary_text": "#686868"
+    },
+    "short_codes": [
+      {
+        "label": "Donor Name",
+        "value": "{donor_name}"
+      },
+      {
+        "label": "Total Donation Amount",
+        "value": "{total_donation_amount}"
+      },
+      {
+        "label": "Date",
+        "value": "{date}"
+      },
+      {
+        "label": "Site URL",
+        "value": "{site_url}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
+  "growfund_tribute_ecard_template": {
+    "media": {
+      "image": null,
+      "height": "326",
+      "position": "center"
+    },
+    "content": {
+      "greetings": "Dear {tribute_notification_receiver}",
+      "description": "<p>We are delighted to inform you that a generous donation was made {tribute_type} {tribute_to} by {donor_name}. The contribution of {donation_amount} that made to the {campaign_name} will go a long way in supporting our mission and creating meaningful impact. <br \/><br \/>With our thanks,<br \/>{organization_name}<\/p>"
+    },
+    "colors": {
+      "background": "#F3E6D6",
+      "text_color": "#636363",
+      "secondary_text_color": "#636363",
+      "greetings": "#000000"
+    },
+    "short_codes": [
+      {
+        "label": "Tribute Receiver Name",
+        "value": "{tribute_notification_receiver}"
+      },
+      {
+        "label": "Tribute Type",
+        "value": "{tribute_type}"
+      },
+      {
+        "label": "Tribute To",
+        "value": "{tribute_to}"
+      },
+      {
+        "label": "Donor Name",
+        "value": "{donor_name}"
+      },
+      {
+        "label": "Donation Amount",
+        "value": "{donation_amount}"
+      },
+      {
+        "label": "Donation Date",
+        "value": "{donation_date}"
+      },
+      {
+        "label": "Campaign Name",
+        "value": "{campaign_name}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  }
+}

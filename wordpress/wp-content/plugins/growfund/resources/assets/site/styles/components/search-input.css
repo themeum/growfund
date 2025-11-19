@@ -1,0 +1,30 @@
+.growfund-page-container .growfund-search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.growfund-page-container .growfund-search-input {
+  padding: var(--growfund-spacing-2) var(--growfund-spacing-3) var(--growfund-spacing-2) 2.375rem;
+  border-radius: var(--growfund-radius-3);
+  border: 1px solid var(--growfund-gray-8);
+  width: 100%;
+  height: 40px;
+  max-height: 40px;
+  box-sizing: border-box;
+}
+
+.growfund-page-container .growfund-search-btn {
+  position: absolute;
+  left: 0.75rem;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #9ca3af;
+}
+
+.growfund-page-container .growfund-search-btn:hover {
+  color: #1f2937;
+}

@@ -1,0 +1,153 @@
+/* =========================================
+   BADGE COMPONENT
+   ========================================= */
+
+/* Base badge styles */
+.growfund-badge {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--growfund-spacing-1);
+  border-radius: var(--growfund-radius-2);
+  font-size: var(--growfund-font-size-1);
+  font-weight: var(--growfund-font-weight-semibold);
+  text-transform: uppercase;
+  line-height: 120%;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+/* =========================================
+   BADGE VARIANTS
+   ========================================= */
+
+/* Primary/Blue variant (SUPERBACKER style) */
+.growfund-badge--primary,
+.growfund-badge--blue {
+  background-color: var(--growfund-blue-4);
+  color: var(--growfund-gray-1);
+}
+
+.growfund-badge--primary:hover,
+.growfund-badge--blue:hover {
+  background-color: var(--growfund-blue-3);
+}
+
+/* Success/Green variant (CREATOR style) */
+.growfund-badge--success,
+.growfund-badge--green {
+  background-color: var(--growfund-green-4);
+  color: var(--growfund-gray-1);
+}
+
+.growfund-badge--success:hover,
+.growfund-badge--green:hover {
+  background-color: var(--growfund-green-6);
+}
+
+/* Secondary/Gray variant */
+.growfund-badge--secondary,
+.growfund-badge--gray {
+  background-color: var(--growfund-gray-8);
+  color: var(--growfund-gray-13);
+}
+
+.growfund-badge--secondary:hover,
+.growfund-badge--gray:hover {
+  background-color: var(--growfund-gray-9);
+}
+
+/* Warning/Orange variant */
+.growfund-badge--warning,
+.growfund-badge--orange {
+  background-color: #f5a623;
+  color: #ffffff;
+}
+
+.growfund-badge--warning:hover,
+.growfund-badge--orange:hover {
+  background-color: #e8951a;
+}
+
+/* Danger/Red variant */
+.growfund-badge--danger,
+.growfund-badge--red {
+  background-color: #d0021b;
+  color: #ffffff;
+}
+
+.growfund-badge--danger:hover,
+.growfund-badge--red:hover {
+  background-color: #b8021a;
+}
+
+/* Info/Light Blue variant */
+.growfund-badge--info,
+.growfund-badge--light-blue {
+  background-color: #50e3c2;
+  color: #ffffff;
+}
+
+.growfund-badge--info:hover,
+.growfund-badge--light-blue:hover {
+  background-color: #42d4af;
+}
+
+/* Outline variants */
+.growfund-badge--outline {
+  background-color: transparent;
+  border: 1px solid var(--growfund-gray-8);
+  color: var(--growfund-gray-13);
+}
+
+.growfund-badge--outline:hover {
+  border-color: var(--growfund-gray-9);
+  background-color: var(--growfund-gray-2);
+}
+
+.growfund-badge--outline-primary {
+  background-color: transparent;
+  border: 1px solid #4a90e2;
+  color: #4a90e2;
+}
+
+.growfund-badge--outline-primary:hover {
+  background-color: #4a90e2;
+  color: #ffffff;
+}
+
+.growfund-badge--outline-success {
+  background-color: transparent;
+  border: 1px solid #7ed321;
+  color: #7ed321;
+}
+
+.growfund-badge--outline-success:hover {
+  background-color: #7ed321;
+  color: #ffffff;
+}
+
+/* =========================================
+   BADGE SIZES
+   ========================================= */
+
+.growfund-badge--small {
+  padding: var(--growfund-spacing-1) var(--growfund-spacing-2);
+  font-size: 10px;
+}
+
+.growfund-badge--large {
+  padding: var(--growfund-spacing-2) var(--growfund-spacing-4);
+  font-size: var(--growfund-font-size-sm);
+}
+
+/* =========================================
+   MOBILE RESPONSIVE DESIGN
+   ========================================= */
+@media (max-width: 1023px) {
+  /* Base badge mobile adjustments */
+  .growfund-badge {
+    font-size: var(--growfund-font-size-0);
+  }
+}
