@@ -5,7 +5,7 @@ Tags: crowdfunding, donation, fundraising, charity, rewards
 Requires at least: 5.9
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -335,7 +335,7 @@ Definitely. You’ll get extensive support via our community and access to detai
 
 == Changelog ==
 
-= 1.0.0 – Nov 3, 2025 =
+= 1.0.0 – Nov 19, 2025 =
 * Initial release
 * Dual crowdfunding and donation modes
 * Multi-role user system and dashboards
@@ -343,6 +343,13 @@ Definitely. You’ll get extensive support via our community and access to detai
 * Payment gateway integrations (Stripe, PayPal)
 * Analytics, reporting, and email notifications
 * WooCommerce support
+
+= 1.0.1 - Nov 21, 2025 =
+* Updated Donation/Pledge action buttons issue
+* Updated media slider in campaign details page
+* Fixed campaign list fatal error
+* Fixed campaign ended issue
+* Fixed video thumbnails issue
 
 == Upgrade Notice ==
 It’s recommended to have a backup of your website before upgrading to a major version of Growfund.

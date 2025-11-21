@@ -29,8 +29,8 @@ class Pagination
         $args = array_merge([
             'post_type'   => $post_type,
             'fields'      => 'ids',
-            'post_status'    => 'any',
-            'posts_per_page' => -1,
+            'post_status'    => ['publish', 'draft', 'pending', 'future', 'private', 'trash'],
+            'posts_per_page' => 1,
         ], $args);
 
         $query = new WP_Query($args);

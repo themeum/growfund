@@ -122,7 +122,7 @@ class CampaignCheckoutController
             return $this->donation_checkout_page($campaign_dto, $is_shortcode);
         }
 
-        return $this->pledge_checkout_page($campaign_dto, $request->get_int('reward_id'), $is_shortcode);
+        return $this->pledge_checkout_page($campaign_dto, $request->get_int('reward_id'), $request->get_float('amount'), $is_shortcode);
     }
 
     /**
@@ -296,7 +296,7 @@ class CampaignCheckoutController
      * @param bool $is_shortcode
      * @return string The rendered HTML
      */
-    protected function pledge_checkout_page($campaign_dto, $reward_id = null, $is_shortcode = false)
+    protected function pledge_checkout_page($campaign_dto, $reward_id = null, $amount = 0, $is_shortcode = false)
     {
         if (!growfund_user()->is_logged_in()) {
             return $this->handle_validation_error([
@@ -353,7 +353,8 @@ class CampaignCheckoutController
             'checkout' => $checkout_dto,
             'payment_methods' => $this->get_payment_method_options(),
             'campaign_data' => $campaign_data,
-            'is_shortcode' => $is_shortcode
+            'is_shortcode' => $is_shortcode,
+            'amount' => $amount
         ]);
     }
 

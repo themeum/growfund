@@ -1071,7 +1071,7 @@ if (!function_exists('growfund_is_wc_checkout')) {
         if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
 
 			// Safely get the request URI.
-			$route = isset($_SERVER['REQUEST_URI']) ? Sanitizer::apply_rule(wp_unslash( $_SERVER['REQUEST_URI']), Sanitizer::TEXT) : '';
+			$route = isset($_SERVER['REQUEST_URI']) ? Sanitizer::apply_rule(wp_unslash( $_SERVER['REQUEST_URI']), Sanitizer::TEXT) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized	
 
 			if ( str_contains( $route, '/wc/store/' ) && str_contains( $route, 'checkout' ) ) {
 				return true;

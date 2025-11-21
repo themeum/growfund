@@ -8,7 +8,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
-import { CategoryEmptyStateIcon } from '@/app/icons';
+import { CategoryEmptyStateIcon, ErrorIcon } from '@/app/icons';
 import ActiveFilters from '@/components/active-filters';
 import BulkDeleteDialog from '@/components/dialogs/bulk-delete-dialog';
 import { EmptyState, EmptyStateDescription } from '@/components/empty-state';
@@ -16,10 +16,10 @@ import { ErrorState, ErrorStateDescription } from '@/components/error-state';
 import { TextField } from '@/components/form/text-field';
 import { LoadingSpinnerOverlay } from '@/components/layouts/loading-spinner';
 import {
-    DataTable,
-    DataTableContent,
-    DataTableWrapper,
-    DataTableWrapperHeader,
+  DataTable,
+  DataTableContent,
+  DataTableWrapper,
+  DataTableWrapperHeader,
 } from '@/components/table/data-table';
 import ThreeDotsOptions from '@/components/three-dots-options';
 import { Button } from '@/components/ui/button';
@@ -29,13 +29,13 @@ import { Image } from '@/components/ui/image';
 import { CategoryFormDialog } from '@/features/categories/components/dialogs/category-form-dialog';
 import { useCategoryFilters } from '@/features/categories/hooks/use-category-filters';
 import {
-    type CategoryFilter,
-    CategoryFilterSchema,
+  type CategoryFilter,
+  CategoryFilterSchema,
 } from '@/features/categories/schemas/categories-filter';
 import { type Category } from '@/features/categories/schemas/category';
 import {
-    useBulkCategoryActionsMutation,
-    useGetCategoriesQuery,
+  useBulkCategoryActionsMutation,
+  useGetCategoriesQuery,
 } from '@/features/categories/services/category';
 import { useFormQuerySync } from '@/hooks/use-form-query-sync';
 import { type TableColumnDef } from '@/types';
@@ -162,14 +162,18 @@ const CategoriesTable = () => {
       columnHelper.accessor('description', {
         header: () => __('Description', 'growfund'),
         cell: (props) => (
-          <div className="growfund-break-all growfund-line-clamp-2">{props.getValue() || emptyCell()}</div>
+          <div className="growfund-break-all growfund-line-clamp-2">
+            {props.getValue() || emptyCell()}
+          </div>
         ),
         size: 260,
       }),
       columnHelper.accessor('slug', {
         header: () => __('Slug', 'growfund'),
         cell: (props) => (
-          <div className="growfund-break-all growfund-line-clamp-1">{props.getValue() || emptyCell()}</div>
+          <div className="growfund-break-all growfund-line-clamp-1">
+            {props.getValue() || emptyCell()}
+          </div>
         ),
         size: 250,
       }),
@@ -242,6 +246,7 @@ const CategoriesTable = () => {
     Loading: <LoadingSpinnerOverlay />,
     Error: (
       <ErrorState className="growfund-mt-10">
+        <ErrorIcon />
         <ErrorStateDescription>{__('Error loading categories', 'growfund')}</ErrorStateDescription>
       </ErrorState>
     ),

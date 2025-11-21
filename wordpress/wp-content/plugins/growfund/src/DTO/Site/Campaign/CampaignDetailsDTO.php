@@ -150,7 +150,7 @@ class CampaignDetailsDTO extends DTO
     public $collaborators = [];
 
     /** @var bool */
-    public $is_closed = false;
+    public $is_ended = false;
 
     protected function get_casts()
     {

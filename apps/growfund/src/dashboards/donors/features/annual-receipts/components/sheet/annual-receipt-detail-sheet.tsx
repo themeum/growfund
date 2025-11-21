@@ -4,6 +4,7 @@ import { format } from 'date-fns';
 import { FileSpreadsheet } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
 
+import { ErrorIcon } from '@/app/icons';
 import { ErrorState, ErrorStateDescription } from '@/components/error-state';
 import { Container } from '@/components/layouts/container';
 import { LoadingSpinnerOverlay } from '@/components/layouts/loading-spinner';
@@ -98,6 +99,7 @@ const AnnualReceiptDetailSheet = ({
 
           {!isDefined(annualReceiptDetail) ? (
             <ErrorState>
+              <ErrorIcon />
               <ErrorStateDescription>
                 {__('Error loading annual receipt', 'growfund')}
               </ErrorStateDescription>

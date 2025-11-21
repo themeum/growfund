@@ -70,7 +70,7 @@ $has_goal = $campaign->has_goal ?? false;
 
         $button_text = growfund_app()->is_donation_mode() ? __('Donate now', 'growfund') : __('Back this campaign', 'growfund');
 
-        if (!$campaign->is_closed) :
+        if (!$campaign->is_ended) :
             if (growfund_app()->is_donation_mode()) :
                 $checkout_url = $campaign->checkout_url ?? Utils::get_checkout_url($campaign->id);
 				?>

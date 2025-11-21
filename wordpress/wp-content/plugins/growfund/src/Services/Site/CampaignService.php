@@ -755,7 +755,12 @@ class CampaignService
 
         $campaign_details_dto->collaborators = $meta['show_collaborator_list'] ? $this->get_collaborators_by_campaign_id($campaign->ID) : [];
         $campaign_details_dto->checkout_url = Utils::get_checkout_url($campaign->ID);
-        $campaign_details_dto->is_closed = $this->is_closed($campaign_details_dto->id);
+
+        $is_ended = !empty($campaign_details_dto->end_date)
+            ? Date::is_date_in_past($campaign_details_dto->end_date)
+            : false;
+
+        $campaign_details_dto->is_ended = $is_ended || boolval($meta['is_ended'] ?? false);
 
         return $campaign_details_dto;
     }
@@ -779,17 +784,6 @@ class CampaignService
         $ids = wp_list_pluck($records, 'collaborator_id');
 
         return $ids ?? [];
-    }
-
-    protected function is_closed($campaign_id)
-    {
-        $campaign = (new APICampaignService())->get_by_id($campaign_id);
-
-        if ($campaign->reaching_action === ReachingAction::CLOSE && CampaignGoal::is_reached($campaign)) {
-            return true;
-        }
-
-        return false;
     }
 
     /**
@@ -1469,14 +1463,14 @@ class CampaignService
      * @param int $page
      * @return PaginatedCollectionDTO
      */
-    protected function create_empty_paginated_result(int $limit, int $page)
+    protected function create_empty_paginated_result($limit, $page)
     {
         $empty_paginated_dto = new PaginatedCollectionDTO();
         $empty_paginated_dto->results = [];
         $empty_paginated_dto->total = CampaignConstants::DEFAULT_EMPTY_TOTAL;
         $empty_paginated_dto->count = CampaignConstants::DEFAULT_EMPTY_COUNT_VALUE;
-        $empty_paginated_dto->per_page = $limit;
-        $empty_paginated_dto->current_page = $page;
+        $empty_paginated_dto->per_page = $limit ?? CampaignConstants::DEFAULT_UPDATES_LIMIT;
+        $empty_paginated_dto->current_page = $page ?? CampaignConstants::DEFAULT_PAGE;
         $empty_paginated_dto->has_more = CampaignConstants::DEFAULT_HAS_MORE;
         $empty_paginated_dto->overall = 0;
         return $empty_paginated_dto;

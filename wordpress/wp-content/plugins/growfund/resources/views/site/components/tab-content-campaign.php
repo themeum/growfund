@@ -54,7 +54,7 @@ $tabName = growfund_app()->is_donation_mode() ? 'info' : 'campaign';
                                 growfund_renderer()
                                     ->render('site.components.campaign-reward', [
 										'rewards' => $displayRewards,
-										'is_closed' => $campaign->is_closed ?? ''
+										'is_ended' => $campaign->is_ended ?? ''
 									]);
                             }
                             ?>

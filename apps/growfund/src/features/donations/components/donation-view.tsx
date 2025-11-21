@@ -1,6 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { useForm } from 'react-hook-form';
 
+import { ErrorIcon } from '@/app/icons';
 import CampaignCard from '@/components/campaigns/campaign-card';
 import { EmptyState, EmptyStateDescription } from '@/components/empty-state';
 import { ErrorState, ErrorStateDescription } from '@/components/error-state';
@@ -33,6 +34,7 @@ const DonationView = ({ donation }: { donation: Donation }) => {
     Loading: <LoadingSpinnerOverlay />,
     Error: (
       <ErrorState className="growfund-mt-10">
+        <ErrorIcon />
         <ErrorStateDescription>
           {__('Error loading donation details', 'growfund')}
         </ErrorStateDescription>
@@ -76,7 +78,9 @@ const DonationView = ({ donation }: { donation: Donation }) => {
 
               <Box>
                 <BoxContent>
-                  <h6 className="growfund-typo-h6 growfund-text-fg-primary">{__('Notes', 'growfund')}</h6>
+                  <h6 className="growfund-typo-h6 growfund-text-fg-primary">
+                    {__('Notes', 'growfund')}
+                  </h6>
                   <div className="growfund-typo-small growfund-text-fg-secondary growfund-mt-3">
                     {donation.notes ?? __('No notes', 'growfund')}
                   </div>

@@ -137,9 +137,11 @@ if ($video_type === VideoConstants::TYPE_DIRECT) {
     <?php if ($video_type === VideoConstants::TYPE_DIRECT) : ?>
         <!-- Play Button Overlay for direct videos -->
         <?php if (!$autoplay) : ?>
-            <div class="growfund-video-thumb">
-                <img src="<?php echo esc_url($thumbnail); ?>" alt="Video thumbnail" />
-            </div>
+            <?php if (!empty($thumbnail)) : ?>
+                <div class="growfund-video-thumb">
+                    <img src="<?php echo esc_url($thumbnail); ?>" alt="Video thumbnail" />
+                </div>
+            <?php endif; ?>
             <div class="<?php echo esc_attr(VideoConstants::VIDEO_PLAY_OVERLAY_CLASS); ?>" <?php printf('%s="%s"', esc_html(VideoConstants::VIDEO_PLAY_OVERLAY_DATA_ATTR), esc_attr($video_id)); ?>>
                 <button class="<?php echo esc_attr(VideoConstants::VIDEO_PLAY_BTN_CLASS); ?>" aria-label="<?php echo esc_attr(VideoConstants::PLAY_BUTTON_ARIA_LABEL); ?>">
                     <?php

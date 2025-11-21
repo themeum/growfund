@@ -131,6 +131,7 @@
             color: #dc2626;
             margin-top: 0.5rem;
             font-size: 0.875rem;
+            grid-column: 1 / span 4;
         `;
 
     element.appendChild(expiredMessage);

@@ -7,7 +7,7 @@ defined( 'ABSPATH' ) || exit;
  * 
  * @param array $tabs - Array of tab data: ['label' => 'Tab Label', 'active' => bool, 'badge' => 'Badge Text']
  * @param array $actions - Array of action buttons: ['label' => 'Button Label', 'variant' => 'primary|outline|secondary']
- * @param bool $is_closed - Whether the campaign is closed
+ * @param bool $is_ended - Whether the campaign is closed
  */
 
 

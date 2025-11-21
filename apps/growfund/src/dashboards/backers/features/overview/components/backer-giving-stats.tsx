@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 
+import { ErrorIcon } from '@/app/icons';
 import { EmptyState, EmptyStateDescription } from '@/components/empty-state';
 import { ErrorState, ErrorStateDescription } from '@/components/error-state';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -23,6 +24,7 @@ const BackerGivingStats = ({ backerId }: { backerId?: string }) => {
     ),
     Error: (
       <ErrorState className="growfund-mt-10">
+        <ErrorIcon />
         <ErrorStateDescription>
           {__('Error loading backer giving stats', 'growfund')}
         </ErrorStateDescription>
@@ -38,7 +40,9 @@ const BackerGivingStats = ({ backerId }: { backerId?: string }) => {
     Success: ({ data }) => {
       return (
         <div className="growfund-space-y-4">
-          <h5 className="growfund-typo-h5 growfund-text-fg-primary">{__('My giving stats', 'growfund')}</h5>
+          <h5 className="growfund-typo-h5 growfund-text-fg-primary">
+            {__('My giving stats', 'growfund')}
+          </h5>
           <div className="growfund-grid growfund-grid-cols-4 growfund-gap-4">
             <MetricsCard
               data={{
