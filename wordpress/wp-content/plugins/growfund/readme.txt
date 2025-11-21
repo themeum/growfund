@@ -345,11 +345,11 @@ Definitely. You’ll get extensive support via our community and access to detai
 * WooCommerce support
 
 = 1.0.1 - Nov 21, 2025 =
-* Fixed campaign list fatal error
 * Updated Donation/Pledge action buttons issue
+* Updated media slider in campaign details page
+* Fixed campaign list fatal error
 * Fixed campaign ended issue
 * Fixed video thumbnails issue
-* Updated media slider in campaign details page
 
 == Upgrade Notice ==
 It’s recommended to have a backup of your website before upgrading to a major version of Growfund.
