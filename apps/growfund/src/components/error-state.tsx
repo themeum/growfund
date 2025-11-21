@@ -1,7 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import React from 'react';
 
-import { ErrorIcon } from '@/app/icons';
 import { Container } from '@/components/layouts/container';
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
@@ -19,7 +18,6 @@ const ErrorState = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDiv
           ref={ref}
           {...props}
         >
-          <ErrorIcon />
           {children}
         </Box>
       </Container>

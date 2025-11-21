@@ -8,7 +8,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
-import { TagEmptyStateIcon } from '@/app/icons';
+import { ErrorIcon, TagEmptyStateIcon } from '@/app/icons';
 import ActiveFilters from '@/components/active-filters';
 import BulkDeleteDialog from '@/components/dialogs/bulk-delete-dialog';
 import { EmptyState, EmptyStateDescription } from '@/components/empty-state';
@@ -16,10 +16,10 @@ import { ErrorState, ErrorStateDescription } from '@/components/error-state';
 import { TextField } from '@/components/form/text-field';
 import { LoadingSpinnerOverlay } from '@/components/layouts/loading-spinner';
 import {
-    DataTable,
-    DataTableContent,
-    DataTableWrapper,
-    DataTableWrapperHeader,
+  DataTable,
+  DataTableContent,
+  DataTableWrapper,
+  DataTableWrapperHeader,
 } from '@/components/table/data-table';
 import ThreeDotsOptions from '@/components/three-dots-options';
 import { Button } from '@/components/ui/button';
@@ -129,14 +129,18 @@ const TagsTable = () => {
       columnHelper.accessor('description', {
         header: () => __('Description', 'growfund'),
         cell: (props) => (
-          <div className="growfund-break-all growfund-line-clamp-2">{props.getValue() || emptyCell()}</div>
+          <div className="growfund-break-all growfund-line-clamp-2">
+            {props.getValue() || emptyCell()}
+          </div>
         ),
         size: 260,
       }),
       columnHelper.accessor('slug', {
         header: () => __('Slug', 'growfund'),
         cell: (props) => (
-          <div className="growfund-break-all growfund-line-clamp-1">{props.getValue() || emptyCell()}</div>
+          <div className="growfund-break-all growfund-line-clamp-1">
+            {props.getValue() || emptyCell()}
+          </div>
         ),
         size: 250,
       }),
@@ -213,6 +217,7 @@ const TagsTable = () => {
     Loading: <LoadingSpinnerOverlay />,
     Error: (
       <ErrorState className="growfund-mt-10">
+        <ErrorIcon />
         <ErrorStateDescription>{__('Error fetching tags', 'growfund')}</ErrorStateDescription>
       </ErrorState>
     ),

@@ -1,6 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import React, { createContext } from 'react';
 
+import { ErrorIcon } from '@/app/icons';
 import { EmptyState, EmptyStateDescription } from '@/components/empty-state';
 import { ErrorState, ErrorStateDescription } from '@/components/error-state';
 import { LoadingSpinnerOverlay } from '@/components/layouts/loading-spinner';
@@ -27,6 +28,7 @@ const CurrentUserProvider = ({ children }: React.PropsWithChildren) => {
     Loading: <LoadingSpinnerOverlay />,
     Error: (
       <ErrorState className="growfund-mt-10">
+        <ErrorIcon />
         <ErrorStateDescription>
           {__('Error loading current user', 'growfund')}
         </ErrorStateDescription>

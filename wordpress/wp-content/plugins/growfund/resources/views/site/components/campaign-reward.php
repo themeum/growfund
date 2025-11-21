@@ -20,7 +20,7 @@ defined( 'ABSPATH' ) || exit;
  *   - variant: Component variant ('default', 'checkout', or 'pledge')
  *   - campaign_id: Campaign ID for checkout URL
  *   - reward_id: Reward ID for checkout URL
- * @param bool $is_closed Whether the campaign is closed
+ * @param bool $is_ended Whether the campaign is closed
  */
 
 use Growfund\Supports\Utils;
@@ -30,7 +30,7 @@ $placeholder_url = growfund_site_placeholder_image_url();
 
 // Handle rewards data that might be passed directly or as a nested array
 $rewards = $rewards ?? [];
-$is_closed = $is_closed ?? false;
+$is_ended = $is_ended ?? false;
 
 if (isset($data['rewards'])) {
     $rewards = $data['rewards'];
@@ -409,7 +409,7 @@ foreach ($rewards as $reward) {
 
                 <div class="growfund-reward-button-container">
                     <?php
-					if (!$is_closed) {
+					if (!$is_ended) {
 						growfund_renderer()
 						->render('site.components.button', [
 							/* translators: %s: Reward price */

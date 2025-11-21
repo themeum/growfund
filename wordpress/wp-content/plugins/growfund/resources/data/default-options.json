@@ -111,7 +111,7 @@
     "mail": null
   },
   "growfund_security": {
-    "is_enabled_email_verification": true,
+    "is_enabled_email_verification": false,
     "enable_recaptcha_on_user_registration": "disabled",
     "enable_recaptcha_on_campaign_submit": "disabled",
     "recaptcha_site_key": null,

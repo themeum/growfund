@@ -34,7 +34,7 @@ const MigrationFailed = () => {
               variant="outline"
               onClick={(event) => {
                 event.preventDefault();
-                window.location.href = 'https://growfund.com'; // @todo: replace with support page
+                window.location.href = 'https://growfund.com/support';
               }}
             >
               <Headphones />

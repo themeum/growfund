@@ -2,7 +2,9 @@
 
 defined( 'ABSPATH' ) || exit;
 
-if ($data) : ?>
+if ($data) : 
+    $total_media_count = 0;
+	?>
     <div class="growfund-container">
         <?php
         if (growfund_app()->is_donation_mode() && !empty($data->contribution)) {
@@ -47,87 +49,93 @@ if ($data) : ?>
 								]);
 							?>
                             </div>
-                            <?php
-                        else :
-							?>
-                        <div class="growfund-media__container__wrapper">
-                            <button class="growfund-slider-btn prev" disabled>
-                                <svg width="18" height="15" viewBox="0 0 18 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M7.76568 0.234324C8.07812 0.54674 8.07812 1.05327 7.76568 1.36568L2.73138 6.4H16.8C17.2418 6.4 17.6 6.75818 17.6 7.2C17.6 7.64183 17.2418 8 16.8 8H2.73138L7.76568 13.0342C8.07812 13.3467 8.07812 13.8533 7.76568 14.1658C7.45327 14.4781 6.94674 14.4781 6.63432 14.1658L0.234324 7.76568C-0.078108 7.45327 -0.078108 6.94674 0.234324 6.63432L6.63432 0.234324C6.94674 -0.078108 7.45327 -0.078108 7.76568 0.234324Z" fill="#F5F5F5"/>
-                                </svg>
-
-                            </button>
-                            <button class="growfund-slider-btn next">
-                                <svg width="18" height="15" viewBox="0 0 18 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M9.83432 0.234324C10.1467 -0.078108 10.6533 -0.078108 10.9657 0.234324L17.3658 6.63432C17.6781 6.94674 17.6781 7.45327 17.3658 7.76568L10.9657 14.1658C10.6533 14.4781 10.1467 14.4781 9.83432 14.1658C9.52189 13.8533 9.52189 13.3467 9.83432 13.0342L14.8686 8H0.8C0.358176 8 0 7.64183 0 7.2C0 6.75818 0.358176 6.4 0.8 6.4H14.8686L9.83432 1.36568C9.52189 1.05327 9.52189 0.54674 9.83432 0.234324Z" fill="#F5F5F5"/>
-                                </svg>
-                            </button>
-                            <div class="growfund-media__container">
-                                <?php
-                                if (!empty($data->video) && !empty($data->video['url'])) : 
-                                    ?>
-                                    <div class="growfund-media__item">
-                                    <?php 
-                                        growfund_renderer()
-                                            ->render('site.components.video', [
-                                                'src' => $data->video['url'],
-                                                'poster' => '',
-                                                'title' => '',
-                                                'attributes' => [
-                                                    'class' => 'growfund-media__video growfund-video-hidden'
-                                                ],
-                                                'controls' => false,
-                                                'muted' => false,
-                                                'autoplay' => false,
-                                                'thumbnail' => $data->video['poster']['url'] ?? ''
-                                            ]);
-                                    ?>
-                                        </div>
-                                        <?php 
-                                    endif;
-                                ?>
-                                <?php 
-                                if (!empty($data->images) && is_array($data->images)) :
-                                    ?>
+                        <?php else : ?>
+                            <div class="growfund-media__container__wrapper">
+                                <div class="growfund-media__container">
                                     <?php
-                                    foreach ($data->images as $image) {
+                                    if (!empty($data->video) && !empty($data->video['url'])) : 
+                                        ++$total_media_count;
                                         ?>
-                                            <div class="growfund-media__item">
-                                                <?php
-                                                    growfund_renderer()
-                                                    ->render('site.components.image', [
-                                                        'src' => !empty($image['url']) ? $image['url'] : growfund_placeholder_image_url(),
-                                                        'alt' => esc_attr($image['alt'] ?? 'Campaign Image'),
-                                                        'attributes' => [
-                                                            'class' => 'growfund-media__image'
-                                                        ]
-                                                    ]);
-                                                ?>
+                                        <div class="growfund-media__item">
+                                        <?php 
+                                            growfund_renderer()
+                                                ->render('site.components.video', [
+                                                    'src' => $data->video['url'],
+                                                    'poster' => '',
+                                                    'title' => '',
+                                                    'attributes' => [
+                                                        'class' => 'growfund-media__video growfund-video-hidden'
+                                                    ],
+                                                    'controls' => false,
+                                                    'muted' => false,
+                                                    'autoplay' => false,
+                                                    'thumbnail' => $data->video['poster']['url'] ?? ''
+                                                ]);
+                                        ?>
                                             </div>
+                                            <?php 
+                                        endif;
+                                    ?>
+                                    <?php 
+                                    if (!empty($data->images) && is_array($data->images)) :
+                                        ?>
                                         <?php
-                                    }
-                                endif;
-                                ?>
+                                        foreach ($data->images as $image) {
+                                            ++$total_media_count;
+                                            ?>
+                                                <div class="growfund-media__item">
+                                                    <?php
+                                                        growfund_renderer()
+                                                        ->render('site.components.image', [
+                                                            'src' => !empty($image['url']) ? $image['url'] : growfund_placeholder_image_url(),
+                                                            'alt' => esc_attr($image['alt'] ?? 'Campaign Image'),
+                                                            'attributes' => [
+                                                                'class' => 'growfund-media__image'
+                                                            ]
+                                                        ]);
+                                                    ?>
+                                                </div>
+                                            <?php
+                                        }
+                                    endif;
+                                    ?>
+                                </div>
+                                <?php if ($total_media_count > 1) : ?>
+                                    <button class="growfund-slider-btn prev" disabled>
+                                        <svg width="18" height="15" viewBox="0 0 18 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M7.76568 0.234324C8.07812 0.54674 8.07812 1.05327 7.76568 1.36568L2.73138 6.4H16.8C17.2418 6.4 17.6 6.75818 17.6 7.2C17.6 7.64183 17.2418 8 16.8 8H2.73138L7.76568 13.0342C8.07812 13.3467 8.07812 13.8533 7.76568 14.1658C7.45327 14.4781 6.94674 14.4781 6.63432 14.1658L0.234324 7.76568C-0.078108 7.45327 -0.078108 6.94674 0.234324 6.63432L6.63432 0.234324C6.94674 -0.078108 7.45327 -0.078108 7.76568 0.234324Z" fill="#F5F5F5"/>
+                                        </svg>
+
+                                    </button>
+                                    <button class="growfund-slider-btn next">
+                                        <svg width="18" height="15" viewBox="0 0 18 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M9.83432 0.234324C10.1467 -0.078108 10.6533 -0.078108 10.9657 0.234324L17.3658 6.63432C17.6781 6.94674 17.6781 7.45327 17.3658 7.76568L10.9657 14.1658C10.6533 14.4781 10.1467 14.4781 9.83432 14.1658C9.52189 13.8533 9.52189 13.3467 9.83432 13.0342L14.8686 8H0.8C0.358176 8 0 7.64183 0 7.2C0 6.75818 0.358176 6.4 0.8 6.4H14.8686L9.83432 1.36568C9.52189 1.05327 9.52189 0.54674 9.83432 0.234324Z" fill="#F5F5F5"/>
+                                        </svg>
+                                    </button>
+                                <?php endif; ?>
                             </div>
-                        </div>
                         
-                        <div class="growfund-media__thumbnails">
-                            <?php if (!empty($data->video) && !empty($data->video['url'])) : ?>
-                            <div class="growfund-thumb"><img src="<?php echo !empty($data->video['poster']) && !empty($data->video['poster']['url']) ? esc_url($data->video['poster']['url']) : esc_url(growfund_site_placeholder_image_url()); ?>" alt="thumb" /></div>
+							<?php if ($total_media_count > 1) : ?>
+                                <div class="growfund-media__thumbnails">
+                                    <?php if (!empty($data->video) && !empty($data->video['url'])) : ?>
+                                        <div class="growfund-thumb">
+                                            <img src="<?php echo !empty($data->video['poster']) && !empty($data->video['poster']['url']) ? esc_url($data->video['poster']['url']) : esc_url(growfund_site_placeholder_image_url()); ?>" alt="thumb" />
+                                        </div>
+                                    <?php endif; ?>
+                                    <?php 
+                                    if (!empty($data->images) && is_array($data->images)) :
+                                        ?>
+                                        <?php
+                                        foreach ($data->images as $image) {
+                                            ?>
+                                            <div class="growfund-thumb"><img src="<?php echo !empty($image['url']) ? esc_url($image['url']) : esc_url(growfund_site_placeholder_image_url()); ?>" alt="thumb" /></div>
+                                            <?php
+                                        }
+                                    endif;
+                                    ?>
+                                </div>
                             <?php endif; ?>
-                            <?php 
-                            if (!empty($data->images) && is_array($data->images)) :
-								?>
-                                <?php
-                                foreach ($data->images as $image) {
-									?>
-                                        <div class="growfund-thumb"><img src="<?php echo !empty($image['url']) ? esc_url($image['url']) : esc_url(growfund_site_placeholder_image_url()); ?>" alt="thumb" /></div>
-                                    <?php
-                                }
-                            endif;
-							?>
-                        </div>
-                        <?php endif; ?>
+                    <?php endif; ?>
                     </div>
 
                     <?php if (!empty($data->tags)) : ?>
@@ -199,7 +207,7 @@ if ($data) : ?>
             ?>
             <?php
             $actions = [];
-            if (!growfund_app()->is_donation_mode() && !$data->is_closed) {
+            if (!growfund_app()->is_donation_mode() && !$data->is_ended) {
                 $actions = [
                     [
 						'label' => __('Back this campaign', 'growfund'),
@@ -255,7 +263,7 @@ if ($data) : ?>
 			->render('site.components.tabs', [
 				'tabs' => $tabs,
 				'actions' => $actions,
-				'is_closed' => $data->is_closed
+				'is_ended' => $data->is_ended
 			]);
 		?>
 

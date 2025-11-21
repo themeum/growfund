@@ -22,7 +22,7 @@ $campaignId = $campaign_id ?? null;
                         ->render('site.components.campaign-reward', [
                             'rewards' => $rewards,
                             'campaign_id' => $campaignId,
-                            'is_closed' => $campaign->is_closed
+                            'is_ended' => $campaign->is_ended ?? false
                         ]);
 					?>
                 </div>

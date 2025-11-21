@@ -4,10 +4,13 @@ namespace Growfund;
 
 defined( 'ABSPATH' ) || exit;
 
+use WP_Error;
 use Closure;
 use Exception;
 use Growfund\Exceptions\InvalidRoutActionException;
 use Growfund\Http\Request;
+use Growfund\Exceptions\AuthorizationException;
+use Growfund\Http\Response;
 
 /**
  * Handles route registration and middleware for the growfund REST API.
@@ -339,8 +342,41 @@ class Route
         register_rest_route(static::$namespace, $this->get_formatted_endpoint(), [
             'methods' => strtoupper($this->method),
             'callback' => $this->resolve_route(),
-            'permission_callback' => '__return_true'
+            'permission_callback' => [$this, 'check_permission']
         ]);
+    }
+
+    /**
+     * Check permissions for the route.
+     *
+     * @since 1.0.0
+     *
+     * @param \WP_REST_Request $rest_request
+     * @return bool|\WP_Error
+     */
+    public function check_permission($rest_request)
+    {
+        $request = Request::from_wp_rest_request($rest_request);
+
+        try {
+            $pipeline = array_reduce(
+                array_reverse($this->middleware),
+                function ($next, $middleware) {
+                    return function ($request) use ($next, $middleware) {
+                        return (new $middleware())->handle($request, $next);
+                    };
+                },
+                function ($request) {
+                    return true;
+                }
+            );
+
+            return $pipeline($request);
+        } catch (AuthorizationException $exception) {
+            return new WP_Error('rest_forbidden', $exception->getMessage(), ['status' => Response::FORBIDDEN]);
+        } catch (Exception $exception) {
+            return new WP_Error('rest_forbidden', $exception->getMessage(), ['status' => Response::INTERNAL_SERVER_ERROR]);
+        }
     }
 
     /**
@@ -467,8 +503,8 @@ class Route
      */
     protected function resolve_route()
     {
-        return function ($restRequest) {
-            $request = Request::from_wp_rest_request($restRequest);
+        return function ($rest_request) {
+            $request = Request::from_wp_rest_request($rest_request);
 
             if (!is_array($this->action)) {
                 /* translators: %s: Route endpoint */
@@ -495,19 +531,7 @@ class Route
             }
 
             try {
-                $pipeline = array_reduce(
-                    array_reverse($this->middleware),
-                    function ($next, $middleware) {
-                        return function ($request) use ($next, $middleware) {
-                            return (new $middleware())->handle($request, $next);
-                        };
-                    },
-                    function ($request) use ($controller_instance, $method) {
-                        return $controller_instance->$method($request);
-                    }
-                );
-
-                return $pipeline($request);
+                return $controller_instance->$method($request);
             } catch (Exception $exception) {
                 return ApiExceptionHandler::get_response($exception);
             }

@@ -3,7 +3,7 @@
 * Plugin Name:       Growfund
 * Plugin URI:        https://growfund.com
 * Description:       Launch your donation or reward-based WordPress crowdfunding platform with Growfund. It combines native payments, WooCommerce integration, real-time insights, and fully customizable campaigns, making it the ultimate WordPress crowdfunding plugin.
-* Version:           1.0.0
+* Version:           1.0.1
 * Author:            Themeum
 * Author URI:        https://themeum.com
 * Text Domain:       growfund
@@ -27,7 +27,7 @@ use Growfund\Constants\HookNames;
 /**
  * Define plugin version
  */
-define('GROWFUND_VERSION', '1.0.0');
+define('GROWFUND_VERSION', '1.0.1');
 
 /**
  * Define plugin file
@@ -88,7 +88,7 @@ define('GROWFUND_BASENAME', plugin_basename(__FILE__));
  * Available values - development|production
  * @since   1.0.0
  */
-define('GROWFUND_ENV_MODE', 'production');
+define('GROWFUND_ENV_MODE', 'development');
 
 /**
  * Define plugin prefix
@@ -128,7 +128,7 @@ function growfund_plugin_initializer()
                 </script>
                 <tr class="plugin-update-tr active">
                     <td colspan="4" class="plugin-update colspanchange">
-                        <div class="update-message notice inline notice-warning notice-alt">
+                        <div class="notice inline notice-warning notice-alt">
                             <p><strong>Growfund:</strong> You must deactivate <strong>Growfund Pro</strong> before deactivating Growfund.</p>
                         </div>
                     </td>

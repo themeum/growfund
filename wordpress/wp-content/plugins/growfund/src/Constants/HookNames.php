@@ -36,6 +36,7 @@ class HookNames
     const WP_AUTHENTICATE_USER = 'wp_authenticate_user';
     const USER_REGISTER = 'user_register';
     const PLUGIN_ROW_META = 'plugin_row_meta';
+    const REST_REQUEST_AFTER_CALLBACKS = 'rest_request_after_callbacks';
 
     // Plugin Updater hooks
     const PLUGINS_API = 'plugins_api';

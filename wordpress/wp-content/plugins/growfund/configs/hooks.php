@@ -1,7 +1,9 @@
 <?php
 
+
 defined( 'ABSPATH' ) || exit;
 
+use Growfund\Hooks\Filters\ApiPermissionError;
 use Growfund\Hooks\Actions\AuthRedirect;
 use Growfund\Hooks\Actions\BackerCapabilities;
 use Growfund\Hooks\Actions\ClearFlashMessage;
@@ -105,6 +107,7 @@ return [
         RegisterCustomBlockTemplates::class,
         HideAdminBar::class,
         BodyClass::class,
+        ApiPermissionError::class,
 
         // woocommerce
         CheckoutItemName::class,
