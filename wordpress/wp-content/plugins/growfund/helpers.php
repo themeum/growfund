@@ -7,7 +7,6 @@ use Growfund\Contracts\Capability;
 use Growfund\Core\AppSettings;
 use Growfund\Core\Dispatcher;
 use Growfund\Core\FeatureManager;
-use Growfund\Core\PluginInstaller;
 use Growfund\Core\Scheduler;
 use Growfund\Core\User;
 use Growfund\Http\Response;
@@ -90,14 +89,14 @@ if (!function_exists('growfund_settings')) {
 }
 
 
-if (!function_exists('dd')) {
+if (!function_exists('growfund_dd')) {
     /**
      * Dump and die
      * 
      * @param mixed ...$args
      * @return never
      */
-    function dd(...$args)
+    function growfund_dd(...$args)
     {
         echo '<xmp>';
         foreach ($args as $arg) {
@@ -110,14 +109,14 @@ if (!function_exists('dd')) {
     }
 }
 
-if (!function_exists('pr')) {
+if (!function_exists('growfund_pr')) {
     /**
      * print and die
      * 
      * @param mixed ...$args
      * @return never
      */
-    function pr(...$args)
+    function growfund_pr(...$args)
     {
         echo '<xmp>';
         foreach ($args as $arg) {
@@ -462,10 +461,10 @@ if (!function_exists('growfund_campaign_url')) {
      * If the identifier is empty, the current page's URL is returned.
      * If the identifier is a string, it is treated as a campaign slug.
      * 
-     * @param string $identifier The campaign identifier (post ID or slug).
+     * @param string|number $identifier The campaign identifier (post ID or slug).
      * @return string The campaign URL or false if the campaign does not exist.
      */
-    function growfund_campaign_url(string $identifier = '')
+    function growfund_campaign_url($identifier = null)
     {
         if (empty($identifier)) {
             return get_permalink();
@@ -518,18 +517,6 @@ if (!function_exists('growfund_clean_path')) {
     {
         $path = wp_normalize_path($path);
         return $trailing_slash ? trailingslashit($path) : untrailingslashit($path);
-    }
-}
-
-if (!function_exists('growfund_installer')) {
-    /**
-     * Make the PluginInstaller instance
-     *
-     * @return \Growfund\Core\PluginInstaller
-     */
-    function growfund_installer()
-    {
-        return growfund_app()->make(PluginInstaller::class);
     }
 }
 
@@ -992,19 +979,6 @@ if (!function_exists('growfund_is_block_theme')) {
     }
 }
 
-
-if (!function_exists('growfund_app_features')) {
-    /**
-     * Get the feature manager instance.
-     *
-     * @return \Growfund\Core\FeatureManager
-     */
-    function growfund_app_features()
-    {
-        return growfund_app()->make(FeatureManager::class);
-	}
-}
-
 if (!function_exists('growfund_is_dashboard_route')) {
     /**
      * Check if the current route is a dashboard route.
@@ -1019,6 +993,20 @@ if (!function_exists('growfund_is_dashboard_route')) {
     }
 }
 
+if (!function_exists('growfund_is_public_route')) {
+    /**
+     * Check if the current route is a public route.
+     *
+     * This function will return true if the current route is a public route and false otherwise.
+     *
+     * @return bool True if the current route is a public route, false otherwise.
+     */
+    function growfund_is_public_route()
+    {
+        return Utils::is_public_route();
+    }
+}
+
 if (!function_exists('growfund_is_plugin_menu')) {
     /**
      * Check if the current route is a plugin menu page.
@@ -1029,8 +1017,7 @@ if (!function_exists('growfund_is_plugin_menu')) {
      */
     function growfund_is_plugin_menu()
     {
-        // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-        if (isset($_GET['page']) && $_GET['page'] === 'growfund') {
+        if (growfund_input_get('page') === 'growfund') {
             return true;
         }
 
@@ -1050,7 +1037,7 @@ if (!function_exists('growfund_nonce_field')) {
     {
         $action = empty($action) ? growfund_with_prefix('site_nonce') : $action;
         
-        return wp_nonce_field($action); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_nonce_field() output is properly escaped.
+        return wp_nonce_field($action);
     }
 }
 
@@ -1071,7 +1058,7 @@ if (!function_exists('growfund_is_wc_checkout')) {
         if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
 
 			// Safely get the request URI.
-			$route = isset($_SERVER['REQUEST_URI']) ? Sanitizer::apply_rule(wp_unslash( $_SERVER['REQUEST_URI']), Sanitizer::TEXT) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized	
+			$route = Sanitizer::apply_rule(wp_unslash(growfund_input_server('REQUEST_URI')), Sanitizer::TEXT);  
 
 			if ( str_contains( $route, '/wc/store/' ) && str_contains( $route, 'checkout' ) ) {
 				return true;
@@ -1106,5 +1093,122 @@ if (!function_exists('growfund_logout')) {
     function growfund_logout()
     {
         wp_logout();
+    }
+}
+
+if (!function_exists('growfund_site_name')) {
+    /**
+     * Get the name of the site.
+     */
+    function growfund_site_name() {
+        return get_bloginfo('name');
+    }
+}
+
+if (!function_exists('growfund_add_inline_script')) {
+    /**
+     * Localize a script.
+     * 
+     * @param string $hook_name The hook name to add the action to.
+     * @param string $inline_js The inline JavaScript to add.
+     * @param int $priority The priority of the action.
+     * 
+     * @return void
+     */
+    function growfund_add_inline_script($hook_name, $inline_js, $priority = 30) {
+        add_action($hook_name, function() use ($inline_js) {
+			wp_add_inline_script('growfund-inline-script', $inline_js);
+        }, $priority);
+    }
+}
+
+if (!function_exists('growfund_localize_script')) {
+    /**
+     * Localize a script.
+     * 
+     * @param string $hook_name The hook name to add the action to.
+     * @param string $object_name The name of the object to localize.
+     * @param array $data The data to localize.
+     * @param int $priority The priority of the action.
+     * 
+     * @return void
+     */
+    function growfund_localize_script($hook_name, $object_name, $data, $priority = 30) {
+        add_action($hook_name, function() use ( $object_name, $data) {
+            wp_localize_script('growfund-inline-script', $object_name, $data);
+        }, $priority);
+    }
+}
+
+if (!function_exists('growfund_input_get')) {
+    /**
+     * Retrieve a value from the $_GET.
+     * 
+     * @param string $key The key to retrieve.
+     * @param mixed $default The default value to return if the key is not found.
+     * @return mixed The value of the key, or the default value if not found.
+     */
+    function growfund_input_get($key, $default = null) {
+        $input =  filter_input(INPUT_GET, $key, FILTER_DEFAULT);
+
+        if (is_null($input)) {
+            return $default;
+        }
+
+        return $input;
+    }
+}
+
+if (!function_exists('growfund_input_post')) {
+    /**
+     * Retrieve a value from the $_POST.
+     * 
+     * @param string $key The key to retrieve.
+     * @param mixed $default The default value to return if the key is not found.
+     * @return mixed The value of the key, or the default value if not found.
+     */
+    function growfund_input_post($key, $default = null) {
+        $input =  filter_input(INPUT_POST, $key, FILTER_DEFAULT);
+
+        if (is_null($input)) {
+            return $default;
+        }
+
+        return $input;
+    }
+}
+
+if (!function_exists('growfund_input_server')) {
+    /**
+     * Retrieve a value from the $_SERVER.
+     * 
+     * @param string $key The key to retrieve.
+     * @param mixed $default The default value to return if the key is not found.
+     * @return mixed The value of the key, or the default value if not found.
+     */
+    function growfund_input_server($key, $default = null) {
+        $input =  filter_input(INPUT_SERVER, $key, FILTER_DEFAULT);
+
+        if (is_null($input)) {
+            return $default;
+        }
+
+        return $input;
+    }
+}
+
+if (!function_exists('has_growfund_pro')) {
+    /**
+     * Check if the pro version is activated.
+     *
+     * @return bool
+     */
+    function has_growfund_pro()
+    {
+        if (!function_exists('is_plugin_active')) {
+            include_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+
+        return is_plugin_active('growfund-pro/growfund-pro.php');
     }
 }

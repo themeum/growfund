@@ -110,7 +110,7 @@ class PledgeService
             $user_info = json_decode($record->user_info, true);
             $user_info['id'] = (string) $user_info['id'];
             $user_info['image'] = !empty($user_info['image']) ? MediaAttachment::make($user_info['image']) : null;
-            $user_info['is_verified'] = growfund_user($user_info['id'])->is_verified();
+            $user_info['is_verified'] = !empty($user_info['id']) && growfund_user($user_info['id'])->is_verified();
             $backer = PledgeBackerDTO::from_array($user_info);
         }
 
@@ -679,7 +679,6 @@ class PledgeService
         $backer_dto = (new UserService())->get_by_user_id($dto->user_id);
         $backer_dto->image = $backer_dto->image['id'] ?? null;
         $user_info = PledgeBackerDTO::from_array($backer_dto->to_array());
-
         $dto->user_info = wp_json_encode($user_info->to_array());
 
         if ($dto->reward_id) {
@@ -1160,7 +1159,13 @@ class PledgeService
             $query->where_date('created_at', '<=', $end_date->format(DateTimeFormats::DB_DATE));
         }
 
-        return $query->count('DISTINCT user_id');
+        $result = $query
+            ->select([
+                'COUNT(DISTINCT user_id) + COUNT(DISTINCT CASE WHEN user_id IS NULL THEN email END) + SUM(user_id IS NULL AND email IS NULL) as total_count'
+			])
+            ->get();
+
+        return (int) ($result[0]->total_count ?? 0);
     }
 
 

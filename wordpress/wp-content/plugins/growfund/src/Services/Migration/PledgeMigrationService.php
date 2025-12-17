@@ -182,7 +182,8 @@ class PledgeMigrationService
             return [
                 'uid'                        => growfund_uuid(),
                 'campaign_id'                => $campaign_id,
-                'user_id'                    => $user_info['id'] ?: null, // phpcs:ignore
+                'user_id'                    => !empty($user_info['id']) ? $user_info['id'] : null,
+                'email'                      => !empty($user_info['email']) ? $user_info['email'] : null,
                 'status'                     => WoocommerceToNative::pledge_status($order->get_status()),
                 'pledge_option'              => !empty($reward) ? PledgeOption::WITH_REWARDS : PledgeOption::WITHOUT_REWARDS,
                 'reward_id'                  => $reward_id,
@@ -199,9 +200,9 @@ class PledgeMigrationService
                 'reward_info'                => wp_json_encode($reward),
                 'user_info'                  => wp_json_encode($user_info),
                 'created_at'                 => $order->get_date_created()->date(DateTimeFormats::DB_DATETIME),
-                'created_by'                 => $order->get_customer_id() ?: 0, // phpcs:ignore
+                'created_by'                 => $order->get_customer_id() ? $order->get_customer_id() : 0, 
                 'updated_at'                 => $order->get_date_modified()->date(DateTimeFormats::DB_DATETIME),
-                'updated_by'                 => $order->get_customer_id() ?: 0, // phpcs:ignore
+                'updated_by'                 => $order->get_customer_id() ? $order->get_customer_id() : 0,
             ];
         }
 
@@ -267,6 +268,10 @@ class PledgeMigrationService
         }
 
         if (empty($user)) {
+            if (empty($data['email'])) {
+                return $data;
+            }
+            
             $data['id'] = $this->create_backer(CreateBackerDTO::from_array($data));
 
             return $data;

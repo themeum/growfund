@@ -3,7 +3,7 @@ import { __ } from '@wordpress/i18n';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 import { ProSwitchInput } from '@/components/pro-fallbacks/form/pro-switch-input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
@@ -11,8 +11,8 @@ import { useAppConfig } from '@/contexts/app-config';
 import { AppConfigKeys, useSettingsContext } from '@/features/settings/context/settings-context';
 import { useUpdateDirtyState } from '@/features/settings/hooks/use-update-dirty-state';
 import {
-    SecuritySettingsSchema,
-    type SecuritySettingsForm,
+  SecuritySettingsSchema,
+  type SecuritySettingsForm,
 } from '@/features/settings/schemas/settings';
 import { useRouteBlockerGuard } from '@/hooks/use-route-blocker-guard';
 import { registry } from '@/lib/registry';
@@ -59,8 +59,7 @@ const SecuritySettingsPage = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="growfund-space-y-4">
-            <FeatureGuard
-              feature="settings.security.email_verification"
+            <ElementWrapper
               fallback={
                 <ProSwitchInput
                   label={__('Email Verification', 'growfund')}
@@ -75,7 +74,7 @@ const SecuritySettingsPage = () => {
               {SecuritySettingsEmailVerificationSwitchField && (
                 <SecuritySettingsEmailVerificationSwitchField />
               )}
-            </FeatureGuard>
+            </ElementWrapper>
           </CardContent>
         </Card>
       </div>

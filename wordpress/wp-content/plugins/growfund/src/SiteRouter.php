@@ -167,7 +167,7 @@ class SiteRouter
             return null;
         }
 
-        $request_method = Sanitizer::apply_rule(wp_unslash($_SERVER['REQUEST_METHOD']), Sanitizer::TEXT); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+        $request_method = Sanitizer::apply_rule(wp_unslash(growfund_input_server('REQUEST_METHOD')), Sanitizer::TEXT);
         $route = static::find_route($request_method, $query);
 
         if (empty($route)) {
@@ -201,7 +201,7 @@ class SiteRouter
             return false;
         }
 
-        $request_method = Sanitizer::apply_rule(wp_unslash($_SERVER['REQUEST_METHOD']), Sanitizer::TEXT); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+        $request_method = Sanitizer::apply_rule(wp_unslash(growfund_input_server('REQUEST_METHOD')), Sanitizer::TEXT);
         $route = static::find_route($request_method, $query);
 
         if (empty($route)) {
@@ -222,7 +222,7 @@ class SiteRouter
             return;
         }
 
-        $request_method = Sanitizer::apply_rule(wp_unslash($_SERVER['REQUEST_METHOD']), Sanitizer::TEXT); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+        $request_method = Sanitizer::apply_rule(wp_unslash(growfund_input_server('REQUEST_METHOD')), Sanitizer::TEXT);
         $route = static::find_route($request_method, $query);
 
         if (empty($route)) {
@@ -234,7 +234,7 @@ class SiteRouter
         }
 
 		if ($route->needs_nonce_check) {
-			$nonce = Sanitizer::apply_rule(wp_unslash($_POST['_wpnonce'] ?? $_GET['_wpnonce'] ?? ''), Sanitizer::TEXT); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			$nonce = Sanitizer::apply_rule(wp_unslash(growfund_input_post('_wpnonce', '')), Sanitizer::TEXT);
 			$nonce_action = $route->nonce_action ?? growfund_with_prefix('site_nonce');
 
 			if (!wp_verify_nonce($nonce, $nonce_action) ) {
@@ -251,7 +251,7 @@ class SiteRouter
             $params = static::extract_params($route->pattern);
             array_unshift($params, $request);
 
-            $request_method = Sanitizer::apply_rule(wp_unslash($_SERVER['REQUEST_METHOD']), Sanitizer::TEXT); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+            $request_method = Sanitizer::apply_rule(wp_unslash(growfund_input_server('REQUEST_METHOD')), Sanitizer::TEXT);
 
             if ($request_method === $route->method) {
                 $final_callback = function () use ($controller, $method_name, $params) {
@@ -271,7 +271,7 @@ class SiteRouter
                 }
 
                 if (is_string($result)) {
-                    return add_filter('the_content', function ($content) use ($result) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
+                    return add_filter('the_content', function () use ($result) {
                         return $result;
                     });
                 }
@@ -305,7 +305,7 @@ class SiteRouter
      */
     protected static function extract_params($pattern)
     {
-        $url = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/'); // phpcs:ignore
+        $url = trim(wp_parse_url(growfund_input_server('REQUEST_URI'), PHP_URL_PATH), '/');
         $url_parts = explode('/', $url);
         $pattern_parts = explode('/', trim($pattern, '/'));
 

@@ -3,7 +3,7 @@ import { __ } from '@wordpress/i18n';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 import UserPermissionsAnonymousContributionsFallback from '@/components/pro-fallbacks/settings/user-permissions/anonymous-contributions-fallback';
 import UserPermissionsContributorCommentsFallback from '@/components/pro-fallbacks/settings/user-permissions/contributor-comments-fallback';
 import UserPermissionsFundraiserSettingsFallback from '@/components/pro-fallbacks/settings/user-permissions/fundraiser-settings-fallback';
@@ -13,8 +13,8 @@ import { useAppConfig } from '@/contexts/app-config';
 import { AppConfigKeys, useSettingsContext } from '@/features/settings/context/settings-context';
 import { useUpdateDirtyState } from '@/features/settings/hooks/use-update-dirty-state';
 import {
-    type UserPermissionsSettingsForm,
-    UserPermissionsSettingsSchema,
+  type UserPermissionsSettingsForm,
+  UserPermissionsSettingsSchema,
 } from '@/features/settings/schemas/settings';
 import { useRouteBlockerGuard } from '@/hooks/use-route-blocker-guard';
 import { registry } from '@/lib/registry';
@@ -55,12 +55,9 @@ const UserPermissionsSettingsPage = () => {
   return (
     <Form {...form}>
       <div className="growfund-grid growfund-gap-4">
-        <FeatureGuard
-          feature="settings.user_permissions.fundraisers"
-          fallback={<UserPermissionsFundraiserSettingsFallback />}
-        >
+        <ElementWrapper fallback={<UserPermissionsFundraiserSettingsFallback />}>
           {UserPermissionsFundraiserSettings && <UserPermissionsFundraiserSettings />}
-        </FeatureGuard>
+        </ElementWrapper>
 
         {/* Donor/Backer permissions */}
         <Card>
@@ -76,19 +73,13 @@ const UserPermissionsSettingsPage = () => {
           </CardHeader>
           <CardContent className="growfund-space-y-4">
             {isDonationMode && (
-              <FeatureGuard
-                feature="settings.user_permissions.anonymous_contributions"
-                fallback={<UserPermissionsAnonymousContributionsFallback />}
-              >
+              <ElementWrapper fallback={<UserPermissionsAnonymousContributionsFallback />}>
                 {UserPermissionsAnonymousContributions && <UserPermissionsAnonymousContributions />}
-              </FeatureGuard>
+              </ElementWrapper>
             )}
-            <FeatureGuard
-              feature="settings.user_permissions.contributor_comments"
-              fallback={<UserPermissionsContributorCommentsFallback />}
-            >
+            <ElementWrapper fallback={<UserPermissionsContributorCommentsFallback />}>
               {UserPermissionsContributorComments && <UserPermissionsContributorComments />}
-            </FeatureGuard>
+            </ElementWrapper>
           </CardContent>
         </Card>
       </div>

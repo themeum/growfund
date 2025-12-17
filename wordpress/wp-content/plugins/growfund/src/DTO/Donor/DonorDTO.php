@@ -48,6 +48,9 @@ class DonorDTO extends DTO
     /** @var bool */
     public $is_verified;
 
+    /** @var bool */
+    public $is_fundraiser;
+
     /** @var string|null - optional */
     public $latest_donation_date;
 

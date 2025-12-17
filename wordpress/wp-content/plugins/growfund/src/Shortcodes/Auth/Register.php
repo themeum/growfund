@@ -21,7 +21,9 @@ class Register extends Shortcode
         return growfund_renderer()->get_html('site.auth.register', [
 			'is_shortcode' => true,
 			'is_fundraiser' => $is_fundraiser,
-			'redirect_to' => wp_get_referer()
+			'redirect_to' => wp_get_referer(),
+            'terms_and_conditions_url' => $attributes['terms_and_conditions_url'] ?? null,
+            'privacy_url' => $attributes['privacy_url'] ?? null,
 		]);
     }
 }

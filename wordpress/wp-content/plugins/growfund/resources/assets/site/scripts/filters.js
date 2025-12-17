@@ -54,54 +54,5 @@ document.addEventListener('DOMContentLoaded', function () {
         window.performAjaxSearch(1);
       }
     });
-
-    // Desktop Clear All button functionality
-    const desktopClearButton = document.getElementById('growfund-desktop-filter-clear');
-    if (desktopClearButton) {
-      desktopClearButton.addEventListener('click', function () {
-        // Clear search input
-        const searchInput = filterForm.querySelector('input[name="search"]');
-        if (searchInput) {
-          searchInput.value = '';
-        }
-
-        // Clear category dropdown
-        const categoryDropdown = filterForm.querySelector('[data-dropdown-key="category"]');
-        if (categoryDropdown) {
-          categoryDropdown.dataset.value = '';
-          const categoryValueElement = categoryDropdown.querySelector('.growfund-dropdown__value');
-          if (categoryValueElement) {
-            categoryValueElement.textContent =
-              categoryDropdown.getAttribute('data-placeholder') || 'Categories';
-          }
-        }
-
-        // Clear location dropdown
-        const locationDropdown = filterForm.querySelector('[data-dropdown-key="location"]');
-        if (locationDropdown) {
-          locationDropdown.dataset.value = '';
-          const locationValueElement = locationDropdown.querySelector('.growfund-dropdown__value');
-          if (locationValueElement) {
-            locationValueElement.textContent =
-              locationDropdown.getAttribute('data-placeholder') || 'Location';
-          }
-        }
-
-        // Clear sort dropdown
-        const sortDropdown = filterForm.querySelector('[data-dropdown-key="sort"]');
-        if (sortDropdown) {
-          sortDropdown.dataset.value = '';
-          const sortValueElement = sortDropdown.querySelector('.growfund-dropdown__value');
-          if (sortValueElement) {
-            sortValueElement.textContent =
-              sortDropdown.getAttribute('data-placeholder') || 'Sort by';
-          }
-        }
-
-        // Clear URL parameters and redirect to base URL
-        const baseUrl = window.location.href.split('?')[0];
-        window.location.href = baseUrl;
-      });
-    }
   }
 });

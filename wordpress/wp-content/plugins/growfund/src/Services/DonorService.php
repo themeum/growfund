@@ -21,6 +21,7 @@ use Growfund\Supports\User;
 use Growfund\Supports\UserMeta;
 use Growfund\Supports\Pagination as PaginationSupport;
 use Exception;
+use WP_User;
 use WP_User_Query;
 
 class DonorService extends UserService
@@ -216,7 +217,8 @@ class DonorService extends UserService
             'total_contributions'           => $this->donation_service->get_total_contribution_amount_by_donor($user->ID),
             'latest_donation_date'          => $latest_donation_date,
             'joined_at'                    => $user->user_registered,
-            'is_verified'                   => User::is_verified($user->ID),
+            'is_verified'                   => User::is_verified($user),
+            'is_fundraiser'                 => User::is_fundraiser($user),
             'created_by'                    => $meta['created_by'] ?? null,
         ]);
     }

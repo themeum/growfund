@@ -2,6 +2,12 @@
 
 namespace Growfund\Supports;
 
+use Growfund\Constants\UserTypes\Admin;
+use Growfund\Constants\UserTypes\Backer;
+use Growfund\Constants\UserTypes\Donor;
+use Growfund\Constants\UserTypes\Fundraiser;
+use WP_User;
+
 defined( 'ABSPATH' ) || exit;
 
 class User
@@ -54,10 +60,87 @@ class User
         return $token;
     }
 
-    public static function is_verified($user_id)
+    /**
+     * Get the user roles
+     *
+     * @param WP_User|null $user The user object.
+     * @return array
+     */
+    public static function get_roles($user)
     {
-        return growfund_user($user_id)->is_admin() || filter_var(
-            UserMeta::get($user_id, 'email_verified'),
+        return $user->roles ?? [];
+    }
+
+    /**
+     * Check if the user has a specific role
+     *
+     * @param WP_User|null $user The user object.
+     * @param string $role
+     * @return bool
+     */
+    public static function has_role($user, string $role)
+    {
+        return in_array($role, static::get_roles($user), true);
+    }
+
+    /**
+     * Check if the user is an admin
+     *
+     * @param WP_User|null $user The user object.
+     * @return bool
+     */
+    public static function is_admin($user)
+    {
+        return static::has_role($user, Admin::ROLE);
+    }
+
+    /**
+     * Check if the user is a fundraiser
+     *
+     * @param WP_User|null $user The user object.
+     * @return bool
+     */
+    public static function is_fundraiser($user)
+    {
+        return static::has_role($user, Fundraiser::ROLE);
+    }
+
+    /**
+     * Check if the current user is a backer
+     *
+     * @param WP_User|null $user The user object.
+     * @return bool
+     */
+    public static function is_backer($user)
+    {
+        return static::has_role($user, Backer::ROLE);
+    }
+
+    /**
+     * Check if the current user is a donor
+     *
+     * @param WP_User|null $user The user object.
+     * @return bool
+     */
+    public static function is_donor($user)
+    {
+        return static::has_role($user, Donor::ROLE);
+    }
+
+    /**
+     * Check if the current user is a donor
+     *
+     * @param WP_User|null $user The user object.
+     * @return bool
+     */
+    public static function is_verified($user)
+    {
+        if (empty($user)) {
+            return false;
+        }
+        
+        return static::is_admin($user) || filter_var(
+            UserMeta::get($user->ID, 'email_verified'),
             FILTER_VALIDATE_BOOLEAN
         );
     }

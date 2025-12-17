@@ -1,6 +1,5 @@
 <?php
 
-
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Hooks\Filters\ApiPermissionError;

@@ -81,7 +81,7 @@ class User
     /**
      * The WP_User instance
      *
-     * @var WP_User|null
+     * @var \WP_User|null
      */
     protected $user = null;
 
@@ -251,7 +251,28 @@ class User
      */
     public function set_role($role)
     {
-        return $this->user->set_role($role);
+        try {
+            $this->user->set_role($role);
+            return true;
+        } catch (Exception $error) {
+            return false;
+        }
+    }
+
+    /**
+     * Add new role to the current user
+     *
+     * @param string $role
+     * @return bool
+     */
+    public function add_new_role($role)
+    {
+        try {
+            $this->user->add_role($role);
+            return true;
+        } catch (Exception $error) {
+            return false;
+        }
     }
 
     /**
@@ -312,7 +333,7 @@ class User
      */
     public function is_verified()
     {
-        return SupportsUser::is_verified($this->get_id());
+        return SupportsUser::is_verified($this->get());
     }
 
     /**

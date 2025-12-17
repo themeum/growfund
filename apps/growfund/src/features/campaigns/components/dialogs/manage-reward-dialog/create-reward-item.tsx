@@ -2,21 +2,20 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { __ } from '@wordpress/i18n';
 import { useForm } from 'react-hook-form';
 
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 import { MediaField } from '@/components/form/media-field';
 import { TextField } from '@/components/form/text-field';
 import CampaignRewardFallback from '@/components/pro-fallbacks/campaign/campaign-reward-fallback';
 import { Button } from '@/components/ui/button';
 import { useCampaignBuilderContext } from '@/features/campaigns/contexts/campaign-builder';
-import { useCampaignReward } from '@/features/campaigns/contexts/campaign-reward';
 import {
-    type RewardItem,
-    type RewardItemForm,
-    RewardItemFormSchema,
+  type RewardItem,
+  type RewardItemForm,
+  RewardItemFormSchema,
 } from '@/features/campaigns/schemas/reward-item';
 import {
-    useCreateRewardItemMutation,
-    useUpdateRewardItemMutation,
+  useCreateRewardItemMutation,
+  useUpdateRewardItemMutation,
 } from '@/features/campaigns/services/reward-item';
 import { useFormErrorHandler } from '@/hooks/use-form-error-handler';
 import { getDefaults } from '@/lib/zod';
@@ -44,7 +43,6 @@ const CreateRewardItem = ({
   });
 
   const { campaignId } = useCampaignBuilderContext();
-  const { rewardItems } = useCampaignReward();
 
   const createRewardItemMutation = useCreateRewardItemMutation();
   const updateRewardItemMutation = useUpdateRewardItemMutation();
@@ -79,9 +77,7 @@ const CreateRewardItem = ({
         <Button variant="ghost" onClick={onCancel}>
           {__('Cancel', 'growfund')}
         </Button>
-        <FeatureGuard
-          feature="campaign.reward_items"
-          consumedLimit={rewardItems.length}
+        <ElementWrapper
           fallback={
             <CampaignRewardFallback
               title={__('Unlock Unlimited Items', 'growfund')}
@@ -132,7 +128,7 @@ const CreateRewardItem = ({
           >
             {__('Save', 'growfund')}
           </Button>
-        </FeatureGuard>
+        </ElementWrapper>
       </div>
     </div>
   );

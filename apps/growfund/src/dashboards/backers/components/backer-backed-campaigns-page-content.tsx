@@ -28,8 +28,12 @@ const BackerBackedCampaignsPageContent = () => {
       <Form {...form}>
         <div className="growfund-flex growfund-items-center growfund-justify-between">
           <div className="growfund-flex growfund-items-center growfund-gap-2 growfund-text-fg-primary">
-            <h5 className="growfund-typo-h5 growfund-font-semibold">{__('Backed Campaigns', 'growfund')}</h5>
-            <h6 className="growfund-typo-h6 growfund-font-regular">{sprintf('(%s)', totalCampaigns)}</h6>
+            <h5 className="growfund-typo-h5 growfund-font-semibold">
+              {__('Backed Campaigns', 'growfund')}
+            </h5>
+            <h6 className="growfund-typo-h6 growfund-font-regular">
+              {sprintf('(%s)', totalCampaigns)}
+            </h6>
           </div>
           <div className="growfund-max-w-[25rem] growfund-flex growfund-items-center growfund-gap-2">
             <TextField

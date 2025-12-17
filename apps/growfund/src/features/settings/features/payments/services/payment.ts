@@ -15,7 +15,7 @@ export const usePaymentGatewaysQuery = () => {
   return useQuery({
     queryKey: ['PaymentGateways'],
     queryFn: getPaymentGateways,
-    enabled: growfundConfig.is_pro,
+    enabled: growfundConfig.has_growfund_pro,
   });
 };
 

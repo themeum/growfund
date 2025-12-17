@@ -5,7 +5,7 @@ import { useEffect, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { toast } from 'sonner';
 
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 import { ComboBoxField } from '@/components/form/combobox-field';
 import { DatePickerField } from '@/components/form/date-picker-field';
 import { EditorField } from '@/components/form/editor-field';
@@ -25,9 +25,9 @@ import CampaignAction from '@/features/campaigns/components/campaign-action/camp
 import StepNavigation from '@/features/campaigns/components/step-navigation';
 import { type CampaignBuilderForm } from '@/features/campaigns/schemas/campaign';
 import {
-    useCreateCategoryMutation,
-    useGetSubCategoriesQuery,
-    useGetTopLevelCategoriesQuery,
+  useCreateCategoryMutation,
+  useGetSubCategoriesQuery,
+  useGetTopLevelCategoriesQuery,
 } from '@/features/categories/services/category';
 import { AppConfigKeys } from '@/features/settings/context/settings-context';
 import useCurrentUser from '@/hooks/use-current-user';
@@ -192,12 +192,9 @@ const BasicStep = () => {
               onAddNewItem={(value) => handleCategoryCreate(value, categoryId)}
             />
             <div className="growfund-flex growfund-items-start growfund-gap-2">
-              <FeatureGuard
-                feature="campaign.start_date"
-                fallback={<CampaignLaunchDateFallback defaultValue={startDate} />}
-              >
+              <ElementWrapper fallback={<CampaignLaunchDateFallback defaultValue={startDate} />}>
                 {CampaignLaunchDate && <CampaignLaunchDate />}
-              </FeatureGuard>
+              </ElementWrapper>
               <DashIcon className="growfund-text-icon-primary growfund-mt-10 growfund-flex-shrink-0 " />
               <DatePickerField
                 control={form.control}
@@ -215,15 +212,12 @@ const BasicStep = () => {
               options={locationsAsOptions()}
             />
             <TagsField control={form.control} name="tags" label={__('Tags', 'growfund')} />
-            <FeatureGuard feature="campaign.collaborators" fallback={<CollaboratorsFallback />}>
+            <ElementWrapper fallback={<CollaboratorsFallback />}>
               {CampaignCollaborators && <CampaignCollaborators />}
-            </FeatureGuard>
-            <FeatureGuard
-              feature="campaign.collaborators"
-              fallback={<ShowCollaboratorsCheckboxFallback />}
-            >
+            </ElementWrapper>
+            <ElementWrapper fallback={<ShowCollaboratorsCheckboxFallback />}>
               {ShowCampaignCollaboratorsCheckbox && <ShowCampaignCollaboratorsCheckbox />}
-            </FeatureGuard>
+            </ElementWrapper>
           </div>
         </div>
       </div>

@@ -319,25 +319,11 @@ class CampaignService
      */
     protected function apply_filters_to_query(array &$query_args, CampaignFiltersDTO $filters_dto)
     {
-        $this->apply_search_filter($query_args, $filters_dto);
         $this->apply_status_filter($query_args, $filters_dto);
         $this->apply_date_filters($query_args, $filters_dto);
         $this->apply_taxonomy_filters($query_args, $filters_dto);
         $this->apply_featured_filter($query_args, $filters_dto);
         $this->normalize_query_relations($query_args);
-    }
-
-    /**
-     * Apply search filter.
-     *
-     * @param array $query_args
-     * @param CampaignFiltersDTO $filters_dto
-     */
-    protected function apply_search_filter(array &$query_args, CampaignFiltersDTO $filters_dto)
-    {
-        if (!empty($filters_dto->search)) {
-            $query_args['s'] = $filters_dto->search;
-        }
     }
 
     /**
@@ -426,8 +412,8 @@ class CampaignService
      */
     protected function apply_taxonomy_filters(array &$query_args, CampaignFiltersDTO $filters_dto)
     {
-        if (!empty($filters_dto->category_slug)) {
-            $this->apply_category_filter($query_args, $filters_dto->category_slug);
+        if (!empty($filters_dto->category)) {
+            $this->apply_category_filter($query_args, $filters_dto->category);
         }
 
         if (!empty($filters_dto->tag)) {
@@ -443,17 +429,17 @@ class CampaignService
      * Apply category filter with children inclusion.
      *
      * @param array $query_args
-     * @param string $category_slug
+     * @param string $category
      */
-    protected function apply_category_filter(array &$query_args, string $category_slug)
+    protected function apply_category_filter(array &$query_args, string $category)
     {
-        $term = get_term_by('slug', $category_slug, Category::NAME);
+        $term = get_term_by('slug', $category, Category::NAME);
 
         if ($term && !is_wp_error($term)) {
             $tax_query = [
                 'taxonomy' => Category::NAME,
                 'field'    => 'slug',
-                'terms'    => $category_slug,
+                'terms'    => $category,
             ];
 
             if ((int) $term->parent === CampaignConstants::DEFAULT_TOP_LEVEL_PARENT && !empty(get_term_children($term->term_id, Category::NAME))) {
@@ -895,7 +881,8 @@ class CampaignService
         $campaign_data_dto->start_date = PostMeta::get($campaign->ID, 'start_date');
         $campaign_data_dto->end_date = PostMeta::get($campaign->ID, 'end_date');
         $campaign_data_dto->author_name = $this->get_author_display_name($user);
-        $campaign_data_dto->author_image = UserMeta::get($campaign->post_author, 'image');
+        $author_image = MediaAttachment::make(UserMeta::get($campaign->post_author, 'image'));
+        $campaign_data_dto->author_image = $author_image['url'] ?? '';
         $campaign_data_dto->has_goal = filter_var(PostMeta::get($campaign->ID, 'has_goal'), FILTER_VALIDATE_BOOLEAN);
         $campaign_data_dto->goal_amount = PostMeta::get($campaign->ID, 'goal_amount');
         $campaign_data_dto->goal_type = PostMeta::get($campaign->ID, 'goal_type');
@@ -1718,10 +1705,10 @@ class CampaignService
 
     /**
      * Prepare archive data using services
-     *
+     * @param string|null $description
      * @return CampaignTemplateDTO
      */
-    public function prepare_campaigns_data()
+    public function prepare_campaigns_data($banner_title = null)
     {
         $category_service = new CampaignCategoryService();
 
@@ -1733,20 +1720,20 @@ class CampaignService
 
         // Prepare data using services directly
         $data = [];
+        $categories =  $category_service->get_all();
+        
         $data['campaigns'] = $this->paginated($filters_dto);
-        $data['categories'] = $category_service->get_all();
+        $data['categories'] = $categories;
 
         // Get featured campaigns
         $featured_filters = new CampaignFiltersDTO();
-        $featured_filters->only_active = true;
-        $featured_filters->status = [CampaignStatus::PUBLISHED, CampaignStatus::COMPLETED, CampaignStatus::FUNDED];
         $featured_filters->featured = true;
         $featured_filters->limit = 10;
         $featured_filters->only_active = true;
         $featured_filters->status = [CampaignStatus::PUBLISHED, CampaignStatus::COMPLETED, CampaignStatus::FUNDED];
         $featured_data = [];
         $featured_data['campaigns'] = $this->paginated($featured_filters);
-        $featured_data['categories'] = $category_service->get_all();
+        $featured_data['categories'] = $categories;
 
         $template_dto = new CampaignTemplateDTO();
         $template_dto->data = $data;
@@ -1754,6 +1741,7 @@ class CampaignService
         $template_dto->filter_state = $filters_dto->all();
         $template_dto->initial_limit = CampaignConstants::DEFAULT_SLIDER_LIMIT;
         $template_dto->featured_initial_limit = CampaignConstants::DEFAULT_SLIDER_LIMIT;
+        $template_dto->banner_title = $banner_title;
 
         return $template_dto;
     }
@@ -1806,8 +1794,10 @@ class CampaignService
 
         $data = $this->prepare_campaign_details_data($campaign_id);
 
-        if (!empty($_GET['uid'])) { // phpcs:ignore
-            $data->contribution = $this->get_contribution_info_by_uid(Sanitizer::apply_rule($_GET['uid'], Sanitizer::TEXT)); // phpcs:ignore
+        $uid = growfund_input_get('uid');
+
+        if (!empty($uid)) {
+            $data->contribution = $this->get_contribution_info_by_uid(Sanitizer::apply_rule($uid, Sanitizer::TEXT)); // phpcs:ignore
         }
 
         $campaign_tab_service = new CampaignTabService();

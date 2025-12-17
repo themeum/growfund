@@ -21,11 +21,11 @@ import { SelectField } from '@/components/form/select-field';
 import { TextField } from '@/components/form/text-field';
 import { LoadingSpinnerOverlay } from '@/components/layouts/loading-spinner';
 import {
-    DataTable,
-    DataTableContent,
-    DataTablePagination,
-    DataTableWrapper,
-    DataTableWrapperHeader,
+  DataTable,
+  DataTableContent,
+  DataTablePagination,
+  DataTableWrapper,
+  DataTableWrapperHeader,
 } from '@/components/table/data-table';
 import ThreeDotsOptions from '@/components/three-dots-options';
 import { Badge, type BadgeProps } from '@/components/ui/badge';
@@ -38,18 +38,18 @@ import { useConsentDialog } from '@/features/campaigns/contexts/consent-dialog-c
 import ReassignFundDialog from '@/features/donations/components/dialogs/reassign-fund-dialog';
 import { useDonationFilters } from '@/features/donations/hooks/use-donation-filters';
 import {
-    type Donation,
-    type DonationStatus,
-    DonationStatusSchema,
+  type Donation,
+  type DonationStatus,
+  DonationStatusSchema,
 } from '@/features/donations/schemas/donation';
 import {
-    type DonationFiltersForm,
-    DonationFiltersFormSchema,
+  type DonationFiltersForm,
+  DonationFiltersFormSchema,
 } from '@/features/donations/schemas/donation-filter';
 import {
-    useDonationBulkActionsMutation,
-    useDonationsQuery,
-    useEmptyDonationsTrashMutation,
+  useDonationBulkActionsMutation,
+  useDonationsQuery,
+  useEmptyDonationsTrashMutation,
 } from '@/features/donations/services/donations';
 import { AppConfigKeys } from '@/features/settings/context/settings-context';
 import { useCurrency } from '@/hooks/use-currency';
@@ -304,7 +304,9 @@ const DonationsList = ({ donorId }: { donorId?: string }) => {
       columnsHelper.accessor('amount', {
         header: () => __('Amount', 'growfund'),
         cell: (props) => (
-          <span className="growfund-font-medium growfund-text-fg-brand">{toCurrency(props.getValue())}</span>
+          <span className="growfund-font-medium growfund-text-fg-brand">
+            {toCurrency(props.getValue())}
+          </span>
         ),
         size: 98,
       }),
@@ -335,6 +337,31 @@ const DonationsList = ({ donorId }: { donorId?: string }) => {
           );
         },
         size: 108,
+      }),
+      columnsHelper.display({
+        id: 'donor-type',
+        header: () => __('Donor Type', 'growfund'),
+        cell: (props) => {
+          const variants = new Map<'registered' | 'guest', BadgeProps['variant']>([
+            ['registered', 'secondary'],
+            ['guest', 'special'],
+          ]);
+          const statusTexts = new Map<'registered' | 'guest', string>([
+            ['registered', __('Registered', 'growfund')],
+            ['guest', __('Guest', 'growfund')],
+          ]);
+
+          const donorType = props.row.original.donor.id ? 'registered' : 'guest';
+          return (
+            <Badge
+              variant={variants.has(donorType) ? variants.get(donorType) : 'outline'}
+              className="growfund-capitalize"
+            >
+              {statusTexts.has(donorType) ? statusTexts.get(donorType) : donorType}
+            </Badge>
+          );
+        },
+        size: 98,
       }),
       appConfig[AppConfigKeys.Campaign]?.allow_fund &&
         columnsHelper.accessor('fund.title', {

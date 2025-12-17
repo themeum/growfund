@@ -39,24 +39,6 @@ class RestrictUserFromLogin extends BaseHook
             );
         }
 
-        if (growfund_user($user->ID)->is_fundraiser()) {
-            if (!growfund_app_features()->is_pro() || growfund_user($user->ID)->get_meta(Fundraiser::STATUS) !== FundraiserStatus::ACTIVE) {
-                return new WP_Error(
-                'fundraiser_not_active',
-                __('Your account is not approved yet.', 'growfund')
-				);
-            }
-            
-        }
-
-        if (growfund_settings(AppSettings::SECURITY)->is_enabled_email_verification() && !growfund_user($user->ID)->is_verified()) {
-            return new WP_Error(
-                'email_not_verified',
-                __('You must verify your email before logging in.', 'growfund')
-            );
-        }
-
-
         return $user;
     }
 }

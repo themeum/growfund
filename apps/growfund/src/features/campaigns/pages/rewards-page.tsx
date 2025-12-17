@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { GiftPackIcon, GivingThanksIcon } from '@/app/icons';
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 import SelectionCardField from '@/components/form/selection-card-field';
 import { Container } from '@/components/layouts/container';
 import ProCheckboxInput from '@/components/pro-fallbacks/form/pro-checkbox-input';
@@ -57,8 +57,7 @@ const RewardsStep = () => {
             {appreciationType === 'goodies' ? (
               <>
                 <GoodiesTab />
-                <FeatureGuard
-                  feature="campaign.allow_pledging_without_reward"
+                <ElementWrapper
                   fallback={
                     <ProCheckboxInput
                       label={__('Allow Pledging Without Rewards', 'growfund')}
@@ -67,7 +66,7 @@ const RewardsStep = () => {
                   }
                 >
                   {CampaignAllowPledgingWithoutReward && <CampaignAllowPledgingWithoutReward />}
-                </FeatureGuard>
+                </ElementWrapper>
               </>
             ) : (
               <GivingThanks />

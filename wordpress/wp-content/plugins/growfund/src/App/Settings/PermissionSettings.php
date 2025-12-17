@@ -5,6 +5,7 @@ namespace Growfund\App\Settings;
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Constants\AppConfigKeys;
+use Growfund\Constants\HookNames;
 use Growfund\Core\AppSettings;
 use Growfund\Supports\Option;
 
@@ -34,29 +35,21 @@ class PermissionSettings extends AppSettings
      */
     public function allow_anonymous_donation()
     {
-        return isset($this->settings['allow_anonymous_contributions'])
-            ? filter_var($this->settings['allow_anonymous_contributions'], FILTER_VALIDATE_BOOLEAN)
-            : false;
+        return apply_filters(HookNames::GROWFUND_ALLOW_ANONYMOUS_CONTRIBUTION_FILTER, false, $this->settings);
     }
 
     public function allow_contributor_comments()
     {
-        return isset($this->settings['allow_contributor_comments'])
-            ? filter_var($this->settings['allow_contributor_comments'], FILTER_VALIDATE_BOOLEAN)
-            : false;
+        return apply_filters(HookNames::GROWFUND_ALLOW_CONTRIBUTOR_COMMENTS_FILTER, false, $this->settings);
     }
 
     public function fundraisers_can_delete_campaigns()
     {
-        return isset($this->settings['fundraisers_can_delete_campaigns'])
-            ? filter_var($this->settings['fundraisers_can_delete_campaigns'], FILTER_VALIDATE_BOOLEAN)
-            : false;
+        return apply_filters(HookNames::GROWFUND_FUNDRAISER_CAMPAIGN_DELETION_FILTER, false, $this->settings);
     }
 
     public function fundraisers_can_publish_campaigns()
     {
-        return isset($this->settings['fundraisers_can_publish_campaigns'])
-            ? filter_var($this->settings['fundraisers_can_publish_campaigns'], FILTER_VALIDATE_BOOLEAN)
-            : false;
+        return apply_filters(HookNames::GROWFUND_FUNDRAISER_CAMPAIGN_PUBLISH_FILTER, false, $this->settings);
     }
 }

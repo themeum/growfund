@@ -26,7 +26,7 @@ class EnqueueScriptsSite extends BaseHook
 
     public function get_priority()
     {
-        return 20;
+        return 1;
     }
 
     public function handle(...$args)
@@ -112,7 +112,7 @@ class EnqueueScriptsSite extends BaseHook
             'forget_password_url' => esc_url(growfund_forget_password_url()),
             'checkout_url' => esc_url(Utils::get_checkout_url()),
             'is_dev_mode' => growfund_is_dev_mode(),
-            'is_pro' => growfund_app_features()->is_pro(),
+            'has_growfund_pro' => has_growfund_pro(),
             'currency_info' => [
                 'currency' => growfund_settings(AppSettings::PAYMENT)->get_currency(),
 				'currency_position' => growfund_settings(AppSettings::PAYMENT)->get_currency_position(),
@@ -144,6 +144,9 @@ class EnqueueScriptsSite extends BaseHook
 
         $this->enqueue_component_styles($this->get_campaign_component_styles_list());
         $this->enqueue_component_scripts($this->get_campaign_component_scripts_list());
+
+        wp_register_script('growfund-inline-script', false, ['growfund-core'], GROWFUND_VERSION, true);
+        wp_enqueue_script('growfund-inline-script');
 
 
         $media_slider_style_url = GROWFUND_DIR_URL . 'resources/assets/site/styles/media-slider.css';

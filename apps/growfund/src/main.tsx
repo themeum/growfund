@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
-import { conditionalImport } from '@/lib/imports.ts';
+import { conditionalImport } from '@/lib/import.ts';
 import { createQueryRegistry } from '@/lib/query-registry.ts';
 import { createRegistry } from '@/lib/registry.ts';
 
@@ -13,22 +13,22 @@ createRegistry();
 createQueryRegistry();
 
 if (
-  window.growfund.is_pro &&
+  window.growfund.has_growfund_pro &&
   (process.env.VITE_APP_TYPE === 'pro' || process.env.NODE_ENV === 'development')
 ) {
   void (async () => {
-    const { registerComponents, registerQuery } = await conditionalImport<
-      ['registerComponents', 'registerQuery'],
-      { registerComponents: () => void; registerQuery: () => void }
-    >('@growfund/pro/index.ts', ['registerComponents', 'registerQuery']);
-    console.log(registerComponents);
+    const { registerComponents, registerQuery, registerPages } = await conditionalImport<
+      ['registerComponents', 'registerQuery', 'registerPages'],
+      { registerComponents: () => void; registerQuery: () => void; registerPages: () => void }
+    >('index', ['registerComponents', 'registerQuery', 'registerPages']);
 
-    if (!registerComponents || !registerQuery) {
+    if (!registerComponents || !registerQuery || !registerPages) {
       return;
     }
 
     registerComponents();
     registerQuery();
+    registerPages();
   })();
 }
 

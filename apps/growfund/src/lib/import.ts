@@ -9,8 +9,7 @@ export async function conditionalImport<
   TModule extends Record<string, unknown> = Record<string, unknown>,
 >(path: string, exportNames?: T): Promise<ImportResult<T, TModule>> {
   try {
-    const module = (await import(/* @vite-ignore */ path)) as TModule;
-    console.log({ module });
+    const module = (await import(`@growfund/pro/${path}.ts`)) as TModule;
 
     if (!exportNames || exportNames.length === 0) {
       return module as unknown as ImportResult<T, TModule>;
@@ -28,6 +27,7 @@ export async function conditionalImport<
     }
 
     return exports;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     const emptyExports: ImportResult<T, TModule> = {};
 

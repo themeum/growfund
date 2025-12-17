@@ -30,23 +30,31 @@ class ClassicSaveCustomFields extends BaseHook
 
         $order = $args[0];
 
-        if (isset($_POST[growfund_with_prefix('bonus_support_amount')])) { // phpcs:ignore
-            $bonus_support_amount = Sanitizer::apply_rule($_POST[growfund_with_prefix('bonus_support_amount')], Sanitizer::FLOAT); // phpcs:ignore
+        $bonus_support_amount = growfund_input_post(growfund_with_prefix('bonus_support_amount'));
+
+        if (!is_null($bonus_support_amount)) {
+            $bonus_support_amount = Sanitizer::apply_rule($bonus_support_amount, Sanitizer::FLOAT);
             $order->update_meta_data(growfund_with_prefix('bonus_support_amount'), $bonus_support_amount);
         }
 
-        if (isset($_POST[growfund_with_prefix('donation_amount')])) { // phpcs:ignore
-            $donation_amount = Sanitizer::apply_rule($_POST[growfund_with_prefix('donation_amount')], 'float'); // phpcs:ignore
+        $donation_amount = growfund_input_post(growfund_with_prefix('donation_amount'));
+
+        if (!is_null($donation_amount)) {
+            $donation_amount = Sanitizer::apply_rule($donation_amount, Sanitizer::FLOAT);
             $order->update_meta_data(growfund_with_prefix('donation_amount'), $donation_amount);
         }
 
-        if (isset($_POST[growfund_with_prefix('is_anonymous')])) { // phpcs:ignore
-            $is_anonymous = Sanitizer::apply_rule($_POST[growfund_with_prefix('is_anonymous')], 'int'); // phpcs:ignore
+        $is_anonymous = growfund_input_post(growfund_with_prefix('is_anonymous'));
+
+        if (!is_null($is_anonymous)) {
+            $is_anonymous = Sanitizer::apply_rule($is_anonymous, Sanitizer::INT);
             $order->update_meta_data(growfund_with_prefix('is_anonymous'), $is_anonymous);
         }
 
-        if (isset($_POST[growfund_with_prefix('fund_id')])) { // phpcs:ignore
-            $fund_id = Sanitizer::apply_rule($_POST[growfund_with_prefix('fund_id')], 'int'); // phpcs:ignore
+        $fund_id = growfund_input_post(growfund_with_prefix('fund_id'));
+
+        if (!is_null($fund_id)) {
+            $fund_id = Sanitizer::apply_rule($fund_id, Sanitizer::INT);
             $order->update_meta_data(growfund_with_prefix('fund_id'), $fund_id);
         }
     }

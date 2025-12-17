@@ -73,6 +73,6 @@ foreach ($commonIcons as $iconName) {
     <?php echo $attributesStr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- already escaped ?>>
     <?php
     // Output the SVG content
-    echo $iconContent; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- already escaped
+    echo wp_kses_post($iconContent);
     ?>
 </div>

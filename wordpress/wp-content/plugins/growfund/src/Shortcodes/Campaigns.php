@@ -13,6 +13,6 @@ class Campaigns extends Shortcode
 
     public function callback($attributes, string $content = '', string $shortcode_tag = '')
     {
-        return '<div class="growfund-page-container">' . Template::get_campaign_archive_content() . '</div>';
+        return '<div class="growfund-page-container">' . Template::get_campaign_archive_content($content) . '</div>';
     }
 }

@@ -31,9 +31,9 @@ class Payment
     {
         $installed_payment_methods = static::get_installed_payment_methods();
 
-        return array_filter($installed_payment_methods, function ($method) {
+        return Arr::make($installed_payment_methods)->filter(function ($method) {
             return $method->is_enabled;
-        });
+        })->toArray();
     }
 
     public static function is_valid_payment_method($name)

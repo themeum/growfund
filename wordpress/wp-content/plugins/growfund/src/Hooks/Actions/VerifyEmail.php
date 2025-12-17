@@ -24,11 +24,12 @@ class VerifyEmail extends BaseHook
 
     public function handle(...$args)
     {
-        if (empty($_GET[growfund_with_prefix('verify_email')]) || '1' !== $_GET[growfund_with_prefix('verify_email')]) { // phpcs:ignore
+        $input = growfund_input_get(growfund_with_prefix('verify_email'));
+        if (empty($input) || '1' !== $input) {
             return;
         }
 
-        $user_id = absint($_GET['uid']); // phpcs:ignore
-        User::verify_email($user_id, Sanitizer::apply_rule($_GET['token'], Sanitizer::TEXT)); // phpcs:ignore
+        $user_id = absint(growfund_input_get('uid'));
+        User::verify_email($user_id, Sanitizer::apply_rule(growfund_input_get('token'), Sanitizer::TEXT));
     }
 }

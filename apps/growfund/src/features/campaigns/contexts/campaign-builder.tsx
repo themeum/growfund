@@ -4,13 +4,13 @@ import { RocketIcon } from '@radix-ui/react-icons';
 import { __ } from '@wordpress/i18n';
 import { DollarSignIcon, Flower, HeartHandshakeIcon } from 'lucide-react';
 import React, {
-    createContext,
-    type PropsWithChildren,
-    useCallback,
-    useContext,
-    useEffect,
-    useMemo,
-    useState,
+  createContext,
+  type PropsWithChildren,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
 } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
@@ -25,8 +25,8 @@ import { RouteConfig } from '@/config/route-config';
 import { useAppConfig } from '@/contexts/app-config';
 import { CampaignProvider } from '@/features/campaigns/contexts/campaign-context';
 import {
-    type CampaignBuilderForm,
-    CampaignBuilderFormSchema,
+  type CampaignBuilderForm,
+  CampaignBuilderFormSchema,
 } from '@/features/campaigns/schemas/campaign';
 import { useCampaignDetailsQuery } from '@/features/campaigns/services/campaign';
 import { AppConfigKeys } from '@/features/settings/context/settings-context';
@@ -138,7 +138,7 @@ const CampaignBuilderContextProvider = ({ children }: PropsWithChildren) => {
       }
 
       if (
-        !growfundConfig.is_pro ||
+        !growfundConfig.has_growfund_pro ||
         !appConfig[AppConfigKeys.Campaign] ||
         (!appConfig[AppConfigKeys.Campaign].allow_fund &&
           !appConfig[AppConfigKeys.Campaign].allow_tribute)

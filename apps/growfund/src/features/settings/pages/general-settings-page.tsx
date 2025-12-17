@@ -3,7 +3,7 @@ import { __ } from '@wordpress/i18n';
 import { useEffect, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 import { ComboBoxField } from '@/components/form/combobox-field';
 import { EditorField } from '@/components/form/editor-field';
 import { TextField } from '@/components/form/text-field';
@@ -14,8 +14,8 @@ import { useAppConfig } from '@/contexts/app-config';
 import { AppConfigKeys, useSettingsContext } from '@/features/settings/context/settings-context';
 import { useUpdateDirtyState } from '@/features/settings/hooks/use-update-dirty-state';
 import {
-    GeneralSettingsSchema,
-    type GeneralSettingsForm,
+  GeneralSettingsSchema,
+  type GeneralSettingsForm,
 } from '@/features/settings/schemas/settings';
 import { useWordPressPagesQuery } from '@/features/settings/services/general';
 import { useRouteBlockerGuard } from '@/hooks/use-route-blocker-guard';
@@ -166,12 +166,9 @@ const GeneralSettingsPage = () => {
 
         {/* Donation form options */}
         {isDonationMode && (
-          <FeatureGuard
-            feature="settings.general.donation_form_options"
-            fallback={<GeneralSettingsDonationFormOptionsFallback />}
-          >
+          <ElementWrapper fallback={<GeneralSettingsDonationFormOptionsFallback />}>
             {GeneralSettingsDonationFormOptions && <GeneralSettingsDonationFormOptions />}
-          </FeatureGuard>
+          </ElementWrapper>
         )}
 
         <Card>

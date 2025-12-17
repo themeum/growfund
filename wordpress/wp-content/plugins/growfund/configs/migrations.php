@@ -2,6 +2,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+use Growfund\Migrations\AddEmailColumnInDonationTable;
+use Growfund\Migrations\AddEmailColumnInPledgeTable;
 use Growfund\Migrations\CreateActivityTable;
 use Growfund\Migrations\CreateBookmarkTable;
 use Growfund\Migrations\CreateCampaignCollaboratorTable;
@@ -16,4 +18,6 @@ return [
     CreateDonationTable::class,
     CreateBookmarkTable::class,
     CreateActivityTable::class,
+    AddEmailColumnInPledgeTable::class,
+    AddEmailColumnInDonationTable::class,
 ];

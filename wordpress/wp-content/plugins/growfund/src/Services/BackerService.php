@@ -202,7 +202,7 @@ class BackerService extends UserService
     /**
      * Format backer data into API-friendly schema.
      *
-     * @param WP_User $backer WordPress backer object.
+     * @param \WP_User $backer WordPress backer object.
      * @return BackerDTO.
      */
     protected function format_data($backer)
@@ -230,7 +230,8 @@ class BackerService extends UserService
             'shipping_address'        => $shipping_address,
             'billing_address'         => $is_billing_address_same ? $shipping_address : $billing_address,
             'is_billing_address_same' => $is_billing_address_same,
-            'is_verified'             => User::is_verified($backer->ID),
+            'is_verified'             => User::is_verified($backer),
+            'is_fundraiser'           => User::is_fundraiser($backer),
         ]);
     }
 

@@ -65,7 +65,8 @@ class HookNames
     const STOP_SCHEDULED_RECURRING = 'growfund_stop_scheduled_recurring';
 
     // Growfund Hooks
-    const GROWFUND_FILTER_PRO_FEATURES = 'growfund/pro-features';
+    const GROWFUND_FILTER_FEATURES = 'growfund/features';
+    const GROWFUND_FILTER_PRO_FEATURES = 'growfund/features'; // Use GROWFUND_FILTER_FEATURES instead. keep it just because of backward compatibility.
     const GROWFUND_ROUTE_BEFORE_INIT_ACTION = 'growfund/route/before_init';
     const GROWFUND_CAMPAIGN_AFTER_SAVE_ACTION = 'growfund/campaign/after_save';
     const GROWFUND_CAMPAIGN_AFTER_PERMANENT_DELETE_ACTION = 'growfund/campaign/after_permanent_delete';
@@ -77,4 +78,13 @@ class HookNames
     const GROWFUND_BEFORE_REGISTER_SITE_ROUTES_ACTION = 'growfund/route/before_register_site_routes';
     const GROWFUND_BEFORE_APP_CONFIG_UPDATE_FILTER = 'growfund/app_config/before_update';
     const GROWFUND_BEFORE_OPTION_UPDATE_FILTER = 'growfund/option/before_update';
+    const GROWFUND_ALLOW_CAMPAIGN_COMMENTS_FILTER = 'growfund/campaign/allow-comments';
+    const GROWFUND_ALLOW_CAMPAIGN_TRIBUTE_FILTER = 'growfund/campaign/allow-tribute';
+    const GROWFUND_ALLOW_CAMPAIGN_FUND_FILTER = 'growfund/campaign/allow-fund';
+    const GROWFUND_ALLOW_ANONYMOUS_CONTRIBUTION_FILTER = 'growfund/permission/allow-anonymous-contribution';
+    const GROWFUND_ALLOW_CONTRIBUTOR_COMMENTS_FILTER = 'growfund/permission/allow-contributor-comments';
+    const GROWFUND_FUNDRAISER_CAMPAIGN_DELETION_FILTER = 'growfund/permission/fundraiser-can-delete-campaign';
+    const GROWFUND_FUNDRAISER_CAMPAIGN_PUBLISH_FILTER = 'growfund/permission/fundraiser-can-publish-campaign';
+    const GROWFUND_ALLOW_GUEST_CHECKOUT_FILTER = 'growfund/payment/allow-guest-checkout';
+    const GROWFUND_ALLOW_EMAIL_VERIFICATION = 'growfund/enable_email_verification';
 }

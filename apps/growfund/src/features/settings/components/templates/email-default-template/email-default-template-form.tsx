@@ -1,23 +1,23 @@
 import { __ } from '@wordpress/i18n';
 import { useFormContext } from 'react-hook-form';
 
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 import { Container } from '@/components/layouts/container';
 import EmailTemplateSettingsColorsFallback from '@/components/pro-fallbacks/settings/email-notifications/template-colors-fallback';
 import {
-    TemplateFormContentSection,
-    TemplateFormImageSection,
+  TemplateFormContentSection,
+  TemplateFormImageSection,
 } from '@/components/template-form/template-form';
 import EmailDefaultContentForm from '@/features/settings/components/templates/email-default-template/email-default-content-form';
 import {
-    EmailAdditionalContent,
-    EmailCard,
-    EmailContent,
-    EmailDefaultContent,
-    EmailFooter,
-    EmailHeader,
-    EmailLogo,
-    EmailMessage,
+  EmailAdditionalContent,
+  EmailCard,
+  EmailContent,
+  EmailDefaultContent,
+  EmailFooter,
+  EmailHeader,
+  EmailLogo,
+  EmailMessage,
 } from '@/features/settings/components/ui/email-preview';
 import { type EmailTemplateForm } from '@/features/settings/schemas/email-default-template';
 import { registry } from '@/lib/registry';
@@ -39,12 +39,9 @@ const EmailNotificationTemplateForm = () => {
               header={__('Logo', 'growfund')}
               description={__('Update the logo & style your way', 'growfund')}
             />
-            <FeatureGuard
-              feature="settings.email_notifications.template.colors"
-              fallback={<EmailTemplateSettingsColorsFallback />}
-            >
+            <ElementWrapper fallback={<EmailTemplateSettingsColorsFallback />}>
               {EmailTemplateSettingsColors && <EmailTemplateSettingsColors />}
-            </FeatureGuard>
+            </ElementWrapper>
             <TemplateFormContentSection
               header={__('Content', 'growfund')}
               description={__('Manage your email default contents.', 'growfund')}

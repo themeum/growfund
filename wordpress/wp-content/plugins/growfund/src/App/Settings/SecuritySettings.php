@@ -5,6 +5,7 @@ namespace Growfund\App\Settings;
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Constants\AppConfigKeys;
+use Growfund\Constants\HookNames;
 use Growfund\Core\AppSettings;
 use Growfund\Supports\Option;
 
@@ -32,8 +33,6 @@ class SecuritySettings extends AppSettings
      */
     public function is_enabled_email_verification()
     {
-        return isset($this->settings['is_enabled_email_verification'])
-            ? filter_var($this->settings['is_enabled_email_verification'], FILTER_VALIDATE_BOOLEAN)
-            : false;
+        return apply_filters(HookNames::GROWFUND_ALLOW_EMAIL_VERIFICATION, false, $this->settings);
     }
 }

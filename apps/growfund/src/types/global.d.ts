@@ -26,8 +26,7 @@ declare global {
       mode: string;
       assets_url: string;
       as_guest: boolean;
-      is_pro: boolean;
-      features: Record<string, boolean | { limit: number; is_pro: boolean }>;
+      has_growfund_pro: boolean;
       is_migration_available_from_crowdfunding: boolean;
     };
     wp: {

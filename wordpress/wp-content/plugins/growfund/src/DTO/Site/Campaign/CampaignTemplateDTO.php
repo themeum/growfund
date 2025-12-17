@@ -19,6 +19,9 @@ class CampaignTemplateDTO extends DTO
     /** @var array|null */
     public $featured_data;
 
+    /** @var string|null */
+    public $banner_title;
+
     /** @var int */
     public $initial_limit = 12;
 

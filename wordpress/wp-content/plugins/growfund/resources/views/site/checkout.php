@@ -312,8 +312,8 @@ if (!$is_shortcode) {
 
             <!-- Form Builder Usage -->
             <div class="growfund-card growfund-form-builder-card">
-                <?php $error = $form_errors['general'] ?? $form_errors['amount'] ?? $form_errors['reward_id'] ?? $form_errors['campaign_id'] ?? ''; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- intentionally used ?>
-                <?php if (!empty($error)) : ?>
+                <?php $final_error = $form_errors['general'] ?? $form_errors['amount'] ?? $form_errors['reward_id'] ?? $form_errors['campaign_id'] ?? ''; ?>
+                <?php if (!empty($final_error)) : ?>
                     <div class="growfund-card"
                         style="display:flex; align-items: center; gap: 8px; font-size: 14px; background-color: #fee2e2; border: 1px solid #fca5a5; color: #D40000; padding: 1rem; margin-bottom: 1rem; border-radius: 0.375rem;">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -322,7 +322,7 @@ if (!$is_shortcode) {
                                 stroke="#D40000" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
 
-                        <div><?php echo esc_html(is_array($error) ? implode(', ', $error) : $error); ?></div>
+                        <div><?php echo esc_html(is_array($final_error) ? implode(', ', $final_error) : $final_error); ?></div>
                     </div>
                     <?php
                 endif;
@@ -338,7 +338,7 @@ if (!$is_shortcode) {
                     ],
                     'submit_button_text' => !empty($payment_methods) ? __('Pledge', 'growfund') : null,
                     'submit_button_attributes' => [
-                        'class' => 'growfund-btn--primary',
+                        'class' => 'growfund-btn--primary growfund-branding-btn',
                         'id' => 'growfund_pledge_button',
                         'disabled' => true
                     ],
@@ -350,7 +350,7 @@ if (!$is_shortcode) {
                     <div class="growfund-form-builder-footer-text">
                         <?php
                         /* translators: %s: Site name */
-                        printf(esc_html__('By submitting your pledge, you agree to %s\'s Terms of Use, and Privacy Policy, and for our payment processor, Stripe, to charge your payment method.', 'growfund'), esc_html(get_bloginfo('name')));
+                        printf(esc_html__('By submitting your pledge, you agree to %s\'s Terms of Use, and Privacy Policy, and for our payment processor, Stripe, to charge your payment method.', 'growfund'), esc_html(growfund_site_name()));
                         ?>
                     </div>
                 <?php endif; ?>
@@ -370,7 +370,7 @@ if (!$is_shortcode) {
                 <div class="growfund-guarantee-text">
                     <?php
                     /* translators: %s: Site name */
-                    printf(esc_html__('Your pledge will support an ambitious creative project that has yet to be developed. There\'s a risk that, despite a creator\'s efforts, your reward may not be fulfilled. We urge you to consider this risk prior to pledging. %s is not responsible for reward fulfillment or refunds.', 'growfund'), esc_html(get_bloginfo('name')));
+                    printf(esc_html__('Your pledge will support an ambitious creative project that has yet to be developed. There\'s a risk that, despite a creator\'s efforts, your reward may not be fulfilled. We urge you to consider this risk prior to pledging. %s is not responsible for reward fulfillment or refunds.', 'growfund'), esc_html(growfund_site_name()));
                     ?>
                 </div>
                 <a href="#"

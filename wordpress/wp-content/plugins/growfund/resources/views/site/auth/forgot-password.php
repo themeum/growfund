@@ -1,5 +1,7 @@
 <?php
 
+use Growfund\Core\AppSettings;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -34,11 +36,15 @@ $forget_password_fields = [
     <div class="growfund-forgot-password-card">
         <div class="growfund-forgot-password-header">
             <?php
+            $branding_logo_url = growfund_settings(AppSettings::BRANDING)->get_logo('url');
+            $branding_logo_height = growfund_settings(AppSettings::BRANDING)->get_logo_height();
+
             growfund_renderer()->render('site.components.image', [
-				'src' => growfund_site_image_url('logo.svg'),
-				'alt' => 'Growfund',
+				'src' => !empty($branding_logo_url) ? $branding_logo_url : growfund_site_image_url('logo.svg'),
+				'alt' => !empty($branding_logo_url) ? growfund_site_name() : 'Growfund',
 				'attributes' => [
-					'class' => 'growfund-forgot-password-logo'
+					'class' => 'growfund-forgot-password-logo',
+                    'style' =>  $branding_logo_height ? 'height: ' . $branding_logo_height . 'px' : ''
 				]
 			]);
             ?>

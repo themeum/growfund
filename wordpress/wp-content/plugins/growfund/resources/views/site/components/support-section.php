@@ -60,7 +60,7 @@ if ($campaign->allow_pledge_without_reward) :
             growfund_renderer()
                 ->render('site.components.button', [
                     'type' => 'button',
-                    'class' => 'growfund-btn--primary',
+                    'class' => 'growfund-btn--primary growfund-branding-btn',
                     'id' => 'growfund-pledge-continue',
                     'text' => esc_html__('Continue', 'growfund'),
                     'attributes' => [

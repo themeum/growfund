@@ -70,6 +70,9 @@ class BackerDTO extends DTO
     /** @var bool */
     public $is_verified;
 
+    /** @var bool */
+    public $is_fundraiser;
+
     /** @var string */
     public $created_by;
 }

@@ -73,7 +73,7 @@ class Option
     {
         $default_mail_config = [
             'from_email' => $option['mail']['from_email'] ?? AdminUser::get_email(),
-            'from_name' => $option['mail']['from_name'] ?? get_bloginfo('name'),
+            'from_name' => $option['mail']['from_name'] ?? growfund_site_name(),
             'mailer' => $option['mail']['mailer'] ?? null,
         ];
 

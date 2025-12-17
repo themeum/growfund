@@ -1313,6 +1313,28 @@
     "subject": "Welcome to {organization_name}",
     "heading": "Welcome to {organization_name}",
     "message": "<p>Dear <strong>{first_name} {last_name}</strong>!</p><br/><p>Thank you for registering with us.</p><br/><p>{user_table}</p><br/><p>We’re excited to have you on board! Log in to your account</p><br/><p>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</p>",
+    "subject_shortcodes": [
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      },
+      {
+        "label": "First Name",
+        "value": "{first_name}"
+      },
+      {
+        "label": "Last Name",
+        "value": "{last_name}"
+      },
+      {
+        "label": "Username",
+        "value": "{user_name}"
+      },
+      {
+        "label": "User Email",
+        "value": "{user_email}"
+      }
+    ],
     "shortcodes": [
       {
         "label": "User Table",
@@ -1379,6 +1401,24 @@
     "subject": "Welcome to {organization_name}",
     "heading": "Welcome to {organization_name}",
     "message": "<p>Dear<strong> {donor_name}</strong>!,</p><br/><p>Thank you for choosing to donate offline! Please follow these steps:</p><br/><p>{offline_donation_instructions_table}</p><br/><p>f you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</p>",
+    "subject_shortcodes": [
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      },
+      {
+        "label": "Donor Name",
+        "value": "{donor_name}"
+      },
+      {
+        "label": "Donation Amount",
+        "value": "{donation_amount}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      }
+    ],
     "shortcodes": [
       {
         "label": "Offline Donation Instructions Table",
@@ -1701,6 +1741,28 @@
     "subject": "Welcome to {organization_name}",
     "heading": "Welcome to {organization_name}",
     "message": "<p>Dear <strong> {first_name} {last_name}</strong>!</p><br/><p>Thank you for registering with us.</p><br/><p>{user_table}</p>",
+    "subject_shortcodes": [
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      },
+      {
+        "label": "First Name",
+        "value": "{first_name}"
+      },
+      {
+        "label": "Last Name",
+        "value": "{last_name}"
+      },
+      {
+        "label": "Username",
+        "value": "{user_name}"
+      },
+      {
+        "label": "User Email",
+        "value": "{user_email}"
+      }
+    ],
     "shortcodes": [
       {
         "label": "User Table",
@@ -1740,6 +1802,24 @@
     "subject": "Your Pledged Campaign “{campaign_title}” has an Update!",
     "heading": "Your Pledged Campaign “{campaign_title}” has an Update!",
     "message": "<p>Dear <strong>{backer_name}</strong>!</p><br /><p> The status of a campaign you pledged has been updated.</p><br /><p>{campaign_details_card}</p><br /><p>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</p>",
+    "subject_shortcodes": [
+      {
+        "label": "Backer Name",
+        "value": "{backer_name}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Campaign Start Date",
+        "value": "{campaign_start_date}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ],
     "shortcodes": [
       {
         "label": "Campaign Card",
@@ -1841,6 +1921,36 @@
     "subject": "We've Hit 50% of Our Goal for “{campaign_title}”!",
     "heading": "We've Hit 50% of Our Goal for “{campaign_title}”!",
     "message": "<p>Dear <strong>{backer_name}</strong>,</p><br/><p> We're thrilled to share some fantastic news! Thanks to your incredible support, we've reached a major milestone in our campaign for “{campaign_title}”.</p><br/><p> But we're not done yet! We still need your help to reach our final goal and fully fund the campaign.</p><p>{campaign_card}</p><br/><p>{campaign_link_button}</p><br/><p>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</p>",
+    "subject_shortcodes": [
+      {
+        "label": "Backer Name",
+        "value": "{backer_name}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Campaign Start Date",
+        "value": "{campaign_start_date}"
+      },
+      {
+        "label": "Fund Raised",
+        "value": "{fund_raised}"
+      },
+      {
+        "label": "Campaign Goal",
+        "value": "{campaign_goal}"
+      },
+      {
+        "label": "Funded Percent",
+        "value": "{funded_percent}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ],
     "shortcodes": [
       {
         "label": "Campaign Card",

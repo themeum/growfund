@@ -81,6 +81,8 @@ class CleanupService
             return;
         }
 
+        $migrations = array_reverse($migrations);
+
         foreach ($migrations as $migration) {
             if (!$migration instanceof Migration) {
                 throw new Exception(

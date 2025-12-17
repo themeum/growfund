@@ -79,7 +79,7 @@ $has_goal = $campaign->has_goal ?? false;
                     growfund_renderer()
                         ->render('site.components.button', [
                             'text' => $button_text,
-                            'class' => 'growfund-btn--primary'
+                            'class' => 'growfund-btn--primary growfund-branding-btn'
                         ]);
 					?>
                 </a>
@@ -88,7 +88,7 @@ $has_goal = $campaign->has_goal ?? false;
                 growfund_renderer()
                     ->render('site.components.button', [
                         'text' => $button_text,
-                        'class' => 'growfund-btn--primary',
+                        'class' => 'growfund-btn--primary growfund-branding-btn',
                         'attributes' => [
                             'data-action' => 'open-pledge-modal'
                         ]
@@ -105,7 +105,7 @@ $has_goal = $campaign->has_goal ?? false;
             if ($is_user_logged_in) :
                 $is_bookmarked = $campaign->is_bookmarked ?? false;
                 $bookmark_text = $is_bookmarked ? __('Saved', 'growfund') : __('Save for later', 'growfund');
-                $bookmark_class = $is_bookmarked ? 'growfund-btn--primary' : 'growfund-btn--gray';
+                $bookmark_class = $is_bookmarked ? 'growfund-btn--primary growfund-branding-btn' : 'growfund-btn--gray';
 				?>
                 <?php
                 growfund_renderer()

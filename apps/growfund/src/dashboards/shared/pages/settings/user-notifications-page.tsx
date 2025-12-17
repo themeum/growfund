@@ -1,8 +1,9 @@
 import { EnvelopeClosedIcon } from '@radix-ui/react-icons';
 import { __ } from '@wordpress/i18n';
 
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Role } from '@/constants/role';
 import BackerNotificationSettingsForm from '@/dashboards/backers/components/backer-notification-settings-form';
 import DonorNotificationSettingsForm from '@/dashboards/donors/components/donor-notification-settings-form';
 import { useUserSettingsContext } from '@/dashboards/shared/contexts/user-settings-context';
@@ -33,12 +34,12 @@ const UserNotificationsPage = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {user.active_role === 'growfund_backer' && <BackerNotificationSettingsForm />}
-          {user.active_role === 'growfund_donor' && <DonorNotificationSettingsForm />}
-          {user.active_role === 'growfund_fundraiser' && (
-            <FeatureGuard feature="fundraisers">
+          {user.active_role === Role.BACKER && <BackerNotificationSettingsForm />}
+          {user.active_role === Role.DONOR && <DonorNotificationSettingsForm />}
+          {user.active_role === Role.FUNDRAISER && (
+            <ElementWrapper>
               {FundraiserNotificationSettingsForm && <FundraiserNotificationSettingsForm />}
-            </FeatureGuard>
+            </ElementWrapper>
           )}
         </CardContent>
       </Card>

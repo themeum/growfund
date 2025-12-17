@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { useFormContext } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 import { SwitchField } from '@/components/form/switch-field';
 import { ProSwitchInput } from '@/components/pro-fallbacks/form/pro-switch-input';
 import { RouteConfig } from '@/config/route-config';
@@ -34,8 +34,7 @@ const AdminEmailSwitchFields = () => {
 
   return (
     <>
-      <FeatureGuard
-        feature="settings.email_notifications.admin_email_campaign_submitted_for_review"
+      <ElementWrapper
         fallback={
           <ProSwitchInput
             label={__('New Campaign Submitted for Review', 'growfund')}
@@ -51,7 +50,7 @@ const AdminEmailSwitchFields = () => {
         {AdminEmailCampaignSubmittedForReviewSwitchField && (
           <AdminEmailCampaignSubmittedForReviewSwitchField />
         )}
-      </FeatureGuard>
+      </ElementWrapper>
       <SwitchField
         control={form.control}
         name="is_enabled_admin_email_campaign_funded"
@@ -70,8 +69,7 @@ const AdminEmailSwitchFields = () => {
         onEdit={() => navigateOnEdit('admin_new_user_registration')}
         allowHoverEffect
       />
-      <FeatureGuard
-        feature="settings.email_notifications.admin_email_campaign_post_update"
+      <ElementWrapper
         fallback={
           <ProSwitchInput
             label={__('Campaign Update', 'growfund')}
@@ -82,7 +80,7 @@ const AdminEmailSwitchFields = () => {
         }
       >
         {AdminEmailCampaignPostUpdateSwitchField && <AdminEmailCampaignPostUpdateSwitchField />}
-      </FeatureGuard>
+      </ElementWrapper>
       {isDonationMode ? (
         <>
           <SwitchField

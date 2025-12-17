@@ -2,39 +2,28 @@
 
 defined( 'ABSPATH' ) || exit;
 
+use Growfund\Constants\HookNames;
+
 $initial_has_more = $data['campaigns']->has_more ?? false;
 $initial_total_campaigns = $data['campaigns']->total ?? 0;
-?>
 
-<script type="text/javascript">
-    var growfundArchiveData = {
-        initialHasMore: <?php echo wp_json_encode($initial_has_more); ?>,
-        initialPage: 2, // Next page to load
-        initialLimit: <?php echo wp_json_encode($initial_limit); ?>,
-        initialTotalCampaigns: <?php echo wp_json_encode($initial_total_campaigns); ?>,
-    };
-</script>
+growfund_localize_script(HookNames::WP_ENQUEUE_SCRIPT, 'growfundArchiveData', [
+	'initialHasMore' => wp_json_encode($initial_has_more),
+	'initialPage' => 2, // Next page to load,
+	'initialLimit' => wp_json_encode($initial_limit),
+	'initialTotalCampaigns' => wp_json_encode($initial_total_campaigns),
+]);
+?>
 
 <!-- Hero Section -->
 <section class="growfund-hero">
     <div class="growfund-hero__background"></div>
     <div class="growfund-container">
         <div class="growfund-hero__content">
-            <h1 class="growfund-hero__title"><?php esc_html_e('Support causes', 'growfund'); ?><br><?php esc_html_e('that matter', 'growfund'); ?></h1>
-            <?php 
-            // @todo: need to remove false when implement the "Start a Fundraiser" button
-            if (growfund_app_features()->is_pro() && !growfund_user()->is_logged_in() && false) : 
-				?>
-                <p class="growfund-hero__description"><?php esc_html_e('Browse fundraisers and contribute to meaningful causes.', 'growfund'); ?></p>
-                <div class="growfund-hero__buttons">
-                    <?php
-                    growfund_renderer()
-                        ->render('site.components.button', [
-                            'text' => __('Start a Fundraiser', 'growfund'),
-                            'class' => 'growfund-btn--primary'
-                        ]);
-                    ?>
-                </div>
+            <?php if (!empty($banner_title)) : ?>
+                <h1 class="growfund-hero__title"><?php echo wp_kses_post($banner_title); ?></h1>
+            <?php else : ?>
+                <h1 class="growfund-hero__title"><?php esc_html_e('Support causes', 'growfund'); ?><br><?php esc_html_e('that matter', 'growfund'); ?></h1>
             <?php endif; ?>
         </div>
         <div class="growfund-hero__image">
@@ -99,6 +88,7 @@ $initial_total_campaigns = $data['campaigns']->total ?? 0;
                         ->render('site.components.campaign-list', [
                             'campaigns' => $data['campaigns'],
                             'header' => $is_search ? '' : esc_html__('All Campaigns', 'growfund'),
+                            'is_search' => $is_search
                         ]);
                     ?>
                 <?php else : ?>

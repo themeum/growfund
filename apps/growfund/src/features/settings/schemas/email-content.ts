@@ -263,6 +263,7 @@ const EmailContentSchema = z.object({
   message: z.string(),
   is_default: z.boolean().nullish(),
   shortcodes: z.array(ShortcodeSchema).nullish(),
+  subject_shortcodes: z.array(ShortcodeSchema).nullish(),
 });
 
 const EmailContentFormSchema = EmailContentSchema.omit({ is_default: true });

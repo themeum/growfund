@@ -109,7 +109,7 @@ class RewardDTO extends DTO
             'shipping_costs.*.cost' => 'required_if:reward_type,' . implode(';', [RewardType::PHYSICAL_GOODS, RewardType::PHYSICAL_AND_DIGITAL_GOODS]) . '|number',
             'allow_local_pickup' => 'boolean',
             'local_pickup_instructions' => 'string',
-            'items' => 'required|array|max:5',
+            'items' => 'required|array',
             'items.*.id' => 'required|integer',
             'items.*.quantity' => 'required|integer',
         ]);

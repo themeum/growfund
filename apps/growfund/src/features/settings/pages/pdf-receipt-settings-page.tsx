@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 import PdfReceiptSettingsAnnualReceiptFallback from '@/components/pro-fallbacks/settings/pdf-receipt/annual-receipt-fallback';
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,8 +15,8 @@ import { useAppConfig } from '@/contexts/app-config';
 import { AppConfigKeys, useSettingsContext } from '@/features/settings/context/settings-context';
 import { useUpdateDirtyState } from '@/features/settings/hooks/use-update-dirty-state';
 import {
-    PDFReceiptSettingsSchema,
-    type PDFReceiptSettingsForm,
+  PDFReceiptSettingsSchema,
+  type PDFReceiptSettingsForm,
 } from '@/features/settings/schemas/settings';
 import { useRouteBlockerGuard } from '@/hooks/use-route-blocker-guard';
 import { registry } from '@/lib/registry';
@@ -81,12 +81,9 @@ const PDFReceiptSettingsPage = () => {
 
         {/* Annual Receipt */}
         {isDonationMode && (
-          <FeatureGuard
-            feature="settings.pdf_receipt.annual_receipt"
-            fallback={<PdfReceiptSettingsAnnualReceiptFallback />}
-          >
+          <ElementWrapper fallback={<PdfReceiptSettingsAnnualReceiptFallback />}>
             {PdfReceiptSettingsAnnualReceipt && <PdfReceiptSettingsAnnualReceipt />}
-          </FeatureGuard>
+          </ElementWrapper>
         )}
       </div>
     </Form>

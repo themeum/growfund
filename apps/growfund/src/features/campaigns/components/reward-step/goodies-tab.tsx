@@ -4,7 +4,7 @@ import { PackageOpen, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 import CampaignRewardFallback from '@/components/pro-fallbacks/campaign/campaign-reward-fallback';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -12,13 +12,11 @@ import ManageRewardDialog from '@/features/campaigns/components/dialogs/manage-r
 import ManageRewardItemDialog from '@/features/campaigns/components/dialogs/manage-reward-item-dialog';
 import RewardItems from '@/features/campaigns/components/reward-step/reward-items/reward-items';
 import CampaignRewards from '@/features/campaigns/components/reward-step/rewards/campaign-rewards';
-import { useCampaignReward } from '@/features/campaigns/contexts/campaign-reward';
 import { type CampaignForm } from '@/features/campaigns/schemas/campaign';
 import { cn } from '@/lib/utils';
 const GoodiesTab = () => {
   const [activeTab, setActiveTab] = useState<'rewards' | 'items'>('rewards');
   const form = useFormContext<CampaignForm>();
-  const { rewards, rewardItems } = useCampaignReward();
 
   return (
     <div className="growfund-space-y-2">
@@ -52,9 +50,7 @@ const GoodiesTab = () => {
             </TabsList>
             <div className="growfund-absolute growfund-right-0 growfund-top-0">
               {activeTab === 'rewards' ? (
-                <FeatureGuard
-                  feature="campaign.rewards"
-                  consumedLimit={rewards.length}
+                <ElementWrapper
                   fallback={
                     <CampaignRewardFallback
                       title={__('Unlock Unlimited Rewards', 'growfund')}
@@ -76,11 +72,9 @@ const GoodiesTab = () => {
                       {__('Add Reward', 'growfund')}
                     </Button>
                   </ManageRewardDialog>
-                </FeatureGuard>
+                </ElementWrapper>
               ) : (
-                <FeatureGuard
-                  feature="campaign.reward_items"
-                  consumedLimit={rewardItems.length}
+                <ElementWrapper
                   fallback={
                     <CampaignRewardFallback
                       title={__('Unlock Unlimited Items', 'growfund')}
@@ -102,7 +96,7 @@ const GoodiesTab = () => {
                       {__('Add Item', 'growfund')}
                     </Button>
                   </ManageRewardItemDialog>
-                </FeatureGuard>
+                </ElementWrapper>
               )}
             </div>
           </div>

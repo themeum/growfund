@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router';
 
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 import { Container } from '@/components/layouts/container';
 import { DetectRouteChangeProvider } from '@/contexts/detect-route-change-context';
 import { UserSettingsProvider } from '@/dashboards/shared/contexts/user-settings-context';
@@ -15,9 +15,7 @@ const UserSettingsLayout = () => {
     const FundraiserSettingsLayout = registry.get('FundraiserSettingsLayout');
     return (
       <DetectRouteChangeProvider>
-        <FeatureGuard feature="fundraisers">
-          {FundraiserSettingsLayout && <FundraiserSettingsLayout />}
-        </FeatureGuard>
+        <ElementWrapper>{FundraiserSettingsLayout && <FundraiserSettingsLayout />}</ElementWrapper>
       </DetectRouteChangeProvider>
     );
   }

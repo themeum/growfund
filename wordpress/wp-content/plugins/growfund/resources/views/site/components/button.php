@@ -105,7 +105,7 @@ $classString = ClassHelper::buildClassStringFromVariant($variantConfigs, $varian
 
 // Add selected class if needed
 if ($selected) {
-    $classString .= ' growfund-btn--primary';
+    $classString .= ' growfund-btn--primary growfund-branding-btn';
 }
 
 // Build attributes string using helper
@@ -138,40 +138,40 @@ $isLink = !empty($href);
 
 <?php if ($isLink) : ?>
     <a href="<?php echo esc_url($href); ?>" class="<?php echo esc_attr($classString); ?>" <?php echo $attributeString; // phpcs:ignore --  already escaped ?>>
-    <?php else : ?>
-        <button
-            type="<?php echo esc_attr($type); ?>"
-            class="<?php echo esc_attr($classString); ?>"
-            <?php echo $attributeString; // phpcs:ignore --  already escaped ?>>
-        <?php endif; ?>
+<?php else : ?>
+    <button
+        type="<?php echo esc_attr($type); ?>"
+        class="<?php echo esc_attr($classString); ?>"
+        <?php echo $attributeString; // phpcs:ignore --  already escaped ?>>
+<?php endif; ?>
 
-        <?php if ($icon && ($iconPosition === 'left' || !$showText)) : ?>
-            <?php
-            growfund_renderer()
-                ->render('site.components.icon', [
-                    'name' => $icon,
-                    'size' => $iconSize
-                ]);
-            ?>
-        <?php endif; ?>
+    <?php if ($icon && ($iconPosition === 'left' || !$showText)) : ?>
+        <?php
+        growfund_renderer()
+            ->render('site.components.icon', [
+                'name' => $icon,
+                'size' => $iconSize
+            ]);
+        ?>
+    <?php endif; ?>
 
-        <?php if ($showText) : ?>
-            <?php echo esc_html($text); ?>
-        <?php endif; ?>
+    <?php if ($showText) : ?>
+        <?php echo esc_html($text); ?>
+    <?php endif; ?>
 
-        <?php if ($icon && $iconPosition === 'right' && $showText) : ?>
-            <?php
+    <?php if ($icon && $iconPosition === 'right' && $showText) : ?>
+        <?php
 
-            growfund_renderer()
-                ->render('site.components.icon', [
-                    'name' => $icon,
-                    'size' => $iconSize
-                ]);
+        growfund_renderer()
+            ->render('site.components.icon', [
+                'name' => $icon,
+                'size' => $iconSize
+            ]);
 
-            ?>
-        <?php endif; ?>
+        ?>
+    <?php endif; ?>
 
-        <?php if ($isLink) : ?>
+<?php if ($isLink) : ?>
     </a>
 <?php else : ?>
     </button>

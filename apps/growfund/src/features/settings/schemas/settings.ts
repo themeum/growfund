@@ -1,6 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { z } from 'zod';
 
+import { Role } from '@/constants/role';
 import { AppConfigKeys } from '@/features/settings/context/settings-context';
 import { PaymentSchema } from '@/features/settings/features/payments/schemas/payment';
 import { AddressSchema } from '@/schemas/address';
@@ -264,9 +265,7 @@ const UserSchema = z.object({
   last_name: z.string(),
   image: MediaSchema.nullish(),
   phone: z.string().nullish(),
-  active_role: z
-    .enum(['growfund_admin', 'growfund_fundraiser', 'growfund_donor', 'growfund_backer'])
-    .nullish(),
+  active_role: z.nativeEnum(Role),
   shipping_address: AddressSchema.nullish(),
   billing_address: AddressSchema.nullish(),
   is_soft_deleted: z.coerce.boolean().default(false),

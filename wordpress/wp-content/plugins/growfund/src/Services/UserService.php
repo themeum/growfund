@@ -65,46 +65,6 @@ class UserService
     }
 
     /**
-     * Create new guest user
-     * @param CreateDonorDTO|CreateBackerDTO|CreateFundraiserDTO $dto
-     * 
-     * @return int User ID
-     */
-    public function store_guest($dto)
-    {
-        if (!$dto instanceof CreateDonorDTO && !$dto instanceof CreateBackerDTO && !$dto instanceof CreateFundraiserDTO) {
-            throw new Exception(esc_html__('Invalid DTO instance', 'growfund'), (int) Response::INTERNAL_SERVER_ERROR);
-        }
-
-        $user = get_user_by('email', $dto->email);
-
-        if ($user && !User::is_soft_deleted_user($user->ID ?? null)) {
-            $userdata = [
-                'ID' => $user->ID,
-                'first_name' => $dto->first_name,
-                'last_name' => $dto->last_name,
-                'display_name' => sprintf('%s %s', $dto->first_name, $dto->last_name),
-            ];
-
-            $result = wp_update_user($userdata);
-
-            if (is_wp_error($result)) {
-                throw new Exception(esc_html($result->get_error_message()));
-            }
-
-            return $user->ID;
-        }
-
-        if ($user && User::is_soft_deleted_user($user->ID ?? null)) {
-            UserMeta::delete($user->ID, User::SOFT_DELETE_KEY);
-
-            return $user->ID;
-        }
-
-        return $this->create_user($dto, true);
-    }
-
-    /**
      * Update existing user
      * @param int $id
      * @param UpdateDonorDTO|UpdateBackerDTO|UpdateFundraiserDTO $dto
@@ -499,7 +459,7 @@ class UserService
     /**
      * Adds a filter to a user query to filter the results by fundraiser.
      *
-     * @param string $table
+     * @param string $table The table name to join (donations/pledges).
      * @return callable The filter function.
      */
     protected function apply_fundraiser_filter(string $table)
@@ -508,20 +468,26 @@ class UserService
             $users_table = QueryBuilder::prefix(WP::USERS_TABLE);
             $user_meta_table = QueryBuilder::prefix(WP::USER_META_TABLE);
             $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
+            $created_by_meta_key = growfund_with_prefix('created_by');
+
+            $query->query_from .= " LEFT JOIN {$user_meta_table} AS user_meta_created_by 
+                ON ({$users_table}.ID = user_meta_created_by.user_id AND user_meta_created_by.meta_key = '$created_by_meta_key') ";
 
             if (empty($campaign_ids)) {
-                // Ensure no results if no campaigns exist
-                $query->query_where .= " AND 1=0";
+                // if campaign_ids are empty then only show users created by current fundraiser
+                $query->query_where .= QueryBuilder::get_db()->prepare(
+                    " AND user_meta_created_by.meta_value = %d ",
+                    [growfund_user()->get_id()]
+				);
                 return;
             }
 
             $placeholders = Arr::make($campaign_ids)->map(function () {
                 return '%d';
             })->join(',');
-            $meta_key = growfund_with_prefix('created_by');
-            $query->query_from .= " LEFT JOIN {$table} AS tbl_fundraiser_filter ON tbl_fundraiser_filter.user_id = {$users_table}.ID 
-            LEFT JOIN {$user_meta_table} AS user_meta_created_by 
-            ON ({$users_table}.ID = user_meta_created_by.user_id AND user_meta_created_by.meta_key = '$meta_key') ";
+
+            $query->query_from .= " LEFT JOIN {$table} AS tbl_fundraiser_filter ON tbl_fundraiser_filter.user_id = {$users_table}.ID ";
+
             $query->query_where .= QueryBuilder::get_db()->prepare(
                 " AND (tbl_fundraiser_filter.campaign_id IN ($placeholders) OR user_meta_created_by.meta_value = %d) ",
                 array_merge($campaign_ids, [growfund_user()->get_id()])

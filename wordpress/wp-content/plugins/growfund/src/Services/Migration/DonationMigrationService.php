@@ -177,7 +177,8 @@ class DonationMigrationService
             return [
                 'uid'                        => growfund_uuid(),
                 'campaign_id'                => $campaign_id,
-                'user_id'                    => $user_info['id'] ?: null, // phpcs:ignore
+                'user_id'                    => !empty($user_info['id']) ? $user_info['id'] : null,
+                'email'                      => !empty($user_info['email']) ? $user_info['email'] : null,
                 'fund_id'                    => (new FundService())->get_default_fund()->id,
                 'amount'                     => (int) Money::prepare_for_storage($order->get_total()),
                 'recovery_fee'               => 0,
@@ -193,9 +194,9 @@ class DonationMigrationService
                 'is_anonymous'               => empty($user_info['id']) ? 1 : 0,
                 'user_info'                  => wp_json_encode($user_info),
                 'created_at'                 => $order->get_date_created()->date(DateTimeFormats::DB_DATETIME),
-                'created_by'                 => $order->get_customer_id() ?: 0, // phpcs:ignore
+                'created_by'                 => $order->get_customer_id() ? $order->get_customer_id() : 0,
                 'updated_at'                 => $order->get_date_modified()->date(DateTimeFormats::DB_DATETIME),
-                'updated_by'                 => $order->get_customer_id() ?: 0, // phpcs:ignore
+                'updated_by'                 => $order->get_customer_id() ? $order->get_customer_id() : 0,
             ];
         }
 
@@ -250,6 +251,10 @@ class DonationMigrationService
         }
 
         if (empty($user)) {
+            if (empty($data['email'])) {
+                return $data;
+            }
+            
             $data['id'] = $this->create_donor(CreateDonorDTO::from_array($data));
 
             return $data;

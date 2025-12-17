@@ -107,7 +107,7 @@ class Paypal implements PaymentGatewayContract, FuturePaymentContract
 
         if (empty($data['access_token'])) {
             /* translators: %s: body */
-            throw new Exception(sprintf(esc_html__('PayPal authentication failed: %s', 'growfund'), esc_html($body)));
+            throw new Exception(sprintf(esc_html__('PayPal authentication failed, token not found: %s', 'growfund'), esc_html($body)));
         }
 
         $this->access_token = sanitize_text_field($data['access_token']);

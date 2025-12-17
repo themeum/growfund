@@ -2,20 +2,20 @@ import { __ } from '@wordpress/i18n';
 import { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 import { Container } from '@/components/layouts/container';
 import PdfReceiptSettingsColorsFallback from '@/components/pro-fallbacks/settings/pdf-receipt/colors-fallback';
 import {
-    TemplateFormContentSection,
-    TemplateFormImageSection,
+  TemplateFormContentSection,
+  TemplateFormImageSection,
 } from '@/components/template-form/template-form';
 import PdfAnnualReceiptContentForm from '@/features/settings/components/templates/pdf-receipt/pdf-annual-receipt-content-form';
 import PdfAnnualReceiptPreview from '@/features/settings/components/templates/pdf-receipt/pdf-annual-receipt-preview';
 import PdfReceiptContentForm from '@/features/settings/components/templates/pdf-receipt/pdf-receipt-content-form';
 import PdfReceiptPreview from '@/features/settings/components/templates/pdf-receipt/pdf-receipt-preview';
 import {
-    type PdfReceiptTemplate,
-    type PdfReceiptTemplateForm,
+  type PdfReceiptTemplate,
+  type PdfReceiptTemplateForm,
 } from '@/features/settings/schemas/pdf-receipt';
 import { registry } from '@/lib/registry';
 import { isDefined } from '@/utils';
@@ -50,12 +50,9 @@ const PdfReceiptTemplateForm = ({
               header={__('Logo', 'growfund')}
               description={__('Update the logo & style your way', 'growfund')}
             />
-            <FeatureGuard
-              feature="settings.pdf_receipt.colors"
-              fallback={<PdfReceiptSettingsColorsFallback />}
-            >
+            <ElementWrapper fallback={<PdfReceiptSettingsColorsFallback />}>
               {PdfReceiptSettingsColors && <PdfReceiptSettingsColors />}
-            </FeatureGuard>
+            </ElementWrapper>
             <TemplateFormContentSection
               header={__('Contents', 'growfund')}
               description={__('Manage the pdf contents from here', 'growfund')}

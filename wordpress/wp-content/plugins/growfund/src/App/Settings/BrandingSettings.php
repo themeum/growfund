@@ -25,4 +25,14 @@ class BrandingSettings extends AppSettings
 
         return $this;
     }
+
+	public function get_logo($key = null)
+    {
+        return $this->settings['logo'][$key] ?? null;
+    }
+
+    public function get_logo_height()
+    {
+        return $this->settings['logo_height'] ?? null;
+    }
 }

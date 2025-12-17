@@ -42,15 +42,6 @@ Application::macro('is_onboarding_completed', function () {
 });
 
 /**
- * Register a macro to check if a feature is available or not.
- *
- * @return bool
- */
-Application::macro('is_feature_available', function (string $feature_name) {
-    return growfund_app_features()->is_available($feature_name);
-});
-
-/**
  * Register a macro to check if the migration is available from crowdfunding.
  * 
  * @return boolean
@@ -59,7 +50,7 @@ Application::macro('is_migration_available_from_crowdfunding', function () {
     return Utils::is_migration_available_from_crowdfunding();
 });
 
-$app = Application::configure();
-$app->boot();
+$growfund_app = Application::configure();
+$growfund_app->boot();
 
-return $app;
+return $growfund_app;

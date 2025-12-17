@@ -51,6 +51,18 @@ class AnalyticService
 
 		return $this->campaign_analytic_service->get_revenue_chart_data($start_date, $end_date, $campaign_id);
 	}
+
+    public function get_revenue_breakdown(string $start_date, string $end_date, $campaign_id)
+	{   
+		$start_date = new DateTime($start_date);
+		$end_date = new DateTime($end_date);
+
+		if (growfund_app()->is_donation_mode()) {
+			return $this->donation_analytic_service->get_revenue_breakdown($start_date, $end_date, $campaign_id);
+		}
+
+		return $this->campaign_analytic_service->get_revenue_breakdown($start_date, $end_date, $campaign_id);
+	}
     
 	public function get_donor_over_time_chart(string $start_date, string $end_date)
 	{

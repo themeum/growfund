@@ -1,4 +1,4 @@
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 import CampaignSuggestedOptionsFallback from '@/components/pro-fallbacks/campaign/campaign-suggested-options-fallbacks';
 import { AmountDescription } from '@/features/campaigns/components/goal-step/amount-description';
 import { registry } from '@/lib/registry';
@@ -13,12 +13,9 @@ const DonationPresets = () => {
         'growfund-rounded-lg growfund-bg-background-surface growfund-overflow-hidden growfund-flex growfund-flex-col growfund-gap-4',
       )}
     >
-      <FeatureGuard
-        feature="campaign.suggested_options"
-        fallback={<CampaignSuggestedOptionsFallback />}
-      >
+      <ElementWrapper fallback={<CampaignSuggestedOptionsFallback />}>
         {CampaignSuggestedOptions && <CampaignSuggestedOptions />}
-      </FeatureGuard>
+      </ElementWrapper>
 
       <AmountDescription />
     </div>

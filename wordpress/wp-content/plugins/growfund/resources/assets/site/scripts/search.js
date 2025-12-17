@@ -134,11 +134,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Add category filter - prioritize mobile category if available, otherwise use desktop dropdown
     if (mobileCategory) {
-      formData.set('category_slug', mobileCategory);
+      formData.set('category', mobileCategory);
     } else {
       const categoryDropdown = filtersForm.querySelector('[data-dropdown-key="category"]');
       if (categoryDropdown && categoryDropdown.dataset.value) {
-        formData.set('category_slug', categoryDropdown.dataset.value);
+        formData.set('category', categoryDropdown.dataset.value);
       }
     }
 
@@ -244,13 +244,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Add category filter - prioritize mobile category if available, otherwise use desktop dropdown
                 if (mobileCategory) {
-                  newFormData.set('category_slug', mobileCategory);
+                  newFormData.set('category', mobileCategory);
                 } else {
                   const categoryDropdown = filtersForm.querySelector(
                     '[data-dropdown-key="category"]',
                   );
                   if (categoryDropdown && categoryDropdown.dataset.value) {
-                    newFormData.set('category_slug', categoryDropdown.dataset.value);
+                    newFormData.set('category', categoryDropdown.dataset.value);
                   }
                 }
 

@@ -49,7 +49,7 @@ defined( 'ABSPATH' ) || exit;
                         <?php esc_html_e('Cancel', 'growfund'); ?>
                     </button>
                 <?php endif; ?>
-                <button type="button" class="growfund-comment-form__submit-btn growfund-btn growfund-btn--primary" disabled>
+                <button type="button" class="growfund-comment-form__submit-btn growfund-btn growfund-btn--primary growfund-branding-btn" disabled>
                     <?php echo esc_html($button_text); ?>
                 </button>
             </div>
@@ -62,7 +62,7 @@ defined( 'ABSPATH' ) || exit;
     <?php else : ?>
         <div class="growfund-comment-form__login-prompt">
             <p><?php esc_html_e('You must be logged in to comment.', 'growfund'); ?></p>
-            <a href="<?php echo esc_url(growfund_login_url(get_permalink())); ?>" class="growfund-btn growfund-btn--primary">
+            <a href="<?php echo esc_url(growfund_login_url(get_permalink())); ?>" class="growfund-btn growfund-btn--primary growfund-branding-btn">
                 <?php esc_html_e('Login', 'growfund'); ?>
             </a>
         </div>

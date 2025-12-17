@@ -132,14 +132,14 @@ $default_index = 0;
         </div>
     </div>
 
-    <?php $error = $form_errors['general'] ?? ''; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- intentionally used ?>
-    <?php if (!empty($error)) : ?>
+    <?php $final_error = $form_errors['general'] ?? ''; ?>
+    <?php if (!empty($final_error)) : ?>
         <div class="growfund-card" style="display:flex; align-items: center; gap: 8px; font-size: 14px; background-color: #fee2e2; border: 1px solid #fca5a5; color: #D40000; padding: 1rem; margin-bottom: 1rem; border-radius: 0.375rem;">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M8.00094 5.99951V8.66618M8.00094 11.3328H8.0076M14.4876 11.9995L9.15426 2.66617C9.03797 2.46097 8.86933 2.29029 8.66555 2.17154C8.46176 2.0528 8.23012 1.99023 7.99426 1.99023C7.7584 1.99023 7.52677 2.0528 7.32298 2.17154C7.11919 2.29029 6.95055 2.46097 6.83426 2.66617L1.50093 11.9995C1.38338 12.2031 1.32175 12.4341 1.32227 12.6692C1.32279 12.9042 1.38545 13.135 1.50389 13.338C1.62234 13.5411 1.79236 13.7092 1.99673 13.8254C2.20109 13.9415 2.43253 14.0016 2.6676 13.9995H13.3343C13.5682 13.9993 13.7979 13.9375 14.0005 13.8204C14.203 13.7032 14.3711 13.5349 14.4879 13.3322C14.6048 13.1296 14.6663 12.8998 14.6662 12.6658C14.6662 12.4319 14.6046 12.2021 14.4876 11.9995Z" stroke="#D40000" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
 
-            <div><?php echo esc_html(is_array($error) ? implode(', ', $error) : $error); ?></div>
+            <div><?php echo esc_html(is_array($final_error) ? implode(', ', $final_error) : $final_error); ?></div>
         </div>
 		<?php
     endif;
@@ -701,7 +701,7 @@ $default_index = 0;
             'data' => [
                 'type' => 'hidden',
                 'name' => 'donor_first_name',
-                'value' => esc_attr($current_user->first_name ?: $current_user->display_name) // phpcs:ignore Universal.Operators.DisallowShortTernary.Found
+                'value' => esc_attr($current_user->first_name ? $current_user->first_name : $current_user->display_name)
             ]
         ];
 
@@ -710,7 +710,7 @@ $default_index = 0;
             'data' => [
                 'type' => 'hidden',
                 'name' => 'donor_last_name',
-                'value' => esc_attr($current_user->last_name ?: '') // phpcs:ignore Universal.Operators.DisallowShortTernary.Found
+                'value' => esc_attr($current_user->last_name ? $current_user->last_name : '')
             ]
         ];
 
@@ -748,7 +748,7 @@ $default_index = 0;
         ],
         'submit_button_text' => !empty($payment_methods) ? esc_html__('Donate now', 'growfund') : null,
         'submit_button_attributes' => [
-            'class' => 'growfund-btn--primary'
+            'class' => 'growfund-btn--primary growfund-branding-btn'
         ],
         'errors' => $form_errors
     ]);

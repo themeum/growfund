@@ -37,7 +37,7 @@ class Fundraisers extends Menu
     public function __construct()
     {
         $this->page_title = __('Fundraisers', 'growfund');
-        $this->menu_title = !growfund_app_features()->is_pro() 
+        $this->menu_title = !has_growfund_pro() 
             ? __('Fundraisers', 'growfund') . '<span class="growfund-pro-badge" style="margin-left: 5px;">' . __('Pro', 'growfund') . '</span>' 
             : __('Fundraisers', 'growfund');
 

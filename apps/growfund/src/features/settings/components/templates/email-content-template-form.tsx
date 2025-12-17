@@ -11,17 +11,17 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { OptionKeys } from '@/constants/option-keys';
 import {
-    EmailAdditionalContent,
-    EmailCard,
-    EmailContent,
-    EmailFooter,
-    EmailHeader,
-    EmailLogo,
-    EmailMessage,
+  EmailAdditionalContent,
+  EmailCard,
+  EmailContent,
+  EmailFooter,
+  EmailHeader,
+  EmailLogo,
+  EmailMessage,
 } from '@/features/settings/components/ui/email-preview';
 import {
-    type EmailContentForm,
-    type EmailContent as EmailContentType,
+  type EmailContentForm,
+  type EmailContent as EmailContentType,
 } from '@/features/settings/schemas/email-content';
 import { useGetOptionQuery, useRestoreEmailContentMutation } from '@/services/app-config';
 import { isDefined } from '@/utils';
@@ -81,12 +81,18 @@ const EmailContentTemplateForm = ({
       <div className="growfund-w-[32.5rem] growfund-space-y-4">
         <Card className="growfund-py-4">
           <CardContent className="growfund-bg-background-surface growfund-space-y-4">
-            <TextField control={form.control} name="subject" label={__('Subject', 'growfund')} />
+            <TextField
+              control={form.control}
+              name="subject"
+              label={__('Subject', 'growfund')}
+              shortCodes={emailContent?.subject_shortcodes ?? []}
+            />
             {emailOptionKey !== 'growfund_donor_email_tribute_mail' && (
               <TextField
                 control={form.control}
                 name="heading"
                 label={__('Email Heading', 'growfund')}
+                shortCodes={emailContent?.subject_shortcodes ?? []}
               />
             )}
             <EditorField
@@ -114,7 +120,9 @@ const EmailContentTemplateForm = ({
       <div className="growfund-w-[31rem] growfund-p-1 growfund-space-y-4">
         <div className="growfund-w-full growfund-flex growfund-items-center growfund-justify-between">
           <div className="growfund-flex growfund-items-center growfund-gap-4">
-            <h6 className="growfund-typo-h6 growfund-text-fg-primary">{__('Email Preview', 'growfund')}</h6>
+            <h6 className="growfund-typo-h6 growfund-text-fg-primary">
+              {__('Email Preview', 'growfund')}
+            </h6>
           </div>
         </div>
         <EmailCard emailTemplate={emailTemplate}>

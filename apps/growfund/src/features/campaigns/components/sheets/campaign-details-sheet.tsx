@@ -3,23 +3,23 @@ import { __ } from '@wordpress/i18n';
 import { FileHeart } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 import { DatePickerField } from '@/components/form/date-picker-field';
 import { Container } from '@/components/layouts/container';
 import CampaignDetailsFallback from '@/components/pro-fallbacks/campaign/campaign-details-fallback';
 import { Form } from '@/components/ui/form';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
 } from '@/components/ui/sheet';
 import InformationMetrics from '@/features/analytics/components/shared/information-metrics';
 import {
-    type AnalyticsFilter,
-    AnalyticsFilterSchema,
+  type AnalyticsFilter,
+  AnalyticsFilterSchema,
 } from '@/features/analytics/schemas/analytics';
 import { CampaignProvider } from '@/features/campaigns/contexts/campaign-context';
 import { type Campaign } from '@/features/campaigns/schemas/campaign';
@@ -75,13 +75,13 @@ const CampaignDetailsSheet = ({ campaign, open, onOpenChange }: CampaignDetailsS
                 invisibleGrowth={true}
                 campaignId={campaign.id}
               />
-              <FeatureGuard feature="campaign.overview" fallback={<CampaignDetailsFallback />}>
+              <ElementWrapper fallback={<CampaignDetailsFallback />}>
                 {CampaignOverviewAnalytics && (
                   <CampaignProvider campaign={campaign}>
                     <CampaignOverviewAnalytics />
                   </CampaignProvider>
                 )}
-              </FeatureGuard>
+              </ElementWrapper>
             </Form>
           </Container>
           <ScrollBar />

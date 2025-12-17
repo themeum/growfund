@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { useFormContext } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 import { SwitchField } from '@/components/form/switch-field';
 import { ProSwitchInput } from '@/components/pro-fallbacks/form/pro-switch-input';
 import { RouteConfig } from '@/config/route-config';
@@ -69,8 +69,7 @@ const BackerEmailSwitchFields = () => {
         onEdit={() => navigateOnEdit('backer_pledge_paid_with_giving_thanks')}
         allowHoverEffect
       />
-      <FeatureGuard
-        feature="settings.email_notifications.backer_email_campaign_half_funded"
+      <ElementWrapper
         fallback={
           <ProSwitchInput
             label={__('Campaign 50% funded', 'growfund')}
@@ -81,7 +80,7 @@ const BackerEmailSwitchFields = () => {
         }
       >
         {BackerEmailHalfFundedSwitchField && <BackerEmailHalfFundedSwitchField />}
-      </FeatureGuard>
+      </ElementWrapper>
       <SwitchField
         control={form.control}
         name="is_enabled_backer_email_new_backer_registration"
@@ -91,8 +90,7 @@ const BackerEmailSwitchFields = () => {
         onEdit={() => navigateOnEdit('backer_new_backer_registration')}
         allowHoverEffect
       />
-      <FeatureGuard
-        feature="settings.email_notifications.backer_email_campaign_post_update"
+      <ElementWrapper
         fallback={
           <ProSwitchInput
             label={__('Campaign Updates', 'growfund')}
@@ -103,7 +101,7 @@ const BackerEmailSwitchFields = () => {
         }
       >
         {BackerEmailCampaignPostUpdateSwitchField && <BackerEmailCampaignPostUpdateSwitchField />}
-      </FeatureGuard>
+      </ElementWrapper>
       <SwitchField
         control={form.control}
         name="is_enabled_backer_email_payment_unsuccessful"

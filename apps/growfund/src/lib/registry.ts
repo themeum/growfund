@@ -1,4 +1,4 @@
-type ComponentType = React.ComponentType<unknown>;
+type ComponentType = React.ComponentType;
 
 interface ComponentRegistryEntry {
   component: ComponentType;

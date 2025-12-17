@@ -29,6 +29,7 @@ const BackerSchema = z.object({
     .nullish(),
   is_billing_address_same: z.boolean().default(false),
   is_verified: z.coerce.boolean().default(false),
+  is_fundraiser: z.coerce.boolean().default(false),
   created_by: z.string().nullish(),
 });
 
@@ -36,6 +37,7 @@ const BackerFormSchema = BackerSchema.omit({
   id: true,
   joined_at: true,
   created_by: true,
+  is_fundraiser: true,
 })
   .extend({
     password: z

@@ -34,7 +34,7 @@ class GeneralSettings extends AppSettings
      */
     public function get_organization_name()
     {
-        return $this->settings['organization']['name'] ?? get_bloginfo('name');
+        return $this->settings['organization']['name'] ?? growfund_site_name();
     }
 
 

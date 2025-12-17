@@ -5,6 +5,7 @@ namespace Growfund\App\Settings;
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Constants\AppConfigKeys;
+use Growfund\Constants\HookNames;
 use Growfund\Core\AppSettings;
 use Growfund\Supports\Option;
 
@@ -82,9 +83,7 @@ class CampaignSettings extends AppSettings
      */
     public function allow_comments()
     {
-        return isset($this->settings['allow_comments'])
-            ? filter_var($this->settings['allow_comments'], FILTER_VALIDATE_BOOLEAN)
-            : false;
+        return apply_filters(HookNames::GROWFUND_ALLOW_CAMPAIGN_COMMENTS_FILTER, false, $this->settings);
     }
 
     /**
@@ -117,9 +116,7 @@ class CampaignSettings extends AppSettings
      */
     public function allow_tribute()
     {
-        return growfund_app_features()->is_pro() && isset($this->settings['allow_tribute'])
-            ? filter_var($this->settings['allow_tribute'], FILTER_VALIDATE_BOOLEAN)
-            : false;
+        return apply_filters(HookNames::GROWFUND_ALLOW_CAMPAIGN_TRIBUTE_FILTER, false, $this->settings);
     }
 
     /**
@@ -130,8 +127,6 @@ class CampaignSettings extends AppSettings
      */
     public function allow_fund()
     {
-        return growfund_app_features()->is_pro() && isset($this->settings['allow_fund'])
-            ? filter_var($this->settings['allow_fund'], FILTER_VALIDATE_BOOLEAN)
-            : false;
+        return apply_filters(HookNames::GROWFUND_ALLOW_CAMPAIGN_FUND_FILTER, false, $this->settings);
     }
 }

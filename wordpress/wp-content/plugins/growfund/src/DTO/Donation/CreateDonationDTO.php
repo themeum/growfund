@@ -32,6 +32,9 @@ class CreateDonationDTO extends DTO
     /** @var int|null */
     public $user_id;
 
+    /** @var string|null */
+    public $email;
+
     /** @var int */
     public $amount;
 

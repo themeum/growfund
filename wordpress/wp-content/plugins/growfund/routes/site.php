@@ -36,6 +36,6 @@ SiteRouter::get('payment/confirm', [PaymentController::class, 'confirm']);
 SiteRouter::post('webhook/payment', [WebhookController::class, 'handle']);
 
 // public routes
-SiteRouter::get('public', [GuestController::class, 'show']);
+SiteRouter::get('public', [GuestController::class, 'show'])->name('public');
 
 SiteRouter::register();

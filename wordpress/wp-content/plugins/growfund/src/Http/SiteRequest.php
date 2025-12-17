@@ -12,15 +12,9 @@ class SiteRequest implements Request
     protected $attributes = [];
     protected $headers = [];
 
-    public function __construct()
-    {
-        $this->attributes = array_merge($_GET, $_POST); // phpcs:ignore
-        $this->headers = getallheaders();
-    }
-
     public function __get(string $name)
     {
-        return $this->attributes[$name] ?? null;
+        return $this->input($name);
     }
 
     public function __set(string $name, $value)
@@ -35,53 +29,66 @@ class SiteRequest implements Request
 
     public function get_method()
     {
-        return Sanitizer::apply_rule(wp_unslash($_SERVER['REQUEST_METHOD']), Sanitizer::TEXT); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+        return Sanitizer::apply_rule(wp_unslash(growfund_input_server('REQUEST_METHOD')), Sanitizer::TEXT);
     }
 
     public function get_route()
     {
-        return Sanitizer::apply_rule(wp_unslash($_SERVER['REQUEST_URI']), Sanitizer::TEXT); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+        return Sanitizer::apply_rule(wp_unslash(growfund_input_server('REQUEST_URI')), Sanitizer::TEXT);
     }
 
     public function get_headers()
     {
+        if (empty($this->headers)) {
+            $this->headers = getallheaders();
+        }
+
         return $this->headers;
     }
 
     public function all()
     {
-        return $this->attributes;
+        $get_input = filter_input_array(INPUT_GET) ?? [];
+        $post_input = filter_input_array(INPUT_POST) ?? [];
+        return array_merge($get_input, $post_input);
     }
 
     public function has(string $key)
     {
-        return isset($this->attributes[$key]);
+        $inputs = $this->all();
+        return isset($inputs[$key]);
     }
 
     public function except(array $attributes)
     {
-        return array_diff_key($this->attributes, array_flip($attributes));
+        return array_diff_key($this->all(), array_flip($attributes));
     }
 
     public function only(string $key)
     {
-        return isset($this->attributes[$key]) ? $this->attributes[$key] : null;
+        return $this->input($key);
     }
 
-    public function input(string $key)
+    public function input(string $key, $default = null)
     {
-        return $this->only($key);
-    }
-
-    public function get(string $key,string $type, $default = null)
-    {
-        $value = isset($this->attributes[$key]) ? $this->attributes[$key] : $default;
-
-        if ($type) {
-            $value = Sanitizer::apply_rule($value, $type);
+        if (isset($this->attributes[$key])) {
+            return $this->attributes[$key];
         }
 
-        return $value;
+        $this->attributes[$key] = growfund_input_get($key) ?? growfund_input_post($key) ?? $default;
+
+        return $this->attributes[$key];
+    }
+
+    public function get(string $key, string $type, $default = null)
+    {
+        $value = $this->input($key, $default);
+
+        if (empty($type)) {
+            $type = Sanitizer::TEXT;
+        }
+
+        return Sanitizer::apply_rule($value, $type);
     }
 
     /**

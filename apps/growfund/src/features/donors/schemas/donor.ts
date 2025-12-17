@@ -15,6 +15,7 @@ const DonorSchema = z.object({
   image: MediaSchema.nullish(),
   joined_at: z.string(),
   is_verified: z.coerce.boolean().default(false),
+  is_fundraiser: z.coerce.boolean().default(false),
   created_by: z.string().nullish(),
 });
 
@@ -37,6 +38,7 @@ const DonorFormSchema = DonorSchema.omit({
   id: true,
   joined_at: true,
   created_by: true,
+  is_fundraiser: true,
 }).extend({
   password: z
     .string({ message: __('Password is required', 'growfund') })

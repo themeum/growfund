@@ -95,7 +95,7 @@ $checkout_url = $campaign->checkout_url ?? Utils::get_checkout_url($campaign_id)
                 ->render('site.components.button', [
                     'text' => esc_html__('Donate now', 'growfund'),
                     'type' => 'button',
-                    'class' => 'growfund-donation-modal__donate-btn growfund-btn growfund-btn--primary'
+                    'class' => 'growfund-donation-modal__donate-btn growfund-btn growfund-btn--primary growfund-branding-btn'
                 ]);
             ?>
         </div>

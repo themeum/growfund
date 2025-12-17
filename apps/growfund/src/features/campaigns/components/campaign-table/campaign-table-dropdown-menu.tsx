@@ -6,23 +6,23 @@ import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
 
 import BulkDeleteDialog from '@/components/dialogs/bulk-delete-dialog';
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 import CampaignTableDropdownMenuItemFallback from '@/components/pro-fallbacks/campaign/campaign-table-dropdown-menu-item-fallback';
 import { Button } from '@/components/ui/button';
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { RouteConfig } from '@/config/route-config';
 import { useAppConfig } from '@/contexts/app-config';
 import { CampaignsDropdownOptionsProvider } from '@/features/campaigns/contexts/campaigns-dropdown-options-context';
 import { type Campaign } from '@/features/campaigns/schemas/campaign';
 import {
-    useCampaignBulkActionsMutation,
-    useDeleteCampaignMutation,
+  useCampaignBulkActionsMutation,
+  useDeleteCampaignMutation,
 } from '@/features/campaigns/services/campaign';
 import { AppConfigKeys } from '@/features/settings/context/settings-context';
 import useCurrentUser from '@/hooks/use-current-user';
@@ -83,8 +83,7 @@ const CampaignTableDropdownMenu = forwardRef<HTMLDivElement, CampaignTableDropdo
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">
-            <FeatureGuard
-              feature="campaign.post_an_update"
+            <ElementWrapper
               fallback={
                 <CampaignTableDropdownMenuItemFallback label={__('Post an update', 'growfund')} />
               }
@@ -97,7 +96,7 @@ const CampaignTableDropdownMenu = forwardRef<HTMLDivElement, CampaignTableDropdo
                   <CampaignTableDropdownPostUpdateItem />
                 </CampaignsDropdownOptionsProvider>
               )}
-            </FeatureGuard>
+            </ElementWrapper>
 
             <DropdownMenuItem
               onClick={() => {
@@ -109,8 +108,7 @@ const CampaignTableDropdownMenu = forwardRef<HTMLDivElement, CampaignTableDropdo
             <DropdownMenuItem onClick={() => window.open(row.original.preview_url ?? '', '_blank')}>
               {__('Preview', 'growfund')}
             </DropdownMenuItem>
-            <FeatureGuard
-              feature="campaign.make_a_copy"
+            <ElementWrapper
               fallback={
                 <CampaignTableDropdownMenuItemFallback label={__('Make a copy', 'growfund')} />
               }
@@ -124,7 +122,7 @@ const CampaignTableDropdownMenu = forwardRef<HTMLDivElement, CampaignTableDropdo
                   <CampaignTableDropdownMakeCopyItem />
                 </CampaignsDropdownOptionsProvider>
               )}
-            </FeatureGuard>
+            </ElementWrapper>
             {isTrashCampaigns ? (
               <>
                 <DropdownMenuItem onClick={onRestore}>{__('Restore', 'growfund')}</DropdownMenuItem>

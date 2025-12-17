@@ -100,7 +100,6 @@ class CampaignController
         $filters_dto->limit = $request->get_int('per_page', 10);
         $filters_dto->search = $request->get_string('search');
         $filters_dto->status = $request->get_string('status');
-        $filters_dto->category_slug = $request->get_string('category_slug');
         $filters_dto->start_date = $request->get_date('start_date');
         $filters_dto->end_date = $request->get_date('end_date');
 

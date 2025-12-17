@@ -118,6 +118,7 @@ const endpoints = {
   DONOR_ACTIVITIES: (id: string) => `/donors/${id}/activities`,
   DONOR_ANNUAL_RECEIPTS: `/annual-receipts`,
   DONOR_ANNUAL_RECEIPT_DONATIONS_BY_YEAR: (year: string) => `/annual-receipts/${year}`,
+  MAKE_FUNDRAISER: `/make-fundraiser`,
 
   //Fund endpoints
   FUNDS: '/funds',

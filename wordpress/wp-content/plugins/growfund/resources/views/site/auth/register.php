@@ -1,5 +1,6 @@
 <?php
 
+use Growfund\Core\AppSettings;
 use Growfund\Sanitizer;
 
 defined( 'ABSPATH' ) || exit;
@@ -33,7 +34,7 @@ $register_fields = [
                     'type' => 'text',
                     'placeholder' => __('e.g. John', 'growfund'),
                     'required' => true,
-                    'value' => isset($_POST['first_name']) ? Sanitizer::apply_rule(wp_unslash($_POST['first_name']), Sanitizer::TEXT) : '', // phpcs:ignore
+                    'value' => Sanitizer::apply_rule(wp_unslash(growfund_input_post('first_name', '')), Sanitizer::TEXT),
 
                 ]
             ],
@@ -46,7 +47,7 @@ $register_fields = [
                     'type' => 'text',
                     'placeholder' => __('e.g. Smith', 'growfund'),
                     'required' => true,
-                    'value' => isset($_POST['last_name']) ? Sanitizer::apply_rule(wp_unslash($_POST['last_name']), Sanitizer::TEXT) : '', // phpcs:ignore
+                    'value' => Sanitizer::apply_rule(wp_unslash(growfund_input_post('last_name', '')), Sanitizer::TEXT),
                 ]
             ]
         ]
@@ -60,7 +61,7 @@ $register_fields = [
             'type' => 'email',
             'placeholder' => __('e.g. johnsmith@yourmail.com', 'growfund'),
             'required' => true,
-            'value' => isset($_POST['email']) ? Sanitizer::apply_rule(wp_unslash($_POST['email']), Sanitizer::EMAIL) : '', // phpcs:ignore
+            'value' => Sanitizer::apply_rule(wp_unslash(growfund_input_post('email', '')), Sanitizer::EMAIL),
             'autocomplete' => 'email'
         ]
     ],
@@ -73,7 +74,7 @@ $register_fields = [
             'type' => 'password',
             'placeholder' => __('••••••••', 'growfund'),
             'required' => true,
-            'value' => isset($_POST['password']) ? Sanitizer::apply_rule(wp_unslash($_POST['password']), Sanitizer::TEXT) : '', // phpcs:ignore
+            'value' => Sanitizer::apply_rule(wp_unslash(growfund_input_post('password', '')), Sanitizer::TEXT),
             'class' => 'growfund-input growfund-password-input',
             'autocomplete' => 'new-password',
         ]
@@ -87,7 +88,7 @@ $register_fields = [
             'type' => 'password',
             'placeholder' => __('••••••••', 'growfund'),
             'required' => true,
-            'value' => isset($_POST['password_confirmation']) ? Sanitizer::apply_rule(wp_unslash($_POST['password_confirmation']), Sanitizer::TEXT) : '', // phpcs:ignore
+            'value' => Sanitizer::apply_rule(wp_unslash(growfund_input_post('password_confirmation', '')), Sanitizer::TEXT),
             'class' => 'growfund-input growfund-password-input',
             'autocomplete' => 'new-password',
         ]
@@ -107,11 +108,15 @@ $register_fields = [
     <div class="growfund-register-card">
         <div class="growfund-register-header">
             <?php
+            $branding_logo_url = growfund_settings(AppSettings::BRANDING)->get_logo('url');
+            $branding_logo_height = growfund_settings(AppSettings::BRANDING)->get_logo_height();
+            
             growfund_renderer()->render('site.components.image', [
-				'src' => growfund_site_image_url('logo.svg'),
-				'alt' => __('Growfund', 'growfund'),
+				'src' => !empty($branding_logo_url) ? $branding_logo_url : growfund_site_image_url('logo.svg'),
+				'alt' => !empty($branding_logo_url) ? growfund_site_name() : 'Growfund',
 				'attributes' => [
-					'class' => 'growfund-register-logo'
+					'class' => 'growfund-register-logo',
+                    'style' =>  $branding_logo_height ? 'height: ' . $branding_logo_height . 'px' : ''
 				]
 			]);
             ?>
@@ -142,7 +147,7 @@ $register_fields = [
             ],
             'submit_button_text' => isset($is_fundraiser) && $is_fundraiser ? esc_html__('Create Fundraiser Account', 'growfund') : esc_html__('Sign up', 'growfund'),
             'submit_button_attributes' => [
-                'class' => 'growfund-register-btn growfund-register-btn--primary growfund-register-btn--full'
+                'class' => 'growfund-register-btn growfund-register-btn--primary growfund-register-btn--full growfund-branding-btn'
             ]
         ]);
         ?>
@@ -150,10 +155,10 @@ $register_fields = [
         <div class="growfund-register-footer">
             <p class="growfund-register-terms-text">
                 <?php esc_html_e('By continue, you agree to the', 'growfund'); ?>
-                <a href="<?php echo esc_url(home_url('/terms/')); ?>" class="growfund-register-link growfund-register-link--bold"><?php esc_html_e('Terms and Conditions', 'growfund'); ?></a>
+                <a href="<?php echo esc_url(isset($terms_and_conditions_url) ? $terms_and_conditions_url : home_url('/terms/')); ?>" class="growfund-register-link growfund-register-link--bold"><?php esc_html_e('Terms and Conditions', 'growfund'); ?></a>
                 <?php esc_html_e('and', 'growfund'); ?>
-                <a href="<?php echo esc_url(home_url('/privacy/')); ?>" class="growfund-register-link growfund-register-link--bold"><?php esc_html_e('Privacy Policy', 'growfund'); ?></a>
-                <?php esc_html_e('of Growfund.', 'growfund'); ?>
+                <a href="<?php echo esc_url(isset($privacy_url) ? $privacy_url : home_url('/privacy/')); ?>" class="growfund-register-link growfund-register-link--bold"><?php esc_html_e('Privacy Policy', 'growfund'); ?></a>
+                <?php esc_html_e('of ', 'growfund') ; ?> <?php echo esc_html(growfund_site_name()); ?>.
             </p>
             <p class="growfund-register-links">
                 <?php esc_html_e('Have an account?', 'growfund'); ?>

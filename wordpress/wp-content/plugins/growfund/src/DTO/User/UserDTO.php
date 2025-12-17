@@ -5,11 +5,13 @@ namespace Growfund\DTO\User;
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\CastAttributes\DateTimeAttribute;
+use Growfund\CastAttributes\StringAttribute;
 use Growfund\DTO\DTO;
 
 class UserDTO extends DTO
 {
     protected $casts = [
+        'id' => StringAttribute::class,
         'joined_at' => DateTimeAttribute::class,
         'last_contribution_at' => DateTimeAttribute::class,
     ];

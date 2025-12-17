@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { useFormContext } from 'react-hook-form';
 
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 import { TextField } from '@/components/form/text-field';
 import { TextareaField } from '@/components/form/textarea-field';
 import { Container } from '@/components/layouts/container';
@@ -59,9 +59,9 @@ const SettingsStep = () => {
         </CardContent>
       </Card>
 
-      <FeatureGuard feature="campaign.allow_custom_donation" fallback={<CampaignFaqsFallbacks />}>
+      <ElementWrapper fallback={<CampaignFaqsFallbacks />}>
         {CampaignFaqs && <CampaignFaqs />}
-      </FeatureGuard>
+      </ElementWrapper>
 
       <div className="growfund-flex growfund-mt-4 growfund-justify-end">
         <StepNavigation />

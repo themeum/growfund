@@ -177,8 +177,8 @@ class CampaignAnalyticService
         $query = QueryBuilder::query()
             ->table($pledges_table . ' as pledges')
             ->select([
-                "COUNT(*) as total_no_of_pledges",
-                "COUNT(DISTINCT pledges.user_id) as total_no_of_backers",
+                "COUNT(pledges.id) as total_no_of_pledges",
+                "COUNT(DISTINCT pledges.user_id) + COUNT(DISTINCT CASE WHEN pledges.user_id IS NULL THEN pledges.email END) + SUM(pledges.user_id IS NULL AND pledges.email IS NULL) as total_no_of_backers",
                 'SUM(pledges.amount + pledges.bonus_support_amount + pledges.shipping_cost) as total_pledge_amount',
                 "pledges.campaign_id",
                 "campaigns.post_title as campaign_title",
@@ -354,7 +354,7 @@ class CampaignAnalyticService
         $query =  QueryBuilder::query()->table(Tables::PLEDGES . ' as pledges')
             ->select([
                 "DATE(created_at) as created_at",
-                'COUNT(DISTINCT user_id) as number_of_contributors',
+                'COUNT(DISTINCT user_id) + COUNT(DISTINCT CASE WHEN user_id IS NULL THEN email END) + SUM(user_id IS NULL AND email IS NULL) as number_of_contributors',
                 'SUM(amount + bonus_support_amount + shipping_cost) as pledged_amount',
                 sprintf(
                     "SUM(CASE WHEN status IN (%s) THEN (amount + bonus_support_amount + shipping_cost) ELSE 0 END) AS total_contributions",

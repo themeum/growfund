@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { useFormContext } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 import { SwitchField } from '@/components/form/switch-field';
 import { ProSwitchInput } from '@/components/pro-fallbacks/form/pro-switch-input';
 import { RouteConfig } from '@/config/route-config';
@@ -77,8 +77,7 @@ const DonorEmailSwitchFields = () => {
         onEdit={() => navigateOnEdit('donor_offline_donation_instructions')}
         allowHoverEffect
       />
-      <FeatureGuard
-        feature="settings.email_notifications.donor_email_campaign_post_update"
+      <ElementWrapper
         fallback={
           <ProSwitchInput
             label={__('Campaign Updates', 'growfund')}
@@ -89,9 +88,8 @@ const DonorEmailSwitchFields = () => {
         }
       >
         {DonorEmailCampaignPostUpdateSwitchField && <DonorEmailCampaignPostUpdateSwitchField />}
-      </FeatureGuard>
-      <FeatureGuard
-        feature="settings.email_notifications.donor_email_campaign_half_milestone_achieved"
+      </ElementWrapper>
+      <ElementWrapper
         fallback={
           <ProSwitchInput
             label={__('50% Milestone Achieved', 'growfund')}
@@ -105,9 +103,8 @@ const DonorEmailSwitchFields = () => {
         }
       >
         {DonorEmailHalfMilestoneSwitchField && <DonorEmailHalfMilestoneSwitchField />}
-      </FeatureGuard>
-      <FeatureGuard
-        feature="settings.email_notifications.donor_email_tribute_mail"
+      </ElementWrapper>
+      <ElementWrapper
         fallback={
           <ProSwitchInput
             label={__('Tribute Mail', 'growfund')}
@@ -121,7 +118,7 @@ const DonorEmailSwitchFields = () => {
         }
       >
         {DonorEmailTributeSwitchField && <DonorEmailTributeSwitchField />}
-      </FeatureGuard>
+      </ElementWrapper>
     </>
   );
 };

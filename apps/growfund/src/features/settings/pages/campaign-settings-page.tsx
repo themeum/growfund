@@ -3,7 +3,7 @@ import { __ } from '@wordpress/i18n';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 import { MultiSelectField } from '@/components/form/multiselect-field';
 import { SwitchField } from '@/components/form/switch-field';
 import { ProRadioInput } from '@/components/pro-fallbacks/form/pro-radio-input';
@@ -16,9 +16,9 @@ import { useAppConfig } from '@/contexts/app-config';
 import { AppConfigKeys, useSettingsContext } from '@/features/settings/context/settings-context';
 import { useUpdateDirtyState } from '@/features/settings/hooks/use-update-dirty-state';
 import {
-    CampaignSettingsSchema,
-    type CampaignSettingsForm,
-    type SocialShareProviders,
+  CampaignSettingsSchema,
+  type CampaignSettingsForm,
+  type SocialShareProviders,
 } from '@/features/settings/schemas/settings';
 import { registry } from '@/lib/registry';
 import { getDefaults } from '@/lib/zod';
@@ -118,8 +118,7 @@ const CampaignSettingsPage = () => {
                     )
               }
             />
-            <FeatureGuard
-              feature="settings.campaign.visibility"
+            <ElementWrapper
               fallback={
                 <ProRadioInput
                   label={__('Campaign Updates Visibility', 'growfund')}
@@ -135,7 +134,7 @@ const CampaignSettingsPage = () => {
               }
             >
               {CampaignsSettingsCampaignVisibility && <CampaignsSettingsCampaignVisibility />}
-            </FeatureGuard>
+            </ElementWrapper>
 
             <MultiSelectField
               control={form.control}
@@ -147,27 +146,18 @@ const CampaignSettingsPage = () => {
           </CardContent>
         </Card>
 
-        <FeatureGuard
-          feature="settings.campaign.enable_comments"
-          fallback={<CampaignSettingsEnableCommentsFallback />}
-        >
+        <ElementWrapper fallback={<CampaignSettingsEnableCommentsFallback />}>
           {CampaignsSettingsEnableComments && <CampaignsSettingsEnableComments />}
-        </FeatureGuard>
+        </ElementWrapper>
 
         {isDonationMode && (
           <>
-            <FeatureGuard
-              feature="settings.campaign.tribute"
-              fallback={<CampaignSettingsTributeFallback />}
-            >
+            <ElementWrapper fallback={<CampaignSettingsTributeFallback />}>
               {CampaignSettingsTribute && <CampaignSettingsTribute />}
-            </FeatureGuard>
-            <FeatureGuard
-              feature="settings.campaign.funds"
-              fallback={<CampaignSettingsFundFallback />}
-            >
+            </ElementWrapper>
+            <ElementWrapper fallback={<CampaignSettingsFundFallback />}>
               {CampaignSettingsFund && <CampaignSettingsFund />}
-            </FeatureGuard>
+            </ElementWrapper>
           </>
         )}
       </div>

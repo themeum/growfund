@@ -1,5 +1,7 @@
 <?php
 
+use Growfund\Core\AppSettings;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -52,7 +54,7 @@ $login_fields = [
     ]
 ];
 
-$error = $error ?? growfund_flash_get_message('error') ?? null; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+$alert_error = $error ?? growfund_flash_get_message('error') ?? null;
 $success = $success ?? growfund_flash_get_message('success') ?? null;
 
 // Load WordPress header to include CSS and JS
@@ -65,20 +67,24 @@ if (!$is_shortcode) {
     <div class="growfund-login-card">
         <div class="growfund-login-header">
             <?php
+            $branding_logo_url = growfund_settings(AppSettings::BRANDING)->get_logo('url');
+            $branding_logo_height = growfund_settings(AppSettings::BRANDING)->get_logo_height();
+            
             growfund_renderer()->render('site.components.image', [
-				'src' => growfund_site_image_url('logo.svg'),
-				'alt' => 'Growfund',
+				'src' => !empty($branding_logo_url) ? $branding_logo_url : growfund_site_image_url('logo.svg'),
+				'alt' => !empty($branding_logo_url) ? growfund_site_name() : 'Growfund',
 				'attributes' => [
-					'class' => 'growfund-login-logo'
+					'class' => 'growfund-login-logo',
+                    'style' =>  $branding_logo_height ? 'height: ' . $branding_logo_height . 'px' : ''
 				]
 			]);
             ?>
         </div>
         <?php
-        if (!empty($error)) :
+        if (!empty($alert_error)) :
 			?>
             <div class="growfund-alert growfund-alert--error">
-                <p><?php echo esc_html(urldecode($error)); ?></p>
+                <p><?php echo esc_html(urldecode($alert_error)); ?></p>
             </div>
 			<?php
         endif;
@@ -99,7 +105,7 @@ if (!$is_shortcode) {
             ],
             'submit_button_text' => __('Sign In', 'growfund'),
             'submit_button_attributes' => [
-                'class' => 'growfund-login-btn growfund-login-btn--primary growfund-login-btn--full'
+                'class' => 'growfund-login-btn growfund-login-btn--primary growfund-login-btn--full growfund-branding-btn'
             ]
         ]);
         ?>
@@ -107,10 +113,10 @@ if (!$is_shortcode) {
         <div class="growfund-login-footer">
             <p class="growfund-login-terms-text">
                 <?php esc_html_e('By continue, you agree to the', 'growfund'); ?>
-                <a href="<?php echo esc_url(home_url('/terms/')); ?>" class="growfund-login-link growfund-login-link--bold"><?php esc_html_e('Terms and Conditions', 'growfund'); ?></a>
+                <a href="<?php echo esc_url(isset($terms_and_conditions_url) ? $terms_and_conditions_url : home_url('/terms/')); ?>" class="growfund-login-link growfund-login-link--bold"><?php esc_html_e('Terms and Conditions', 'growfund'); ?></a>
                 <?php esc_html_e('and', 'growfund'); ?>
-                <a href="<?php echo esc_url(home_url('/privacy/')); ?>" class="growfund-login-link growfund-login-link--bold"><?php esc_html_e('Privacy Policy', 'growfund'); ?></a>
-                <?php esc_html_e('of Growfund.', 'growfund'); ?>
+                <a href="<?php echo esc_url(isset($privacy_url) ? $privacy_url : home_url('/privacy/')); ?>" class="growfund-login-link growfund-login-link--bold"><?php esc_html_e('Privacy Policy', 'growfund'); ?></a>
+                <?php esc_html_e('of ', 'growfund') ; ?> <?php echo esc_html(growfund_site_name()); ?>.
             </p>
             <p class="growfund-login-links">
                 <?php esc_html_e('Have an account?', 'growfund'); ?>

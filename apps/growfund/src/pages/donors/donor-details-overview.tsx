@@ -1,4 +1,4 @@
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 import ActivityLogFallback from '@/components/pro-fallbacks/activity-log-fallback';
 import DonorMetricsFallback from '@/components/pro-fallbacks/donor/metrics-fallback';
 import DonorProfileCard from '@/features/donors/components/donor-details/donor-profile-card';
@@ -12,14 +12,14 @@ const DonorDetailsOverviewPage = () => {
   const DonorActivityLogCard = registry.get('DonorActivityLogCard');
   return (
     <div className="growfund-space-y-4 growfund-mt-4">
-      <FeatureGuard feature="donor.overview" fallback={<DonorMetricsFallback />}>
+      <ElementWrapper fallback={<DonorMetricsFallback />}>
         {DonorOverviewMetrics && <DonorOverviewMetrics />}
-      </FeatureGuard>
+      </ElementWrapper>
       <div className="growfund-grid growfund-grid-cols-[320px_auto] growfund-gap-4">
         <DonorProfileCard donor={donor.profile} />
-        <FeatureGuard feature="donor.overview" fallback={<ActivityLogFallback />}>
+        <ElementWrapper fallback={<ActivityLogFallback />}>
           {DonorActivityLogCard && <DonorActivityLogCard />}
-        </FeatureGuard>
+        </ElementWrapper>
       </div>
     </div>
   );

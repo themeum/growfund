@@ -31,7 +31,7 @@ class Assets
         $styles = $vite->get_styles('growfund/src/main.tsx');
 
         foreach ($styles as $index => $style) {
-            // phpcs:ignore -- intentionally ignored enqueue version
+            // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- intentionally ignored enqueue version
             wp_enqueue_style(
                 'growfund-bundle-style-' . $index,
                 $style['url'],
@@ -39,7 +39,7 @@ class Assets
             );
         }
 
-        if (growfund_app_features()->is_pro()) {
+        if (has_growfund_pro()) {
             return;
         }
 
@@ -47,7 +47,7 @@ class Assets
             'growfund-bundle',
             $entrypoint['url'],
             [],
-            null,  // phpcs:ignore -- intentionally ignored enqueue version
+            null,  // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- intentionally ignored enqueue version
             true
         );
 
@@ -56,7 +56,7 @@ class Assets
                 return str_replace('<script ', '<script type="module" ', $tag);
             }
             return $tag;
-        }, 10, 3);
+        }, 10, 2);
 
         static::load_js_translations(
             'growfund',
@@ -142,8 +142,7 @@ class Assets
             'mode' => GROWFUND_ENV_MODE,
             'assets_url' => static::get_assets_url(),
             'as_guest' => $as_guest,
-            'is_pro' => growfund_app_features()->is_pro(),
-            'features' => growfund_app_features()->all(),
+            'has_growfund_pro' => has_growfund_pro(),
             'is_migration_available_from_crowdfunding' => growfund_app()->is_migration_available_from_crowdfunding(),
         ];
 
@@ -163,5 +162,45 @@ class Assets
         wp_register_script('growfund-config', false, [], GROWFUND_VERSION, true);
         wp_enqueue_script('growfund-config');
         wp_add_inline_script('growfund-config', static::get_growfund_config_script(), 'after');
+    }
+
+
+    public static function load_vite_client()
+    {
+        if (growfund_is_dev_mode()) {
+            $config = static::get_growfund_config_script();
+
+            $refresh_url = GROWFUND_DIR_URL . 'resources/assets/js/growfund-vite-refresh.js';
+
+			wp_enqueue_script( // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NotInFooter
+                'growfund-vite-refresh',
+                $refresh_url,
+                [],
+                null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+			);
+
+			wp_enqueue_script( // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NotInFooter
+				'growfund-vite-client',
+				'http://localhost:5173/@vite/client',
+				['growfund-vite-refresh'],
+				null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+			);
+
+			wp_enqueue_script( // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NotInFooter
+                'growfund-vite-app',
+                'http://localhost:5173/growfund/src/main.tsx',
+                ['growfund-vite-client'],
+                null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+			);
+            
+			wp_add_inline_script('growfund-vite-app', $config, 'before');
+
+            add_filter('script_loader_tag', function ($tag, $handle){
+				if (in_array($handle, ['growfund-vite-refresh', 'growfund-vite-client', 'growfund-vite-app'], true)) {
+					return str_replace('<script ', '<script type="module" ', $tag);
+				}
+					return $tag;
+			}, 10, 2);
+		}
     }
 }

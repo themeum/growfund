@@ -12,7 +12,7 @@ class CampaignFiltersDTO extends DTO
     public $search;
 
     /** @var string|null */
-    public $category_slug;
+    public $category;
 
     /** @var string|null */
     public $tag;

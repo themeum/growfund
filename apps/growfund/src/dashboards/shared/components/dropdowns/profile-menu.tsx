@@ -5,27 +5,26 @@ import { Link } from 'react-router';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { RouteConfig } from '@/config/route-config';
+import { Role } from '@/constants/role';
 import { UserRouteConfig } from '@/dashboards/shared/config/user-route-config';
 import { useLogoutMutation } from '@/dashboards/shared/services/user';
 import useCurrentUser from '@/hooks/use-current-user';
 import { cn } from '@/lib/utils';
 import { createAcronym } from '@/utils';
 
-type Role = 'admin' | 'fundraiser' | 'donor' | 'backer';
-
-const roleMap = new Map<`growfund_${Role}`, string>([
-  ['growfund_admin', __('Admin', 'growfund')],
-  ['growfund_fundraiser', __('Fundraiser', 'growfund')],
-  ['growfund_donor', __('Donor', 'growfund')],
-  ['growfund_backer', __('Backer', 'growfund')],
+const roleMap = new Map<Role, string>([
+  [Role.ADMIN, __('Admin', 'growfund')],
+  [Role.FUNDRAISER, __('Fundraiser', 'growfund')],
+  [Role.DONOR, __('Donor', 'growfund')],
+  [Role.BACKER, __('Backer', 'growfund')],
 ]);
 
 const ProfileMenu = ({ className }: { className?: string }) => {
@@ -58,8 +57,7 @@ const ProfileMenu = ({ className }: { className?: string }) => {
                 {sprintf('%s %s', user.first_name, user.last_name)}
               </span>
               <span className="growfund-typo-tiny growfund-text-fg-secondary">
-                {roleMap.has(user.active_role ?? 'growfund_admin') &&
-                  roleMap.get(user.active_role ?? 'growfund_admin')}
+                {roleMap.has(user.active_role) && roleMap.get(user.active_role)}
               </span>
             </div>
             <ChevronRight className="growfund-size-4 growfund-shrink-0 growfund-text-icon-secondary" />

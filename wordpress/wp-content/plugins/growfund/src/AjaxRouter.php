@@ -80,7 +80,7 @@ class AjaxRouter
             $callback = function () use ($controller, $route) {
                 // Perform nonce verification if required
                 if ($route->needs_nonce_check) {
-                    $nonce = Sanitizer::apply_rule(wp_unslash($_POST['_wpnonce'] ?? $_GET['_wpnonce'] ?? ''), Sanitizer::TEXT); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+                    $nonce = Sanitizer::apply_rule(wp_unslash(growfund_input_post('_wpnonce', '')), Sanitizer::TEXT);
                     $nonce_action = $route->nonce_action ?? growfund_with_prefix('ajax_nonce');
 
                     if (!wp_verify_nonce($nonce, $nonce_action)) {

@@ -3,7 +3,7 @@ import { __ } from '@wordpress/i18n';
 import { parseAsString } from 'nuqs';
 import { useForm } from 'react-hook-form';
 
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 import { DatePickerField } from '@/components/form/date-picker-field';
 import RevenueBreakdownFallback from '@/components/pro-fallbacks/analytics/revenue-breakdown-fallback';
 import { Form } from '@/components/ui/form';
@@ -16,8 +16,8 @@ import TopFundsByRevenue from '@/features/analytics/components/contents/top-fund
 import InformationMetrics from '@/features/analytics/components/shared/information-metrics';
 import TopCampaigns from '@/features/analytics/components/shared/top-campaigns';
 import {
-    type AnalyticsFilter,
-    AnalyticsFilterSchema,
+  type AnalyticsFilter,
+  AnalyticsFilterSchema,
 } from '@/features/analytics/schemas/analytics';
 import { CampaignIdProvider } from '@/features/campaigns/contexts/campaignId-context';
 import { AppConfigKeys } from '@/features/settings/context/settings-context';
@@ -90,9 +90,9 @@ const DonationAnalytics = () => {
               appConfig[AppConfigKeys.Campaign]?.allow_fund && 'growfund-grid-cols-[38rem_auto]',
             )}
           >
-            <FeatureGuard feature="analytics" fallback={<RevenueBreakdownFallback />}>
+            <ElementWrapper fallback={<RevenueBreakdownFallback />}>
               {AnalyticsRevenueBreakdownTable && <AnalyticsRevenueBreakdownTable />}
-            </FeatureGuard>
+            </ElementWrapper>
             {appConfig[AppConfigKeys.Campaign]?.allow_fund && <TopFundsByRevenue />}
           </div>
         </div>

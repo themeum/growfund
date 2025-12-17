@@ -11,10 +11,10 @@ use Growfund\Services\Site\CampaignService;
 
 class Template
 {
-    public static function get_campaign_archive_content()
+    public static function get_campaign_archive_content($banner_title = null)
     {
         $campaign_service = new CampaignService();
-        $template_dto = $campaign_service->prepare_campaigns_data();
+        $template_dto = $campaign_service->prepare_campaigns_data($banner_title);
 
         return growfund_renderer()->get_html('site.campaigns.template-parts.archive-content', $template_dto->to_array());
     }

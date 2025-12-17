@@ -21,7 +21,7 @@ if ($data) :
                     'contribution' => $data->contribution
                 ]
             );
-        } elseif (isset($_GET['failed'])) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only check, no action performed.
+        } elseif (!is_null(growfund_input_get('failed'))) {
             growfund_renderer()->render('site.components.contribution-failed-modal');
         }
         ?>
@@ -153,8 +153,8 @@ if ($data) :
                                 <span>
                                     <?php
                                     $tagCount = count($data->tags);
-                                    foreach ($data->tags as $index => $tag) { // phpcs:ignore
-                                        echo esc_html($tag->name);
+                                    foreach ($data->tags as $index => $campaign_tag) {
+                                        echo esc_html($campaign_tag->name);
                                         if ($index < $tagCount - 1) {
                                             echo ', ';
                                         }
@@ -211,7 +211,7 @@ if ($data) :
                 $actions = [
                     [
 						'label' => __('Back this campaign', 'growfund'),
-						'variant' => 'growfund-btn--primary'
+						'variant' => 'growfund-btn--primary growfund-branding-btn'
 					]
                 ];
             }

@@ -41,6 +41,7 @@ use Growfund\Supports\Option;
 use Exception;
 use Growfund\Constants\Campaign\ReachingAction;
 use Growfund\Constants\Status\CampaignStatus;
+use Growfund\DTO\Donor\DonorDTO;
 use InvalidArgumentException;
 use Growfund\Services\Site\RewardService as SiteRewardService;
 use Growfund\Supports\CampaignGoal;
@@ -463,7 +464,13 @@ class CampaignCheckoutController
 
         try {
             $data = $this->validate_and_prepare_donation_data($data);
-            $user_id = $this->get_donor_id($data);
+            $user_data = [
+				'first_name' => $data['donor_first_name'],
+				'last_name' => $data['donor_last_name'],
+				'email' => $data['donor_email'],
+				'phone' => $data['donor_phone']
+            ];
+            $user_id =  !growfund_user()->is_logged_in() ? null : growfund_user()->get_id();
             $data = Sanitizer::make($data, CreateDonationDTO::sanitization_rules())->get_sanitized_data();
 
             $create_dto = new CreateDonationDTO();
@@ -472,6 +479,12 @@ class CampaignCheckoutController
             $create_dto->fund_id = $data['fund_id'] ?? null;
             $create_dto->status = DonationStatus::PENDING;
             $create_dto->amount = $data['amount'];
+
+            if (empty($user_id)) {
+                $user_info = DonorDTO::from_array($user_data);
+				$create_dto->user_info = wp_json_encode($user_info->to_array());
+				$create_dto->email = $user_info->email;
+            }
 
             if (!empty($data['dedicate_donation']) && $data['dedicate_donation'] === 'on') {
                 $create_dto->tribute_type = $data['tribute_type'] ?? null;
@@ -672,44 +685,6 @@ class CampaignCheckoutController
         }
 
         return growfund_redirect(growfund_campaign_url($data['campaign_id'] ?? home_url()));
-    }
-
-    /**
-     * Get or create donor user ID for donation processing
-     * 
-     * Creates new donor accounts for anonymous donations or returns
-     * existing user ID for logged-in users. Handles donor validation
-     * and account creation with generated passwords.
-     * 
-     * @param array $data The donation data containing donor information
-     * @return int The donor user ID
-     */
-    protected function get_donor_id($data)
-    {
-        if (!growfund_user()->is_logged_in()) {
-            $password = PasswordHelper::generate_for_user();
-
-            $donor_info = [
-                'first_name' => $data['donor_first_name'],
-                'last_name' => $data['donor_last_name'],
-                'email' => $data['donor_email'],
-                'phone' => $data['donor_phone'],
-                'password' => $password,
-                'is_logged_in' => growfund_user()->is_logged_in()
-            ];
-
-            $validator = Validator::make($donor_info, CreateDonorDTO::validation_rules());
-
-            if ($validator->is_failed()) {
-                return $this->handle_validation_error($validator->get_errors(), null, $data);
-            }
-
-            $user_id = $this->donor_service->store_guest(CreateDonorDTO::from_array($donor_info));
-
-            return $user_id;
-        }
-
-        return growfund_user()->get_id();
     }
 
     /**

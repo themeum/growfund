@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { useEffect, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 // import { CheckboxField } from '@/components/form/checkbox-field';
 import { ComboBoxField } from '@/components/form/combobox-field';
 import { SelectField } from '@/components/form/select-field';
@@ -22,8 +22,8 @@ import { AppConfigKeys, useSettingsContext } from '@/features/settings/context/s
 import PaymentMethodsCard from '@/features/settings/features/payments/components/payment-methods-card';
 import { useUpdateDirtyState } from '@/features/settings/hooks/use-update-dirty-state';
 import {
-    PaymentSettingsSchema,
-    type PaymentSettingsForm,
+  PaymentSettingsSchema,
+  type PaymentSettingsForm,
 } from '@/features/settings/schemas/settings';
 import { useWordPressPagesQuery } from '@/features/settings/services/general';
 // import { useCurrency } from '@/hooks/use-currency';
@@ -120,77 +120,81 @@ const PaymentSettingsPage = () => {
           </CardContent>
         </Card>
 
-        {/* Payment Methods */}
-        {eCommerceEngine === 'native' && <PaymentMethodsCard />}
+        {eCommerceEngine === 'native' && (
+          <>
+            {/* Payment Methods */}
+            <PaymentMethodsCard />
 
-        {/* Currency and Formatting */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{__('Currency & Formatting', 'growfund')}</CardTitle>
-            <CardDescription>
-              {__(
-                'Specify the currency settings for donation collection and processing.',
-                'growfund',
-              )}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="growfund-space-y-4">
-            <ComboBoxField
-              control={form.control}
-              name="currency"
-              options={currenciesAsOptions()}
-              label={__('Currency', 'growfund')}
-              placeholder={__('Select a currency', 'growfund')}
-            />
-            <SelectField
-              control={form.control}
-              name="currency_position"
-              options={[
-                { label: __('Before', 'growfund'), value: 'before' },
-                { label: __('After', 'growfund'), value: 'after' },
-              ]}
-              label={__('Currency Position', 'growfund')}
-              placeholder={__('Select a currency position', 'growfund')}
-            />
-            <SelectField
-              control={form.control}
-              name="decimal_separator"
-              options={[
-                { label: __('. (dot)', 'growfund'), value: '.' },
-                { label: __(', (comma)', 'growfund'), value: ',' },
-                { label: __('Space', 'growfund'), value: ' ' },
-              ]}
-              label={__('Decimal Separator', 'growfund')}
-              placeholder={__('Select a decimal separator', 'growfund')}
-            />
-            <SelectField
-              control={form.control}
-              name="thousand_separator"
-              options={[
-                { label: __('. (dot)', 'growfund'), value: '.' },
-                { label: __(', (comma)', 'growfund'), value: ',' },
-                { label: __('Space', 'growfund'), value: ' ' },
-              ]}
-              label={__('Thousand Separator', 'growfund')}
-              placeholder={__('Select a thousand separator', 'growfund')}
-            />
-            <TextField
-              control={form.control}
-              type="number"
-              name="decimal_places"
-              label={__('Number of Decimals', 'growfund')}
-              placeholder={__('Select a decimal places', 'growfund')}
-            />
-          </CardContent>
-        </Card>
+            {/* Currency and Formatting */}
+            <Card>
+              <CardHeader>
+                <CardTitle>{__('Currency & Formatting', 'growfund')}</CardTitle>
+                <CardDescription>
+                  {__(
+                    'Specify the currency settings for donation collection and processing.',
+                    'growfund',
+                  )}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="growfund-space-y-4">
+                <ComboBoxField
+                  control={form.control}
+                  name="currency"
+                  options={currenciesAsOptions()}
+                  label={__('Currency', 'growfund')}
+                  placeholder={__('Select a currency', 'growfund')}
+                />
+                <SelectField
+                  control={form.control}
+                  name="currency_position"
+                  options={[
+                    { label: __('Before', 'growfund'), value: 'before' },
+                    { label: __('After', 'growfund'), value: 'after' },
+                  ]}
+                  label={__('Currency Position', 'growfund')}
+                  placeholder={__('Select a currency position', 'growfund')}
+                />
+                <SelectField
+                  control={form.control}
+                  name="decimal_separator"
+                  options={[
+                    { label: __('. (dot)', 'growfund'), value: '.' },
+                    { label: __(', (comma)', 'growfund'), value: ',' },
+                    { label: __('Space', 'growfund'), value: ' ' },
+                  ]}
+                  label={__('Decimal Separator', 'growfund')}
+                  placeholder={__('Select a decimal separator', 'growfund')}
+                />
+                <SelectField
+                  control={form.control}
+                  name="thousand_separator"
+                  options={[
+                    { label: __('. (dot)', 'growfund'), value: '.' },
+                    { label: __(', (comma)', 'growfund'), value: ',' },
+                    { label: __('Space', 'growfund'), value: ' ' },
+                  ]}
+                  label={__('Thousand Separator', 'growfund')}
+                  placeholder={__('Select a thousand separator', 'growfund')}
+                />
+                <TextField
+                  control={form.control}
+                  type="number"
+                  name="decimal_places"
+                  label={__('Number of Decimals', 'growfund')}
+                  placeholder={__('Select a decimal places', 'growfund')}
+                />
+              </CardContent>
+            </Card>
+          </>
+        )}
 
         {/* Admin commission */}
-        {/* <FeatureGuard
+        {/* <ElementWrapper
           feature="settings.payment.admin_commission"
           fallback={<PaymentSettingsAdminCommissionFallback />}
         >
           {PaymentSettingsAdminCommission && <PaymentSettingsAdminCommission />}
-        </FeatureGuard> */}
+        </ElementWrapper> */}
 
         {/* Wallet settings */}
         {/* <Card>
@@ -272,12 +276,9 @@ const PaymentSettingsPage = () => {
         </Card> */}
 
         {isDonationMode && (
-          <FeatureGuard
-            feature="settings.payment.guest_checkout"
-            fallback={<PaymentSettingsGuestCheckoutFallback />}
-          >
+          <ElementWrapper fallback={<PaymentSettingsGuestCheckoutFallback />}>
             {PaymentSettingsGuestCheckout && <PaymentSettingsGuestCheckout />}
-          </FeatureGuard>
+          </ElementWrapper>
         )}
       </div>
     </Form>

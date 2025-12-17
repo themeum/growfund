@@ -213,7 +213,7 @@ foreach ($rewards as $reward) {
                             ->render('site.components.button', [
                                 /* translators: %s: Reward price */
                                 'text' => sprintf(esc_html__('Pledge %s', 'growfund'), esc_html(growfund_to_currency($reward->price ?? 0))),
-                                'class' => 'growfund-btn--primary growfund-reward-pledge-button',
+                                'class' => 'growfund-btn--primary growfund-reward-pledge-button growfund-branding-btn',
                                 'href' => $checkout_url
                             ]);
 						?>

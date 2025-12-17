@@ -58,6 +58,9 @@ class AnalyticsController
             case AnalyticsType::REVENUE_CHART:
                 $data = $this->service->get_revenue_chart($start_date, $end_date, $campaign_id);
                 break;
+			case AnalyticsType::REVENUE_BREAKDOWN:
+                $data = $this->service->get_revenue_breakdown($start_date, $end_date, $campaign_id);
+                break;
             case AnalyticsType::TOP_CAMPAIGNS:
                 $data = $this->service->get_top_campaigns($start_date, $end_date);
                 break;

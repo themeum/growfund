@@ -56,7 +56,7 @@ if (!function_exists('render_filters')) {
         ];
 		?>
 
-        <form method="GET" action="<?php echo esc_url(strtok(Sanitizer::apply_rule(wp_unslash($_SERVER['REQUEST_URI']), Sanitizer::TEXT), '?')); // // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.InputNotValidated ?>" class="growfund-filters-form">
+        <form method="GET" action="<?php echo esc_url(strtok(Sanitizer::apply_rule(wp_unslash(growfund_input_server('REQUEST_URI')), Sanitizer::TEXT), '?')); ?>" class="growfund-filters-form">
             <div class="growfund-filters">
                 <div class="growfund-filters__left">
                     <div class="growfund-filters__main-search">
@@ -100,9 +100,6 @@ if (!function_exists('render_filters')) {
                                     'variant'    => 'nested',
                                 ]);
                             ?>
-                        </div>
-                        <div class="growfund-filters__clear-all" id="growfund-desktop-filter-clear" data-clear-filters>
-                            <?php esc_html_e('Clear All', 'growfund'); ?>
                         </div>
                     </div>
                 </div>

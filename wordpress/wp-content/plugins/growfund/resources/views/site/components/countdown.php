@@ -2,6 +2,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+use Growfund\Constants\HookNames;
+
 /**
  * Countdown Component
  * Displays a live countdown timer that updates every second
@@ -17,8 +19,18 @@ if (empty($end_date)) {
     return;
 }
 
-// Generate unique ID for this countdown instance
 $countdown_id = 'growfund-countdown-' . ($campaign_id ? $campaign_id : uniqid());
+$countdown_inline_js = "
+    document.addEventListener('DOMContentLoaded', function() {
+        const countdownElement = document.getElementById('" . esc_js($countdown_id) . "');
+        if (countdownElement) {
+            initializeCountdown(countdownElement);
+        }
+    });
+";
+
+growfund_add_inline_script(HookNames::WP_ENQUEUE_SCRIPT, $countdown_inline_js);
+
 ?>
 
 <div class="growfund-countdown" id="<?php echo esc_attr($countdown_id); ?>" data-end-date="<?php echo esc_attr($end_date); ?>">
@@ -39,13 +51,3 @@ $countdown_id = 'growfund-countdown-' . ($campaign_id ? $campaign_id : uniqid())
         <div class="growfund-countdown__label"><?php esc_html_e('Seconds', 'growfund'); ?></div>
     </div>
 </div>
-
-<script>
-    // Initialize countdown when DOM is ready
-    document.addEventListener('DOMContentLoaded', function() {
-        const countdownElement = document.getElementById('<?php echo esc_js($countdown_id); ?>');
-        if (countdownElement) {
-            initializeCountdown(countdownElement);
-        }
-    });
-</script>

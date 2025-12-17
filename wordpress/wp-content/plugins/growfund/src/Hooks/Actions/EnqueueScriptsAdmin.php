@@ -48,6 +48,13 @@ class EnqueueScriptsAdmin extends BaseHook
             return;
         }
 
+        if (growfund_is_dev_mode()) {
+            Assets::load_vite_client();
+        }
+
+        wp_register_script('growfund-inline-script', false, [], GROWFUND_VERSION, true);
+        wp_enqueue_script('growfund-inline-script');
+
         wp_enqueue_style(
             'growfund-inter-font',
             GROWFUND_DIR_URL . 'resources/assets/css/growfund-font.css',

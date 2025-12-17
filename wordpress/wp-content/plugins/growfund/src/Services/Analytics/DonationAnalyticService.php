@@ -244,8 +244,8 @@ class DonationAnalyticService
                 )
             )
             ->select([
-                "COUNT(*) as total_no_of_donations",
-                "COUNT(DISTINCT user_id) as total_no_of_donors",
+                "COUNT(donations.id) as total_no_of_donations",
+                "COUNT(DISTINCT donations.user_id) + COUNT(DISTINCT CASE WHEN donations.user_id IS NULL THEN donations.email END) + SUM(donations.user_id IS NULL AND donations.email IS NULL) as total_no_of_donors",
                 'SUM(amount) as total_donation_amount',
                 "campaign_id",
                 "campaigns.post_title as campaign_title",
@@ -383,7 +383,7 @@ class DonationAnalyticService
         $query =  QueryBuilder::query()->table(Tables::DONATIONS . ' as donations')
             ->select([
                 "DATE(created_at) as created_at",
-                'COUNT(DISTINCT user_id) as number_of_contributors',
+                'COUNT(DISTINCT user_id) + COUNT(DISTINCT CASE WHEN user_id IS NULL THEN email END) + SUM(user_id IS NULL AND email IS NULL) as number_of_contributors',
                 'SUM(amount) as total_contributions',
                 'SUM(processing_fee) as total_processing_fee'
             ]);

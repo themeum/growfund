@@ -54,7 +54,7 @@ class Funds extends Menu
     /** @overwrite */
     public function is_displayable()
     {
-        return $this->is_donation_mode && growfund_settings(AppSettings::CAMPAIGNS)->allow_fund() && growfund_app_features()->is_pro();
+        return $this->is_donation_mode && growfund_settings(AppSettings::CAMPAIGNS)->allow_fund();
     }
 
     /** @inheritDoc */

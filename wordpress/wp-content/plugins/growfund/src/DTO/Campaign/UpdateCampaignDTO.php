@@ -405,7 +405,6 @@ class UpdateCampaignDTO extends DTO
                             return true;
                         },
                         'array',
-                        'max:3',
                     ],
                     'rewards.*' => 'required|integer',
                     'allow_pledge_without_reward' => 'prohibited',

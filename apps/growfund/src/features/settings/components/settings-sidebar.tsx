@@ -1,16 +1,16 @@
 import { __ } from '@wordpress/i18n';
 import {
-    CreditCard,
-    FileHeart,
-    Home,
-    KeyRound,
-    Lock,
-    type LucideIcon,
-    Mail,
-    Paintbrush,
-    Receipt,
-    Settings2,
-    UserCog,
+  CreditCard,
+  FileHeart,
+  Home,
+  KeyRound,
+  Lock,
+  type LucideIcon,
+  Mail,
+  Paintbrush,
+  Receipt,
+  Settings2,
+  UserCog,
 } from 'lucide-react';
 import React from 'react';
 import { Link } from 'react-router';
@@ -118,7 +118,10 @@ const SettingsSidebar = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HT
           {sidebarMenus.map(({ label, icon: Icon, route }, index) => {
             const isActive = route === currentPath;
 
-            if (route === RouteConfig.LicenseSettings.template && !growfundConfig.is_pro) {
+            if (
+              route === RouteConfig.LicenseSettings.template &&
+              !growfundConfig.has_growfund_pro
+            ) {
               return null;
             }
 

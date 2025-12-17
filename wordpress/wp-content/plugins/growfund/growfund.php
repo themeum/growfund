@@ -1,15 +1,15 @@
 <?php
 /**
-* Plugin Name:       Growfund
+* Plugin Name:       Growfund – Ultimate Donation & Crowdfunding Solution
 * Plugin URI:        https://growfund.com
 * Description:       Launch your donation or reward-based WordPress crowdfunding platform with Growfund. It combines native payments, WooCommerce integration, real-time insights, and fully customizable campaigns, making it the ultimate WordPress crowdfunding plugin.
-* Version:           1.0.1
+* Version:           1.0.2
 * Author:            Themeum
 * Author URI:        https://themeum.com
 * Text Domain:       growfund
 * Requires PHP:      7.4
 * Requires at least: 5.9
-* Tested up to:      6.8
+* Tested up to:      6.9
 * License:           GPLv2 or later
 * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
 * Domain Path:       /languages
@@ -23,11 +23,13 @@ if (!defined('ABSPATH')) {
 
 use Growfund\Application;
 use Growfund\Constants\HookNames;
+use Growfund\Migrations\AddEmailColumnInDonationTable;
+use Growfund\Migrations\AddEmailColumnInPledgeTable;
 
 /**
  * Define plugin version
  */
-define('GROWFUND_VERSION', '1.0.1');
+define('GROWFUND_VERSION', '1.0.2');
 
 /**
  * Define plugin file
@@ -84,6 +86,12 @@ define('GROWFUND_REACT_APP_PATH', GROWFUND_DIR_PATH . 'resources/ts/');
 define('GROWFUND_BASENAME', plugin_basename(__FILE__));
 
 /**
+ * Define plugin slug
+ * @since   1.0.2
+ */
+define('GROWFUND_SLUG', dirname(GROWFUND_BASENAME));
+
+/**
  * Define plugin environment mode
  * Available values - development|production
  * @since   1.0.0
@@ -122,10 +130,21 @@ function growfund_plugin_initializer()
 		});
 
 		add_action('after_plugin_row_' . GROWFUND_BASENAME, function () {
+            add_action('admin_enqueue_scripts', function () {
+                wp_register_script('growfund-plugin-update', false, [], GROWFUND_VERSION, true);
+				wp_enqueue_script('growfund-plugin-update');
+				$inline_js = "
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const row = document.querySelector(\"tr[data-slug='" . esc_html(GROWFUND_SLUG) . "']\");
+                        if (row) {
+                            row.classList.add('update');
+                        }
+                    });
+                ";
+				wp_add_inline_script('growfund-plugin-update', $inline_js);
+            }, 1);
+
 			echo '
-                <script type="text/javascript">
-                    document.querySelector("tr[data-slug=\'growfund\']").classList.add("update");
-                </script>
                 <tr class="plugin-update-tr active">
                     <td colspan="4" class="plugin-update colspanchange">
                         <div class="notice inline notice-warning notice-alt">
@@ -136,9 +155,17 @@ function growfund_plugin_initializer()
             ';
 		});
 	}
-    
 
     require_once __DIR__ . '/bootstrap/app.php';
+
+    $installed_version = get_option(GROWFUND_PREFIX . 'installed_version');
+
+    if ($installed_version !== GROWFUND_VERSION) {
+        (new AddEmailColumnInPledgeTable())->up();
+        (new AddEmailColumnInDonationTable())->up();
+
+        update_option(GROWFUND_PREFIX . 'installed_version', GROWFUND_VERSION);
+    }
 }
 
 require_once __DIR__ . '/helpers.php';

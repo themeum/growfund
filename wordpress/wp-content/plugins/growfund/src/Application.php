@@ -24,7 +24,6 @@ use InvalidArgumentException;
  * @method bool is_donation_mode()
  * @method bool is_woocommerce_installed()
  * @method bool is_onboarding_completed()
- * @method bool is_feature_available(string $feature_name)
  * @method bool is_migration_available_from_crowdfunding()
  */
 class Application extends Container

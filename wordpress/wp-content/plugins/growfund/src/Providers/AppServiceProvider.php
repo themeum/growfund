@@ -6,7 +6,6 @@ defined( 'ABSPATH' ) || exit;
 
 use Growfund\Contracts\Capability;
 use Growfund\Core\Dispatcher;
-use Growfund\Core\PluginInstaller;
 use Growfund\Core\ServiceProvider;
 use Exception;
 use SplFileObject;
@@ -28,7 +27,6 @@ class AppServiceProvider extends ServiceProvider
         $this->register_uninstallation_actions();
         $this->register_capabilities();
         $this->register_event_dispatcher();
-        $this->register_plugin_installer();
     }
 
     /**
@@ -74,7 +72,7 @@ class AppServiceProvider extends ServiceProvider
             return;
         }
 
-        $root = $_SERVER['DOCUMENT_ROOT']; // phpcs:ignore
+        $root = growfund_input_server('DOCUMENT_ROOT');
         $env_file_path = sprintf('%s/.env', $root);
 
         if (!file_exists($env_file_path)) {
@@ -192,18 +190,5 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->alias('event.dispatcher', Dispatcher::class);
-    }
-
-    /**
-     * Register the plugin installer service.
-     *
-     * @return void
-     * @since 1.0.0
-     */
-    protected function register_plugin_installer()
-    {
-        $this->app->singleton(PluginInstaller::class, function () {
-            return new PluginInstaller();
-        });
     }
 }

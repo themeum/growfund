@@ -3,9 +3,9 @@ Contributors: themeum
 Donate link: https://growfund.com
 Tags: crowdfunding, donation, fundraising, charity, rewards
 Requires at least: 5.9
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,7 +43,7 @@ Growfund is not just another donation plugin for WordPress. It’s a complete fu
 ✅ **Dual fundraising modes** – Run crowdfunding campaigns or collect direct donations.
 👥 **Multi-role user system** – Separate dashboards for admin, fundraisers, donors, and backers.
 🛠️ **Easy campaign creation** – Rich campaign editor with images, videos, goal settings, etc.
-💳 **Payment gateways** – Supports Stripe, PayPal, Offline payments, and WooCommerce.
+💳 **Payment gateways** – Supports PayPal, Offline payments, and WooCommerce.
 🎁 **Reward tiers and pledges** – Offer perks or rewards to backers.
 💰 **Direct donations** – Accept one-time and anonymous donations.
 📊 **Advanced Analytics and reports** – Track campaign earnings, donations, and top fundraisers.
@@ -110,7 +110,7 @@ Growfund comes with a multi-role system, so every user type has its own dashboar
 Growfund provides the appropriate access level to each user. Fundraisers only see their own campaigns, donors can track their history, and admins oversee everything from a central dashboard. This system keeps your crowdfunding platform organized, secure, and easy to manage.
 
 == 💳 Native eCommerce with Payment Gateways ==
-Growfund offers a native eCommerce solution with built-in payment gateways. Currently, it supports PayPal, Stripe, and manual payment. 
+Growfund offers a native eCommerce solution with built-in payment gateways. Currently, it supports PayPal, and manual payment. 
 
 Thus, you can accept donations via all major debit and credit cards, as well as PayPal transfers, to process donations or pledges. It also supports offline donations for manual payments, such as bank transfers or checks.
 
@@ -119,7 +119,7 @@ However, if you prefer to use WooCommerce for donations, you can do so as well. 
 Growfund lets the admin:
 
 *    Track every transaction
-*    Accept donations via PayPal and Stripe 
+*    Accept donations via PayPal
 *    Accept offline donations via Native eCommerce
 *    Track payments from the dashboard Analytics
 *    Generate annual receipts (Pro)
@@ -250,7 +250,7 @@ Also admin can assign fundraisers to manage specific funds. Fundraisers can post
 
 == ✅ Why Choose Growfund ==
 *    🧩 Complete WordPress crowdfunding and donation plugin
-*    💸 Accept payments through Stripe, PayPal, or WooCommerce
+*    💸 Accept payments through PayPal, or WooCommerce
 *    🔄 Run both crowdfunding and direct donation systems
 *    👥 Manage multiple fundraisers, donors, and backers
 *    📊 Access detailed analytics and real-time reports
@@ -274,6 +274,41 @@ Growfund gives you everything you need to launch, manage, and grow your fundrais
 Whether you’re a nonprofit, creator, or small business, Growfund helps you collect funds safely, manage them easily, and build stronger connections with your supporters.
 Growfund — the complete WordPress crowdfunding and donation plugin for modern fundraisers.
 
+== Source Code ==
+
+= Link =
+https://github.com/themeum/growfund
+
+= Build Steps =
+
+* Clone the repository 
+  ```bash
+   git clone git@github.com:themeum/growfund.git
+   cd growfund
+   ```
+* Start Docker Environment
+  ```bash
+   docker-compose up --build -d
+   ```
+* Install PHP Dependencies
+  ```bash
+   cd wordpress/wp-content/plugins/growfund
+   composer install
+   ```
+* Install Node Dependencies
+  ```bash
+   cd ../../../../apps
+   yarn install
+   ```
+* Run 
+  ```bash
+   yarn dev
+   ```
+* Build
+  ```bash
+   yarn build
+   ```
+
 
 == Installation Process ==
 
@@ -281,7 +316,7 @@ Growfund — the complete WordPress crowdfunding and donation plugin for modern 
 *    Search for Growfund
 *    Click Install
 *    Go to **Growfund > Settings**
-*    Connect Stripe or PayPal 
+*    Connect PayPal 
 *    Create your first campaign or donation fund
 
 You’re done. Start raising money right away!
@@ -301,10 +336,10 @@ Growfund supports both reward-based crowdfunding and direct donation campaigns f
 No, Growfund supports dual modes, but you can use only one mode at a time. You can enable Campaign Mode for pledge-based fundraising and Donation Mode for direct donations.
 
 = Which Payment Gateways are supported by Growfund =
-Growfund natively supports PayPal, Stripe, and Offline payments. If you prefer using WooCommerce, you can accept payments through any WooCommerce-supported payment gateway.
+Growfund natively supports PayPal and Offline payments. If you prefer using WooCommerce, you can accept payments through any WooCommerce-supported payment gateway.
 
 = Are there transaction fees from Growfund? =
-None. The only fees come from your payment processor (like Stripe or PayPal). You can even set your own optional platform fee if you choose.
+None. The only fees come from your payment processor (like PayPal). You can even set your own optional platform fee if you choose.
 
 = Can donors get tax receipts? =
 Yes. Every donor automatically receives a professional PDF tax receipt via email after making a donation.
@@ -319,6 +354,16 @@ You’re in control. Choose whether to refund all pledges or keep the funds — 
 Definitely. You’ll get extensive support via our community and access to detailed documentation to help you every step of the way.
 
 
+== External services ==
+
+This plugin integrates with PayPal to process donations. When a donation is placed we send
+order details (campaign_id, amount, currency, and transaction ID) to PayPal's API to process payments.
+
+PayPal Terms: https://www.paypal.com/uk/legalhub/paypal/useragreement-full
+Paypal Privacy: https://www.paypal.com/us/legalhub/paypal/privacy-full
+PayPal Development Terms: https://www.paypal.com/us/legalhub/paypal/xdeveloper-full
+Paypal Development Policy: https://developer.paypal.com/reference/guidelines/policiesAndGuidelines/
+
 == Screenshots ==
 1. Admin Dashboard – Manage campaigns, donations, and fundraisers from one place.
 2. Campaign Creation – Build campaigns with images, videos, custom goals, etc.
@@ -330,7 +375,7 @@ Definitely. You’ll get extensive support via our community and access to detai
 8. Analytics and Reporting – Track total funds, donors, and campaign results.
 9. User Dashboard – Each user manages their donations and campaigns easily.
 10. Donation PDF Receipts – Automatically send branded receipts to donors.
-11. Payment Gateways – Accept payments via Stripe, PayPal, or offline donations.
+11. Payment Gateways – Accept payments via PayPal, or offline donations.
 
 
 == Changelog ==
@@ -340,7 +385,7 @@ Definitely. You’ll get extensive support via our community and access to detai
 * Dual crowdfunding and donation modes
 * Multi-role user system and dashboards
 * Campaign creation, reward, and pledge management
-* Payment gateway integrations (Stripe, PayPal)
+* Payment gateway integrations (PayPal)
 * Analytics, reporting, and email notifications
 * WooCommerce support
 
@@ -350,6 +395,18 @@ Definitely. You’ll get extensive support via our community and access to detai
 * Fixed campaign list fatal error
 * Fixed campaign ended issue
 * Fixed video thumbnails issue
+
+= 1.0.2 - Dec 17, 2025 =
+* Added attributes in shortcodes
+* Added donor/backer can be assigned as fundraiser
+* Added new DB column in pledges/donations table
+* Added donor type in donation listing page
+* Updated term texts in login/registration
+* Updated donor/backer count in analytics
+* Updated cleanup service when deactivate the plugin
+* Fixed revenue breakdown
+* Fixed migration from wp crowdfunding
+* Fixed pot files
 
 == Upgrade Notice ==
 It’s recommended to have a backup of your website before upgrading to a major version of Growfund.

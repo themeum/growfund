@@ -71,10 +71,12 @@ const UserPreviewCard = <T extends Backer | Donor>({
             </Avatar>
 
             <div className="growfund-flex growfund-flex-col growfund-gap-1">
-              <span className="growfund-text-fg-subdued growfund-typo-tiny">
-                {/* translators: %s: user ID */}
-                {sprintf(__('ID #%s', 'growfund'), user.id)}
-              </span>
+              {user.id && (
+                <span className="growfund-text-fg-subdued growfund-typo-tiny">
+                  {/* translators: %s: user ID */}
+                  {sprintf(__('ID #%s', 'growfund'), user.id)}
+                </span>
+              )}
               <span className="growfund-text-fg-secondary growfund-typo-small growfund-font-medium growfund-break-all growfund-line-clamp-2">
                 {sprintf('%s %s', user.first_name, user.last_name)}
               </span>
@@ -87,13 +89,17 @@ const UserPreviewCard = <T extends Backer | Donor>({
                 <div className="growfund-text-fg-secondary growfund-typo-small growfund-font-medium">
                   {user.email}
                 </div>
-                {user.is_verified ? (
-                  <Badge variant="primary">
-                    <BadgeCheck className="growfund-size-3 growfund-text-icon-brand" />
-                    {__('Verified', 'growfund')}
-                  </Badge>
-                ) : (
-                  <Badge variant="secondary">{__('Awaiting Verification', 'growfund')}</Badge>
+                {user.id && (
+                  <>
+                    {user.is_verified ? (
+                      <Badge variant="primary">
+                        <BadgeCheck className="growfund-size-3 growfund-text-icon-brand" />
+                        {__('Verified', 'growfund')}
+                      </Badge>
+                    ) : (
+                      <Badge variant="secondary">{__('Awaiting Verification', 'growfund')}</Badge>
+                    )}
+                  </>
                 )}
               </div>
             </div>

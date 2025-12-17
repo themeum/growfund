@@ -14,9 +14,6 @@ class CampaignFiltersDTO extends DTO
     /** @var string|null */
     public $status;
 
-    /** @var string|null */
-    public $category_slug;
-
     /** @var string|null (format: Y-m-d or Y-m-d H:i:s) */
     public $start_date;
 

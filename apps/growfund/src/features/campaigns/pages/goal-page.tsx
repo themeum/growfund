@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 import { SelectField } from '@/components/form/select-field';
 import { SwitchField } from '@/components/form/switch-field';
 import { TextField } from '@/components/form/text-field';
@@ -16,8 +16,8 @@ import { useAppConfig } from '@/contexts/app-config';
 import DonationPresets from '@/features/campaigns/components/goal-step/donation-presets';
 import StepNavigation from '@/features/campaigns/components/step-navigation';
 import {
-    type CampaignBuilderForm,
-    type CampaignGoalType,
+  type CampaignBuilderForm,
+  type CampaignGoalType,
 } from '@/features/campaigns/schemas/campaign';
 import { registry } from '@/lib/registry';
 
@@ -126,12 +126,9 @@ const GoalStep = () => {
                       />
                     )}
                   </div>
-                  <FeatureGuard
-                    feature="campaign.continue"
-                    fallback={<CampaignGoalReachingActionFallback />}
-                  >
+                  <ElementWrapper fallback={<CampaignGoalReachingActionFallback />}>
                     {CampaignGoalReachingAction && <CampaignGoalReachingAction />}
-                  </FeatureGuard>
+                  </ElementWrapper>
                 </div>
               )}
             </BoxContent>
@@ -141,12 +138,9 @@ const GoalStep = () => {
             <Box className="growfund-shadow-none">
               <BoxContent className="growfund-space-y-4">
                 <DonationPresets />
-                <FeatureGuard
-                  feature="campaign.allow_custom_donation"
-                  fallback={<CampaignAllowCustomDonationFallback />}
-                >
+                <ElementWrapper fallback={<CampaignAllowCustomDonationFallback />}>
                   {CampaignAllowCustomDonation && <CampaignAllowCustomDonation />}
-                </FeatureGuard>
+                </ElementWrapper>
               </BoxContent>
             </Box>
           )}

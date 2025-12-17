@@ -96,11 +96,11 @@ if (empty($tabs)) {
 			?>
             <div class="growfund-tabs__actions">
                 <?php foreach ($actions as $action) : // phpcs:ignore ?>
-                    <div class="growfund-tabs__button-wrapper-<?php echo esc_attr($action['variant'] === 'growfund-btn--primary' ? 'primary' : 'gray'); ?>">
+                    <div class="growfund-tabs__button-wrapper-<?php echo esc_attr($action['variant'] === 'growfund-btn--primary' ? 'primary growfund-branding-btn' : 'gray'); ?>">
                         <?php
                         $button_attributes = [];
 
-                        if (($action['variant'] === 'growfund-btn--primary' || $action['variant'] === 'growfund-btn--primary') &&
+                        if ($action['variant'] === 'growfund-btn--primary' &&
                             (strpos(strtolower($action['label']), 'back this campaign') !== false ||
                                 strpos(strtolower($action['label']), 'donate now') === false)
                         ) {

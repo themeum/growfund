@@ -26,7 +26,7 @@ $defaults = [
     'max_pledge_amount' => null
 ];
 
-$data = array_merge($defaults, $data ?? []);
+$data = array_merge($defaults, (array) $data ?? []);
 
 $campaign = $data['campaign'];
 $rewards = $data['rewards'] ?? [];
@@ -128,7 +128,7 @@ if ($campaign_id) {
                                 ->render('site.components.button', [
                                     /* translators: %s: pledge amount */
                                     'text' => sprintf(esc_html__('Pledge %s', 'growfund'), growfund_to_currency($min_pledge_amount)),
-                                    'class' => 'growfund-btn--primary growfund-pledge-btn',
+                                    'class' => 'growfund-btn--primary growfund-pledge-btn growfund-branding-btn',
                                     'id' => 'growfund-pledge-no-reward-btn',
                                     'attributes' => [
                                         'data-campaign-id' => $campaign_id,

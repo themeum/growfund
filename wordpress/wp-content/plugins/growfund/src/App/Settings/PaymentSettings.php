@@ -5,6 +5,7 @@ namespace Growfund\App\Settings;
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Constants\AppConfigKeys;
+use Growfund\Constants\HookNames;
 use Growfund\Constants\PaymentEngine;
 use Growfund\Core\AppSettings;
 use Growfund\Payments\DTO\PaymentGatewayDTO;
@@ -56,9 +57,7 @@ class PaymentSettings extends AppSettings
      */
     public function allow_guest_checkout()
     {
-        return isset($this->settings['enable_guest_checkout'])
-            ? filter_var($this->settings['enable_guest_checkout'], FILTER_VALIDATE_BOOLEAN)
-            : false;
+        return apply_filters(HookNames::GROWFUND_ALLOW_GUEST_CHECKOUT_FILTER, false, $this->settings);
     }
 
     /**

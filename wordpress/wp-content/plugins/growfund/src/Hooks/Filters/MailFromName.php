@@ -22,6 +22,6 @@ class MailFromName extends BaseHook
 
     public function handle(...$args)
     {
-        return get_bloginfo('name');
+        return growfund_site_name();
     }
 }

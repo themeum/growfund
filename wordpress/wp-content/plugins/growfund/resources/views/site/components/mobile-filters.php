@@ -241,7 +241,7 @@ if (!function_exists('render_mobile_filters')) {
                         'text' => __('Apply', 'growfund'),
                         'type' => 'button',
                         'id' => 'growfund-filter-apply',
-                        'class' => 'growfund-btn--primary'
+                        'class' => 'growfund-btn--primary growfund-branding-btn'
                     ]);
                     ?>
                 </div>

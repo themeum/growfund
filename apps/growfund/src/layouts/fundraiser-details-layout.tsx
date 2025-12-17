@@ -1,13 +1,13 @@
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 import FundraisersFallback from '@/components/pro-fallbacks/fundraisers-fallback';
 import { registry } from '@/lib/registry';
 
 const FundraiserDetailsLayout = () => {
   const FundraiserDetailsLayout = registry.get('FundraiserDetailsLayout');
   return (
-    <FeatureGuard feature="fundraisers" fallback={<FundraisersFallback />}>
+    <ElementWrapper fallback={<FundraisersFallback />}>
       {FundraiserDetailsLayout && <FundraiserDetailsLayout />}
-    </FeatureGuard>
+    </ElementWrapper>
   );
 };
 

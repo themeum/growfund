@@ -55,7 +55,9 @@ class Separator extends Menu
         );
 
         add_action('admin_head', function () {
-            echo '<style>
+            wp_register_style('menu-separator-style', false, [], GROWFUND_VERSION);
+			wp_enqueue_style('menu-separator-style');
+            $css = '
                 a:has(.growfund-menu-separator) {
                     width: 100%;
                     pointer-events: none;
@@ -67,8 +69,8 @@ class Separator extends Menu
                     height: 1px;
                     background-color: #4A5257;
                     pointer-events: none;
-                }
-            </style>';
+                }';
+            wp_add_inline_style('menu-separator-style', $css);
         });
     }
 }

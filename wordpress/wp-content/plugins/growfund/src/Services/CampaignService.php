@@ -395,10 +395,7 @@ class CampaignService
         }
 
         PostMeta::add($post_id, 'status', CampaignStatus::DRAFT);
-
-        if (!growfund_app_features()->is_pro()) {
-            PostMeta::add($post_id, 'start_date', Date::current_sql_safe());
-        }
+        PostMeta::add($post_id, 'start_date', Date::current_sql_safe());
 
         return $post_id;
     }

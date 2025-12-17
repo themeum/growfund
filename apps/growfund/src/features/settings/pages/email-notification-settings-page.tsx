@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 import FundraiserEmailFieldsFallback from '@/components/pro-fallbacks/settings/email-notifications/fundraiser-email-fields-fallback';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -185,7 +185,9 @@ const EmailNotificationSettingsPage = () => {
                 </div>
                 <div className="growfund-flex growfund-items-center growfund-gap-4">
                   <div className="growfund-flex growfund-items-center growfund-gap-1 growfund-typo-small growfund-text-fg-primary">
-                    <span className="growfund-text-fg-subdued">{__('From Email:', 'growfund')}</span>
+                    <span className="growfund-text-fg-subdued">
+                      {__('From Email:', 'growfund')}
+                    </span>
                     <span>{from_email}</span>
                   </div>
                   <div className="growfund-flex growfund-items-center growfund-gap-1 growfund-typo-small growfund-text-fg-primary">
@@ -215,12 +217,9 @@ const EmailNotificationSettingsPage = () => {
         </Card>
 
         {/* Fundraiser Emails */}
-        <FeatureGuard
-          feature="settings.email_notifications.all_fundraiser_mails"
-          fallback={<FundraiserEmailFieldsFallback />}
-        >
+        <ElementWrapper fallback={<FundraiserEmailFieldsFallback />}>
           {FundraiserEmailFields && <FundraiserEmailFields />}
-        </FeatureGuard>
+        </ElementWrapper>
 
         {/* Donor Emails */}
         {isDonationMode && (

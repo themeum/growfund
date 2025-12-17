@@ -57,9 +57,8 @@ class Mailer
      */
     protected function register_default_variables()
     {
-        $s = growfund_settings(AppSettings::GENERAL);
         $this->default_variables = [
-            'site_name' => get_bloginfo('name'),
+            'site_name' => growfund_site_name(),
             'site_url' => site_url(),
             'year' => wp_date('Y'),
             'support_email' => growfund_settings(AppSettings::GENERAL)->get_organization_contact_email(),

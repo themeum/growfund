@@ -4,18 +4,20 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { __, sprintf } from '@wordpress/i18n';
 import { format } from 'date-fns';
 import {
-    Check,
-    CheckCheck,
-    CheckCircle,
-    Columns3Cog,
-    EyeOff,
-    FileEdit,
-    Hourglass,
-    MessageSquareText,
-    PartyPopper,
-    Star,
-    Trash,
-    Trophy,
+  Check,
+  CheckCheck,
+  CheckCircle,
+  CircleX,
+  Columns3Cog,
+  EyeOff,
+  FileEdit,
+  Hourglass,
+  MessageSquareText,
+  PartyPopper,
+  Star,
+  Trash,
+  Trophy,
+  X,
 } from 'lucide-react';
 import { parseAsInteger, parseAsString } from 'nuqs';
 import { useCallback, useMemo, useState } from 'react';
@@ -33,19 +35,19 @@ import { SelectField } from '@/components/form/select-field';
 import { TextField } from '@/components/form/text-field';
 import { LoadingSpinnerOverlay } from '@/components/layouts/loading-spinner';
 import {
-    DataTable,
-    DataTableContent,
-    DataTablePagination,
-    DataTableWrapper,
-    DataTableWrapperHeader,
+  DataTable,
+  DataTableContent,
+  DataTablePagination,
+  DataTableWrapper,
+  DataTableWrapperHeader,
 } from '@/components/table/data-table';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Form } from '@/components/ui/form';
 import { Image } from '@/components/ui/image';
@@ -60,14 +62,14 @@ import { useConsentDialog } from '@/features/campaigns/contexts/consent-dialog-c
 import { useCampaignFilters } from '@/features/campaigns/hooks/use-campaign-filters';
 import { type Campaign, type CampaignStatus } from '@/features/campaigns/schemas/campaign';
 import {
-    type CampaignFilter,
-    CampaignFilterSchema,
+  type CampaignFilter,
+  CampaignFilterSchema,
 } from '@/features/campaigns/schemas/campaign-filter';
 import {
-    useApproveCampaignMutation,
-    useCampaignBulkActionsMutation,
-    useCampaignsQuery,
-    useEmptyCampaignsTrashMutation,
+  useApproveCampaignMutation,
+  useCampaignBulkActionsMutation,
+  useCampaignsQuery,
+  useEmptyCampaignsTrashMutation,
 } from '@/features/campaigns/services/campaign';
 import { AppConfigKeys } from '@/features/settings/context/settings-context';
 import { useCurrency } from '@/hooks/use-currency';
@@ -88,7 +90,7 @@ const Status = ({ status, campaign }: { status: CampaignStatus; campaign: Campai
   const approveCampaignMutation = useApproveCampaignMutation();
 
   const iconMap = new Map<
-    CampaignStatus | 'hidden',
+    CampaignStatus | 'hidden' | 'ended' | 'paused',
     {
       icon: IconComponent;
       color: string;
@@ -107,7 +109,10 @@ const Status = ({ status, campaign }: { status: CampaignStatus; campaign: Campai
       'published',
       { icon: CheckCircle, color: 'growfund-text-icon-brand', label: __('Published', 'growfund') },
     ],
-    ['draft', { icon: FileEdit, color: 'growfund-text-icon-secondary', label: __('Draft', 'growfund') }],
+    [
+      'draft',
+      { icon: FileEdit, color: 'growfund-text-icon-secondary', label: __('Draft', 'growfund') },
+    ],
     [
       'funded',
       {
@@ -120,7 +125,18 @@ const Status = ({ status, campaign }: { status: CampaignStatus; campaign: Campai
       'completed',
       { icon: CheckCheck, color: 'growfund-text-icon-success', label: __('Completed', 'growfund') },
     ],
-    ['hidden', { icon: EyeOff, color: 'growfund-text-icon-secondary', label: __('Hidden', 'growfund') }],
+    [
+      'hidden',
+      { icon: EyeOff, color: 'growfund-text-icon-secondary', label: __('Hidden', 'growfund') },
+    ],
+    [
+      'ended',
+      { icon: CircleX, color: 'growfund-text-icon-critical', label: __('Ended', 'growfund') },
+    ],
+    [
+      'paused',
+      { icon: X, color: 'growfund-text-icon-caution-active', label: __('Paused', 'growfund') },
+    ],
   ]);
 
   if (status === 'pending' && User.isAdmin()) {
@@ -165,12 +181,22 @@ const Status = ({ status, campaign }: { status: CampaignStatus; campaign: Campai
             <MessageSquareText className="growfund-shrink-0" />
           </Button>
         </DeclineReasonDisplayDialog>
-        <span className="growfund-typo-tiny growfund-text-fg-primary">{__('Declined', 'growfund')}</span>
+        <span className="growfund-typo-tiny growfund-text-fg-primary">
+          {__('Declined', 'growfund')}
+        </span>
       </div>
     );
   }
 
-  const content = iconMap.get(status);
+  let content = iconMap.get(status);
+
+  if (campaign.is_ended) {
+    content = iconMap.get('ended');
+  } else if (campaign.is_hidden) {
+    content = iconMap.get('hidden');
+  } else if (campaign.is_paused) {
+    content = iconMap.get('paused');
+  }
 
   if (!content) {
     return null;
@@ -453,7 +479,9 @@ const CampaignTable = ({ fundraiserId }: { fundraiserId?: string }) => {
         cell: ({ row }) => {
           const value = row.original.number_of_contributors;
           return (
-            <div className="growfund-typo-tiny growfund-text-fg-primary growfund-px-2">{value ?? emptyCell()}</div>
+            <div className="growfund-typo-tiny growfund-text-fg-primary growfund-px-2">
+              {value ?? emptyCell()}
+            </div>
           );
         },
         size: 90,

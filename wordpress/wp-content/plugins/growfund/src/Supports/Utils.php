@@ -168,7 +168,8 @@ class Utils
 
         return isset($post->post_content) && (
             has_shortcode($post->post_content, 'growfund_campaigns') ||
-            has_shortcode($post->post_content, 'growfund_checkout')
+            has_shortcode($post->post_content, 'growfund_checkout') ||
+            has_shortcode($post->post_content, 'growfund_campaign_list')
         );
     }
     
@@ -232,6 +233,16 @@ class Utils
     public static function is_dashboard_route()
     {
         return in_array(SiteRouter::get_current_route_name(), ['dashboard.fundraiser', 'dashboard.backer', 'dashboard.donor'], true);
+    }
+
+    /**
+     * Checks if the current route is a public route.
+     *
+     * @return boolean
+     */
+    public static function is_public_route()
+    {
+        return in_array(SiteRouter::get_current_route_name(), ['public'], true);
     }
 
     public static function is_migration_available_from_crowdfunding()

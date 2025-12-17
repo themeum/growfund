@@ -34,14 +34,14 @@ const PaymentOptions = ({ onActionChange, disabled, open, onOpenChange }: DropDo
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem
-          disabled={!growfundConfig.is_pro}
+          disabled={!growfundConfig.has_growfund_pro}
           onSelect={(event) => {
-            if (growfundConfig.is_pro) {
+            if (growfundConfig.has_growfund_pro) {
               handleAction('new-gateway', event);
             }
           }}
         >
-          {__('New Gateway', 'growfund')} {!growfundConfig.is_pro && <ProBadge />}
+          {__('New Gateway', 'growfund')} {!growfundConfig.has_growfund_pro && <ProBadge />}
         </DropdownMenuItem>
         <DropdownMenuItem
           onSelect={(event) => {

@@ -33,9 +33,16 @@ class EnqueueScriptDashboard extends BaseHook
 
     public function handle(...$args)
     {
-        if (!growfund_is_dashboard_route()) {
+        if (!growfund_is_dashboard_route() && !growfund_is_public_route()) {
             return;
         }
+
+        if (growfund_is_dev_mode()) {
+            Assets::load_vite_client();
+        }
+
+        wp_register_script('growfund-inline-script', false, [], GROWFUND_VERSION, true);
+        wp_enqueue_script('growfund-inline-script');
 
         $dashboard_script = GROWFUND_DIR_URL . 'resources/assets/dashboard/scripts/dashboard.js';
 

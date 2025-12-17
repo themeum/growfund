@@ -1,19 +1,18 @@
 import React from 'react';
 import { createHashRouter, Navigate } from 'react-router';
 
+import { loadComponentLazily } from '@/config';
 import { growfundConfig } from '@/config/growfund';
 import { RouteConfig } from '@/config/route-config';
 import { UserRouteConfig } from '@/dashboards/shared/config/user-route-config';
 import UserSettingsLayout from '@/dashboards/shared/layouts/user-settings-layout';
 import UserRootLayout from '@/dashboards/shared/root-layout';
 import { ErrorBoundary } from '@/error-boundary';
-import { useIsFeatureAvailable } from '@/hooks/use-is-feature-available';
 import BackerDetailsLayout from '@/layouts/backer-details-layout';
 import DonorDetailsLayout from '@/layouts/donor-details-layout';
 import FundraiserDetailsLayout from '@/layouts/fundraiser-details-layout';
 import PublicRootLayout from '@/layouts/public-root-layout';
 import RootLayout from '@/layouts/root-layout';
-import { conditionalImport, importPagesLazily } from '@/lib/imports';
 import { lazyImportDevOnly } from '@/lib/route';
 import { isDefined } from '@/utils';
 import { User as CurrentUser, type UserRole } from '@/utils/user';
@@ -37,9 +36,6 @@ const EmailNotificationSettingsPage = React.lazy(
 );
 const GeneralSettingsPage = React.lazy(
   () => import('@/features/settings/pages/general-settings-page'),
-);
-const LicenseSettingsPage = React.lazy(() =>
-  importPagesLazily('@growfund/pro/features/settings/pages/license-settings-page'),
 );
 const PaymentSettingsPage = React.lazy(
   () => import('@/features/settings/pages/payment-settings-page'),
@@ -119,15 +115,6 @@ const NotFoundPage = React.lazy(() => import('@/pages/not-found-page'));
 const CategoriesPage = React.lazy(() => import('@/pages/categories-page'));
 const TagsPage = React.lazy(() => import('@/pages/tags-page'));
 
-// Fund pages
-const FundPage = React.lazy(async () => {
-  const module = await conditionalImport('@growfund/pro/features/funds/pages/funds-page');
-  if (module.default) {
-    return { default: module.default as React.ComponentType };
-  }
-  return { default: () => null };
-});
-
 // Theme pages
 const ThemesPage = React.lazy(() => import('@/pages/themes-page'));
 
@@ -137,22 +124,6 @@ const FundraiserDetailsOverview = React.lazy(
 );
 const FundraiserDetailsCampaigns = React.lazy(
   () => import('@/pages/fundraisers/fundraiser-details-campaigns'),
-);
-
-const FundraiserMyDonationsPage = React.lazy(() =>
-  importPagesLazily('@growfund/pro/dashboards/fundraisers/pages/fundraiser-my-donations-page'),
-);
-const FundraiserAnnualReceiptsPage = React.lazy(() =>
-  importPagesLazily('@growfund/pro/dashboards/fundraisers/pages/fundraiser-annual-receipts-page'),
-);
-const FundraiserMyPledgesPage = React.lazy(() =>
-  importPagesLazily('@growfund/pro/dashboards/fundraisers/pages/fundraiser-my-pledges-page'),
-);
-const FundraiserBookmarkPage = React.lazy(() =>
-  importPagesLazily('@growfund/pro/dashboards/fundraisers/pages/fundraiser-bookmark-page'),
-);
-const FundraiserProfilePage = React.lazy(() =>
-  importPagesLazily('@growfund/pro/dashboards/fundraisers/pages/fundraiser-profile-page'),
 );
 
 // user
@@ -180,6 +151,14 @@ const MigrationPage = React.lazy(() => import('@/pages/migration-page'));
 const DonationReceiptPage = React.lazy(() => import('@/public/pages/donation-receipt-page'));
 const ECardPage = React.lazy(() => import('@/public/pages/ecard-page'));
 const PledgeReceiptPage = React.lazy(() => import('@/public/pages/pledge-receipt-page'));
+
+const FundPage = loadComponentLazily('FundPage');
+const LicenseSettingsPage = loadComponentLazily('LicenseSettingsPage');
+const FundraiserBookmarkPage = loadComponentLazily('FundraiserBookmarkPage');
+const FundraiserProfilePage = loadComponentLazily('FundraiserProfilePage');
+const FundraiserMyDonationsPage = loadComponentLazily('FundraiserMyDonationsPage');
+const FundraiserAnnualReceiptsPage = loadComponentLazily('FundraiserAnnualReceiptsPage');
+const FundraiserMyPledgesPage = loadComponentLazily('FundraiserMyPledgesPage');
 
 const allRoutes = [
   {
@@ -478,6 +457,7 @@ const allRoutes = [
             Component: LicenseSettingsPage,
             roles: ['administrator'],
             mode: 'all',
+            ignore: !growfundConfig.has_growfund_pro,
           },
         ],
       },
@@ -501,7 +481,6 @@ const allRoutes = [
             Component: PdfAnnualReceiptTemplate,
             roles: ['administrator'],
             mode: 'donation',
-            feature: 'settings.pdf_receipt.annual_receipt',
           },
           {
             path: RouteConfig.EmailNotificationTemplate.template,
@@ -534,7 +513,7 @@ const allRoutes = [
         Component: FundPage,
         roles: ['administrator'],
         mode: 'donation',
-        feature: 'settings.campaign.funds',
+        ignore: !growfundConfig.has_growfund_pro,
       },
 
       // Fundraiser routes.
@@ -543,30 +522,35 @@ const allRoutes = [
         Component: FundraiserBookmarkPage,
         roles: ['growfund_fundraiser'],
         mode: 'all',
+        ignore: !growfundConfig.has_growfund_pro,
       },
       {
         path: RouteConfig.FundraiserProfile.template,
         Component: FundraiserProfilePage,
         roles: ['growfund_fundraiser'],
         mode: 'all',
+        ignore: !growfundConfig.has_growfund_pro,
       },
       {
         path: RouteConfig.FundraiserMyDonations.template,
         Component: FundraiserMyDonationsPage,
         roles: ['growfund_fundraiser'],
         mode: 'donation',
+        ignore: !growfundConfig.has_growfund_pro,
       },
       {
         path: RouteConfig.FundraiserAnnualReceipts.template,
         Component: FundraiserAnnualReceiptsPage,
         roles: ['growfund_fundraiser'],
         mode: 'donation',
+        ignore: !growfundConfig.has_growfund_pro,
       },
       {
         path: RouteConfig.FundraiserMyPledges.template,
         Component: FundraiserMyPledgesPage,
         roles: ['growfund_fundraiser'],
         mode: 'reward',
+        ignore: !growfundConfig.has_growfund_pro,
       },
       {
         path: RouteConfig.FundraiserSettings.template,
@@ -722,7 +706,7 @@ interface Route {
   roles?: UserRole[];
   children?: Route[];
   mode?: 'all' | 'reward' | 'donation';
-  feature?: string;
+  ignore?: boolean;
 }
 
 const excludeProduction: string[] =
@@ -734,20 +718,12 @@ function filterRoutesByRole(routes: Route[], role: UserRole): Route[] {
       // Keep the route if there is no roles defined for the route or defined but no value or
       // the current user role includes the allowed route roles.
       (route) => {
-        if (!growfundConfig.is_pro && RouteConfig.LicenseSettings.template === route.path) {
-          return false;
-        }
-
-        if (isDefined(route.feature) && !useIsFeatureAvailable(route.feature)) {
+        if (isDefined(route.ignore) && route.ignore) {
           return false;
         }
 
         if (!isDefined(route.roles) || route.roles.length === 0) {
           return true;
-        }
-
-        if (role === 'growfund_fundraiser') {
-          return growfundConfig.is_pro && route.roles.includes(role);
         }
 
         return route.roles.includes(role);

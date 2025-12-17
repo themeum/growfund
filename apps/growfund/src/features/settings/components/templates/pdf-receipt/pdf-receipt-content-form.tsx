@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 import { EditorField } from '@/components/form/editor-field';
 import PdfReceiptSettingsSignatureFallback from '@/components/pro-fallbacks/settings/pdf-receipt/signature-fallback';
 import PdfReceiptSettingsTaxInformationFallback from '@/components/pro-fallbacks/settings/pdf-receipt/tax-information-fallback';
@@ -46,19 +46,13 @@ const PdfReceiptContentForm = ({
         shortCodes={shortcodes}
       />
       {isDonationMode && (
-        <FeatureGuard
-          feature="settings.pdf_receipt.signature"
-          fallback={<PdfReceiptSettingsSignatureFallback />}
-        >
+        <ElementWrapper fallback={<PdfReceiptSettingsSignatureFallback />}>
           {PdfReceiptSettingsSignature && <PdfReceiptSettingsSignature />}
-        </FeatureGuard>
+        </ElementWrapper>
       )}
-      <FeatureGuard
-        feature="settings.pdf_receipt.tax_information"
-        fallback={<PdfReceiptSettingsTaxInformationFallback />}
-      >
+      <ElementWrapper fallback={<PdfReceiptSettingsTaxInformationFallback />}>
         {PdfReceiptSettingsTaxInformation && <PdfReceiptSettingsTaxInformation />}
-      </FeatureGuard>
+      </ElementWrapper>
       <EditorField
         control={form.control}
         name="content.footer"

@@ -3,7 +3,7 @@ import { __ } from '@wordpress/i18n';
 import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import FeatureGuard from '@/components/feature-guard';
+import ElementWrapper from '@/components/element-wrapper';
 import { MediaField } from '@/components/form/media-field';
 import RangeSliderField from '@/components/form/range-slider-field';
 import BrandingColorSelectionFallback from '@/components/pro-fallbacks/settings/branding/color-selection-fallback';
@@ -13,8 +13,8 @@ import { useAppConfig } from '@/contexts/app-config';
 import { AppConfigKeys, useSettingsContext } from '@/features/settings/context/settings-context';
 import { useUpdateDirtyState } from '@/features/settings/hooks/use-update-dirty-state';
 import {
-    BrandingSettingsSchema,
-    type BrandingSettingsForm,
+  BrandingSettingsSchema,
+  type BrandingSettingsForm,
 } from '@/features/settings/schemas/settings';
 import { useRouteBlockerGuard } from '@/hooks/use-route-blocker-guard';
 import { registry } from '@/lib/registry';
@@ -82,12 +82,9 @@ const BrandingSettingsPage = () => {
                 max={60}
               />
             </div>
-            <FeatureGuard
-              feature="settings.branding.colors"
-              fallback={<BrandingColorSelectionFallback />}
-            >
+            <ElementWrapper fallback={<BrandingColorSelectionFallback />}>
               {BrandingColorSelection && <BrandingColorSelection />}
-            </FeatureGuard>
+            </ElementWrapper>
           </CardContent>
         </Card>
       </div>

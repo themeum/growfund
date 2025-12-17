@@ -60,13 +60,13 @@ class ViteManifest
             throw new Exception(esc_html("Manifest file does not exist: $manifest_file"));
         }
 
-        if (!parse_url($base_uri)) { // phpcs:ignore
+        if (!wp_parse_url($base_uri)) {
             throw new Exception(esc_html("Failed to parse URL: $base_uri"));
         }
 
         $this->base_uri = $base_uri;
 
-        if (!parse_url($base_path)) { // phpcs:ignore
+        if (!wp_parse_url($base_path)) {
             throw new Exception(sprintf('Failed to parse path: %s', esc_html($base_path)));
         }
 

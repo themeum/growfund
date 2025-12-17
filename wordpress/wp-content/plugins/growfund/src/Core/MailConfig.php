@@ -62,7 +62,7 @@ class MailConfig
     protected function load_email_and_notification_settings()
     {
         $email_and_notifications = growfund_settings(AppSettings::NOTIFICATIONS)->get();
-        $email_and_notifications['is_enabled_email_verification'] = growfund_settings(AppSettings::SECURITY)->is_enabled_email_verification();
+        $email_and_notifications['is_enabled_email_verification'] = true;
 
         if (is_null($email_and_notifications)) {
             return $this;
