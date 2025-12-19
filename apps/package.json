@@ -15,8 +15,7 @@
     "test": "vitest run --reporter=verbose",
     "extract:option-defaults": "tsx growfund/src/scripts/defaults.ts optionDefaults",
     "wp": "docker compose run --rm wpcli",
-    "make:pot": "yarn wp i18n make-pot . /var/www/html/wp-content/plugins/growfund/languages/growfund.pot --slug=growfund --domain=growfund --include='/var/www/html/wp-content/plugins/growfund/src/**/*.php,/var/www/html/wp-content/plugins/growfund/resources/dist/*.js'",
-    "make:pro-pot": "yarn wp i18n make-pot . /var/www/html/wp-content/plugins/growfund-pro/languages/growfund-pro.pot --slug=growfund-pro --domain=growfund-pro --include='/var/www/html/wp-content/plugins/growfund-pro/src/**/*.php,/var/www/html/wp-content/plugins/growfund-pro/resources/dist/*.js'"
+    "make:pot": "yarn wp i18n make-pot wp-content/plugins/growfund wp-content/plugins/growfund/languages/growfund.pot --slug=growfund --domain=growfund --include='growfund.php,**/*.php,resources/dist/*.js' --exclude='vendor'"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
