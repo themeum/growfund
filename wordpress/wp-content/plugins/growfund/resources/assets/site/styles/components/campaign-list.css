@@ -43,3 +43,22 @@
     padding: 0;
   }
 }
+@media (max-width: 480px) {
+  .growfund-page-container .growfund-campaign-card {
+    height: fit-content;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .growfund-page-container .growfund-campaign-card:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}
+@media (min-width: 800px) and (max-width: 1120px) {
+  .growfund-page-container .growfund-campaign-card:hover {
+    position: relative;
+    margin-bottom: 0;
+  }
+}
+

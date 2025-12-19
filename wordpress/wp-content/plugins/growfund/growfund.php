@@ -71,13 +71,13 @@ define('GROWFUND_SRC_PATH', GROWFUND_DIR_PATH . 'src/');
  * Define the react application root url
  * @since 1.0.0
  */
-define('GROWFUND_REACT_APP_URL', GROWFUND_DIR_URL . 'resources/ts/');
+define('GROWFUND_RESOURCE_URL', GROWFUND_DIR_URL . 'resources/');
 
 /**
  * Define the react application root path
  * @since 1.0.0
  */
-define('GROWFUND_REACT_APP_PATH', GROWFUND_DIR_PATH . 'resources/ts/');
+define('GROWFUND_RESOURCE_PATH', GROWFUND_DIR_PATH . 'resources/');
 
 /**
  * Define plugin base name

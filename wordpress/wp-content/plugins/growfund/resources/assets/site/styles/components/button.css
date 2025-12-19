@@ -1,7 +1,7 @@
 /* =========================================
  BUTTON COMPONENTS
  ========================================= */
- 
+
 /* Legacy button styles (for backward compatibility) */
 
 .growfund-page-container .growfund-btn {
@@ -87,6 +87,7 @@
   color: var(--growfund-gray-15);
   border: 1px solid var(--growfund-gray-8);
   transition: all 0.2s ease;
+  max-width: 150px;
 }
 
 .growfund-page-container .growfund-amount-selector-btn:hover {

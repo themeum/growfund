@@ -979,6 +979,19 @@ if (!function_exists('growfund_is_block_theme')) {
     }
 }
 
+if (!function_exists('growfund_app_features')) {
+    /**
+     * @deprecated since 1.0.2
+     * keep this function for backward compatibility. will be removed in version 1.1.0
+     *
+     * @return FeatureManager
+     */
+    function growfund_app_features()
+    {
+        return growfund_app()->make(FeatureManager::class);
+	}
+}
+
 if (!function_exists('growfund_is_dashboard_route')) {
     /**
      * Check if the current route is a dashboard route.

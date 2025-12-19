@@ -105,7 +105,11 @@ $classString = ClassHelper::buildClassStringFromVariant($variantConfigs, $varian
 
 // Add selected class if needed
 if ($selected) {
-    $classString .= ' growfund-btn--primary growfund-branding-btn';
+    $classString .= ' growfund-btn--primary';
+
+    if (!in_array($variant, ['amount-selector', 'back'], true)) {
+        $classString .= ' growfund-branding-btn';
+    }
 }
 
 // Build attributes string using helper

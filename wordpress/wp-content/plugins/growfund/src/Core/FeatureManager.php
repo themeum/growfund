@@ -4,10 +4,10 @@ namespace Growfund\Core;
 
 defined( 'ABSPATH' ) || exit;
 
-use Growfund\Constants\HookNames;
 
 /**
- * @deprecated since 1.1.0
+ * @deprecated since 1.0.2
+ * keep the class for backward compatibility. will be removed in version 1.1.0
  */
 class FeatureManager
 {
@@ -21,9 +21,10 @@ class FeatureManager
     }
 
     /**
-     * @deprecated since 1.1.0
+     * @deprecated since 1.0.2
+     * keep this method for backward compatibility. will be removed in version 1.1.0
+     * 
      * Check if the pro plugin is activated.
-     * Keep for backward compatibility
      * @return bool
      */
     public function is_pro() {

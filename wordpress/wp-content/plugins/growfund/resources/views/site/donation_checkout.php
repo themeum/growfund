@@ -43,7 +43,7 @@ $default_index = 0;
         </div>
 
         <div class="growfund-donation-checkout__donation-section">
-            <div class="growfund-donation-checkout__section-title"><?php esc_html_e('Enter your donation', 'growfund'); ?></div>
+            <div class="growfund-donation-checkout__section-title"><?php esc_html_e('Select a donation amount', 'growfund'); ?></div>
             <?php if (!empty($suggested_options) && is_array($suggested_options)) : ?>
                 <div class="growfund-donation-checkout__amount-buttons">
                 <?php
@@ -88,8 +88,8 @@ $default_index = 0;
                         'selected' => $is_selected,
                         'attributes' => [
                             'data-amount' => $button['amount'],
-                            'data-formatted' => $button['formatted']
-                        ]
+                            'data-formatted' => $button['formatted'],
+                        ],
                     ]);
                 }
                 ?>

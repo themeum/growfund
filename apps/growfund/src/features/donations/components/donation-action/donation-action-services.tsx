@@ -22,7 +22,7 @@ function prepareActionOptions(donation: Donation) {
       },
     },
     {
-      label: __('Cancel Pledge', 'growfund'),
+      label: __('Cancel Donation', 'growfund'),
       value: 'cancel',
       icon: <X />,
       proceed: () => {
@@ -80,18 +80,21 @@ function prepareMessageKey(donation: Donation): MessageKey | null {
 
 function getActionAlerts() {
   return new Map<Action, string>([
-    ['cancel', __('This action will cancel the pledge. This action cannot be undone.', 'growfund')],
+    [
+      'cancel',
+      __('This action will cancel the donation. This action cannot be undone.', 'growfund'),
+    ],
     [
       'complete',
       __(
-        'This action will mark the pledge as completed, indicating fulfillment is finished.',
+        'This action will mark the donation as completed, indicating fulfillment is finished.',
         'growfund',
       ),
     ],
     [
       'delete',
       __(
-        'This action will permanently remove the pledge and all associated data. This cannot be undone.',
+        'This action will permanently remove the donation and all associated data. This cannot be undone.',
         'growfund',
       ),
     ],

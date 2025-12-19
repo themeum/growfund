@@ -65,7 +65,7 @@ if ($id) {
 ?>
 
 <div class="growfund-search-box">
-    <div class="growfund-search-btn" aria-label="<?php echo esc_attr($searchButtonText); ?>">
+    <div class="growfund-search-btn" aria-label="<?php echo esc_attr($searchButtonText); ?>" style="line-height: 0;">
         <?php
         growfund_renderer()
             ->render('site.components.icon', [

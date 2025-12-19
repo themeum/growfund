@@ -68,11 +68,9 @@ foreach ($commonIcons as $iconName) {
 <div
     class="growfund-icon growfund-icon--<?php echo esc_attr($name); ?> growfund-icon--<?php echo esc_attr($size); ?>"
     style="color: <?php echo esc_attr($color); ?>; width: <?php echo esc_attr($iconSize); ?>; height: <?php echo esc_attr($iconSize); ?>;"
-    data-icon-name="<?php echo esc_attr($name); ?>"
-    data-preloaded-icons="<?php echo esc_attr(wp_json_encode($preloadedIcons)); ?>"
     <?php echo $attributesStr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- already escaped ?>>
     <?php
     // Output the SVG content
-    echo wp_kses_post($iconContent);
+    echo $iconContent; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     ?>
 </div>

@@ -143,6 +143,7 @@ class Assets
             'assets_url' => static::get_assets_url(),
             'as_guest' => $as_guest,
             'has_growfund_pro' => has_growfund_pro(),
+            'features' => [], // @todo: deprecated since 1.0.2 -- keep this for backward compatibility, will be removed in version 1.1.0
             'is_migration_available_from_crowdfunding' => growfund_app()->is_migration_available_from_crowdfunding(),
         ];
 

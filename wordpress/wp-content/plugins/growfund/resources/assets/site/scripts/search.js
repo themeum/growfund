@@ -21,13 +21,17 @@ document.addEventListener('DOMContentLoaded', function () {
   const filtersForm = document.querySelector('.growfund-filters-form');
   const mainArea = document.querySelector('.growfund-main-area');
   const searchInput = document.getElementById('search');
-  const campaignListContainer = document.getElementById('growfund-campaign-list-container');
+  const campaignListContainer = document.getElementById(
+    'growfund-campaign-list-container'
+  );
 
   if (!filtersForm || !mainArea || !campaignListContainer) {
     // If campaign list container is missing, try to wait for it
     if (!campaignListContainer) {
       setTimeout(() => {
-        const retryContainer = document.getElementById('growfund-campaign-list-container');
+        const retryContainer = document.getElementById(
+          'growfund-campaign-list-container'
+        );
         if (retryContainer) {
           // Continue with the script logic
           continueWithScript();
@@ -38,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   const baseUrl = window.location.href.split('?')[0];
+
   // Make infinite scroll instance globally accessible for proper cleanup
   if (!window.growfundSearchInfiniteScroll) {
     window.growfundSearchInfiniteScroll = null;
@@ -57,12 +62,17 @@ document.addEventListener('DOMContentLoaded', function () {
       window.growfundSearchInfiniteScroll = null;
     }
     // Also clean up local reference
-    if (currentInfiniteScroll && typeof currentInfiniteScroll.dispose === 'function') {
+    if (
+      currentInfiniteScroll &&
+      typeof currentInfiniteScroll.dispose === 'function'
+    ) {
       currentInfiniteScroll.dispose();
       currentInfiniteScroll = null;
     }
     // Also remove any existing loading indicators
-    const existingLoadingIndicator = document.querySelector('.growfund-loading-indicator');
+    const existingLoadingIndicator = document.querySelector(
+      '.growfund-loading-indicator'
+    );
     if (existingLoadingIndicator) {
       existingLoadingIndicator.remove();
     }
@@ -74,7 +84,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const filtersForm = document.querySelector('.growfund-filters-form');
     const mainArea = document.querySelector('.growfund-main-area');
     const searchInput = document.getElementById('search');
-    const campaignListContainer = document.getElementById('growfund-campaign-list-container');
+    const campaignListContainer = document.getElementById(
+      'growfund-campaign-list-container'
+    );
 
     if (!filtersForm || !mainArea || !campaignListContainer) {
       return;
@@ -102,14 +114,18 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Ensure campaign list container exists
-    const campaignListContainer = document.getElementById('growfund-campaign-list-container');
+    const campaignListContainer = document.getElementById(
+      'growfund-campaign-list-container'
+    );
     if (!campaignListContainer) {
       return;
     }
 
     isAjaxInProgress = true; // Set flag to prevent other calls
 
-    const featuredProjects = document.querySelector('.growfund-featured-projects');
+    const featuredProjects = document.querySelector(
+      '.growfund-featured-projects'
+    );
     if (featuredProjects) {
       featuredProjects.style.display = 'none';
     }
@@ -122,7 +138,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const mobileSort = formData.get('mobile_sort_temp');
 
     // Filter out mobile-specific fields to avoid them appearing in desktop search URLs
-    const mobileFields = ['mobile_location', 'mobile_sort_temp', 'mobile_category_temp'];
+    const mobileFields = [
+      'mobile_location',
+      'mobile_sort_temp',
+      'mobile_category_temp',
+    ];
     for (const field of mobileFields) {
       formData.delete(field);
     }
@@ -136,10 +156,19 @@ document.addEventListener('DOMContentLoaded', function () {
     if (mobileCategory) {
       formData.set('category', mobileCategory);
     } else {
-      const categoryDropdown = filtersForm.querySelector('[data-dropdown-key="category"]');
-      if (categoryDropdown && categoryDropdown.dataset.value) {
-        formData.set('category', categoryDropdown.dataset.value);
+      const categoryDropdown = filtersForm.querySelector(
+        '[data-dropdown-key="category"]'
+      );
+
+      const selectedOption = categoryDropdown.querySelector(
+        'li[aria-selected="true"]'
+      );
+      let categoryValue = '';
+
+      if (selectedOption && selectedOption.dataset.value) {
+        categoryValue = selectedOption.dataset.value;
       }
+      formData.set('category', categoryValue);
     }
 
     // Add location filter - prioritize mobile location if available
@@ -151,7 +180,9 @@ document.addEventListener('DOMContentLoaded', function () {
     if (mobileSort) {
       formData.set('sort', mobileSort);
     } else {
-      const sortDropdown = filtersForm.querySelector('[data-dropdown-key="sort"]');
+      const sortDropdown = filtersForm.querySelector(
+        '[data-dropdown-key="sort"]'
+      );
       if (sortDropdown && sortDropdown.dataset.value) {
         formData.set('sort', sortDropdown.dataset.value);
       }
@@ -159,10 +190,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Manually build query string for URL bar
     const paramsForUrl = new URLSearchParams();
+
     for (const [key, value] of formData.entries()) {
       paramsForUrl.append(key, value);
     }
     const newUrl = `${baseUrl}?${paramsForUrl.toString()}`;
+
     history.pushState(null, '', newUrl);
 
     mainArea.style.opacity = '0.5';
@@ -181,7 +214,10 @@ document.addEventListener('DOMContentLoaded', function () {
       })
       .then((result) => {
         // Double-check that the campaign list container still exists
-        const currentContainer = document.getElementById('growfund-campaign-list-container');
+        const currentContainer = document.getElementById(
+          'growfund-campaign-list-container'
+        );
+
         if (!currentContainer) {
           return;
         }
@@ -209,7 +245,11 @@ document.addEventListener('DOMContentLoaded', function () {
           currentContainer.insertAdjacentHTML('beforeend', result.data.html);
 
           // Only initialize infinite scroll if there are more campaigns to load and it hasn't been initialized yet
-          if (result.data.has_more && page === 1 && !window.growfundInfiniteScrollInitialized) {
+          if (
+            result.data.has_more &&
+            page === 1 &&
+            !window.growfundInfiniteScrollInitialized
+          ) {
             // Initialize immediately for smoother experience
             window.growfundInfiniteScrollInitialized = true;
             currentInfiniteScroll = initializeInfiniteScroll({
@@ -247,10 +287,13 @@ document.addEventListener('DOMContentLoaded', function () {
                   newFormData.set('category', mobileCategory);
                 } else {
                   const categoryDropdown = filtersForm.querySelector(
-                    '[data-dropdown-key="category"]',
+                    '[data-dropdown-key="category"]'
                   );
-                  if (categoryDropdown && categoryDropdown.dataset.value) {
-                    newFormData.set('category', categoryDropdown.dataset.value);
+                  const selectedOption = categoryDropdown.querySelector(
+                    'li[aria-selected="true"]'
+                  );
+                  if (selectedOption && selectedOption.dataset.value) {
+                    newFormData.set('category', selectedOption.dataset.value);
                   }
                 }
 
@@ -263,7 +306,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (mobileSort) {
                   newFormData.set('sort', mobileSort);
                 } else {
-                  const sortDropdown = filtersForm.querySelector('[data-dropdown-key="sort"]');
+                  const sortDropdown = filtersForm.querySelector(
+                    '[data-dropdown-key="sort"]'
+                  );
                   if (sortDropdown && sortDropdown.dataset.value) {
                     newFormData.set('sort', sortDropdown.dataset.value);
                   }
@@ -301,7 +346,8 @@ document.addEventListener('DOMContentLoaded', function () {
             heading.textContent = 'No campaigns found.';
 
             const paragraph = document.createElement('p');
-            paragraph.textContent = 'Try adjusting your search or filter criteria.';
+            paragraph.textContent =
+              'Try adjusting your search or filter criteria.';
 
             contentDiv.appendChild(heading);
             contentDiv.appendChild(paragraph);
@@ -349,16 +395,10 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
 
-    filtersForm.addEventListener('change', (e) => {
-      if (e.target.id !== 'search') {
-        performAjaxSearch(1);
-      }
-    });
-
     // Listen for dropdown selection events
     document.addEventListener('dropdown:select', (e) => {
       if (e.detail && e.detail.value) {
-        setTimeout(() => performAjaxSearch(1), 100); // Increased timeout to prevent rapid clicks
+        setTimeout(() => performAjaxSearch(1), 200); // Increased timeout to prevent rapid clicks
       }
     });
 
@@ -381,14 +421,20 @@ document.addEventListener('DOMContentLoaded', function () {
     // and infinite scroll is initialized correctly.
     const urlParams = new URLSearchParams(window.location.search);
     const hasInitialFilters = Array.from(urlParams.keys()).some(
-      (key) => key !== 'page' && key !== 'limit' && key !== 'action' && key !== 'is_ajax_load',
+      (key) =>
+        key !== 'page' &&
+        key !== 'limit' &&
+        key !== 'action' &&
+        key !== 'is_ajax_load'
     );
 
     if (hasInitialFilters) {
       // Add a small delay to ensure dropdowns are fully initialized and container is available
       setTimeout(() => {
         // Double-check that the campaign list container exists before performing search
-        const container = document.getElementById('growfund-campaign-list-container');
+        const container = document.getElementById(
+          'growfund-campaign-list-container'
+        );
         if (!container) {
           // Wait a bit more and try again
           setTimeout(() => {
@@ -402,7 +448,9 @@ document.addEventListener('DOMContentLoaded', function () {
       // If no search filters are applied initially, we need to initialize infinite scroll for the default case
       // since campaigns-archive.js is disabled when search elements are present
       setTimeout(() => {
-        const container = document.getElementById('growfund-campaign-list-container');
+        const container = document.getElementById(
+          'growfund-campaign-list-container'
+        );
         if (!container || window.growfundInfiniteScrollInitialized) {
           return;
         }
@@ -410,9 +458,14 @@ document.addEventListener('DOMContentLoaded', function () {
         // Check if there are campaigns already loaded and if we have more to load
         const hasCampaigns = container.children.length > 0;
         const hasMore =
-          typeof growfundArchiveData !== 'undefined' && growfundArchiveData.initialHasMore;
+          typeof growfundArchiveData !== 'undefined' &&
+          growfundArchiveData.initialHasMore;
 
-        if (hasCampaigns && hasMore && typeof initializeInfiniteScroll === 'function') {
+        if (
+          hasCampaigns &&
+          hasMore &&
+          typeof initializeInfiniteScroll === 'function'
+        ) {
           window.growfundInfiniteScrollInitialized = true;
 
           const infiniteScrollInstance = initializeInfiniteScroll({
@@ -466,7 +519,36 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+  function restoreDropdownsFromUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    restoreDropdown('category', urlParams.get('category'));
+    restoreDropdown('sort', urlParams.get('sort'));
+  }
+  function restoreDropdown(key, value) {
+    if (!value) return;
+
+    const dropdown = document.querySelector(`[data-dropdown-key="${key}"]`);
+    if (!dropdown) return;
+
+    const option = dropdown.querySelector(`li[data-value="${value}"]`);
+    if (!option) return;
+
+    dropdown
+      .querySelectorAll('li[aria-selected="true"]')
+      .forEach((li) => li.setAttribute('aria-selected', 'false'));
+
+    option.setAttribute('aria-selected', 'true');
+    dropdown.dataset.value = value;
+
+    const valueEl = dropdown.querySelector('.growfund-dropdown__value');
+    if (valueEl) {
+      valueEl.textContent = option.textContent.trim();
+    }
+  }
+
   // Start the script logic
+  restoreDropdownsFromUrl();
   setupEventListeners();
   checkInitialFilters();
 });

@@ -26,9 +26,13 @@ const CollaboratorsFallback = () => {
               'growfund',
             )}
           </p>
-          <Button variant="link" className="growfund-text-fg-emphasis" onClick={() => {
+          <Button
+            variant="link"
+            className="growfund-text-fg-emphasis"
+            onClick={() => {
               window.location.href = 'https://growfund.com/pricing';
-            }}>
+            }}
+          >
             {__('Get Pro', 'growfund')}
           </Button>
         </div>
