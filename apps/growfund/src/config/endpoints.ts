@@ -27,6 +27,7 @@ const endpoints = {
 
   // Users endpoints
   VALIDATE_EMAIL: '/validate-email',
+  VALIDATE_USERNAME: '/validate-username',
   CURRENT_USER: '/current-user',
   USERS: '/users',
   USER_RESET_PASSWORD: (id: string) => `/users/${id}/update-password`,

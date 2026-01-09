@@ -9,7 +9,7 @@ use Growfund\Constants\UserTypes\Admin;
 use Growfund\Constants\UserTypes\Backer;
 use Growfund\Constants\UserTypes\Donor;
 use Growfund\Constants\UserTypes\Fundraiser;
-use Growfund\Supports\User as SupportsUser;
+use Growfund\Supports\User as UserSupport;
 use Growfund\Supports\UserMeta;
 use Exception;
 
@@ -252,6 +252,10 @@ class User
     public function set_role($role)
     {
         try {
+            if (is_null($this->user)) {
+                return false;
+            }
+
             $this->user->set_role($role);
             return true;
         } catch (Exception $error) {
@@ -268,6 +272,10 @@ class User
     public function add_new_role($role)
     {
         try {
+            if (is_null($this->user)) {
+                return false;
+            }
+
             $this->user->add_role($role);
             return true;
         } catch (Exception $error) {
@@ -333,7 +341,7 @@ class User
      */
     public function is_verified()
     {
-        return SupportsUser::is_verified($this->get());
+        return UserSupport::is_verified($this->get());
     }
 
     /**
@@ -393,7 +401,7 @@ class User
      */
     public function is_soft_deleted()
     {
-        return (bool) $this->get_meta(SupportsUser::SOFT_DELETE_KEY, false);
+        return (bool) $this->get_meta(UserSupport::SOFT_DELETE_KEY, false);
     }
 
     /**
@@ -403,7 +411,7 @@ class User
      */
     public function is_anonymized()
     {
-        return (bool) $this->get_meta(SupportsUser::IS_ANONYMIZED, false);
+        return (bool) $this->get_meta(UserSupport::IS_ANONYMIZED, false);
     }
 
     /**
@@ -413,11 +421,13 @@ class User
      */
     public function get_joined_date()
     {
-        if ($this->is_fundraiser()) {
-            return $this->get_meta('joined_at');
-        }
+        $user = $this->get();
 
-        return $this->user->user_registered ?? null;
+        if (empty($user)) {
+            return null;
+        }
+        
+        return UserSupport::get_joined_date($user);
     }
 
     /**

@@ -31,6 +31,9 @@ class UserDTO extends DTO
     /** @var string */
     public $email;
 
+    /** @var string */
+    public $username;
+
     /** @var object|null */
     public $image;
 

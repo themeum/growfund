@@ -18,6 +18,18 @@ const useValidateUserEmail = () => {
   });
 };
 
+const validateUsername = (username: string) => {
+  return apiClient.post<boolean>(endpoints.VALIDATE_USERNAME, {
+    username,
+  });
+};
+
+const useValidateUsername = () => {
+  return useMutation({
+    mutationFn: validateUsername,
+  });
+};
+
 const sendResetLink = () => {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -72,4 +84,5 @@ export {
   useSendResetLinkMutation,
   useUpdateUserNotificationsMutation,
   useValidateUserEmail,
+  useValidateUsername,
 };

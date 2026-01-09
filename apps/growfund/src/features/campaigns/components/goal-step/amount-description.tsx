@@ -118,6 +118,13 @@ const PresetItem = ({
                 name={`suggested_options.${index}.amount` as 'suggested_options.0.amount'}
                 placeholder={__('5.00', 'growfund')}
                 autoFocusVisible
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    event.preventDefault();
+                    onSetEditing?.(false);
+                    setIsOpen(false);
+                  }
+                }}
               />
               <div className="growfund-flex growfund-top-2 growfund-right-2 growfund-h-9 growfund-w-[5.25rem] growfund-items-center growfund-justify-center growfund-p-1 growfund-border growfund-rounded-md">
                 <Button
@@ -252,7 +259,8 @@ export const AmountDescription = () => {
         variant="secondary"
         className={cn(
           'growfund-w-full',
-          hasFieldError && 'growfund-border-border-critical growfund-bg-background-fill-critical-secondary',
+          hasFieldError &&
+            'growfund-border-border-critical growfund-bg-background-fill-critical-secondary',
         )}
         disabled={isDefined(editingIndex)}
         onClick={() => {

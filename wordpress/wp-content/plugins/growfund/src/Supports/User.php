@@ -2,6 +2,7 @@
 
 namespace Growfund\Supports;
 
+use Growfund\Constants\Status\FundraiserStatus;
 use Growfund\Constants\UserTypes\Admin;
 use Growfund\Constants\UserTypes\Backer;
 use Growfund\Constants\UserTypes\Donor;
@@ -23,13 +24,28 @@ class User
      *
      * @return bool True if the user is soft deleted, false otherwise.
      */
-    public static function is_soft_deleted_user($user_id = null)
+    public static function is_soft_deleted($user_id = null)
     {
         if (is_null($user_id)) {
             return false;
         }
 
         return ((bool) UserMeta::get($user_id, static::SOFT_DELETE_KEY)) === true;
+    }
+
+    /**
+     * Check if a user is anonymized.
+     * @since 1.0.3
+     * @param int|null $user_id The ID of the user.
+     * 
+     * @return bool
+     */
+    public static function is_anonymized($user_id = null) {
+        if (is_null($user_id)) {
+            return false;
+        }
+
+        return ((bool) UserMeta::get($user_id, static::IS_ANONYMIZED)) === true;
     }
 
     public static function verify_email($user_id, $token)
@@ -41,11 +57,11 @@ class User
 
         if (!$expired && $actual_token === $token) {
             static::mark_as_verified($user_id);
-            FlashMessage::set('success', __('Your email has been verified', 'growfund'));
+            growfund_flash_set_message('success', __('Your email has been verified', 'growfund'));
             growfund_redirect(growfund_login_url());
         }
 
-        FlashMessage::set('error', __('Your email could not be verified', 'growfund'));
+        growfund_flash_set_message('error', __('Your email could not be verified', 'growfund'));
         growfund_redirect(growfund_login_url());
     }
 
@@ -181,5 +197,79 @@ class User
             UserMeta::get($user_id, static::IS_GUEST),
             FILTER_VALIDATE_BOOLEAN
         );
+    }
+
+    /**
+     * Get the joined date of a user.
+     * @since 1.0.3
+     * @param WP_User $user
+     * 
+     * @return string|null
+     */
+    public static function get_joined_date($user) {
+        if (static::is_fundraiser($user)) {
+            $status = static::get_status($user->ID);
+
+            if ($status !== FundraiserStatus::ACTIVE) {
+                return null;
+            }
+
+            $joined_at = UserMeta::get($user->ID, 'joined_at');
+
+            return !empty($joined_at) ? $joined_at : $user->user_registered;
+        }
+
+        return $user->user_registered;
+    }
+
+    /**
+     * Get the status of a user.
+     * @since 1.0.3
+     * @param int $user_id
+     * 
+     * @return string|null
+     */
+    public static function get_status($user_id) {
+        $status = UserMeta::get($user_id, 'status');
+        return !empty($status) ? $status : null;
+    }
+
+    /**
+     * Get the created_by id of a user.
+     * @since 1.0.3
+     * @param int $user_id
+     * 
+     * @return string|null
+     */
+    public static function get_created_by($user_id) {
+        $created_by = UserMeta::get($user_id, 'created_by');
+
+        return !empty($created_by) ? $created_by : null;
+    }
+
+    /**
+     * Get the avatar image of a user.
+     * @since 1.0.3
+     * @param int $user_id
+     * 
+     * @return array|null
+     */
+    public static function get_avatar_image($user_id) {
+        $image = UserMeta::get($user_id, 'image');
+
+        return !empty($image) ? MediaAttachment::make((int) $image) : null;
+    }
+
+    /**
+     * Get the phone number of a user.
+     * @since 1.0.3
+     * @param int $user_id
+     * 
+     * @return string|null
+     */
+    public static function get_phone_number($user_id) {
+        $phone = UserMeta::get($user_id, 'phone');
+
+        return !empty($phone) ? $phone : null;
     }
 }

@@ -12,7 +12,7 @@ use Growfund\Hooks\BaseHook;
 use Growfund\Mails\EmailVerificationMail;
 use Growfund\Mails\NewUserMail;
 use Growfund\Supports\AdminUser;
-use Growfund\Supports\User as SupportsUser;
+use Growfund\Supports\User as UserSupport;
 
 class NewUserRegistered extends BaseHook
 {
@@ -30,17 +30,23 @@ class NewUserRegistered extends BaseHook
     {
         $user_id = $args[0];
 
+        $is_apply_email_verification = apply_filters(HookNames::GROWFUND_IS_APPLY_EMAIL_VERIFICATION, true);
+
+        if (!$is_apply_email_verification) {
+            return;
+        }
+
         $user = growfund_user($user_id);
 
         if (!$user->is_fundraiser() && !$user->is_donor() && !$user->is_backer()) {
             return;
         }
 
-        if (SupportsUser::is_guest($user_id)) {
+        if (UserSupport::is_guest($user_id)) {
             return;
         }
 
-        $token = SupportsUser::generate_verification_token($user_id);
+        $token = UserSupport::generate_verification_token($user_id);
 
         $this->schedule_verification_emails($user_id, $token);
         $this->schedule_emails($user_id);

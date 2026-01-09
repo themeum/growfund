@@ -4,18 +4,12 @@ namespace Growfund\Services\Site;
 
 defined( 'ABSPATH' ) || exit;
 
-use Growfund\Constants\UserTypes\Backer;
-use Growfund\Constants\UserTypes\Donor;
-use Growfund\Constants\UserTypes\Fundraiser;
-use Growfund\Core\AppSettings;
 use Growfund\DTO\Site\Auth\LoginDTO;
 use Growfund\DTO\Site\Auth\RegisterDTO;
 use Growfund\DTO\Site\Auth\ResetPasswordDTO;
 use Growfund\Exceptions\ValidationException;
-use Growfund\Sanitizer;
 use Growfund\Supports\User;
 use Growfund\Supports\UserMeta;
-use Growfund\Core\User as CoreUser;
 use Growfund\Mails\PasswordResetLinkMail;
 use Growfund\Supports\Arr;
 
@@ -38,10 +32,10 @@ class AuthService
      */
     public function login(LoginDTO $login_dto): string
     {
-        $email = $login_dto->email;
+        $user_login = $login_dto->user_login;
         $password = $login_dto->password;
 
-        $authenticated_user = wp_authenticate($email, $password);
+        $authenticated_user = wp_authenticate($user_login, $password);
 
         if (is_wp_error($authenticated_user)) {
             if (!empty($authenticated_user->errors)) {
@@ -82,21 +76,32 @@ class AuthService
      */
     public function register(RegisterDTO $register_dto): bool
     {
-        $existing_user = get_user_by('email', $register_dto->email);
+        $existing_user = get_user_by('login', $register_dto->username);
 
-        if ($existing_user && !User::is_soft_deleted_user($existing_user->ID ?? null)) {
-            throw ValidationException::with_errors(['email' => esc_html__('Email already exists', 'growfund')]);
+        $is_soft_deleted = User::is_soft_deleted($existing_user->ID ?? null);
+
+        if ($existing_user && !$is_soft_deleted) {
+            throw ValidationException::with_errors(['username' => [esc_html__('Username already exists', 'growfund')]], esc_html__('Username already exists', 'growfund'));
         }
 
-        if ($existing_user && User::is_soft_deleted_user($existing_user->ID ?? null)) {
+        if (!$existing_user) {
+            $existing_user = get_user_by('email', $register_dto->email);
+
+            $is_soft_deleted = User::is_soft_deleted($existing_user->ID ?? null);
+
+            if ($existing_user && !$is_soft_deleted) {
+                throw ValidationException::with_errors(['email' => [esc_html__('Email already exists', 'growfund')]], esc_html__('Email already exists', 'growfund'));
+            }
+        }
+
+        if ($existing_user && $is_soft_deleted) {
             UserMeta::delete($existing_user->ID, User::SOFT_DELETE_KEY);
+
             return true;
         }
 
-        $username = Sanitizer::apply_rule($register_dto->email, Sanitizer::USERNAME);
-
         $userdata = [
-            'user_login' => $username,
+            'user_login' => $register_dto->username,
             'user_email' => $register_dto->email,
             'user_pass' => $register_dto->password,
             'first_name' => $register_dto->first_name,
@@ -162,13 +167,13 @@ class AuthService
     {
         $email = $data['email'];
 
-        $user = get_user_by('email', $email);
+        $user = get_user_by('login', $email);
 
         if (!$user) {
             return true;
         }
 
-        if (User::is_soft_deleted_user($user->ID)) {
+        if (User::is_soft_deleted($user->ID)) {
             return true;
         }
 

@@ -15,7 +15,7 @@ declare global {
       site_url: string;
       rest_url_base: string;
       ajax_url: string;
-      nonce: string;
+      rest_nonce: string;
       ajax_nonce: string;
       user_role: 'administrator' | 'fundraiser' | 'donor' | 'backer';
       is_onboarding_completed: boolean;

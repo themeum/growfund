@@ -231,6 +231,7 @@ const useUpdateCampaignSecondaryStatusMutation = () => {
     onSuccess(data) {
       toast.success((data as unknown as { message: string }).message);
       void queryClient.invalidateQueries({ queryKey: ['CampaignDetails'] });
+      void queryClient.invalidateQueries({ queryKey: ['Campaigns'] });
     },
   });
 };
@@ -246,6 +247,7 @@ const useChargeBackersMutation = () => {
     onSuccess() {
       toast.success(__('Backers are scheduled for charging.', 'growfund'));
       void queryClient.invalidateQueries({ queryKey: ['CampaignDetails'] });
+      void queryClient.invalidateQueries({ queryKey: ['Campaigns'] });
     },
     onError(error) {
       toast.error(error.message);

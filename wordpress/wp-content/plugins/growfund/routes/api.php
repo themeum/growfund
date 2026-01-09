@@ -76,6 +76,7 @@ Route::group(['middleware' => AuthMiddleware::class], function () {
 
     // User routes
     Route::post('/validate-email', [UserController::class, 'validate_email']);
+    Route::post('/validate-username', [UserController::class, 'validate_username']);
     Route::get('/current-user', [UserController::class, 'get_current_user']);
 
     // Campaigns routes

@@ -131,7 +131,7 @@ class Assets
             'site_url' => esc_url(site_url()),
             'rest_url_base' => esc_url(rest_url() . 'growfund/v1'),
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => esc_attr(wp_create_nonce('wp_rest')),
+            'rest_nonce' => esc_attr(wp_create_nonce('wp_rest')),
             'ajax_nonce' => wp_create_nonce(growfund_with_prefix('ajax_nonce')),
             'user_role' => growfund_user()->get_active_role(),
             'is_onboarding_completed' => growfund_app()->is_onboarding_completed(),
@@ -143,6 +143,7 @@ class Assets
             'assets_url' => static::get_assets_url(),
             'as_guest' => $as_guest,
             'has_growfund_pro' => has_growfund_pro(),
+            /** @deprecated since 1.0.2 */
             'features' => [], // @todo: deprecated since 1.0.2 -- keep this for backward compatibility, will be removed in version 1.1.0
             'is_migration_available_from_crowdfunding' => growfund_app()->is_migration_available_from_crowdfunding(),
         ];

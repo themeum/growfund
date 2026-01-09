@@ -4,20 +4,17 @@ namespace Growfund\Services;
 
 defined( 'ABSPATH' ) || exit;
 
-use Growfund\Constants\Activities;
 use Growfund\Constants\Tables;
 use Growfund\Constants\UserDeleteType;
 use Growfund\Constants\UserTypes\Donor;
-use Growfund\DTO\Activity\ActivityFilterDTO;
 use Growfund\DTO\Donation\DonationFilterParamsDTO;
 use Growfund\DTO\Donor\DonorDTO;
 use Growfund\DTO\Donor\DonorOverviewDTO;
 use Growfund\DTO\PaginatedCollectionDTO;
 use Growfund\Http\Response;
 use Growfund\QueryBuilder;
-use Growfund\Supports\MediaAttachment;
 use Growfund\Supports\Paginator;
-use Growfund\Supports\User;
+use Growfund\Supports\User as UserSupport;
 use Growfund\Supports\UserMeta;
 use Growfund\Supports\Pagination as PaginationSupport;
 use Exception;
@@ -87,11 +84,11 @@ class DonorService extends UserService
             $query_args['meta_query'][] = [
                 'relation' => 'OR',
                 [
-                    'key'     => growfund_with_prefix(User::SOFT_DELETE_KEY),
+                    'key'     => growfund_with_prefix(UserSupport::SOFT_DELETE_KEY),
                     'compare' => 'NOT EXISTS',
                 ],
                 [
-                    'key'     => growfund_with_prefix(User::SOFT_DELETE_KEY),
+                    'key'     => growfund_with_prefix(UserSupport::SOFT_DELETE_KEY),
                     'value'   => '1',
                     'compare' => '!=',
                 ],
@@ -100,11 +97,11 @@ class DonorService extends UserService
             $query_args['meta_query'][] = [
                 'relation' => 'OR',
                 [
-                    'key'     => growfund_with_prefix(User::IS_ANONYMIZED),
+                    'key'     => growfund_with_prefix(UserSupport::IS_ANONYMIZED),
                     'compare' => 'NOT EXISTS',
                 ],
                 [
-                    'key'     => growfund_with_prefix(User::IS_ANONYMIZED),
+                    'key'     => growfund_with_prefix(UserSupport::IS_ANONYMIZED),
                     'value'   => '1',
                     'compare' => '!=',
                 ],
@@ -112,7 +109,7 @@ class DonorService extends UserService
         } elseif ($status === 'trashed') {
             $query_args['meta_query'][] = [
                 [
-                    'key'     => growfund_with_prefix(User::SOFT_DELETE_KEY),
+                    'key'     => growfund_with_prefix(UserSupport::SOFT_DELETE_KEY),
                     'value'   => '1',
                 ],
             ];
@@ -120,11 +117,11 @@ class DonorService extends UserService
             $query_args['meta_query'][] = [
                 'relation' => 'OR',
                 [
-                    'key'     => growfund_with_prefix(User::IS_ANONYMIZED),
+                    'key'     => growfund_with_prefix(UserSupport::IS_ANONYMIZED),
                     'compare' => 'NOT EXISTS',
                 ],
                 [
-                    'key'     => growfund_with_prefix(User::IS_ANONYMIZED),
+                    'key'     => growfund_with_prefix(UserSupport::IS_ANONYMIZED),
                     'value'   => '1',
                     'compare' => '!=',
                 ],
@@ -200,26 +197,24 @@ class DonorService extends UserService
      */
     protected function format_data($user)
     {
-        $meta = UserMeta::get_all($user->ID);
-
-        $latest_donation = $this->donation_service->get_latest_contribution($user->ID);
-        $latest_donation_date = $latest_donation->created_at ?? null;
+        $billing_address = UserMeta::get($user->ID, 'billing_address');
 
         return DonorDTO::from_array([
             'id'                            => (string) $user->ID,
-            'first_name'                    => $meta['first_name'] ?? '',
-            'last_name'                     => $meta['last_name'] ?? '',
+            'first_name'                    => $user->first_name ?? '',
+            'last_name'                     => $user->last_name ?? '',
             'email'                         => $user->user_email,
-            'phone'                         => $meta['phone'] ?? null,
-            'billing_address'               => !empty($meta['billing_address']) ? maybe_unserialize($meta['billing_address']) : null,
-            'image'                         => !empty($meta['image']) ? MediaAttachment::make((int) $meta['image']) : null,
+            'username'                      => $user->user_login,
+            'phone'                         => UserSupport::get_phone_number($user->ID),
+            'billing_address'               => !empty($billing_address) ? maybe_unserialize($billing_address) : null,
+            'image'                         => UserSupport::get_avatar_image($user->ID),
             'number_of_contributions'       => $this->donation_service->get_total_number_of_donations($user->ID),
             'total_contributions'           => $this->donation_service->get_total_contribution_amount_by_donor($user->ID),
-            'latest_donation_date'          => $latest_donation_date,
-            'joined_at'                    => $user->user_registered,
-            'is_verified'                   => User::is_verified($user),
-            'is_fundraiser'                 => User::is_fundraiser($user),
-            'created_by'                    => $meta['created_by'] ?? null,
+            'latest_donation_date'          => $this->donation_service->get_latest_donation_date($user->ID),
+            'joined_at'                     => $user->user_registered,
+            'is_verified'                   => UserSupport::is_verified($user),
+            'is_fundraiser'                 => UserSupport::is_fundraiser($user),
+            'created_by'                    => UserSupport::get_created_by($user->ID),
         ]);
     }
 
@@ -314,7 +309,7 @@ class DonorService extends UserService
     {
         $users = get_users([
             'role'       => Donor::ROLE,
-            'meta_key'   => growfund_with_prefix(User::SOFT_DELETE_KEY), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+            'meta_key'   => growfund_with_prefix(UserSupport::SOFT_DELETE_KEY), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
             'meta_value' => true, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
             'fields'     => 'ID',
             'number'     => -1,

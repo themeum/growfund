@@ -7,7 +7,7 @@ defined( 'ABSPATH' ) || exit;
 use Growfund\Contracts\Parser;
 use InvalidArgumentException;
 
-class MailParser implements Parser
+class ShortcodeParser implements Parser
 {
     protected $variables = [];
     protected $pattern = '/\{([a-zA-Z0-9_]+)\}/';

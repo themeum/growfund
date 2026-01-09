@@ -206,10 +206,12 @@ class WoocommerceToNative
             $payment_method_dto->label = $order->get_payment_method_title();
             $payment_method_dto->type = PaymentGatewayType::ONLINE;
 
+            $order_customer_id = $order->get_customer_id();
+
             return array_merge($data, [
                 'campaign_id'                => $campaign_id,
                 'uid'                        => growfund_uuid(),
-                'user_id'                    => $order->get_customer_id() ?: null, // phpcs:ignore
+                'user_id'                    => $order_customer_id ? $order_customer_id : null,
                 'status'                     => static::contribution_status($order->get_status()),
                 'amount'                     => (int) Money::prepare_for_storage($order->get_subtotal()),
                 'recovery_fee'               => 0,
@@ -223,9 +225,9 @@ class WoocommerceToNative
                 'is_manual'                  => 0,
                 'user_info'                  => wp_json_encode(static::get_user_info($order)) ?? null,
                 'created_at'                 => $order->get_date_created()->date(DateTimeFormats::DB_DATETIME),
-                'created_by'                 => $order->get_customer_id() ?: 0, // phpcs:ignore
+                'created_by'                 => $order_customer_id ? $order_customer_id : 0,
                 'updated_at'                 => $order->get_date_modified()->date(DateTimeFormats::DB_DATETIME),
-                'updated_by'                 => $order->get_customer_id() ?: 0, // phpcs:ignore
+                'updated_by'                 => $order_customer_id ? $order_customer_id : 0,
             ]);
         }
     }

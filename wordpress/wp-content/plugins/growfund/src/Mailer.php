@@ -329,4 +329,78 @@ class Mailer
                 ])
             );
     }
+
+    /**
+     * Apply inline styles to dynamic content.
+	 *
+	 * We only inline CSS for html emails.
+     * 
+     * @since 1.0.3
+     * @return void
+     */
+    public static function apply_styles() {
+        $css = '
+        <style type="text/css">
+            #outlook a {
+                padding: 0;
+            }
+
+            body {
+                margin: 0;
+                padding: 0;
+                -webkit-text-size-adjust: 100%;
+                -ms-text-size-adjust: 100%;
+            }
+
+            table,
+            td {
+                border-collapse: collapse;
+                mso-table-lspace: 0pt;
+                mso-table-rspace: 0pt;
+            }
+
+            img {
+                border: 0;
+                height: auto;
+                line-height: 100%;
+                outline: none;
+                text-decoration: none;
+                -ms-interpolation-mode: bicubic;
+            }
+
+            p {
+                display: block;
+                margin: 0;
+                padding: 4px 0;
+                line-height: 1.5;
+                font-size: 16px;
+                font-weight: normal;
+                text-decoration: none;
+                letter-spacing: 0;
+                color: inherit;
+            }
+            @media only screen and (min-width:480px) {
+                .mj-column-per-100 {
+                    width: 100% !important;
+                    max-width: 100%;
+                }
+                .moz-text-html .mj-column-per-100 {
+                    width: 100% !important;
+                    max-width: 100%;
+                }
+            }
+            @media only screen and (max-width:480px) {
+                table.mj-full-width-mobile {
+                    width: 100% !important;
+                }
+
+                td.mj-full-width-mobile {
+                    width: auto !important;
+                }
+            }
+        </style>
+        ';
+
+        echo wp_kses($css, ['style' => ['type' => true]]);
+    }
 }

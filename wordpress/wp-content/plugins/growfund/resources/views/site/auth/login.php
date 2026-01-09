@@ -17,15 +17,15 @@ defined( 'ABSPATH' ) || exit;
 $login_fields = [
     [
         'type' => 'input',
-        'name' => 'email',
-        'label' => __('Email Address', 'growfund'),
+        'name' => 'user_login',
+        'label' => __('Username/Email Address', 'growfund'),
         'data' => [
-            'name' => 'email',
-            'type' => 'email',
-            'placeholder' => __('Enter your email', 'growfund'),
+            'name' => 'user_login',
+            'type' => 'text',
+            'placeholder' => __('Enter your username/email', 'growfund'),
             'required' => true,
             'value' => '',
-            'autocomplete' => 'email'
+            'autocomplete' => 'user_login'
         ]
     ],
     [

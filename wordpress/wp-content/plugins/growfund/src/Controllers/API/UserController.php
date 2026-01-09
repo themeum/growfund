@@ -51,12 +51,12 @@ class UserController
         ]);
 
         if ($validator->is_failed()) {
-            throw ValidationException::with_errors($validator->get_errors(), __('Invalid email address!', 'growfund')); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- validation exception intentionally ignored
+            throw ValidationException::with_errors($validator->get_errors(), esc_html__('Invalid email address!', 'growfund')); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- validation exception intentionally ignored
         }
 
         $user = get_user_by('email', $request->get_email('email'));
 
-        if ($user && !User::is_soft_deleted_user($user->ID ?? null)) {
+        if ($user && !User::is_soft_deleted($user->ID ?? null)) {
             return growfund_response()->json([
                 'data' => false,
                 'message' => __('Email is already in use!', 'growfund'),
@@ -66,6 +66,39 @@ class UserController
         return growfund_response()->json([
             'data' => true,
             'message' => __('Email is available!', 'growfund'),
+        ], Response::OK);
+    }
+
+    /**
+     * Validate the username.
+     *
+     * @since 1.0.0
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function validate_username(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'username' => 'required|string',
+        ]);
+
+        if ($validator->is_failed()) {
+            throw ValidationException::with_errors($validator->get_errors(), esc_html__('Invalid username!', 'growfund')); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- validation exception intentionally ignored
+        }
+
+        $user = get_user_by('login', $request->get_string('username'));
+
+        if ($user && !User::is_soft_deleted($user->ID ?? null)) {
+            return growfund_response()->json([
+                'data' => false,
+                'message' => __('Username is already in use!', 'growfund'),
+            ], Response::BAD_REQUEST);
+        }
+
+        return growfund_response()->json([
+            'data' => true,
+            'message' => __('Username is available!', 'growfund'),
         ], Response::OK);
     }
 

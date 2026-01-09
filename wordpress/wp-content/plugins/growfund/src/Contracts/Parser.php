@@ -12,5 +12,5 @@ interface Parser
      * @param string $content
      * @return string
      */
-    public function parse(string $content): string;
+    public function parse(string $content);
 }

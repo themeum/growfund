@@ -18,11 +18,11 @@ class Url
         $redirect_url = add_query_arg($data, $referer);
 
         if (headers_sent()) {
-            echo "<script>window.location.href = '" . esc_js( $redirect_url ) . "';</script>";
+            wp_print_inline_script_tag("window.location.href = '" . esc_url( wp_json_encode($redirect_url) ) . "';");
             exit;
         }
 
-        wp_redirect($redirect_url); // phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect
+        wp_safe_redirect($redirect_url);
         exit;
     }
 
@@ -32,7 +32,7 @@ class Url
         $redirect_url = add_query_arg($data, $referer);
 
         if (headers_sent()) {
-            echo "<script>window.location.href = '" . esc_js( $redirect_url ) . "';</script>";
+            wp_print_inline_script_tag("window.location.href = '" . esc_url( wp_json_encode($redirect_url) ) . "';");
             exit;
         }
 

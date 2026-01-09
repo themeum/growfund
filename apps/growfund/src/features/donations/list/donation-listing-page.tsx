@@ -351,7 +351,10 @@ const DonationsList = ({ donorId }: { donorId?: string }) => {
             ['guest', __('Guest', 'growfund')],
           ]);
 
-          const donorType = props.row.original.donor.id ? 'registered' : 'guest';
+          const donorType =
+            Number(props.row.original.donor.id) > 0
+              ? 'registered'
+              : 'guest';
           return (
             <Badge
               variant={variants.has(donorType) ? variants.get(donorType) : 'outline'}

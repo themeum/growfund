@@ -14,7 +14,11 @@ import { Form } from '@/components/ui/form';
 import { useWordpressMedia } from '@/hooks/use-wp-media';
 import { cn } from '@/lib/utils';
 import { type MediaAttachment } from '@/schemas/media';
-import { useSendResetLinkMutation, useValidateUserEmail } from '@/services/user';
+import {
+  useSendResetLinkMutation,
+  useValidateUserEmail,
+  useValidateUsername,
+} from '@/services/user';
 import { createAcronym, generateRandomPassword, isDefined } from '@/utils';
 import { countriesAsOptions } from '@/utils/countries';
 
@@ -62,7 +66,11 @@ const UserFormCardHeader = ({
   const acronym = createAcronym({ first_name: firstName, last_name: lastName });
 
   return (
-    <CardHeader ref={ref} className={cn('growfund-border-b growfund-border-b-border', className)} {...props}>
+    <CardHeader
+      ref={ref}
+      className={cn('growfund-border-b growfund-border-b-border', className)}
+      {...props}
+    >
       <div className="growfund-flex growfund-items-center growfund-gap-6">
         <Avatar className="growfund-size-12">
           <AvatarImage src={image?.url ?? ''} />
@@ -104,10 +112,13 @@ const UserFormBasics = ({
   ref?: React.RefObject<HTMLDivElement>;
 }) => {
   const [isValidEmail, setIsValidEmail] = useState(false);
+  const [isValidUsername, setIsValidUsername] = useState(false);
 
   const form = useFormContext();
   const email = useWatch({ control: form.control, name: 'email' }) as string;
+  const username = useWatch({ control: form.control, name: 'username' }) as string;
   const validateUserEmailMutation = useValidateUserEmail();
+  const validateUsernameMutation = useValidateUsername();
 
   return (
     <div ref={ref} className={cn('growfund-space-y-4', className)} {...props}>
@@ -131,7 +142,9 @@ const UserFormBasics = ({
         name="email"
         label={__('Email', 'growfund')}
         labelIcon={
-          isValidEmail ? <CheckWaveIcon className="growfund-size-4 growfund-text-icon-success" /> : null
+          isValidEmail ? (
+            <CheckWaveIcon className="growfund-size-4 growfund-text-icon-success" />
+          ) : null
         }
         placeholder={__('Enter email', 'growfund')}
         onBlur={() => {
@@ -153,6 +166,34 @@ const UserFormBasics = ({
           });
         }}
         loading={validateUserEmailMutation.isPending}
+      />
+      <TextField
+        control={form.control}
+        name="username"
+        label={__('Username', 'growfund')}
+        labelIcon={
+          isValidUsername ? (
+            <CheckWaveIcon className="growfund-size-4 growfund-text-icon-success" />
+          ) : null
+        }
+        placeholder={__('Enter username', 'growfund')}
+        onBlur={() => {
+          if (!form.formState.dirtyFields.username) return;
+          validateUsernameMutation.mutate(username, {
+            onSuccess: () => {
+              setIsValidUsername(true);
+              form.clearErrors('username');
+            },
+            onError: (error) => {
+              setIsValidUsername(false);
+              form.setError('username', {
+                type: 'server',
+                message: error.message,
+              });
+            },
+          });
+        }}
+        loading={validateUsernameMutation.isPending}
       />
       <TextField
         control={form.control}
@@ -304,12 +345,14 @@ const UserFormAddress = ({
     name: 'is_billing_address_same',
   }) as boolean;
 
-  const showSameAsCheckbox = !!isBillingAddress;
-  const showAddressFields = !isBillingAddress || !isBillingAddressSame;
+  const showSameAsCheckbox = isDefined(isBillingAddress) && isBillingAddress;
+  const showAddressFields = !showSameAsCheckbox || !isBillingAddressSame;
 
   return (
     <div ref={ref} className={cn(className)} {...props}>
-      <label className="growfund-typo-small growfund-font-medium growfund-text-fg-primary">{label}</label>
+      <label className="growfund-typo-small growfund-font-medium growfund-text-fg-primary">
+        {label}
+      </label>
       <div className="growfund-mt-4">
         <div className="growfund-space-y-3">
           {showSameAsCheckbox && (
@@ -398,12 +441,11 @@ const UserForm = <TFields extends FieldValues>({
 };
 
 export {
-    UserForm,
-    UserFormAddress,
-    UserFormBasics,
-    UserFormCard,
-    UserFormCardContent,
-    UserFormCardHeader,
-    UserFormPassword
+  UserForm,
+  UserFormAddress,
+  UserFormBasics,
+  UserFormCard,
+  UserFormCardContent,
+  UserFormCardHeader,
+  UserFormPassword,
 };
-

@@ -4,17 +4,12 @@ import MigrationProgress from '@/features/migration/components/steps/migration-p
 import MigrationSuccessful from '@/features/migration/components/steps/migration-successful';
 import Welcome from '@/features/migration/components/steps/welcome';
 import { useMigration } from '@/features/migration/contexts/migration-context';
-import { OnboardingProvider } from '@/features/onboarding/contexts/onboarding-context';
 
 const StepNavigator = () => {
   const { step } = useMigration();
 
   if (step === 'mode-selection') {
-    return (
-      <OnboardingProvider isMigrating>
-        <MigrationModeSelection />
-      </OnboardingProvider>
-    );
+    return <MigrationModeSelection />;
   }
 
   if (step === 'welcome') {

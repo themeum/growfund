@@ -58,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
     formData.set('first_name', sanitizeInput(formData.get('first_name')));
     formData.set('last_name', sanitizeInput(formData.get('last_name')));
     formData.set('email', sanitizeInput(formData.get('email')));
+    formData.set('username', sanitizeInput(formData.get('username')));
 
     // Determine the action based on form action URL
     const isFundraiser = registerForm.action.includes('register-fundraiser');

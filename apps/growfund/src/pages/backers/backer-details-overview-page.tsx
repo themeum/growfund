@@ -3,7 +3,6 @@ import { __ } from '@wordpress/i18n';
 import UserPreviewCard from '@/components/users/user-preview-card';
 import BackerActivityLogCard from '@/features/backers/components/backer-activity-log-card';
 import { useBackerContext } from '@/features/backers/contexts/backer';
-import { type Backer } from '@/features/backers/schemas/backer';
 import { MetricsCard } from '@/features/overview/components/ui/metrics-card';
 import { useCurrency } from '@/hooks/use-currency';
 
@@ -43,7 +42,7 @@ const BackerDetailsOverviewPage = () => {
       </div>
 
       <div className="growfund-grid growfund-grid-cols-[20rem_auto] growfund-gap-4">
-        <UserPreviewCard user={backer.backer_information as Backer} />
+        <UserPreviewCard user={backer.backer_information} hideHeader />
         <BackerActivityLogCard />
       </div>
     </div>

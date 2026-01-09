@@ -13,6 +13,7 @@ const BackerSchema = z.object({
   email: z.string({ message: __('Email address is required', 'growfund') }).email({
     message: __('Invalid email address', 'growfund'),
   }),
+  username: z.string({ message: __('Username is required', 'growfund') }),
   joined_at: z.string().nullish(),
   phone: z.string().nullish(),
   image: MediaSchema.nullish(),
@@ -81,19 +82,19 @@ const BackerFormSchema = BackerSchema.omit({
     }
   });
 
+const BackerResponseSchema = BackerSchema.extend({
+  number_of_contributions: z.number().default(0),
+  total_contributions: z.number().default(0.0),
+  latest_pledge_date: z.coerce.date().nullish(),
+});
+
 const BackerOverviewSchema = z.object({
   pledged_amount: z.number().default(0),
   backed_amount: z.number().default(0),
   pledged_campaigns: z.number().default(0),
   backed_campaigns: z.number().default(0),
-  backer_information: BackerSchema,
+  backer_information: BackerResponseSchema,
   activity_logs: ActivitySchema.array(),
-});
-const BackerResponseSchema = BackerSchema.extend({
-  number_of_contributions: z.number().default(0),
-  total_contributions: z.number().default(0.0),
-  latest_pledge_date: z.coerce.date().nullish(),
-  joined_at: z.string().nullish(),
 });
 
 type BackerForm = z.infer<typeof BackerFormSchema>;

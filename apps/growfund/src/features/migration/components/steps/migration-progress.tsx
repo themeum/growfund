@@ -10,16 +10,18 @@ import { Progress } from '@/components/ui/progress';
 import { growfundConfig } from '@/config/growfund';
 import { useMigration } from '@/features/migration/contexts/migration-context';
 import {
-    Screen,
-    ScreenContent,
-    ScreenFooter,
-    ScreenTitle,
+  Screen,
+  ScreenContent,
+  ScreenFooter,
+  ScreenTitle,
 } from '@/features/migration/layouts/screen';
 import DecisionBox from '@/features/onboarding/components/decision-box';
+import { useOnboarding } from '@/features/onboarding/contexts/onboarding-context';
 import { isDefined } from '@/utils';
 
 const MigrationProgress = () => {
   const { campaignProgress, pledgeProgress } = useMigration();
+  const { campaignMode } = useOnboarding();
   const [openAlert, setOpenAlert] = useState(false);
 
   const campaignProgressPercent = useMemo(() => {
@@ -69,7 +71,9 @@ const MigrationProgress = () => {
               </ScreenTitle>
               <div className="growfund-space-y-1">
                 <div className="growfund-flex growfund-items-center growfund-justify-between">
-                  <p className="growfund-typo-small growfund-text-fg-primary">{__('Progress', 'growfund')}</p>
+                  <p className="growfund-typo-small growfund-text-fg-primary">
+                    {__('Progress', 'growfund')}
+                  </p>
                   <Badge variant="primary" className="growfund-rounded-full">
                     {`${((campaignProgressPercent + pledgeProgressPercent) / 2).toFixed(0)}%`}
                   </Badge>
@@ -116,7 +120,9 @@ const MigrationProgress = () => {
                   <div className="growfund-flex growfund-items-center growfund-gap-2">
                     <Receipt className="growfund-text-icon-primary growfund-size-4" />
                     <div className="growfund-typo-small growfund-text-fg-primary growfund-font-medium">
-                      {__('Pledges', 'growfund')}
+                      {campaignMode === 'donation'
+                        ? __('Donations', 'growfund')
+                        : __('Pledges', 'growfund')}
                     </div>
                   </div>
                   <div className="growfund-typo-small growfund-text-fg-subdued">

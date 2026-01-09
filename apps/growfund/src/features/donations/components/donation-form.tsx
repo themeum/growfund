@@ -8,10 +8,10 @@ import { useAppConfig } from '@/contexts/app-config';
 import { type Campaign } from '@/features/campaigns/schemas/campaign';
 import DonationNotesCard from '@/features/donations/components/donation-notes-card';
 import DonationPaymentCard from '@/features/donations/components/donation-payment-card';
+import DonorSelectionCard from '@/features/donations/components/donor-selection-card';
 import PaymentView from '@/features/donations/components/payment-view';
 import TributeView from '@/features/donations/components/tribute-view';
 import { type DonationForm } from '@/features/donations/schemas/donation-form';
-import DonorCard from '@/features/donors/components/donor-card';
 import AddCampaignEmptyState from '@/features/pledges/components/campaigns/empty-state';
 import PaymentMethodCard from '@/features/pledges/components/payment-method-card';
 import { AppConfigKeys } from '@/features/settings/context/settings-context';
@@ -54,7 +54,7 @@ const DonationForm = () => {
           </div>
           <div className="growfund-space-y-4">
             <PaymentMethodCard form={form} />
-            <DonorCard />
+            <DonorSelectionCard />
 
             {appConfig[AppConfigKeys.Campaign]?.allow_tribute && campaign?.has_tribute && (
               <TributeView campaign={campaign} />

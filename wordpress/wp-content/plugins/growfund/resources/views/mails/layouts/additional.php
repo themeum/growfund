@@ -25,8 +25,8 @@ $text_color = $colors['text'] ?? '#333333';
                                                 <tr>
                                                     <td align="left" style="font-size:0px;padding:0;word-break:break-word;">
                                                         <div
-                                                            style="font-family:Inter, sans-serif;font-size:16px;font-weight:normal;letter-spacing:0%;line-height:1.5;text-align:left;text-decoration:none;color:<?php echo esc_html($text_color); ?>;">
-                                                            <?php echo $content['additional']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- already escaped ?>
+                                                            style="font-family:Inter, sans-serif;font-size:16px;font-weight:normal;letter-spacing:0%;line-height:1.5;text-align:left;text-decoration:none;color:<?php echo esc_attr($text_color); ?>;">
+                                                            <?php echo wp_kses_post($content['additional']); ?>
                                                         </div>
                                                     </td>
                                                 </tr>

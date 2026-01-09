@@ -5,14 +5,12 @@ namespace Growfund\Controllers\Site;
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Constants\PaymentEngine;
-use Growfund\Constants\AppConfigKeys;
 use Growfund\Constants\Status\DonationStatus;
 use Growfund\Constants\Status\PaymentStatus;
 use Growfund\Constants\Status\PledgeStatus;
 use Growfund\Contracts\Request;
 use Growfund\Core\AppSettings;
 use Growfund\DTO\Donation\CreateDonationDTO;
-use Growfund\DTO\Donor\CreateDonorDTO;
 use Growfund\DTO\Pledge\CreatePledgeDTO;
 use Growfund\DTO\Site\CheckoutDTO;
 use Growfund\DTO\Site\OrderSummaryDTO;
@@ -30,14 +28,12 @@ use Growfund\Services\PledgeService;
 use Growfund\Services\RewardService;
 use Growfund\Services\CampaignService;
 use Growfund\PostTypes\Campaign;
-use Growfund\Supports\PasswordHelper;
 use Growfund\Supports\Utils;
 use Growfund\Supports\UserMeta;
 use Growfund\Validation\Validator;
 use Growfund\Http\Response;
 use Growfund\Payments\Constants\PaymentGatewayType;
 use Growfund\Supports\Woocommerce;
-use Growfund\Supports\Option;
 use Exception;
 use Growfund\Constants\Campaign\ReachingAction;
 use Growfund\Constants\Status\CampaignStatus;
@@ -45,7 +41,6 @@ use Growfund\DTO\Donor\DonorDTO;
 use InvalidArgumentException;
 use Growfund\Services\Site\RewardService as SiteRewardService;
 use Growfund\Supports\CampaignGoal;
-use Growfund\Supports\FlashMessage;
 use Growfund\Supports\Money;
 use Growfund\Supports\Payment;
 use Growfund\Supports\Fund;
@@ -264,6 +259,9 @@ class CampaignCheckoutController
 
         $is_tribute_enabled = growfund_settings(AppSettings::CAMPAIGNS)->allow_tribute() && $campaign_dto->has_tribute;
 
+        $consent_text = growfund_settings(AppSettings::GENERAL)->get_tnc_text();
+        $consent_text = $consent_text ? $consent_text : __('I have read and agree to the terms and conditions above.', 'growfund');
+
         return growfund_renderer()->get_html('site.donation_checkout', [
             'campaign_id' => $campaign_dto->id,
             'campaign_title' => $campaign_dto->title,
@@ -284,7 +282,8 @@ class CampaignCheckoutController
             'current_user' => $current_user,
             'payment_methods' => $this->get_payment_method_options(),
             'allow_anonymous_donation' => growfund_settings(AppSettings::PERMISSIONS)->allow_anonymous_donation(),
-            'is_shortcode' => $is_shortcode
+            'is_shortcode' => $is_shortcode,
+            'consent_text' => $consent_text,
         ]);
     }
 
@@ -319,8 +318,8 @@ class CampaignCheckoutController
             $order_summary = $checkout_reward['order_summary'];
         }
 
-        $general_settings = Option::get(AppConfigKeys::GENERAL, []);
-        $consent_text = $general_settings['tnc_text'] ?? __('I have read and agree to the terms and conditions above.', 'growfund');
+        $consent_text = growfund_settings(AppSettings::GENERAL)->get_tnc_text();
+        $consent_text = $consent_text ? $consent_text : __('I have read and agree to the terms and conditions above.', 'growfund');
 
         $user_shipping_address = null;
 
@@ -671,7 +670,7 @@ class CampaignCheckoutController
     protected function handle_validation_error(array $errors, $redirect_url = null, array $data = [])
     {
         if (!empty($errors)) {
-            FlashMessage::set('validation_errors', $errors);
+            growfund_flash_set_message('validation_errors', $errors);
         }
 
         if (!empty($redirect_url)) {

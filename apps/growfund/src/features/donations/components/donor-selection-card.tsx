@@ -12,7 +12,7 @@ import { useDonorsQuery } from '@/features/donors/services/donor';
 import { useDebounce } from '@/hooks/use-debounce';
 import { isDefined } from '@/utils';
 
-const DonorCard = () => {
+const DonorSelectionCard = () => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
   const form = useFormContext<DonationForm>();
@@ -85,4 +85,4 @@ const DonorCard = () => {
   );
 };
 
-export default DonorCard;
+export default DonorSelectionCard;

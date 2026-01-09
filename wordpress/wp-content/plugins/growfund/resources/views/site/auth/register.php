@@ -67,6 +67,19 @@ $register_fields = [
     ],
     [
         'type' => 'input',
+        'name' => 'username',
+        'label' => __('Username', 'growfund'),
+        'data' => [
+            'name' => 'username',
+            'type' => 'text',
+            'placeholder' => __('e.g. johnsmith', 'growfund'),
+            'required' => true,
+            'value' => Sanitizer::apply_rule(wp_unslash(growfund_input_post('username', '')), Sanitizer::USERNAME),
+            'autocomplete' => 'username'
+        ]
+    ],
+    [
+        'type' => 'input',
         'name' => 'password',
         'label' => __('Password', 'growfund'),
         'data' => [

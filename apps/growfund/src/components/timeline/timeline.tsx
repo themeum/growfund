@@ -8,6 +8,7 @@ import { TextField } from '@/components/form/text-field';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
+import { Role } from '@/constants/role';
 import useCurrentUser from '@/hooks/use-current-user';
 import { cn } from '@/lib/utils';
 import { getDefaults } from '@/lib/zod';
@@ -108,14 +109,19 @@ const TimelineItem = ({ timeline, onRemove }: TimelineItemProps) => {
                 className="growfund-bg-background-fill-special-2 growfund-border growfund-border-border"
               />
               <AvatarFallback className="growfund-bg-background-surface">
-                {currentUser.active_role === 'growfund_admin' ? 'A' : acronym}
+                {currentUser.active_role === Role.ADMIN ? 'A' : acronym}
               </AvatarFallback>
             </Avatar>
           </div>
         )}
         <div className="growfund-space-y-1 growfund-typo-small growfund-text-fg-primary growfund-font-medium">
           {!isSystemGenerated && <div>{timeline.user.name}</div>}
-          <div className={cn('growfund-font-regular', !isSystemGenerated && 'growfund-text-fg-secondary')}>
+          <div
+            className={cn(
+              'growfund-font-regular',
+              !isSystemGenerated && 'growfund-text-fg-secondary',
+            )}
+          >
             {timeline.comment}
           </div>
         </div>

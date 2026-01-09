@@ -45,12 +45,12 @@ $description = esc_html($campaign['description']);
                                                     </tr>
                                                     <tr>
                                                         <td align="left" style="font-size:0px;padding:15px 0 0 0;word-break:break-word;">
-                                                            <div style="font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:16px;font-weight:400;line-height:24px;text-align:left;color:#000000;"><?php printf('%s%s', substr($description, 0, 100), strlen($description) > 100 ? '...' : ''); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- already escaped ?></div>
+                                                            <div style="font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:16px;font-weight:400;line-height:24px;text-align:left;color:#000000;"><?php printf('%s%s', wp_kses_post(substr($description, 0, 100)), strlen($description) > 100 ? '...' : ''); ?></div>
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td align="center" vertical-align="middle" style="font-size:0px;padding:20px 0 0 0;word-break:break-word;">
-                                                            <?php echo $button; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- already escaped ?>
+                                                            <?php echo wp_kses_post($button); ?>
                                                         </td>
                                                     </tr>
                                                 </tbody>

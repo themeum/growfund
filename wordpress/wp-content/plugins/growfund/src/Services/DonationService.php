@@ -1033,6 +1033,30 @@ class DonationService
     }
 
     /**
+     * Get the latest contribution date of a donor
+     * @since 1.0.3
+     * @param int $donor_id
+     * @return string|null
+     */
+    public function get_latest_donation_date(int $donor_id) {
+		$donation = QueryBuilder::query()
+            ->select([
+                'donations.id',
+                'donations.created_at',
+            ])
+            ->table(Tables::DONATIONS . ' as donations')
+            ->where('donations.user_id', $donor_id)
+            ->where_in(
+                'donations.status',
+                [DonationStatus::COMPLETED, DonationStatus::PENDING]
+            )
+            ->order_by('donations.created_at', 'DESC')
+            ->first();
+
+        return $donation->created_at ?? null;
+    }
+
+    /**
      * Get the total number of donations by a donor.
      *
      * @param integer $donor_id

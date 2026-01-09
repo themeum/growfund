@@ -15,6 +15,12 @@
   box-sizing: border-box;
 }
 
+.growfund-page-container .growfund-search-input::placeholder {
+  color: var(--growfund-gray-12);
+  font-size: var(--growfund-font-size-3);
+  line-height: 21px;
+}
+
 .growfund-page-container .growfund-search-btn {
   position: absolute;
   left: 0.75rem;

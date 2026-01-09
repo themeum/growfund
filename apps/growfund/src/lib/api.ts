@@ -69,13 +69,13 @@ function prepare(config: InternalAxiosRequestConfig) {
     config.headers = {} as AxiosRequestHeaders;
   }
 
-  const { nonce } = growfundConfig;
+  const { rest_nonce } = growfundConfig;
 
   config.headers.Accept = 'application/json';
   config.headers['Content-Type'] = 'application/json';
 
-  if (nonce) {
-    config.headers['X-WP-Nonce'] = nonce;
+  if (rest_nonce) {
+    config.headers['X-WP-Nonce'] = rest_nonce;
   }
 
   if (config.data) {
