@@ -41,6 +41,9 @@ class BackerDTO extends DTO
     public $email;
 
     /** @var string */
+    public $username;
+
+    /** @var string */
     public $phone;
 
     /** @var \Growfund\Supports\MediaAttachment|null */

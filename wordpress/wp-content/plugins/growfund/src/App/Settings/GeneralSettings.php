@@ -6,6 +6,7 @@ defined( 'ABSPATH' ) || exit;
 
 use Growfund\Constants\AppConfigKeys;
 use Growfund\Core\AppSettings;
+use Growfund\Parsers\ShortcodeParser;
 use Growfund\Supports\Option;
 use Growfund\Supports\AdminUser;
 
@@ -57,5 +58,14 @@ class GeneralSettings extends AppSettings
     public function get_organization_contact_email()
     {
         return $this->settings['organization']['contact_email'] ?? AdminUser::get_email();
+    }
+
+    public function get_tnc_text() {
+        $parser = new ShortcodeParser();
+        
+        return $parser->with([
+            'privacy_policy_page' => growfund_renderer()->get_html('mails.components.links.privacy-policy'),
+            'terms_and_conditions_page' => growfund_renderer()->get_html('mails.components.links.terms-and-conditions'),
+        ])->parse($this->settings['tnc_text'] ?? '');
     }
 }

@@ -23,6 +23,9 @@ class UpdateFundraiserDTO extends DTO
 
     public $email;
 
+    /** @var string */
+    public $username;
+
     public $password;
 
     public $phone;
@@ -35,6 +38,7 @@ class UpdateFundraiserDTO extends DTO
             'first_name'                    => 'required|string',
             'last_name'                     => 'required|string',
             'email'                         => 'required|email',
+            'username'                      => 'required|string',
             'password'                      => 'string|min:6',
             'phone'                         => 'string',
             'image'                         => 'integer|is_valid_image_id',
@@ -47,6 +51,7 @@ class UpdateFundraiserDTO extends DTO
             'first_name'                    => Sanitizer::TEXT,
             'last_name'                     => Sanitizer::TEXT,
             'email'                         => Sanitizer::EMAIL,
+            'username'                      => Sanitizer::USERNAME,
             'password'                      => Sanitizer::TEXT,
             'phone'                         => Sanitizer::TEXT,
             'image'                         => Sanitizer::INT,

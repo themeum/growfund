@@ -15,15 +15,18 @@ use Growfund\DTO\Pledge\PledgeRewardDTO;
 use Growfund\Payments\Constants\PaymentGatewayType;
 use Growfund\Payments\DTO\PaymentMethodDTO;
 use Growfund\QueryBuilder;
-use Growfund\Services\BackerService;
 use Growfund\Services\RewardService;
 use Growfund\Supports\Money;
 use Growfund\Supports\WoocommerceToNative;
 use Exception;
+use Growfund\Constants\HookNames;
 use Growfund\DTO\Backer\CreateBackerDTO;
-use Growfund\DTO\Backer\UpdateBackerDTO;
 use Growfund\DTO\Migration\MigrationResponseDTO;
+use Growfund\Sanitizer;
+use Growfund\Supports\User as UserSupport;
+use Growfund\Supports\UserMeta;
 use WC_Order;
+use WP_User;
 
 class PledgeMigrationService
 {
@@ -31,26 +34,38 @@ class PledgeMigrationService
     const OFFSET_KEY = 'growfund_pledge_migration_offset';
     const TOTAL_KEY = 'growfund_pledge_migration_total';
 
+    private $statuses = ['wc-completed', 'wc-processing', 'wc-on-hold', 'wc-pending', 'wc-cancelled', 'wc-refunded', 'wc-failed'];
+    private $current_user_id;
+
     public function migrate()
     {
+        wc_set_time_limit(2000);
+        add_filter('admin_memory_limit', function () {
+            return '512M';
+        });
+        wp_raise_memory_limit();
+
         $offset = $this->get_offset(0);
         
         QueryBuilder::begin_transaction();
 
+        $this->current_user_id = growfund_user()->get_id();
+
         $total = $this->get_total();
         $orders = $this->get_orders($offset);
-        $pledges = $this->update_backers_and_format_pledges($orders);
 
         $response = new MigrationResponseDTO();
-        $response->total = $total;
-        $response->completed = $offset;
-
-        if (empty($orders)) {
-            QueryBuilder::rollback();
-            return $response;
-        }
+		$response->total = $total;
+		$response->completed = $offset;
 
         try {
+			if (empty($orders)) {
+				QueryBuilder::rollback();
+				return $response;
+			}
+
+            $pledges = $this->update_backers_and_format_pledges($orders);
+        
             if (!empty($pledges)) {
                 $this->migrate_pledges($pledges);
             }
@@ -62,14 +77,12 @@ class PledgeMigrationService
             $response->completed = $offset;
 
             QueryBuilder::commit();
-
-            return $response;
         } catch (Exception $e) {
             error_log($e->getMessage()); // phpcs:ignore
             QueryBuilder::rollback();
-
-            return $response;
         }
+
+        return $response;
     }
 
     /**
@@ -81,7 +94,7 @@ class PledgeMigrationService
         $orders = wc_get_orders([
             'limit' => static::BATCH_SIZE,
             'offset' => $offset,
-            'status' => ['wc-completed', 'wc-processing', 'wc-on-hold', 'wc-pending', 'wc-cancelled', 'wc-refunded', 'wc-failed'],
+            'status' => $this->statuses,
             'orderby' => 'date',
             'order' => 'ASC',
         ]);
@@ -137,7 +150,7 @@ class PledgeMigrationService
         foreach ($order->get_items() as $item) {
             $product = $item->get_product();
 
-            if ((!$product || $product->get_type() !== 'crowdfunding') && (int) $order->get_meta('is_crowdfunding_order') !== 1) {
+			if (!$product || ($product->get_type() !== 'crowdfunding' && (int) $order->get_meta('is_crowdfunding_order') !== 1)) {
                 continue;
             }
 
@@ -228,8 +241,6 @@ class PledgeMigrationService
 
     protected function update_and_get_backer_info(WC_Order $order)
     {
-        $this->ensure_user_role($order->get_customer_id());
-
         $data = [
             'id'      => (string) $order->get_customer_id(),
             'first_name' => $order->get_billing_first_name(),
@@ -272,50 +283,71 @@ class PledgeMigrationService
                 return $data;
             }
             
+            $data['created_by'] = $this->current_user_id;
             $data['id'] = $this->create_backer(CreateBackerDTO::from_array($data));
 
             return $data;
         }
 
-        $this->update_backer_info($user->ID, UpdateBackerDTO::from_array($data));
+        $this->ensure_user_role($user);
+		UserMeta::update($user->ID, 'is_billing_address_same', $data['is_billing_address_same']);
+        UserMeta::update($user->ID, 'billing_address', $data['billing_address']);
+        UserMeta::update($user->ID, 'shipping_address', $data['shipping_address']);
+        UserMeta::update($user->ID, 'phone', $data['phone']);
 
         return $data;
     }
 
-    protected function ensure_user_role($user_id)
+    /**
+     * Ensure user has the backer role
+     * 
+     * @param WP_User|null $user
+     * @return void
+     */
+    protected function ensure_user_role($user)
     {
-        $user = growfund_user($user_id);
-
-        if ($user->is_admin()) {
+        if (empty($user) || UserSupport::is_admin($user) || UserSupport::is_fundraiser($user)) {
             return;
         }
 
-        if ($user->is_fundraiser()) {
-            return;
-        }
-
-        $user->set_role(Backer::ROLE);
-    }
-
-    protected function update_backer_info(int $id, UpdateBackerDTO $dto)
-    {
-        $user = growfund_user($id);
-
-        if ($user->is_admin()) {
-            return;
-        }
-
-        $backer_service = new BackerService();
-
-        return $backer_service->update($id, $dto);
+        $user->add_role(Backer::ROLE);
     }
     
     protected function create_backer(CreateBackerDTO $dto)
     {
-        $backer_service = new BackerService();
+        add_filter(HookNames::GROWFUND_IS_APPLY_EMAIL_VERIFICATION, [$this, 'ignore_backer_email_verification']);
 
-        return $backer_service->store($dto);
+        $username = Sanitizer::apply_rule($dto->email, Sanitizer::USERNAME);
+
+        $userdata = [
+            'user_login' => $username,
+            'user_email' => $dto->email,
+            'user_pass' => $dto->password,
+            'first_name' => $dto->first_name,
+            'last_name' => $dto->last_name,
+            'role' => $dto->role,
+        ];
+
+        $user_id = wp_insert_user($userdata);
+
+        if (is_wp_error($user_id)) {
+            throw new Exception(esc_html($user_id->get_error_message()));
+        }
+
+        UserMeta::update($user_id, 'is_billing_address_same', $dto->is_billing_address_same);
+        UserMeta::update($user_id, 'billing_address', $dto->billing_address);
+        UserMeta::update($user_id, 'shipping_address', $dto->shipping_address);
+        UserMeta::update($user_id, 'phone', $dto->phone);
+        UserMeta::update($user_id, 'created_by', $dto->created_by);
+
+        remove_filter(HookNames::GROWFUND_IS_APPLY_EMAIL_VERIFICATION, [$this, 'ignore_backer_email_verification']);
+
+        return $user_id;
     }
+
+    public function ignore_backer_email_verification() {
+        return false;
+	}
 
     protected function get_offset(int $default = 0)
     {
@@ -332,9 +364,11 @@ class PledgeMigrationService
         $total = (int) get_transient(static::TOTAL_KEY);
 
         if (!$total) {
-            $total = QueryBuilder::query()->table(WC::ORDERS)
-                ->where_in('status', ['wc-completed', 'wc-processing', 'wc-on-hold', 'wc-pending', 'wc-cancelled', 'wc-refunded', 'wc-failed'])
-                ->count();
+            $total = 0;
+
+            foreach ($this->statuses as $status) {
+                $total += wc_orders_count($status);
+            }
                 
             set_transient(static::TOTAL_KEY, $total, time() + 24 * 60 * 60);
         }

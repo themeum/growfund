@@ -23,6 +23,8 @@ class CreateBackerDTO extends DTO
 
     public $email;
 
+    public $username;
+
     public $password;
 
     public $phone;
@@ -56,6 +58,7 @@ class CreateBackerDTO extends DTO
             'first_name'                    => 'required|string',
             'last_name'                     => 'required|string',
             'email'                         => 'required|email',
+            'username'                      => 'required|string',
             'password'                      => 'required|string|min:6',
             'phone'                         => 'string',
             'shipping_address'              => 'required|array',
@@ -83,6 +86,7 @@ class CreateBackerDTO extends DTO
             'first_name'                    => Sanitizer::TEXT,
             'last_name'                     => Sanitizer::TEXT,
             'email'                         => Sanitizer::EMAIL,
+            'username'                      => Sanitizer::USERNAME,
             'password'                      => Sanitizer::TEXT,
             'phone'                         => Sanitizer::TEXT,
             'shipping_address'              => Sanitizer::ARRAY,

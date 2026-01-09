@@ -22,6 +22,9 @@ class UpdateBackerDTO extends DTO
 
     public $email;
 
+    /** @var string */
+    public $username;
+
     public $password;
 
     public $phone;
@@ -40,6 +43,7 @@ class UpdateBackerDTO extends DTO
             'first_name'                    => 'required|string',
             'last_name'                     => 'required|string',
             'email'                         => 'required|email',
+            'username'                      => 'required|string',
             'password'                      => 'string|min:6',
             'phone'                         => 'string',
             'shipping_address'              => 'required|array',
@@ -67,6 +71,7 @@ class UpdateBackerDTO extends DTO
             'first_name'                    => Sanitizer::TEXT,
             'last_name'                     => Sanitizer::TEXT,
             'email'                         => Sanitizer::EMAIL,
+            'username'                      => Sanitizer::USERNAME,
             'password'                      => Sanitizer::TEXT,
             'phone'                         => Sanitizer::TEXT,
             'shipping_address'              => Sanitizer::ARRAY,

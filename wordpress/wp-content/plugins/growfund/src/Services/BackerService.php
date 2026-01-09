@@ -16,9 +16,8 @@ use Growfund\DTO\Backer\BackerOverviewDTO;
 use Growfund\Http\Response;
 use Growfund\QueryBuilder;
 use Growfund\Supports\Arr;
-use Growfund\Supports\MediaAttachment;
 use Growfund\Supports\Pagination as PaginationSupport;
-use Growfund\Supports\User;
+use Growfund\Supports\User as UserSupport;
 use Exception;
 use WP_User_Query;
 
@@ -111,11 +110,11 @@ class BackerService extends UserService
             $query_args['meta_query'][] = [
                 'relation' => 'OR',
                 [
-                    'key'     => growfund_with_prefix(User::SOFT_DELETE_KEY),
+                    'key'     => growfund_with_prefix(UserSupport::SOFT_DELETE_KEY),
                     'compare' => 'NOT EXISTS',
                 ],
                 [
-                    'key'     => growfund_with_prefix(User::SOFT_DELETE_KEY),
+                    'key'     => growfund_with_prefix(UserSupport::SOFT_DELETE_KEY),
                     'value'   => '1',
                     'compare' => '!=',
                 ],
@@ -124,11 +123,11 @@ class BackerService extends UserService
             $query_args['meta_query'][] = [
                 'relation' => 'OR',
                 [
-                    'key'     => growfund_with_prefix(User::IS_ANONYMIZED),
+                    'key'     => growfund_with_prefix(UserSupport::IS_ANONYMIZED),
                     'compare' => 'NOT EXISTS',
                 ],
                 [
-                    'key'     => growfund_with_prefix(User::IS_ANONYMIZED),
+                    'key'     => growfund_with_prefix(UserSupport::IS_ANONYMIZED),
                     'value'   => '1',
                     'compare' => '!=',
                 ],
@@ -136,7 +135,7 @@ class BackerService extends UserService
         } elseif ($status === 'trashed') {
             $query_args['meta_query'][] = [
                 [
-                    'key'     => growfund_with_prefix(User::SOFT_DELETE_KEY),
+                    'key'     => growfund_with_prefix(UserSupport::SOFT_DELETE_KEY),
                     'value'   => '1',
                 ],
             ];
@@ -144,11 +143,11 @@ class BackerService extends UserService
             $query_args['meta_query'][] = [
                 'relation' => 'OR',
                 [
-                    'key'     => growfund_with_prefix(User::IS_ANONYMIZED),
+                    'key'     => growfund_with_prefix(UserSupport::IS_ANONYMIZED),
                     'compare' => 'NOT EXISTS',
                 ],
                 [
-                    'key'     => growfund_with_prefix(User::IS_ANONYMIZED),
+                    'key'     => growfund_with_prefix(UserSupport::IS_ANONYMIZED),
                     'value'   => '1',
                     'compare' => '!=',
                 ],
@@ -207,31 +206,30 @@ class BackerService extends UserService
      */
     protected function format_data($backer)
     {
-        $metadata = UserMeta::get_all($backer->ID);
-
-        $latest_pledge = $this->pledge_service->get_latest_pledge((int) $backer->ID);
-
-        $is_billing_address_same = boolval($metadata['is_billing_address_same'] ?? false);
-        $shipping_address = !empty($metadata['shipping_address']) ? maybe_unserialize($metadata['shipping_address']) : null;
-        $billing_address = !empty($metadata['billing_address']) ? maybe_unserialize($metadata['billing_address']) : null;
+        $is_billing_address_same = boolval(UserMeta::get($backer->ID, 'is_billing_address_same') ?? false);
+        $billing_address = UserMeta::get($backer->ID, 'billing_address');
+        $billing_address = !empty($billing_address) ? maybe_unserialize($billing_address) : null;
+        $shipping_address = UserMeta::get($backer->ID, 'shipping_address');
+        $shipping_address = !empty($shipping_address) ? maybe_unserialize($shipping_address) : null;
 
         return BackerDTO::from_array([
             'id'                      => (string) $backer->ID,
-            'first_name'              =>  $metadata['first_name'] ?? '',
-            'last_name'               => $metadata['last_name'] ?? '',
+            'first_name'              => $backer->first_name ?? '',
+            'last_name'               => $backer->last_name ?? '',
             'email'                   => $backer->user_email,
-            'phone'                   => $metadata['phone'] ?? null,
-            'image'                   => !empty($metadata['image']) ? MediaAttachment::make($metadata['image']) : null,
+            'username'                => $backer->user_login,
+            'phone'                   => UserSupport::get_phone_number($backer->ID),
+            'image'                   => UserSupport::get_avatar_image($backer->ID),
             'number_of_contributions' => $this->pledge_service->get_total_number_of_pledges((int) $backer->ID),
             'total_contributions'     => $this->pledge_service->get_total_pledges_amount((int) $backer->ID),
-            'latest_pledge_date'      => $latest_pledge->created_at ?? null,
-            'joined_at'              => $backer->user_registered,
-            'created_by'              => $metadata['created_by'] ?? null,
+            'latest_pledge_date'      => $this->pledge_service->get_latest_pledge_date($backer->ID),
+            'joined_at'               => $backer->user_registered,
+            'created_by'              => UserSupport::get_created_by($backer->ID),
             'shipping_address'        => $shipping_address,
             'billing_address'         => $is_billing_address_same ? $shipping_address : $billing_address,
             'is_billing_address_same' => $is_billing_address_same,
-            'is_verified'             => User::is_verified($backer),
-            'is_fundraiser'           => User::is_fundraiser($backer),
+            'is_verified'             => UserSupport::is_verified($backer),
+            'is_fundraiser'           => UserSupport::is_fundraiser($backer),
         ]);
     }
 
@@ -301,7 +299,7 @@ class BackerService extends UserService
     {
         $users = get_users([
             'role'       => Backer::ROLE,
-            'meta_key'   => growfund_with_prefix(User::SOFT_DELETE_KEY), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+            'meta_key'   => growfund_with_prefix(UserSupport::SOFT_DELETE_KEY), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
             'meta_value' => true, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
             'fields'     => 'ID',
             'number'     => -1,

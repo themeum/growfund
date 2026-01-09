@@ -299,3 +299,7 @@
     padding: var(--growfund-spacing-4);
   }
 }
+
+.growfund-page-container .growfund-form-label p {
+  margin-block-end: 0;
+}

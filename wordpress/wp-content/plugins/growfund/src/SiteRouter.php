@@ -234,7 +234,8 @@ class SiteRouter
         }
 
 		if ($route->needs_nonce_check) {
-			$nonce = Sanitizer::apply_rule(wp_unslash(growfund_input_post('_wpnonce', '')), Sanitizer::TEXT);
+            $request_nonce = growfund_input_post('_wpnonce') ?? growfund_input_get('_wpnonce') ?? '';
+			$nonce = Sanitizer::apply_rule(wp_unslash($request_nonce), Sanitizer::TEXT);
 			$nonce_action = $route->nonce_action ?? growfund_with_prefix('site_nonce');
 
 			if (!wp_verify_nonce($nonce, $nonce_action) ) {
@@ -284,7 +285,7 @@ class SiteRouter
             return SiteExceptionHandler::handle($e);
         }
 
-        wp_die('Method not allowed.');
+        wp_die(esc_html__('Method not allowed.', 'growfund'));
     }
 
     /**

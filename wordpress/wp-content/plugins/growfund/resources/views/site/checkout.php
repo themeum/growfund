@@ -2,7 +2,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-// Load location data helper
 use Growfund\Supports\Location;
 use Growfund\Supports\FlashMessage;
 use Growfund\Supports\Utils;
@@ -302,7 +301,7 @@ if (!$is_shortcode) {
             $form_errors = [];
 
             if (FlashMessage::has('validation_errors')) {
-                $validation_errors = FlashMessage::get('validation_errors');
+                $validation_errors = growfund_flash_get_message('validation_errors');
 
                 if (is_array($validation_errors)) {
                     $form_errors = $validation_errors;

@@ -13,7 +13,7 @@ import { type PledgeForm } from '@/features/pledges/schemas/pledge-form';
 import { useDebounce } from '@/hooks/use-debounce';
 import { isDefined } from '@/utils';
 
-const BackerCard = ({
+const BackerSelectionCard = ({
   selectedBacker,
   setBacker,
 }: {
@@ -89,4 +89,4 @@ const BackerCard = ({
   );
 };
 
-export default BackerCard;
+export default BackerSelectionCard;

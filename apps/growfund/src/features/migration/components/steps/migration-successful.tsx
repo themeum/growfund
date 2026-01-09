@@ -1,6 +1,5 @@
 import { __ } from '@wordpress/i18n';
 import { ArrowRight } from 'lucide-react';
-import { useNavigate } from 'react-router';
 
 import { Button } from '@/components/ui/button';
 import { Image } from '@/components/ui/image';
@@ -10,7 +9,6 @@ import { useManageWordpressLayout } from '@/hooks/use-wp-layout';
 
 const MigrationSuccessful = () => {
   const { showWordpressLayout } = useManageWordpressLayout();
-  const navigate = useNavigate();
   return (
     <>
       <DecisionBox className="growfund-p-3">
@@ -39,7 +37,7 @@ const MigrationSuccessful = () => {
               onClick={(event) => {
                 event.preventDefault();
                 showWordpressLayout();
-                void navigate('/');
+                window.location.href = '/wp-admin/admin.php?page=growfund';
               }}
             >
               {__("Let's go", 'growfund')}

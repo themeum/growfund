@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const formData = new FormData(loginForm);
 
     // Security: Sanitize inputs to prevent XSS
-    formData.set('email', sanitizeInput(formData.get('email')));
+    formData.set('user_login', sanitizeInput(formData.get('user_login')));
 
     // Set the action for login
     formData.append('action', 'growfund_login_user');
@@ -96,9 +96,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return responseData;
       })
       .then((data) => {
-        // Debug: Log the response data to see structure
-        console.log('Login response data:', data);
-
         // Handle validation errors from 422 response (ValidationException)
         if (data && data.isError && data.status === 422) {
           let errorMessage = '';

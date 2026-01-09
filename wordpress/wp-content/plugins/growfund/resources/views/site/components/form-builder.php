@@ -172,7 +172,7 @@ function render_form_field($field_config, $errors = [])
     if (!empty($field_config['label'])) {
         $for_attr = !empty($component_data['id']) ? ' for="' . esc_attr($component_data['id']) . '"' : '';
         $label_class = $field_config['label_class'] ?? 'growfund-form-label';
-        $label = '<label class="' . esc_attr($label_class) . '"' . $for_attr . '>' . esc_html($field_config['label']) . '</label>';
+        $label = '<label class="' . esc_attr($label_class) . '"' . $for_attr . '>' . $field_config['label'] . '</label>';
     }
 
     $description = '';

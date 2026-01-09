@@ -93,7 +93,7 @@ class Renderer
     /**
      * Get HTML as string for a template with the given data.
      *
-     * @param string $path
+     * @param string $path - template path
      * @param array $data
      * @return string
      */
@@ -125,14 +125,14 @@ class Renderer
     /**
      * Render a template with the given data.
      *
-     * @param string $path
+     * @param string $path - template path
      * @param array $data
      */
     public function render(string $path, array $data = [])
     {
         $output = $this->get_html($path, $data);
 
-        echo $output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped  -- output is already escaped. this is intentional
+        echo $output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- trusted content, contains HTML, loaded from template file.
     }
 
     /**
@@ -372,7 +372,7 @@ class Renderer
      * If override is found at active theme then the override will be used.
      * Otherwise, the layout will be loaded from the plugin's directory.
      *
-     * @param string $path
+     * @param string $path - template path
      * @return string
      */
     public function get_template_path(string $path): string

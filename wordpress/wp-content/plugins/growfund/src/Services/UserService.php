@@ -26,8 +26,7 @@ use Growfund\QueryBuilder;
 use Growfund\DTO\User\UserDTO;
 use Growfund\Mails\PasswordResetLinkMail;
 use Growfund\Supports\Arr;
-use Growfund\Supports\MediaAttachment;
-use Growfund\Supports\User;
+use Growfund\Supports\User as UserSupport;
 use Exception;
 
 /**
@@ -49,14 +48,26 @@ class UserService
             throw new Exception(esc_html__('Invalid DTO instance', 'growfund'));
         }
 
-        $user = get_user_by('email', $dto->email);
+        $user = get_user_by('login', $dto->username);
 
-        if ($user && !User::is_soft_deleted_user($user->ID ?? null)) {
-            throw ValidationException::with_errors(['email' => [esc_html__('Email already exists', 'growfund')]], esc_html__('Email already exists', 'growfund'));
+        $is_soft_deleted = UserSupport::is_soft_deleted($user->ID ?? null);
+
+        if ($user && !$is_soft_deleted) {
+            throw ValidationException::with_errors(['username' => [esc_html__('Username already exists', 'growfund')]], esc_html__('Username already exists', 'growfund'));
         }
 
-        if ($user && User::is_soft_deleted_user($user->ID ?? null)) {
-            UserMeta::delete($user->ID, User::SOFT_DELETE_KEY);
+        if (!$user) {
+            $user = get_user_by('email', $dto->email);
+
+            $is_soft_deleted = UserSupport::is_soft_deleted($user->ID ?? null);
+
+            if ($user && !$is_soft_deleted) {
+                throw ValidationException::with_errors(['email' => [esc_html__('Email already exists', 'growfund')]], esc_html__('Email already exists', 'growfund'));
+            }
+        }
+
+        if ($user && $is_soft_deleted) {
+            UserMeta::delete($user->ID, UserSupport::SOFT_DELETE_KEY);
 
             return $user->ID;
         }
@@ -91,12 +102,27 @@ class UserService
             'display_name' => sprintf('%s %s', $dto->first_name, $dto->last_name),
         ];
 
+		if (!empty($dto->username) && $dto->username !== $user_obj->user_login) {
+            if (username_exists($dto->username)) {
+                throw ValidationException::with_errors(['username' => [esc_html__('Username already exists', 'growfund')]]);
+            }
+
+            add_filter('wp_pre_insert_user_data', function($data, $is_update, $user_id, $user_data) {
+                if (isset($user_data['user_login'])) {
+                    $data['user_login'] = $user_data['user_login'];
+                }
+
+                return $data;
+            }, 10, 4);
+            
+            $userdata['user_login'] = $dto->username;
+        }
+
         if (!empty($dto->email) && $dto->email !== $user_obj->user_email) {
             if (email_exists($dto->email)) {
                 throw ValidationException::with_errors(['email' => [esc_html__('Email already exists', 'growfund')]]);
             }
-            $username = Sanitizer::apply_rule($dto->email, Sanitizer::USERNAME);
-            $userdata['user_login'] = $username;
+
             $userdata['user_email'] = $dto->email;
         }
 
@@ -104,15 +130,13 @@ class UserService
             $userdata['user_pass'] = $dto->password;
         }
 
-        clean_user_cache($user_obj);
-
         $user_id  = wp_update_user($userdata);
 
         if (is_wp_error($user_id)) {
             throw new Exception(esc_html($user_id->get_error_message()));
         }
 
-        $meta_input = $dto->get_meta();
+        $meta_input = $dto->get_meta(['username']);
 
         UserMeta::update_many($user_id, $meta_input);
 
@@ -152,43 +176,45 @@ class UserService
     {
         $pledge_service = new PledgeService();
         $donation_service = new DonationService();
-        $latest_contribution = growfund_app()->is_donation_mode()
-            ? $donation_service->get_latest_contribution($user->get_id())
-            : $pledge_service->get_latest_contribution($user->get_id());
+        $latest_contribution_date = growfund_app()->is_donation_mode()
+            ? $donation_service->get_latest_donation_date($user->get_id())
+            : $pledge_service->get_latest_pledge_date($user->get_id());
 
-        $user_meta = UserMeta::get_all($user->get_id());
         $dto = new UserDTO();
 
-        $shipping_address = !empty($user_meta['shipping_address'])
-            ? maybe_unserialize($user_meta['shipping_address'])
-            : null;
-        $billing_address = !empty($user_meta['billing_address'])
-            ? maybe_unserialize($user_meta['billing_address'])
+        $shipping_address = $user->get_meta('shipping_address');
+        $shipping_address = !empty($shipping_address)
+            ? maybe_unserialize($shipping_address)
             : null;
 
-        $image = !empty($user_meta['image']) ? MediaAttachment::make($user_meta['image']) : null;
+        $billing_address = $user->get_meta('billing_address');
+        $billing_address = !empty($billing_address)
+            ? maybe_unserialize($billing_address)
+            : null;
 
-        $is_billing_address_same = boolval($user_meta['is_billing_address_same'] ?? false);
+        $is_billing_address_same = boolval($user->get_meta('is_billing_address_same') ?? false);
+
+        $notification_settings = $user->get_meta('notification_settings');
+        $notification_settings = !empty($notification_settings)
+            ? maybe_unserialize($notification_settings)
+            : null;
 
         $dto->id = $user->get_id();
         $dto->first_name = $user->get_first_name();
         $dto->last_name = $user->get_last_name();
         $dto->display_name = $user->get_display_name();
         $dto->email = $user->get_email();
-        $dto->image = $image;
-        $dto->phone = $user_meta['phone'] ?? null;
+        $dto->username = $user->get_username();
+        $dto->image = UserSupport::get_avatar_image($user->get_id());
+        $dto->phone = UserSupport::get_phone_number($user->get_id());
         $dto->active_role = $user->get_active_role();
         $dto->shipping_address = $shipping_address;
         $dto->billing_address = $is_billing_address_same ? $shipping_address : $billing_address;
         $dto->is_soft_deleted = $user->is_soft_deleted();
         $dto->is_billing_address_same = $is_billing_address_same;
-        $dto->notification_settings = !empty($user_meta['notification_settings'])
-            ? maybe_unserialize($user_meta['notification_settings'])
-            : null;
+        $dto->notification_settings = $notification_settings;
         $dto->joined_at = $user->get_joined_date();
-        $dto->last_contribution_at = !empty($latest_contribution)
-            ? $latest_contribution->created_at
-            : null;
+        $dto->last_contribution_at = $latest_contribution_date;
         $dto->total_number_of_contributions = growfund_app()->is_donation_mode()
             ? $donation_service->get_total_number_of_donations($user->get_id())
             : $pledge_service->get_total_number_of_pledges($user->get_id());
@@ -294,12 +320,12 @@ class UserService
 
     public function trash(int $id)
     {
-        return UserMeta::update($id, User::SOFT_DELETE_KEY, true);
+        return UserMeta::update($id, UserSupport::SOFT_DELETE_KEY, true);
     }
 
     public function restore(int $id)
     {
-        return UserMeta::update($id, User::SOFT_DELETE_KEY, false);
+        return UserMeta::update($id, UserSupport::SOFT_DELETE_KEY, false);
     }
 
     public function anonymize_user(int $id)
@@ -355,7 +381,7 @@ class UserService
             UserMeta::delete($id, $key);
         }
 
-        UserMeta::update($id, User::IS_ANONYMIZED, 1);
+        UserMeta::update($id, UserSupport::IS_ANONYMIZED, 1);
 
         return true;
     }
@@ -380,12 +406,10 @@ class UserService
      * 
      * @throws Exception If the user can't be created.
      */
-    protected function create_user($dto, $is_guest = false)
+    public function create_user($dto, $is_guest = false)
     {
-        $username = Sanitizer::apply_rule($dto->email, Sanitizer::USERNAME);
-
         $userdata = [
-            'user_login' => $username,
+            'user_login' => $dto->username,
             'user_email' => $dto->email,
             'user_pass' => $dto->password,
             'first_name' => $dto->first_name,
@@ -401,16 +425,16 @@ class UserService
 
         $dto->created_by = growfund_user()->get_id();
 
-        $meta_input = $dto->get_meta();
+        $meta_input = $dto->get_meta(['username']);
 
         UserMeta::update_many($user_id, $meta_input);
 
         if ($is_guest) {
-            User::mark_as_guest($user_id);
+            UserSupport::mark_as_guest($user_id);
         }
 
         if (growfund_user()->is_admin() || growfund_user()->is_fundraiser()) {
-            User::mark_as_verified($user_id);
+            UserSupport::mark_as_verified($user_id);
         }
 
         return $user_id;

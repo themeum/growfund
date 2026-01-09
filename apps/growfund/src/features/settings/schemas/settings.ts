@@ -260,6 +260,7 @@ const LicenseSettingsSchema = z.object({
 const UserSchema = z.object({
   id: z.coerce.string(),
   email: z.string(),
+  username: z.string(),
   display_name: z.string(),
   first_name: z.string(),
   last_name: z.string(),

@@ -3,6 +3,7 @@
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Application;
+use Growfund\Constants\HookNames;
 use Growfund\Contracts\Capability;
 use Growfund\Core\AppSettings;
 use Growfund\Core\Dispatcher;
@@ -1223,5 +1224,26 @@ if (!function_exists('has_growfund_pro')) {
         }
 
         return is_plugin_active('growfund-pro/growfund-pro.php');
+    }
+}
+
+
+if (!function_exists('growfund_query_log')) {
+    function growfund_query_log($query) {
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+			add_filter( 'query', function( $query ) {
+				$log_file = GROWFUND_DIR_PATH . '/sql-query.log';
+                $overwrite = apply_filters(HookNames::GROWFUND_QUERY_LOG_OVERWRITE, false);
+
+                if ($overwrite) {
+                    file_put_contents($log_file, " $query\n\n"); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+
+                    return $query;
+                }
+                
+				file_put_contents($log_file, " $query\n", FILE_APPEND); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+				return $query;
+			});
+        }
     }
 }

@@ -5,6 +5,7 @@ namespace Growfund\Supports;
 defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\StoreApi\Utilities\CartController;
+use Exception;
 use Growfund\Constants\OptionKeys;
 use Growfund\DTO\Woocommerce\WoocommerceContributionDTO;
 use Growfund\Supports\Option;
@@ -53,7 +54,7 @@ class Woocommerce
         if ($product_id) {
             Option::update(OptionKeys::WC_PRODUCT_ID, $product_id);
         } else {
-            error_log('Failed to create CF product.'); // phpcs:ignore
+            throw new Exception(esc_html__('Failed to create Growfund product in WooCommerce.', 'growfund'));
         }
     }
 

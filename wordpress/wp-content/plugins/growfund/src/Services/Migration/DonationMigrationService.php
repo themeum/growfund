@@ -15,12 +15,12 @@ use Growfund\Supports\Money;
 use Growfund\Supports\WoocommerceToNative;
 use Exception;
 use Growfund\Constants\UserTypes\Donor;
-use Growfund\DTO\Donor\CreateDonorDTO;
-use Growfund\DTO\Donor\UpdateDonorDTO;
 use Growfund\DTO\Migration\MigrationResponseDTO;
-use Growfund\Services\DonorService;
 use Growfund\Services\FundService;
+use Growfund\Supports\User as UserSupport;
+use Growfund\Supports\UserMeta;
 use WC_Order;
+use WP_User;
 
 class DonationMigrationService
 {
@@ -28,26 +28,35 @@ class DonationMigrationService
     const OFFSET_KEY = 'growfund_donation_migration_offset';
     const TOTAL_KEY = 'growfund_donation_migration_total';
 
+    private $statuses = ['wc-completed', 'wc-processing', 'wc-on-hold', 'wc-pending', 'wc-cancelled', 'wc-refunded', 'wc-failed'];
+
     public function migrate()
     {
+        wc_set_time_limit(2000);
+        add_filter('admin_memory_limit', function () {
+            return '512M';
+        });
+        wp_raise_memory_limit();
+        
         $offset = $this->get_offset(0);
         
         QueryBuilder::begin_transaction();
 
         $total = $this->get_total();
         $orders = $this->get_orders($offset);
-        $donations = $this->update_donors_and_format_donations($orders);
 
         $response = new MigrationResponseDTO();
         $response->total = $total;
         $response->completed = $offset;
 
-        if (empty($orders)) {
-            QueryBuilder::rollback();
-            return $response;
-        }
-
         try {
+			if (empty($orders)) {
+				QueryBuilder::rollback();
+				return $response;
+			}
+
+            $donations = $this->update_donors_and_format_donations($orders);
+        
             if (!empty($donations)) {
                 $this->migrate_donations($donations);
             }
@@ -59,14 +68,12 @@ class DonationMigrationService
             $response->completed = $offset;
 
             QueryBuilder::commit();
-
-            return $response;
         } catch (Exception $e) {
             error_log($e->getMessage()); // phpcs:ignore
             QueryBuilder::rollback();
-
-            return $response;
         }
+
+        return $response;
     }
 
     /**
@@ -80,7 +87,7 @@ class DonationMigrationService
         $orders = wc_get_orders([
             'limit' => static::BATCH_SIZE,
             'offset' => $offset,
-            'status' => ['wc-completed', 'wc-processing', 'wc-on-hold', 'wc-pending', 'wc-cancelled', 'wc-refunded', 'wc-failed'],
+            'status' => $this->statuses,
             'orderby' => 'date',
             'order' => 'ASC',
         ]);
@@ -159,7 +166,7 @@ class DonationMigrationService
         foreach ($order->get_items() as $item) {
             $product = $item->get_product();
 
-            if ((!$product || $product->get_type() !== 'crowdfunding') && (int) $order->get_meta('is_crowdfunding_order') !== 1) {
+			if (!$product || ($product->get_type() !== 'crowdfunding' && (int) $order->get_meta('is_crowdfunding_order') !== 1)) {
                 continue;
             }
 
@@ -211,8 +218,6 @@ class DonationMigrationService
      */
     protected function update_and_get_donor_info(WC_Order $order)
     {
-        $this->ensure_user_role($order->get_customer_id());
-
         $data = [
             'id'      => (string) $order->get_customer_id(),
             'first_name' => $order->get_billing_first_name(),
@@ -251,53 +256,31 @@ class DonationMigrationService
         }
 
         if (empty($user)) {
-            if (empty($data['email'])) {
-                return $data;
-            }
-            
-            $data['id'] = $this->create_donor(CreateDonorDTO::from_array($data));
-
             return $data;
         }
 
-        $this->update_donor_info($user->ID, UpdateDonorDTO::from_array($data));
+        $this->ensure_user_role($user);
+        UserMeta::update($user->ID, 'is_billing_address_same', $data['is_billing_address_same']);
+        UserMeta::update($user->ID, 'billing_address', $data['billing_address']);
+        UserMeta::update($user->ID, 'shipping_address', $data['shipping_address']);
+        UserMeta::update($user->ID, 'phone', $data['phone']);
 
         return $data;
     }
 
-    protected function ensure_user_role($user_id)
+    /**
+     * Ensure user has the donor role
+     * 
+     * @param WP_User|null $user
+     * @return void
+     */
+    protected function ensure_user_role($user)
     {
-        $user = growfund_user($user_id);
-
-        if ($user->is_admin()) {
+        if (empty($user) || UserSupport::is_admin($user) || UserSupport::is_fundraiser($user)) {
             return;
         }
 
-        if ($user->is_fundraiser()) {
-            return;
-        }
-
-        $user->set_role(Donor::ROLE);
-    }
-
-    protected function update_donor_info(int $id, UpdateDonorDTO $dto)
-    {
-        $user = growfund_user($id);
-
-        if ($user->is_admin()) {
-            return;
-        }
-
-        $donor_service = new DonorService();
-
-        return $donor_service->update($id, $dto);
-    }
-    
-    protected function create_donor(CreateDonorDTO $dto)
-    {
-        $donor_service = new DonorService();
-
-        return $donor_service->store($dto);
+        $user->add_role(Donor::ROLE);
     }
 
     protected function get_offset(int $default = 0)
@@ -315,9 +298,11 @@ class DonationMigrationService
         $total = (int) get_transient(static::TOTAL_KEY);
 
         if (!$total) {
-            $total = QueryBuilder::query()->table(WC::ORDERS)
-                ->where_in('status', ['wc-completed', 'wc-processing', 'wc-on-hold', 'wc-pending', 'wc-cancelled', 'wc-refunded', 'wc-failed'])
-                ->count();
+            $total = 0;
+
+            foreach ($this->statuses as $status) {
+                $total += wc_orders_count($status);
+            }
                 
             set_transient(static::TOTAL_KEY, $total, time() + 24 * 60 * 60);
         }

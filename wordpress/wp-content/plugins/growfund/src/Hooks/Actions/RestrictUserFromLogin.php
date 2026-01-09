@@ -6,10 +6,8 @@ defined( 'ABSPATH' ) || exit;
 
 use Growfund\Constants\HookNames;
 use Growfund\Constants\HookTypes;
-use Growfund\Constants\MetaKeys\Fundraiser;
-use Growfund\Constants\Status\FundraiserStatus;
-use Growfund\Core\AppSettings;
 use Growfund\Hooks\BaseHook;
+use Growfund\Supports\User as UserSupport;
 use WP_Error;
 
 class RestrictUserFromLogin extends BaseHook
@@ -28,11 +26,11 @@ class RestrictUserFromLogin extends BaseHook
     {
         list($user) = $args;
 
-        if (growfund_user($user->ID)->is_admin()) {
+        if (UserSupport::is_admin($user)) {
             return $user;
         }
 
-        if (growfund_user($user->ID)->is_soft_deleted() || growfund_user($user->ID)->is_anonymized()) {
+        if (UserSupport::is_soft_deleted($user->ID) || UserSupport::is_anonymized($user->ID)) {
             return new WP_Error(
                 'user_not_found',
                 __('User not found.', 'growfund')

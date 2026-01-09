@@ -3,7 +3,7 @@
 * Plugin Name:       Growfund – Ultimate Donation & Crowdfunding Solution
 * Plugin URI:        https://growfund.com
 * Description:       Launch your donation or reward-based WordPress crowdfunding platform with Growfund. It combines native payments, WooCommerce integration, real-time insights, and fully customizable campaigns, making it the ultimate WordPress crowdfunding plugin.
-* Version:           1.0.2
+* Version:           1.0.3
 * Author:            Themeum
 * Author URI:        https://themeum.com
 * Text Domain:       growfund
@@ -29,7 +29,7 @@ use Growfund\Migrations\AddEmailColumnInPledgeTable;
 /**
  * Define plugin version
  */
-define('GROWFUND_VERSION', '1.0.2');
+define('GROWFUND_VERSION', '1.0.3');
 
 /**
  * Define plugin file
@@ -129,31 +129,17 @@ function growfund_plugin_initializer()
             });
 		});
 
-		add_action('after_plugin_row_' . GROWFUND_BASENAME, function () {
-            add_action('admin_enqueue_scripts', function () {
-                wp_register_script('growfund-plugin-update', false, [], GROWFUND_VERSION, true);
-				wp_enqueue_script('growfund-plugin-update');
-				$inline_js = "
-                    document.addEventListener('DOMContentLoaded', function() {
-                        const row = document.querySelector(\"tr[data-slug='" . esc_html(GROWFUND_SLUG) . "']\");
-                        if (row) {
-                            row.classList.add('update');
-                        }
-                    });
-                ";
-				wp_add_inline_script('growfund-plugin-update', $inline_js);
-            }, 1);
+        add_filter('plugin_row_meta', function (array $links, string $plugin_name) {
+			if ($plugin_name !== GROWFUND_BASENAME) {
+				return $links;
+			}
 
-			echo '
-                <tr class="plugin-update-tr active">
-                    <td colspan="4" class="plugin-update colspanchange">
-                        <div class="notice inline notice-warning notice-alt">
+			$links[] = '<div class="notice inline notice-warning notice-alt">
                             <p><strong>Growfund:</strong> You must deactivate <strong>Growfund Pro</strong> before deactivating Growfund.</p>
-                        </div>
-                    </td>
-                </tr>
-            ';
-		});
+                        </div>';
+                        
+			return $links;
+		}, 10, 2);
 	}
 
     require_once __DIR__ . '/bootstrap/app.php';

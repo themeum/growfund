@@ -11,5 +11,4 @@ class WC
      * @var string
      */
     const ORDER_ITEM_META = 'woocommerce_order_itemmeta';
-    const ORDERS = 'wc_orders';
 }

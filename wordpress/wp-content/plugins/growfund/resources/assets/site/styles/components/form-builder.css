@@ -194,13 +194,13 @@
   gap: var(--growfund-spacing-1);
 }
 
-.growfund-page-container .growfund-form-builder>*:last-child,
-.growfund-page-container .growfund-form-section>*:last-child {
+.growfund-page-container .growfund-form-builder > *:last-child,
+.growfund-page-container .growfund-form-section > *:last-child {
   margin-bottom: 0;
 }
 
 /* Form section title spacing */
-.growfund-page-container .growfund-form-section>.growfund-form-title {
+.growfund-page-container .growfund-form-section > .growfund-form-title {
   margin-bottom: var(--growfund-spacing-3);
 }
 
@@ -291,7 +291,7 @@
   margin-right: var(--growfund-spacing-2);
 }
 
-.growfund-page-container .growfund-tribute-toggle:checked+.growfund-form-label {
+.growfund-page-container .growfund-tribute-toggle:checked + .growfund-form-label {
   color: var(--growfund-gray-15);
   font-weight: var(--growfund-font-weight-semibold);
 }
@@ -515,7 +515,6 @@
 }
 
 @keyframes slideInDown {
-
   /* Responsive design */
   from {
     transform: translateY(-100%);
@@ -529,7 +528,6 @@
 }
 
 @media (max-width: 768px) {
-
   /* =========================================
    REGISTER FORM VARIATION - 16px gaps
    ========================================= */
@@ -592,4 +590,8 @@
 /* Remove margin from last half-width row */
 .growfund-page-container .growfund-register-form .growfund-form-row-half:last-child {
   margin-bottom: 0;
+}
+
+.growfund-page-container .growfund-form-label p {
+  margin-block-end: 0;
 }

@@ -104,9 +104,9 @@ const BackerDetailsPledgesPage = React.lazy(
 
 // Donor pages
 const DonorsListingPage = React.lazy(() => import('@/pages/donors/donors-listing-page'));
-const DonorDetailsOverviewPage = React.lazy(() => import('@/pages/donors/donor-details-overview'));
+const DonorDetailsOverviewPage = React.lazy(() => import('@/pages/donors/donor-details-overview-page'));
 const DonorDetailsDonationsPage = React.lazy(
-  () => import('@/pages/donors/donor-details-donations'),
+  () => import('@/pages/donors/donor-details-donations-page'),
 );
 
 // Common pages

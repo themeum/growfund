@@ -5,7 +5,7 @@ Tags: crowdfunding, donation, fundraising, charity, rewards
 Requires at least: 5.9
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -376,7 +376,15 @@ order details (campaign_id, amount, currency, and transaction ID) to PayPal's AP
 
 == Changelog ==
 
-= 1.0.2 - Dec 19, 2025 =
+= 1.0.3 - Jan 9, 2026
+* Added a username field to the user registration form.
+* Added username-based login support.
+* Updated the goal step form in the donation mode campaign builder.
+* Updated email base layout.
+* Fixed WP Crowdfunding to Growfund migration issues.
+* Resolved the checkout consent issue.
+
+= 1.0.2 - Dec 17, 2025 =
 * Added attributes in shortcodes
 * Added donor/backer can be assigned as fundraiser
 * Added new DB column in pledges/donations table

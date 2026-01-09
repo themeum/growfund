@@ -1,7 +1,7 @@
 import ElementWrapper from '@/components/element-wrapper';
 import ActivityLogFallback from '@/components/pro-fallbacks/activity-log-fallback';
 import DonorMetricsFallback from '@/components/pro-fallbacks/donor/metrics-fallback';
-import DonorProfileCard from '@/features/donors/components/donor-details/donor-profile-card';
+import UserPreviewCard from '@/components/users/user-preview-card';
 import { useDonorContext } from '@/features/donors/contexts/donor';
 import { registry } from '@/lib/registry';
 
@@ -16,7 +16,7 @@ const DonorDetailsOverviewPage = () => {
         {DonorOverviewMetrics && <DonorOverviewMetrics />}
       </ElementWrapper>
       <div className="growfund-grid growfund-grid-cols-[320px_auto] growfund-gap-4">
-        <DonorProfileCard donor={donor.profile} />
+        <UserPreviewCard user={donor.profile} hideHeader />
         <ElementWrapper fallback={<ActivityLogFallback />}>
           {DonorActivityLogCard && <DonorActivityLogCard />}
         </ElementWrapper>

@@ -22,6 +22,9 @@ class RegisterDTO extends DTO
     public $email;
 
     /** @var string */
+    public $username;
+
+    /** @var string */
     public $password;
 
     /** @var string */
@@ -39,6 +42,7 @@ class RegisterDTO extends DTO
             'first_name' => 'required|string|min:2',
             'last_name' => 'required|string|min:2',
             'email' => 'required|email|email_unique',
+            'username' => 'required|string|min:6',
             'password' => 'required|string|min:8',
             'password_confirmation' => 'required|string|same_as:password',
             'role' => 'string|in:' . Donor::ROLE . ',' . Backer::ROLE . ',' . Fundraiser::ROLE,
@@ -52,6 +56,7 @@ class RegisterDTO extends DTO
             'first_name' => Sanitizer::TEXT,
             'last_name' => Sanitizer::TEXT,
             'email' => Sanitizer::EMAIL,
+            'username' => Sanitizer::USERNAME,
             'password' => Sanitizer::TRIM,
             'password_confirmation' => Sanitizer::TRIM,
             'role' => Sanitizer::TEXT,

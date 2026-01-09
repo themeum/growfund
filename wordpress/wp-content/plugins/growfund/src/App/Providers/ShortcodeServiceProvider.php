@@ -34,7 +34,7 @@ class ShortcodeServiceProvider extends ServiceProvider
             add_shortcode($shortcode->get_name(), function () use ($shortcode) {
                 try {
                     if (is_admin() || defined('REST_REQUEST')) {
-                        return sprintf('<div class="growfund-shortcode-placeholder">%s</div>', __('Shortcode Preview', 'growfund'));
+                        return '<div class="growfund-shortcode-placeholder">' . esc_html__('Shortcode Preview', 'growfund') . '</div>';
                     }
 
                     return $shortcode->callback(...func_get_args());

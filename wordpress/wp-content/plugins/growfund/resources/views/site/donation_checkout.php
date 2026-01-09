@@ -9,7 +9,7 @@ use Growfund\Supports\Utils;
 $form_errors = [];
 
 if (FlashMessage::has('validation_errors')) {
-    $validation_errors = FlashMessage::get('validation_errors');
+    $validation_errors = growfund_flash_get_message('validation_errors');
     if (is_array($validation_errors)) {
         $form_errors = $validation_errors;
     }
@@ -732,6 +732,25 @@ $default_index = 0;
             ]
         ];
     }
+
+    $consent_text = !empty($consent_text) && !empty($consent_text) ? $consent_text : esc_html__('I have read and agree to the terms and conditions above.', 'growfund');
+
+    $form_fields[] = [
+		'type' => 'group',
+		'fields' => [
+			[
+				'type' => 'checkbox',
+				'label' => $consent_text,
+				'data' => [
+					'type' => 'checkbox',
+					'name' => 'terms_agreement',
+					'value' => '1',
+					'id' => 'terms_agreement_checkbox',
+					'required' => true
+				]
+			]
+		]
+	];
 
 
     foreach ($hidden_fields as $hidden_field) {

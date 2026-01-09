@@ -454,6 +454,26 @@ class PledgeService
     }
 
     /**
+     * Get the latest pledge date of a backer
+     * @since 1.0.3
+     * @param int $backer_id
+     * @return string|null
+     */
+    public function get_latest_pledge_date(int $backer_id) {
+		$pledge = QueryBuilder::query()->table(Tables::PLEDGES . ' as pledges')
+            ->select([
+                'pledges.id',
+                'pledges.created_at',
+            ])  
+            ->where('pledges.user_id', $backer_id)
+            ->where_in('pledges.status', [PledgeStatus::BACKED, PledgeStatus::COMPLETED])
+            ->order_by('pledges.created_at', 'DESC')
+            ->first();
+
+        return $pledge->created_at ?? null;
+    }
+
+    /**
      * Get the total number of pledges counts.
      * 
      * @param int $backer_id

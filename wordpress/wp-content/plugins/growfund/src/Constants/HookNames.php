@@ -18,9 +18,6 @@ class HookNames
     const ADMIN_MENU = 'admin_menu';
     const ADMIN_ENQUEUE_SCRIPT = 'admin_enqueue_scripts';
     const WP_ENQUEUE_SCRIPT = 'wp_enqueue_scripts';
-    const REGISTER_ROLE = 'register_role';
-    const REGISTER_TAXONOMY = 'register_taxonomy';
-    const REGISTER_POST_TYPE = 'register_post_type';
     const AJAX_QUERY_ATTACHMENTS_ARGS = 'ajax_query_attachments_args';
     const ADMIN_COMMENT_TYPES_DROPDOWN = 'admin_comment_types_dropdown';
     const WP_MAIL_FROM = 'wp_mail_from';
@@ -37,10 +34,6 @@ class HookNames
     const USER_REGISTER = 'user_register';
     const PLUGIN_ROW_META = 'plugin_row_meta';
     const REST_REQUEST_AFTER_CALLBACKS = 'rest_request_after_callbacks';
-
-    // Plugin Updater hooks
-    const PLUGINS_API = 'plugins_api';
-    const UPGRADER_PRE_DOWNLOAD = 'upgrader_pre_download';
     
     // Woocommerce hooks
     const WC_BEFORE_CALCULATE_TOTAL = 'woocommerce_before_calculate_totals';
@@ -58,6 +51,12 @@ class HookNames
     const WC_CLASSIC_CHECKOUT_CREATE_ORDER = 'woocommerce_checkout_create_order';
     const WC_CHECKOUT_ORDER_RECEIVED_URL = 'woocommerce_get_checkout_order_received_url';
 
+    // Plugin Updater hooks
+    /** @deprecated since 1.0.3 */
+    const PLUGINS_API = 'plugins_api'; // @todo: deprecated since 1.0.3. keep it just because of backward compatibility - will be removed in 1.1.0.
+    /** @deprecated since 1.0.3 */
+    const UPGRADER_PRE_DOWNLOAD = 'upgrader_pre_download'; // @todo: deprecated since 1.0.3. keep it just because of backward compatibility - will be removed in 1.1.0.
+
     // Scheduler hooks
     const SCHEDULED_EMAILS = 'growfund_scheduled_emails';
     const SCHEDULED_CHARGE_BACKERS = 'growfund_scheduled_charge_backers';
@@ -65,13 +64,16 @@ class HookNames
     const STOP_SCHEDULED_RECURRING = 'growfund_stop_scheduled_recurring';
 
     // Growfund Hooks
-    const GROWFUND_FILTER_FEATURES = 'growfund/features';
-    const GROWFUND_FILTER_PRO_FEATURES = 'growfund/features'; // Use GROWFUND_FILTER_FEATURES instead. keep it just because of backward compatibility.
+    /** @deprecated since 1.0.2 */
+    const GROWFUND_FILTER_PRO_FEATURES = 'growfund/features'; // @todo: deprecated since 1.0.2. keep it just because of backward compatibility - will be removed in 1.1.0.
+    /** @deprecated since 1.0.2 */
+    const GROWFUND_FILTER_FEATURES = 'growfund/features'; // @todo: deprecated since 1.0.2. keep it just because of backward compatibility - will be removed in 1.1.0.
     const GROWFUND_ROUTE_BEFORE_INIT_ACTION = 'growfund/route/before_init';
     const GROWFUND_CAMPAIGN_AFTER_SAVE_ACTION = 'growfund/campaign/after_save';
     const GROWFUND_CAMPAIGN_AFTER_PERMANENT_DELETE_ACTION = 'growfund/campaign/after_permanent_delete';
     const GROWFUND_CAMPAIGN_UPDATE_VALIDATION_RULES_FILTER = 'growfund/campaign/update_validation_rules';
-    const GROWFUND_ANALYTICS_DATA_FILTER = 'growfund/analytics/data';
+    /** @deprecated since 1.0.3 */
+    const GROWFUND_ANALYTICS_DATA_FILTER = 'growfund/analytics/data'; // @todo: deprecated since 1.0.3. keep it just because of backward compatibility - will be removed in 1.1.0.
     const GROWFUND_REWARD_VALIDATION_RULES_FILTER = 'growfund/reward/validation_rules';
     const GROWFUND_BACKER_OVERVIEW_FILTER = 'growfund/backer/overview';
     const GROWFUND_DONOR_OVERVIEW_FILTER = 'growfund/donor/overview';
@@ -87,4 +89,6 @@ class HookNames
     const GROWFUND_FUNDRAISER_CAMPAIGN_PUBLISH_FILTER = 'growfund/permission/fundraiser-can-publish-campaign';
     const GROWFUND_ALLOW_GUEST_CHECKOUT_FILTER = 'growfund/payment/allow-guest-checkout';
     const GROWFUND_ALLOW_EMAIL_VERIFICATION = 'growfund/enable_email_verification';
+    const GROWFUND_IS_APPLY_EMAIL_VERIFICATION = 'growfund/apply_email_verification';
+    const GROWFUND_QUERY_LOG_OVERWRITE = 'growfund/query_log_overwrite';
 }

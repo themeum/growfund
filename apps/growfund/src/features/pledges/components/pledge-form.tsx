@@ -8,7 +8,7 @@ import { getBonusAmount, getPledgeAmount, getShippingCost } from '@/config/price
 import { type BackerInfo } from '@/features/backers/schemas/backer';
 import { type Campaign } from '@/features/campaigns/schemas/campaign';
 import { type Reward } from '@/features/campaigns/schemas/reward';
-import BackerCard from '@/features/pledges/components/backer-card';
+import BackerSelectionCard from '@/features/pledges/components/backer-selection-card';
 import AddCampaignEmptyState from '@/features/pledges/components/campaigns/empty-state';
 import PaymentCard from '@/features/pledges/components/payment-card';
 import PaymentMethodCard from '@/features/pledges/components/payment-method-card';
@@ -118,7 +118,7 @@ const PledgeForm = () => {
         </div>
         <div className="growfund-space-y-4">
           <PaymentMethodCard form={form} />
-          <BackerCard selectedBacker={backer} setBacker={setBacker} />
+          <BackerSelectionCard selectedBacker={backer} setBacker={setBacker} />
           <PledgeNotesCard
             value={notes ?? null}
             onChange={(value) => {

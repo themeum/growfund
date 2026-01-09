@@ -16,7 +16,6 @@ use Growfund\Services\Site\AuthService;
 use Growfund\Validation\Validator;
 use Growfund\Exceptions\ValidationException;
 use Growfund\Sanitizer;
-use Growfund\Supports\FlashMessage;
 use Exception;
 
 /**
@@ -65,7 +64,7 @@ class AuthController
     public function ajax_login(Request $request)
     {
         $raw_data = [
-            'email' => $request->get_email('email'),
+            'user_login' => $request->get_string('user_login'),
             'password' => $request->get_string('password'),
             'redirect_to' => $request->get_url('redirect_to')
         ];
@@ -143,6 +142,7 @@ class AuthController
             'first_name' => $request->get_string('first_name'),
             'last_name' => $request->get_string('last_name'),
             'email' => $request->get_email('email'),
+            'username' => $request->get_string('username'),
             'password' => $request->get_string('password'),
             'password_confirmation' => $request->get_string('password_confirmation'),
             'role' => $role,
@@ -177,7 +177,7 @@ class AuthController
     {
         $submitted_email = $request->get_string('email');
 
-        $error = FlashMessage::get('growfund_reset_password_error');
+        $error = growfund_flash_get_message('growfund_reset_password_error');
 
         return growfund_renderer()->get_html('site.auth.forgot-password', [
             'submitted_email' => $submitted_email,
@@ -322,7 +322,7 @@ class AuthController
      */
     protected function redirect_with_error($message)
     {
-        FlashMessage::set('growfund_reset_password_error', $message);
+        growfund_flash_set_message('growfund_reset_password_error', $message);
         return growfund_redirect(growfund_forget_password_url());
     }
 }

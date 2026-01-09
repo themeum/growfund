@@ -34,6 +34,11 @@ class FundraiserDTO extends DTO
     public $email;
 
     /**
+     * @var string
+     */
+    public $username;
+
+    /**
      * @var string|null
      */
     public $phone;

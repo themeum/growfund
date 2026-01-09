@@ -30,4 +30,15 @@ class FeatureManager
     public function is_pro() {
         return has_growfund_pro();
     }
+
+    /**
+     * @deprecated since 1.0.2
+     * keep this method for backward compatibility. will be removed in version 1.1.0
+     * 
+     * Check if the pro plugin is activated.
+     * @return bool
+     */
+    public function has_growfund_pro() {
+        return has_growfund_pro();
+    }
 }

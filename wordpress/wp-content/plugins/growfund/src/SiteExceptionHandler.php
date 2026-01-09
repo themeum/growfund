@@ -5,8 +5,6 @@ namespace Growfund;
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Exceptions\NotFoundException;
-use Growfund\Exceptions\ValidationException;
-use Growfund\Http\Response;
 use Exception;
 
 class SiteExceptionHandler

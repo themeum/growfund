@@ -31,13 +31,17 @@ use Growfund\Constants\Status\FundraiserStatus;
 use Growfund\DTO\Fundraiser\UpdateFundraiserDTO;
 use Growfund\DTO\Migration\MigrationResponseDTO;
 use Growfund\Services\UserService;
+use Growfund\Supports\User as UserSupport;
 use WP_Query;
+use WP_User;
 
 class CampaignMigrationService
 {
     const BATCH_SIZE = 10;
     const OFFSET_KEY = 'growfund_campaign_migration_offset';
     const TOTAL_KEY = 'growfund_campaign_migration_total';
+
+    private $statuses = ['publish', 'draft', 'pending', 'private', 'trash'];
 
     /**
      * @return array|false
@@ -109,7 +113,7 @@ class CampaignMigrationService
                 'terms.term_id'
             )
             ->where('posts.post_type', 'product')
-            ->where('posts.post_status', 'publish')
+            ->where_in('posts.post_status', $this->statuses)
             ->where('term_taxonomy.taxonomy', 'product_type')
             ->where('terms.slug', 'crowdfunding');
     }
@@ -122,7 +126,7 @@ class CampaignMigrationService
             'post_type'      => 'product',
             'posts_per_page' => static::BATCH_SIZE,
             'offset'         => $offset,
-            'post_status'    => 'publish',
+            'post_status'    => $this->statuses,
             'tax_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
                 [
                     'taxonomy' => 'product_type',
@@ -189,7 +193,7 @@ class CampaignMigrationService
                 'location'                   => get_post_meta($campaign_id, '_nf_location', true),
                 'tags'                       => $tags,
                 'show_collaborator_list'     => filter_var(get_post_meta($campaign_id, 'wpneo_show_contributor_table', true), FILTER_VALIDATE_BOOLEAN),
-                'status'                     => $post->post_status === 'publish' ? CampaignStatus::PUBLISHED : CampaignStatus::DRAFT,
+                'status'                     => $this->get_campaign_status($post),
                 'has_goal'                   => true,
                 'goal_type'                  => GoalType::RAISED_AMOUNT,
                 'goal_amount'                => Money::prepare_for_storage(get_post_meta($campaign_id, '_nf_funding_goal', true) ?? 0),
@@ -262,6 +266,18 @@ class CampaignMigrationService
         return $campaigns;
     }
 
+    protected function get_campaign_status($post) {
+        if ($post->post_status === 'publish') {
+            return CampaignStatus::PUBLISHED;
+        }
+
+        if ($post->post_status === 'trash') {
+            return CampaignStatus::TRASHED;
+        }
+
+        return CampaignStatus::DRAFT;
+    }
+
     protected function migrate_campaign($campaign)
     {
         QueryBuilder::begin_transaction();
@@ -287,8 +303,12 @@ class CampaignMigrationService
         }
 
         if ($campaign['author_id']) {
-            $this->ensure_user_role($campaign['author_id']);
-            $this->update_fundraiser_info($campaign['author_id']);
+            $author = get_user($campaign['author_id']);
+
+            if ($author) {
+                $this->ensure_user_role($author);
+                $this->update_fundraiser_info($author);
+            }
         }
 
         if ($campaign['description']) {
@@ -430,25 +450,25 @@ class CampaignMigrationService
         }
     }
 
-    protected function ensure_user_role($user_id)
+    /**
+     * Ensure user has the donor role
+     * 
+     * @param WP_User|null $user
+     * @return void
+     */
+    protected function ensure_user_role($user)
     {
-        $user = growfund_user($user_id);
-
-        if ($user->is_admin()) {
+        if (empty($user) || UserSupport::is_admin($user) || UserSupport::is_fundraiser($user)) {
             return;
         }
 
-        if (!$user->is_fundraiser()) {
-            $user->set_role(Fundraiser::ROLE);
-        }
+        $user->add_role(Fundraiser::ROLE);
     }
 
-    protected function update_fundraiser_info(int $id)
+    protected function update_fundraiser_info(WP_User $user)
     {
-        $user = get_user_by('id', $id);
-
         $data = [
-            'id'      => (string) $id,
+            'id'      => (string) $user->ID,
             'first_name' => $user->first_name,
             'last_name'  => $user->last_name,
             'email'   => $user->email,
@@ -476,7 +496,7 @@ class CampaignMigrationService
 
         $user_service = new UserService();
 
-        return $user_service->update($id, UpdateFundraiserDTO::from_array($data));
+        return $user_service->update($user->ID, UpdateFundraiserDTO::from_array($data));
     }
 
     protected function get_first_date_by_month_year($month, $year)

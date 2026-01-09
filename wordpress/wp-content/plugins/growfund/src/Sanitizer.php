@@ -313,7 +313,7 @@ class Sanitizer
 
         switch ($type) {
             case static::TRIM:
-                $value = trim($value);
+                $value = sanitize_text_field(trim($value));
                 break;
             case static::TEXT:
                 $value = sanitize_text_field($value);

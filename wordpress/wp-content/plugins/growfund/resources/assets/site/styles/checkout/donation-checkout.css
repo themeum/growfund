@@ -592,3 +592,7 @@
 .growfund-tribute-content {
   transition: height 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
 }
+
+.growfund-page-container .growfund-form-label p {
+  margin-block-end: 0;
+}
