@@ -8,6 +8,7 @@
   "class": "Growfund\\Payment\\Gateways\\Paypal\\Paypal",
   "config": {
     "label": "PayPal",
+    "domain_name": "paypal",
     "logo": "logo.png"
   },
   "is_installed": false,
