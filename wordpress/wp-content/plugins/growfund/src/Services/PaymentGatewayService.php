@@ -52,13 +52,13 @@ class PaymentGatewayService {
     }
 
     public function remove_gateway_info(string $name) {
-        $payments = growfund_settings(AppSettings::PAYMENT)->get('payments', []);
+        $payments = growfund_settings(AppSettings::PAYMENT)->refresh()->get('payments', []);
         $payments = Arr::make($payments)
             ->filter(function ($item) use ($name) {
                 return $item['name'] !== $name;
             });
 
-        $existing_payment_settings = growfund_settings(AppSettings::PAYMENT)->get() ?? [];
+        $existing_payment_settings = growfund_settings(AppSettings::PAYMENT)->refresh()->get() ?? [];
         $updated_payment_settings = array_merge(
             $existing_payment_settings,
             [
