@@ -57,7 +57,7 @@ class PaymentSettings extends AppSettings
      */
     public function allow_guest_checkout()
     {
-        return apply_filters(HookNames::GROWFUND_ALLOW_GUEST_CHECKOUT_FILTER, false, $this->settings);
+        return apply_filters(HookNames::GROWFUND_ALLOW_GUEST_CHECKOUT_FILTER, false, $this->settings); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
     }
 
     /**

@@ -3,9 +3,13 @@
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Supports\Template;
+use Growfund\View;
+
+// Before calling growfund_get_header() we have to get the campaign single content, otherwise assets will not be loaded
+$growfund_html = Template::get_campaign_details_content();
 
 growfund_get_header();
 
-echo '<div class="growfund-page-container">' . Template::get_campaign_details_content() . '</div>'; // phpcs:ignore -- already escaped
+echo wp_kses('<div class="growfund-page-container">' . $growfund_html . '</div>', View::get_allowed_html_tags());
 
 growfund_get_footer();

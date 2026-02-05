@@ -26,7 +26,7 @@ class RegisterCustomClassicTemplates extends BaseHook
     {
         $template = $args[0];
 
-        if (growfund_is_block_theme() && !SiteRouter::is_dashboard_route()) {
+        if (growfund_is_block_theme()) {
             return $template;
         }
 

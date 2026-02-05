@@ -1,0 +1,38 @@
+.growfund-radio-field {
+  display: flex;
+  align-items: center;
+  gap: var(--growfund-spacing-2);
+}
+
+.growfund-radio-field .growfund-radio-input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--growfund-border-light);
+  border-radius: var(--growfund-radius-circle);
+  display: inline-grid;
+  place-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  background-color: var(--growfund-bg-surface);
+  vertical-align: middle;
+}
+
+.growfund-radio-field .growfund-radio-input::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: var(--growfund-radius-circle);
+  transform: scale(0);
+  transition: 0.12s transform ease-in-out;
+  background-color: var(--growfund-bg-fill-brand);
+}
+
+.growfund-radio-field .growfund-radio-input:checked {
+  border-color: var(--growfund-bg-fill-brand);
+}
+
+.growfund-radio-field .growfund-radio-input:checked::before {
+  transform: scale(1);
+}

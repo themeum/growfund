@@ -5,6 +5,7 @@ namespace Growfund\Shortcodes\Auth;
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Core\Shortcode;
+use Growfund\Views\Components\Auth\Signup;
 
 class Register extends Shortcode
 {
@@ -16,14 +17,9 @@ class Register extends Shortcode
             growfund_redirect(site_url());
         }
 
-        $is_fundraiser = isset($attributes['user_type']) && $attributes['user_type'] === 'fundraiser';
-
-        return growfund_renderer()->get_html('site.auth.register', [
-			'is_shortcode' => true,
-			'is_fundraiser' => $is_fundraiser,
-			'redirect_to' => wp_get_referer(),
-            'terms_and_conditions_url' => $attributes['terms_and_conditions_url'] ?? null,
-            'privacy_url' => $attributes['privacy_url'] ?? null,
-		]);
+        $signup_page = new Signup();
+        $signup_page->user_type = $attributes['user_type'] ?? 'regular';
+        
+        return growfund_get_html($signup_page);
     }
 }

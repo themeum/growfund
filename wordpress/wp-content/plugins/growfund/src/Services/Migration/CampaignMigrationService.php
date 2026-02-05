@@ -31,6 +31,7 @@ use Growfund\Constants\Status\FundraiserStatus;
 use Growfund\DTO\Fundraiser\UpdateFundraiserDTO;
 use Growfund\DTO\Migration\MigrationResponseDTO;
 use Growfund\Services\UserService;
+use Growfund\Supports\Location;
 use Growfund\Supports\User as UserSupport;
 use WP_Query;
 use WP_User;
@@ -247,7 +248,7 @@ class CampaignMigrationService
                             'estimated_delivery_date' => $this->get_first_date_by_month_year($reward['wpneo_rewards_endmonth'], $reward['wpneo_rewards_endyear']),
                             'shipping_costs' => [
                                 [
-                                    'location' => Shipping::SHIPPING_REST_OF_THE_WORLD,
+                                    'location' => Location::REST_OF_THE_WORLD,
                                     'cost' => 0
                                 ]
                             ]
@@ -438,7 +439,7 @@ class CampaignMigrationService
                 'post_type'    => CampaignPost::NAME,
                 'post_title'   => $item['title'] ?? '',
                 'post_content' => $item['details'] ?? '',
-                'post_date'    => !empty($item['date']) ? Date::sql_safe($item['date'], true) : date(DateTimeFormats::DB_DATETIME), // phpcs:ignore
+                'post_date'    => !empty($item['date']) ? Date::sql_safe($item['date'], true) : Date::current_sql_safe(true),
                 'post_status'  => CampaignPost::DEFAULT_POST_STATUS,
                 'post_author'  => $author_id ?? 0,
                 'post_parent'  => $campaign_id,

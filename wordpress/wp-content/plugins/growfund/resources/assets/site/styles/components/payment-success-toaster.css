@@ -1,0 +1,129 @@
+.growfund-payment-success-toaster-container {
+  display: flex;
+  gap: 24px;
+  flex-direction: column;
+  width: 440px;
+}
+
+.growfund-payment-success-toaster-title-wrapper {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 6px;
+  justify-content: center;
+  padding-bottom: var(--growfund-spacing-6);
+  border-bottom: 1px solid var(--growfund-border-blue-2);
+  margin-top: var(--growfund-spacing-5);
+}
+
+.growfund-payment-success-toaster-title {
+  font-weight: var(--growfund-font-weight-semibold);
+  font-size: var(--growfund-font-size-2xl);
+  line-height: 28px;
+  text-align: center;
+  color: var(--growfund-text-primary);
+}
+
+.growfund-payment-success-toaster-subtitle {
+  font-weight: var(--growfund-font-weight-normal);
+  font-size: var(--growfund-font-size-md);
+  line-height: 21px;
+  color: var(--growfund-text-secondary);
+  text-align: center;
+}
+
+.growfund-payment-success-toaster-amount-group {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 6px;
+  justify-content: center;
+}
+
+.growfund-payment-success-toaster-amount-label {
+  font-weight: var(--growfund-font-weight-normal);
+  font-size: var(--growfund-font-size-md);
+  line-height: 21px;
+  color: var(--growfund-text-secondary);
+}
+
+.growfund-payment-success-toaster-amount-value {
+  font-weight: var(--growfund-font-weight-semibold);
+  font-size: var(--growfund-font-size-3xl);
+  line-height: 32px;
+  color: var(--growfund-text-primary);
+}
+
+.growfund-payment-success-toaster-wrapper {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.growfund-payment-success-toaster-info-card {
+  border-radius: var(--growfund-radius-md);
+  border: 1px solid var(--growfund-border-blue-2);
+  gap: 4px;
+  display: flex;
+  flex-direction: column;
+  padding: var(--growfund-spacing-3);
+}
+
+.growfund-payment-success-toaster-card-label {
+  font-weight: var(--growfund-font-weight-normal);
+  font-size: var(--growfund-font-size-sm);
+  line-height: 18px;
+  color: var(--growfund-text-secondary);
+}
+
+.growfund-payment-success-toaster-card-value {
+  font-weight: var(--growfund-font-weight-medium);
+  font-size: var(--growfund-font-size-md);
+  color: var(--growfund-text-primary);
+  line-height: 21px;
+}
+
+.growfund-payment-success-toaster-icon-wrapper {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--growfund-radius-circle);
+  background-color: var(--growfund-bg-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  box-shadow: var(--growfund-box-shadow-1);
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+.growfund-payment-success-toaster-pdf-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: var(--growfund-spacing-2) var(--growfund-spacing-4);
+  margin-bottom: calc(var(--growfund-spacing-4) * 2);
+  font-weight: var(--growfund-font-weight-medium);
+  font-size: var(--growfund-font-size-md);
+  line-height: 22px;
+  letter-spacing: 0%;
+}
+.growfund-payment-success-toaster-wave-bottom {
+  position: absolute;
+  bottom: -12px;
+  left: 0px;
+  width: 100%;
+  height: 19px;
+  background-image: radial-gradient(circle at 10px 20px, transparent 9px, #f7f7f7 12px);
+  background-size: 29px 20px;
+  z-index: 1;
+}
+.growfund-pledge-checkout-page-success-modal .growfund-modal-content {
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  width: 345px;
+}

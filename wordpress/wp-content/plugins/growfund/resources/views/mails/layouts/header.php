@@ -2,19 +2,18 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$background_color = $colors['background'] ?? '#ffffff';
-$image_height = $media['height'] ?? 20;
-$image_position = $media['position'] ?? 'center';
-$src = $media['image'] ?? growfund_placeholder_image_url();
-$aspect_ratio = 7.5;
-$image_width = $image_height * $aspect_ratio;
+$growfund_background_color = $colors['background'] ?? '#ffffff';
+$growfund_image_height = $media['height'] ?? 20;
+$growfund_image_position = $media['position'] ?? 'center';
+$growfund_aspect_ratio = 7.5;
+$growfund_image_width = $growfund_image_height * $growfund_aspect_ratio;
 
 ?>
-<!-- Header --><!--[if mso | IE]><tr><td class="" width="560px" ><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:560px;" width="560" bgcolor="<?php echo esc_html($background_color); ?>" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+<!-- Header --><!--[if mso | IE]><tr><td class="" width="560px" ><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:560px;" width="560" bgcolor="<?php echo esc_html($growfund_background_color); ?>" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
 <div
-    style="background:<?php echo esc_html($background_color); ?>;background-color:<?php echo esc_html($background_color); ?>;margin:0px auto;border-radius:8px 8px 0 0;max-width:560px;">
+    style="background:<?php echo esc_html($growfund_background_color); ?>;background-color:<?php echo esc_html($growfund_background_color); ?>;margin:0px auto;border-radius:8px 8px 0 0;max-width:560px;">
     <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation"
-        style="background:<?php echo esc_html($background_color); ?>;background-color:<?php echo esc_html($background_color); ?>;width:100%;border-radius:8px 8px 0 0;">
+        style="background:<?php echo esc_html($growfund_background_color); ?>;background-color:<?php echo esc_html($growfund_background_color); ?>;width:100%;border-radius:8px 8px 0 0;">
         <tbody>
             <tr>
                 <td
@@ -34,11 +33,11 @@ $image_width = $image_height * $aspect_ratio;
                                                             style="border-collapse:collapse;border-spacing:0px;width:100%;">
                                                             <tbody>
                                                                 <tr>
-                                                                    <td style="text-align:<?php echo esc_html($image_position); ?>;">
-                                                                        <img alt="Banner Image" height="<?php echo esc_html($image_height); ?>"
-                                                                            src="<?php echo esc_url($src); ?>"
-                                                                            style="border:0;display:inline-block;outline:none;text-decoration:none;height:<?php echo esc_html($image_height); ?>px;width:auto;font-size:16px;"
-                                                                            width="<?php echo esc_html($image_width); ?>">
+                                                                    <td style="text-align:<?php echo esc_html($growfund_image_position); ?>;">
+                                                                        <img alt="Banner Image" height="<?php echo esc_html($growfund_image_height); ?>"
+                                                                            src="<?php echo esc_url($media['image'] ?? growfund_placeholder_image_url()); ?>"
+                                                                            style="border:0;display:inline-block;outline:none;text-decoration:none;height:<?php echo esc_html($growfund_image_height); ?>px;width:auto;font-size:16px;"
+                                                                            width="<?php echo esc_html($growfund_image_width); ?>">
                                                                     </td>
                                                                 </tr>
                                                             </tbody>

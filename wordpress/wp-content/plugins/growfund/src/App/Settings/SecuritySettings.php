@@ -33,6 +33,6 @@ class SecuritySettings extends AppSettings
      */
     public function is_enabled_email_verification()
     {
-        return apply_filters(HookNames::GROWFUND_ALLOW_EMAIL_VERIFICATION, false, $this->settings);
+        return apply_filters(HookNames::GROWFUND_ALLOW_EMAIL_VERIFICATION, false, $this->settings); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
     }
 }

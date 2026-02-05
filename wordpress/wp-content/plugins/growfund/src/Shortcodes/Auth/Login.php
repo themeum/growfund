@@ -5,6 +5,7 @@ namespace Growfund\Shortcodes\Auth;
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Core\Shortcode;
+use Growfund\Views\Components\Auth\Login as AuthLogin;
 
 class Login extends Shortcode
 {
@@ -16,11 +17,8 @@ class Login extends Shortcode
             growfund_redirect(site_url());
         }
         
-        return growfund_renderer()->get_html('site.auth.login', [
-            'is_shortcode' => true,
-            'redirect_to' => wp_get_referer(),
-            'terms_and_conditions_url' => $attributes['terms_and_conditions_url'] ?? null,
-            'privacy_url' => $attributes['privacy_url'] ?? null,
-        ]);
+        $login_page = new AuthLogin();
+
+        return growfund_get_html($login_page);
     }
 }

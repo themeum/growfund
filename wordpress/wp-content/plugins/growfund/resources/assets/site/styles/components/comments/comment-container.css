@@ -1,0 +1,39 @@
+.growfund-comment-content-list-wrapper {
+  background: var(--growfund-bg-surface-secondary);
+  padding: calc(var(--growfund-spacing-4) * 2);
+  border-radius: var(--growfund-radius-md);
+  max-height: 700px;
+  overflow-y: auto;
+}
+
+.growfund-comment-load-more {
+  text-align: center;
+  margin-top: var(--growfund-spacing-2);
+  font-size: var(--growfund-font-size-md);
+  font-weight: var(--growfund-font-weight-medium);
+  cursor: pointer;
+}
+
+.growfund-comment-load-more:hover {
+  text-decoration: underline;
+}
+.growfund-empty-comment-div {
+  text-align: center;
+  padding: calc(var(--growfund-spacing-4) * 3);
+  background-color: var(--growfund-bg-gray-2);
+  border-radius: var(--growfund-radius-lg);
+  border: 2px dashed var(--growfund-border-border);
+}
+
+.growfund-empty-comment-div h3 {
+  font-size: var(--growfund-font-size-2xl);
+  font-weight: var(--growfund-font-weight-medium);
+  color: var(--growfund-border-border);
+  margin-bottom: var(--growfund-spacing-3);
+}
+
+.growfund-empty-comment-div p {
+  font-size: var(--growfund-font-size-lg);
+  color: var(--growfund-text-gray-2);
+  line-height: 150%;
+}

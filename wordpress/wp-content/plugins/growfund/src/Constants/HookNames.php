@@ -50,6 +50,7 @@ class HookNames
     const WC_CLASSIC_CHECKOUT_FORM = 'woocommerce_after_checkout_form';
     const WC_CLASSIC_CHECKOUT_CREATE_ORDER = 'woocommerce_checkout_create_order';
     const WC_CHECKOUT_ORDER_RECEIVED_URL = 'woocommerce_get_checkout_order_received_url';
+    const WC_PREVENT_ADMIN_ACCESS = 'woocommerce_prevent_admin_access';
 
     // Plugin Updater hooks
     /** @deprecated since 1.0.3 */
@@ -91,4 +92,6 @@ class HookNames
     const GROWFUND_ALLOW_EMAIL_VERIFICATION = 'growfund/enable_email_verification';
     const GROWFUND_IS_APPLY_EMAIL_VERIFICATION = 'growfund/apply_email_verification';
     const GROWFUND_QUERY_LOG_OVERWRITE = 'growfund/query_log_overwrite';
+    const GROWFUND_COLLABORATOR_LIST_FILTER = 'growfund/collaborator/list';
+    const GROWFUND_FUND_LIST_FILTER = 'growfund/fund/list';
 }

@@ -1,0 +1,8 @@
+.growfund-reward-tab-content-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 410px));
+  gap: var(--growfund-spacing-6);
+  padding-right: var(--growfund-spacing-2);
+  justify-content: start;
+  margin: calc(var(--growfund-spacing-4) * 3) 0;
+}

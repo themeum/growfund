@@ -67,13 +67,13 @@ class CreateDonorDTO extends DTO
             'password'              => 'required|string|min:6',
             'phone'                 => 'string',
             'image'                 => 'integer|is_valid_image_id',
-            'billing_address'       => 'required_if:is_logged_in,true|array',
-            'billing_address.address' => 'required_if:is_logged_in,true|string',
+            'billing_address'       => 'array',
+            'billing_address.address' => 'string',
             'billing_address.address_2' => 'string',
-            'billing_address.city'  => 'required_if:is_logged_in,true|string',
+            'billing_address.city'  => 'string',
             'billing_address.state' => 'string',
-            'billing_address.zip_code' => 'required_if:is_logged_in,true|string',
-            'billing_address.country' => 'required_if:is_logged_in,true|string',
+            'billing_address.zip_code' => 'string',
+            'billing_address.country' => 'string',
         ];
     }
 

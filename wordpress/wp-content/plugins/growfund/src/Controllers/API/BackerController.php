@@ -148,8 +148,8 @@ class BackerController
             'data' => $this->service->paginated([
                 'page' => $request->get_int('page', 1),
                 'limit' => $request->get_int('per_page', 10),
-                'orderby' => $request->get_int('orderby', 'ID'),
-                'order' => $request->get_int('order', 'DESC'),
+                'orderby' => $request->get_column('orderby', 'ID', ['ID', 'user_email']),
+                'order' => $request->get_string('order', 'DESC'),
                 'campaign_id' => $request->get_string('campaign_id', null),
                 'search' => $request->get_string('search'),
                 'date_from' => $request->get_date('start_date'),
@@ -225,7 +225,7 @@ class BackerController
         $data = $this->service->get_overview($backer_id);
 
         return growfund_response()->json([
-            'data' => apply_filters(HookNames::GROWFUND_BACKER_OVERVIEW_FILTER, $data, $backer_id),
+            'data' => apply_filters(HookNames::GROWFUND_BACKER_OVERVIEW_FILTER, $data, $backer_id), // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
             'message' => '',
         ]);
     }
@@ -377,7 +377,7 @@ class BackerController
         $activity_filter_dto = ActivityFilterDTO::from_array([
             'page' => $request->get_int('page', 1),
             'limit' => $request->get_int('per_page', 10),
-            'orderby' => $request->get_string('orderby', 'created_at'),
+            'orderby' => $request->get_column('orderby', 'created_at', ['ID', 'type', 'created_at']),
             'order' => $request->get_string('order', 'DESC'),
             'user_id' => $backer_id,
         ]);

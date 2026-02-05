@@ -38,14 +38,14 @@ class MinRule extends BaseRule
     {
         if ($this->is_string_value()) {
             /* translators: 1: field name, 2: rule value */
-            return sprintf(__('The %1$s field must be greater than or equal to %2$s characters.', 'growfund'), $this->key, $this->rule_value);
+            return sprintf(__('The %1$s field must be greater than or equal to %2$s characters.', 'growfund'), str_replace(['_', '.'], ' ', $this->key), $this->rule_value);
         } elseif ($this->is_array_value()) {
             /* translators: 1: field name, 2: rule value */
-            return sprintf(__('The %1$s field must be greater than or equal to %2$s items.', 'growfund'), $this->key, $this->rule_value);
+            return sprintf(__('The %1$s field must be greater than or equal to %2$s items.', 'growfund'), str_replace(['_', '.'], ' ', $this->key), $this->rule_value);
         }
 
         /* translators: 1: field name, 2: rule value */
-        return sprintf(__('The %1$s field must be greater than or equal %2$s.', 'growfund'), $this->key, $this->rule_value);
+        return sprintf(__('The %1$s field must be greater than or equal %2$s.', 'growfund'), str_replace(['_', '.'], ' ', $this->key), $this->rule_value);
     }
 
     protected function is_string_value()

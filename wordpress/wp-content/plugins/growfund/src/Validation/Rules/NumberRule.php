@@ -36,6 +36,6 @@ class NumberRule extends BaseRule
     public function get_error_message()
     {
         /* translators: %s: field name */
-        return sprintf(__('The %s field must be of type number.', 'growfund'), $this->key);
+        return sprintf(__('The %s field must be of type number.', 'growfund'), str_replace(['_', '.'], ' ', $this->key));
     }
 }

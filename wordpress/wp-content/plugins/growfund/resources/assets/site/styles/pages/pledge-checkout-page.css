@@ -1,0 +1,427 @@
+.growfund-pledge-checkout-page {
+  display: flex;
+  gap: 57px;
+  flex-direction: row;
+  justify-content: center;
+  margin: auto;
+  max-width: 1350px;
+}
+
+/* left-section */
+
+.growfund-pledge-checkout-page-left-section {
+  border: 1px solid var(--growfund-border-border);
+  border-radius: var(--growfund-radius-xl);
+  padding: var(--growfund-spacing-6);
+  min-width: 677px;
+  height: fit-content;
+}
+
+.growfund-pledge-checkout-page-left-section-title-wrapper {
+  display: flex;
+  gap: var(--growfund-spacing-4);
+  margin-bottom: calc(var(--growfund-spacing-4) * 2);
+}
+
+.growfund-pledge-checkout-page-left-section-arrow-button {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--growfund-radius-md);
+  padding: calc(var(--growfund-spacing-2) + 2px);
+  border: 1px solid var(--growfund-border-border);
+}
+.growfund-pledge-checkout-page-left-section-arrow-button:hover {
+  background-color: var(--growfund-text-light);
+  color: var(--growfund-text-secondary);
+}
+
+.growfund-pledge-checkout-page-left-section-title {
+  font-weight: var(--growfund-font-weight-semibold);
+  font-size: 36px;
+  line-height: 40px;
+  color: var(--growfund-text-primary);
+}
+
+.growfund-pledge-checkout-page-left-section-rewards-title {
+  display: flex;
+  gap: var(--growfund-spacing-2);
+  align-items: center;
+}
+
+.growfund-pledge-checkout-page-left-section-reward-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+.growfund-pledge-checkout-page-left-section-reward-gift-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.growfund-pledge-checkout-page-left-section-reward-title {
+  font-weight: var(--growfund-font-weight-semibold);
+  font-size: var(--growfund-font-size-lg);
+  line-height: 20px;
+  color: var(--growfund-text-primary);
+}
+.growfund-pledge-checkout-page-left-section-reward-wrapper {
+  display: flex;
+  gap: var(--growfund-spacing-6);
+  margin-top: var(--growfund-spacing-4);
+  margin-bottom: var(--growfund-spacing-3);
+}
+.growfund-pledge-checkout-page-left-section-reward-image {
+  aspect-ratio: 1.7777777778;
+  width: 156px;
+  height: auto;
+  border-radius: var(--growfund-radius-sm);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.growfund-pledge-checkout-page-left-section-reward-image img {
+  object-fit: cover !important;
+  border-radius: var(--growfund-radius-sm);
+}
+.growfund-pledge-checkout-page-left-section-reward-name-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--growfund-spacing-2);
+  width: 100%;
+  overflow: hidden;
+}
+
+.growfund-pledge-checkout-page-left-section-reward-name {
+  font-weight: var(--growfund-font-weight-semibold);
+  font-size: var(--growfund-font-size-2xl);
+  line-height: 120%;
+  color: var(--growfund-text-primary);
+  display: block;
+  max-width: 449px;
+  white-space: nowrap;
+  min-height: 27px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.growfund-pledge-checkout-page-left-section-reward-amount {
+  font-weight: var(--growfund-font-weight-normal);
+  font-size: var(--growfund-font-size-xl);
+  line-height: 27px;
+  color: var(--growfund-text-primary);
+}
+
+.growfund-pledge-checkout-page-left-section-reward-content-included-section {
+  margin: var(--growfund-spacing-2) 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.growfund-pledge-checkout-page-left-section-reward-content-included-title {
+  font-size: var(--growfund-font-size-lg);
+  font-weight: var(--growfund-font-weight-semibold);
+  margin-bottom: var(--growfund-spacing-3);
+}
+.growfund-pledge-checkout-page-left-section-reward-content-item-pill-wrapper {
+  border: 1px solid var(--growfund-bg-gray-3);
+  border-radius: var(--growfund-radius-lg);
+  margin-bottom: var(--growfund-spacing-4);
+}
+
+.growfund-pledge-checkout-page-left-section-reward-content-item-pill {
+  display: flex;
+  align-items: center;
+  gap: var(--growfund-spacing-3);
+  padding: var(--growfund-spacing-2);
+  border-bottom: 1px solid var(--growfund-bg-gray-3);
+}
+.growfund-pledge-checkout-page-left-section-reward-content-item-pill:last-child {
+  border-bottom: none;
+}
+
+.growfund-pledge-checkout-page-left-section-reward-content-item-pill img {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--growfund-radius-sm);
+  object-fit: cover;
+}
+
+.growfund-pledge-checkout-page-left-section-reward-content-item-name {
+  display: block;
+  font-size: var(--growfund-font-size-lg);
+  font-weight: var(--growfund-font-weight-medium);
+  color: var(--growfund-text-primary);
+}
+
+.growfund-pledge-checkout-page-left-section-reward-content-item-quantity {
+  font-size: var(--growfund-font-size-md);
+  line-height: 21px;
+  color: var(--growfund-text-subdued);
+}
+
+.growfund-pledge-checkout-page-left-section-bonus-support-shipping-fee {
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+  padding: var(--growfund-spacing-4) 0;
+  border-bottom: 1px solid var(--growfund-bg-gray-3);
+  margin-bottom: var(--growfund-spacing-6);
+}
+
+.growfund-pledge-checkout-page-left-section-bonus-support {
+  display: flex;
+  justify-content: space-between;
+}
+
+.growfund-pledge-checkout-page-left-section-bonus-support-text {
+  font-weight: var(--growfund-font-weight-medium);
+  font-size: var(--growfund-font-size-lg);
+  line-height: 24px;
+  color: var(--growfund-text-primary);
+}
+.growfund-pledge-checkout-page-left-section-bonus-support-amount {
+  font-weight:var(--growfund-font-weight-normal) ;
+  font-size: var(--growfund-font-size-xl);
+  line-height: 27px;
+  color: var(--growfund-text-primary);
+}
+
+.growfund-pledge-checkout-page-left-section-bonus-support-amount
+  .growfund-number-field-main-wrapper {
+  max-width: 120px;
+  width: 100%;var(--growfund-font-weight-normal)
+}
+
+.growfund-pledge-checkout-page-left-section-bonus-support-amount .growfund-number-field-wrapper {
+  height: 44px;
+  padding-right: 2px;
+}
+
+.growfund-pledge-checkout-page-left-section-bonus-support-amount .growfund-number-field {
+  width: 100%;
+}
+
+.growfund-pledge-checkout-page-left-section-bonus-support
+  input[type='number']::-webkit-inner-spin-button,
+.growfund-pledge-checkout-page-left-section-bonus-support
+  input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: auto;
+  margin: initial;
+}
+
+.growfund-pledge-checkout-page-left-section-total-amount-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.growfund-pledge-checkout-page-left-section-total-amount {
+  font-weight: var(--growfund-font-weight-semibold);
+  font-size: var(--growfund-font-size-2xl);
+  color: var(--growfund-text-primary);
+}
+.growfund-pledge-checkout-page-left-section-total-amount-text {
+  font-weight:var(--growfund-font-weight-medium);
+  font-size: var(--growfund-font-size-2xl);
+  line-height: 122%;
+  color: var(--growfund-text-primary);
+}
+
+/* right-section */
+
+.growfund-pledge-checkout-page-right-section {
+  min-width: 586px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--growfund-spacing-6);
+  border-radius: var(--growfund-radius-lg);
+}
+.growfund-pledge-checkout-page-right-section-shipping-payment-wrapper {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--growfund-bg-surface-secondary);
+  border: 1px solid var(--growfund-bg-gray-3);
+  gap: var(--growfund-spacing-6);
+  padding: var(--growfund-spacing-6);
+  border-radius: var(--growfund-radius-lg);
+}
+
+.growfund-pledge-checkout-page-right-section-shipping-title {
+  font-weight: var(--growfund-font-weight-semibold);
+  margin-bottom: var(--growfund-spacing-4);
+  font-size: var(--growfund-font-size-lg);
+  line-height: 20px;
+}
+
+.growfund-pledge-checkout-page-right-section-shipping-address {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--growfund-spacing-4);
+  gap: var(--growfund-spacing-3);
+}
+.growfund-pledge-checkout-page-right-section-state-city-wrapper {
+  display: flex;
+  gap: var(--growfund-spacing-4);
+}
+.growfund-pledge-checkout-page-right-section-payment-method-agreement {
+  display: flex;
+  flex-direction: column;
+  gap: var(--growfund-spacing-4);
+}
+.growfund-pledge-checkout-page-right-section-pledge-button-info {
+  font-weight: var(--growfund-font-weight-normal);
+  color:var(--growfund-text-muted-foreground);
+  font-size: var(--growfund-font-size-md);
+  line-height: 21px;
+}
+
+.growfund-pledge-checkout-page-right-section-reward-wrapper {
+  background-color: var(--growfund-bg-gray-2);
+  border: 1px solid var(--growfund-bg-gray-3);
+  padding: var(--growfund-spacing-6);
+  border-radius: var(--growfund-radius-lg);
+  display: flex;
+  gap: var(--growfund-spacing-2);
+}
+
+.growfund-pledge-checkout-page-right-section-reward-section-title {
+  color: var(--growfund-text-primary);
+  font-weight: var(--growfund-font-weight-semibold);
+  font-size: var(--growfund-font-size-xl);
+  line-height: 24px;
+  letter-spacing: 0%;
+}
+.growfund-pledge-checkout-page-right-section-reward-section-desc {
+  padding-top: var(--growfund-spacing-3);
+  font-weight: var(--growfund-font-weight-normal);
+  color: var(--growfund-text-primary);
+  font-size: var(--growfund-font-size-md);
+  line-height: 21px;
+  letter-spacing: 0%;
+}
+.growfund-pledge-checkout-page-right-section-reward-section {
+  margin-top: -5px;
+}
+
+.growfund-pledge-checkout-page-right-section-faq-wrapper {
+  background-color: var(--growfund-bg-gray-2);
+  border: 1px solid var(--growfund-bg-gray-3);
+  padding: var(--growfund-spacing-6);
+  border-radius: var(--growfund-radius-lg);
+}
+.growfund-pledge-checkout-page-right-section-faq-section-title {
+  color: var(--growfund-text-primary);
+  font-weight: var(--growfund-font-weight-semibold);
+  font-size: var(--growfund-font-size-xl);
+  line-height: 24px;
+  letter-spacing: 0%;
+}
+.growfund-pledge-checkout-page-right-section-faq-section-list {
+  margin-top: calc(var(--growfund-spacing-4) * 2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--growfund-spacing-6);
+}
+
+.growfund-pledge-checkout-page-right-section-pledge-button-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.growfund-pledge-checkout-page-right-section-pledge-button {
+  width: 100%;
+  background-color: var(--growfund-bg-fill-brand);
+  color: var(--growfund-text-light);
+  border-radius: 6px;
+  padding: var(--growfund-spacing-3) 0;
+}
+
+.growfund-pledge-checkout-page-right-section-pledge-button:disabled,
+.growfund-pledge-checkout-page-right-section-pledge-button:hover:disabled {
+  background-color: var(--growfund-border-border);
+  color: var(--growfund-text-subdued);
+}
+
+.growfund-pledge-checkout-page-right-section-pledge-button:hover {
+  background-color: var(--growfund-bg-brand-hover);
+}
+.growfund-pledge-checkout-page-success-modal {
+  display: none;
+}
+.growfund-pledge-checkout-page-success-modal .is-active {
+  display: block;
+}
+.growfund-pledge-checkout-page-success-modal .growfund-modal-body {
+  overflow: visible !important;
+  max-height: 600px;
+  overflow-y: auto;
+}
+@media (max-width: 1200px) {
+  .growfund-pledge-checkout-page {
+    flex-direction: column;
+    gap: var(--growfund-spacing-6);
+  }
+  .growfund-pledge-checkout-page-left-section {
+    min-width: 100%;
+    border-radius: var(--growfund-radius-xl);
+  }
+
+  .growfund-pledge-checkout-page-right-section {
+    min-width: 100%;
+    border-radius: 0 0 var(--growfund-radius-lg) var(--growfund-radius-lg);
+    margin-top: var(--growfund-spacing-6);
+  }
+  .growfund-pledge-checkout-page-left-section-title {
+    font-size: var(--growfund-font-size-3xl);
+    line-height: 32px;
+  }
+  .growfund-pledge-checkout-page-left-section-reward-title {
+    font-size: var(--growfund-font-size-md);
+    line-height: 18px;
+  }
+  .growfund-pledge-checkout-page-left-section-reward-name {
+    font-size: var(--growfund-font-size-lg);
+    line-height: 20px;
+  }
+  .growfund-pledge-checkout-page-left-section-reward-content-included-title {
+    font-size: var(--growfund-font-size-sm);
+    line-height: 18px;
+  }
+  .growfund-pledge-checkout-page-left-section-reward-content-item-name {
+    font-size: var(--growfund-font-size-md);
+    line-height: 21px;
+  }
+  .growfund-pledge-checkout-page-left-section-reward-content-item-quantity {
+    font-size: var(--growfund-font-size-sm);
+    line-height: 18px;
+  }
+  .growfund-pledge-checkout-page-left-section-bonus-support-text {
+    font-size: var(--growfund-font-size-md);
+    line-height: 22px;
+  }
+  .growfund-pledge-checkout-page-left-section-total-amount-text {
+    font-size: var(--growfund-font-size-xl);
+    line-height: 27px;
+  }
+  .growfund-pledge-checkout-page-right-section-pledge-button-info {
+    font-size: var(--growfund-font-size-sm);
+    line-height: 18px;
+  }
+  .growfund-pledge-checkout-page-right-section-reward-section-title {
+    font-size: var(--growfund-font-size-lg);
+    line-height: 20px;
+  }
+
+  .growfund-pledge-checkout-page-right-section-reward-section-desc {
+    font-size: var(--growfund-font-size-sm);
+    line-height: 18px;
+  }
+
+  .growfund-pledge-checkout-page-right-section-faq-section-title {
+    font-size: var(--growfund-font-size-lg);
+    line-height: 20px;
+  }
+}

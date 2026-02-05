@@ -40,11 +40,9 @@ class AppConfigController
     /**
      * Get the current application configuration.
      *
-     * @param Request $request The HTTP request instance.
-     *
      * @return Response JSON response containing app configuration data.
      */
-    public function get(Request $request) // phpcs:ignore
+    public function get()
     {
         return growfund_response()->json([
             'data' => $this->service->get_config(),
@@ -150,7 +148,7 @@ class AppConfigController
                 1
             );
 
-            do_action(HookNames::ONBOARDING_COMPLETED);
+            do_action(HookNames::ONBOARDING_COMPLETED); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
         } else {
             // Revert back the settings if any of the settings is not set.
             Option::delete_all_settings();
@@ -222,7 +220,7 @@ class AppConfigController
                 break;
         }
 
-        $new_data = apply_filters(HookNames::GROWFUND_BEFORE_APP_CONFIG_UPDATE_FILTER, $new_data, $data);
+        $new_data = apply_filters(HookNames::GROWFUND_BEFORE_APP_CONFIG_UPDATE_FILTER, $new_data, $data); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
 
         return $new_data;
     }

@@ -32,7 +32,7 @@ abstract class AppSettings
      * @param string|null $key
      * @return mixed
      */
-    public function get($key = null, $default = null) // phpcs:ignore
+    public function get($key = null, $default = null)
     {
         if (empty($key)) {
             return $this->settings;
@@ -62,7 +62,7 @@ abstract class AppSettings
      *
      * @return mixed|null
      */
-    protected function recursively_get(array $settings, array $keys, $default = null) // phpcs:ignore
+    protected function recursively_get(array $settings, array $keys, $default = null)
     {
         if (empty($keys) || empty($settings)) {
             return $default;

@@ -13,7 +13,7 @@ class Fund
 {
     public static function get_funds_for_donation($campaign_id)
     {
-        if (empty($campaign_id)) {
+        if (empty($campaign_id) || !growfund_settings(AppSettings::CAMPAIGNS)->allow_fund()) {
             return [];
         }
 

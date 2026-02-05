@@ -15,6 +15,7 @@ use Growfund\Providers\HookServiceProvider;
 use Growfund\Providers\PaymentServiceProvider;
 use Growfund\Traits\Macroable;
 use Exception;
+use Growfund\Core\AssetHandler;
 use InvalidArgumentException;
 
 /**
@@ -98,6 +99,10 @@ class Application extends Container
             $renderer->set_theme_layout_base_path($theme_layout_base_path);
 
             return $renderer;
+        });
+        
+        $this->singleton(AssetHandler::class, function () {
+            return new AssetHandler();
         });
     }
 

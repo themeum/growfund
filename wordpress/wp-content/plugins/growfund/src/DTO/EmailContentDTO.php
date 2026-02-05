@@ -4,7 +4,6 @@ namespace Growfund\DTO;
 
 defined( 'ABSPATH' ) || exit;
 
-use Growfund\CastAttributes\MoneyAttribute;
 
 class EmailContentDTO extends DTO
 {

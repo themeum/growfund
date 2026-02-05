@@ -184,6 +184,8 @@ class CampaignRawDTO extends DTO
                     $this->goal_amount
                 );
             },
+            'giving_thanks.*.pledge_from' => MoneyAttribute::class,
+            'giving_thanks.*.pledge_to' => MoneyAttribute::class,
         ];
     }
 }

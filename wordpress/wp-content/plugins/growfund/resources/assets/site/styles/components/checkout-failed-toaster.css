@@ -1,0 +1,91 @@
+.growfund-checkout-failed-toaster-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 440px;
+}
+.growfund-checkout-failed-toaster-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--growfund-radius-circle);
+  background-color: var(--growfund-bg-fill-critical);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.growfund-checkout-failed-toaster-icon-wrapper {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--growfund-radius-circle);
+  background-color: var(--growfund-bg-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--growfund-box-shadow-1);
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.growfund-checkout-failed-toaster-title-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  margin-top: var(--growfund-spacing-5);
+}
+
+.growfund-checkout-failed-toaster-title {
+  font-weight: var(--growfund-font-weight-semibolds);
+  font-size: var(--growfund-font-size-2xl);
+  line-height: 28px;
+  color: var(--growfund-text-critical);
+}
+
+.growfund-checkout-failed-toaster-subtitle {
+  font-weight: var(--growfund-font-weight-normal);
+  font-size: var(--growfund-font-size-md);
+  line-height: 21px;
+  color: var(--growfund-text-secondary);
+}
+
+.growfund-checkout-failed-toaster-button-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 6px;
+}
+
+.growfund-checkout-failed-toaster-try-button {
+  border-radius: var(--growfund-radius-md);
+  background-color: var(--growfund-bg-fill-critical);
+  color: var(--growfund-text-light);
+  padding: var(--growfund-spacing-2) var(--growfund-spacing-4);
+  display: flex;
+  flex: 1;
+  gap: var(--growfund-spacing-2);
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--growfund-font-weight-medium);
+  font-size: var(--growfund-font-size-md);
+  line-height: 22px;
+}
+
+.growfund-checkout-failed-toaster-contact-button {
+  border-radius: var(--growfund-radius-md);
+  padding: var(--growfund-spacing-2) var(--growfund-spacing-4);
+  border: 1px solid var(--growfund-text-secondary);
+  flex: 1;
+  background-color: var(--growfund-bg-surface);
+  color: var(--growfund-text-primary);
+  font-weight: var(--growfund-font-weight-medium);
+  font-size: var(--growfund-font-size-md);
+  line-height: 22px;
+}
+.growfund-pledge-checkout-page-success-modal .growfund-modal-body {
+  overflow: visible !important;
+  overflow-y: auto;
+}

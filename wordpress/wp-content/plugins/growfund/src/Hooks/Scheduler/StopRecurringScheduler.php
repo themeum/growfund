@@ -45,7 +45,7 @@ class StopRecurringScheduler extends BaseHook
 
 
         if (empty($scheduled_action)) {
-            error_log( // phpcs:ignore
+            growfund_error_log(
                 sprintf(
                     /* translators: %s: action ID */
                     __('Failed to stop recurring action with ID: %s', 'growfund'),

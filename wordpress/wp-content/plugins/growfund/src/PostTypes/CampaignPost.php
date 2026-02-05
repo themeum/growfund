@@ -23,6 +23,10 @@ class CampaignPost implements Registrable
      */
     const DEFAULT_POST_STATUS = 'publish';
 
+
+    /** Campaign post comment type */
+    const COMMENT_TYPE = 'update_comment';
+
     /**
      * Register a custom post type.
      *

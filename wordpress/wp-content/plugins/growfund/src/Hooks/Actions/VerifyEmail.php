@@ -29,7 +29,12 @@ class VerifyEmail extends BaseHook
             return;
         }
 
-        $user_id = absint(growfund_input_get('uid'));
-        User::verify_email($user_id, Sanitizer::apply_rule(growfund_input_get('token'), Sanitizer::TEXT));
+        $user_id = absint(growfund_input_get('uid', 0, Sanitizer::INT));
+
+        if (empty($user_id)) {
+            return;
+        }
+        
+        User::verify_email($user_id, growfund_input_get('token'));
     }
 }

@@ -31,6 +31,6 @@ class IsValidImageIdRule extends BaseRule
     public function get_error_message()
     {
         /* translators: %s: field name */
-        return sprintf(__('The %s field must be a valid media image', 'growfund'), $this->key);
+        return sprintf(__('The %s field must be a valid media image', 'growfund'), str_replace(['_', '.'], ' ', $this->key));
     }
 }

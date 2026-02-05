@@ -1,0 +1,20 @@
+.growfund-reward-pledge-button-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.growfund-reward-pledge-button-form {
+  width: 100%;
+}
+
+.growfund-reward-pledge-button {
+  width: 100%;
+  background-color: var(--growfund-bg-fill-brand);
+  color: var(--growfund-text-light);
+  border-radius: var(--growfund-radius-md);
+  padding: var(--growfund-spacing-3) 0;
+}
+
+.growfund-reward-pledge-button:hover {
+  background-color: var(--growfund-bg-brand-hover);
+}

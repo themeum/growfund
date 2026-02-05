@@ -20,6 +20,9 @@ class DonationCampaignDTO extends DTO
     public $id;
 
     /** @var string */
+    public $slug;
+
+    /** @var string */
     public $title;
 
     /** @var string */

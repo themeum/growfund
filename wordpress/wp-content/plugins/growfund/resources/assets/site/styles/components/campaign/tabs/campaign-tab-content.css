@@ -1,0 +1,45 @@
+.growfund-campaign-tab-content-campaign-container {
+  display: grid;
+  grid-template-columns: 1fr 470px;
+  gap: calc(var(--growfund-spacing-4) * 3);
+  justify-content: space-between;
+  align-items: start;
+  width: 100%;
+  box-sizing: border-box;
+  margin: calc(var(--growfund-spacing-4) * 3) 0;
+}
+
+.growfund-campaign-tab-content-title {
+  font-size: calc(var(--growfund-font-size-4xl) + 2px);
+  font-weight: var(--growfund-font-weight-semibold);
+  line-height: 36px;
+  color: var(--growfund-text-primary);
+  margin-bottom: calc(var(--growfund-spacing-4) * 2);
+}
+.growfund-campaign-tab-content-rewards-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--growfund-spacing-6);
+  max-height: 3051px;
+  position: sticky;
+  top: 24px;
+  overflow-y: auto;
+}
+
+@media (max-width: 1024px) {
+  .growfund-campaign-tab-content-campaign-container {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--growfund-spacing-5) * 2);
+    margin: calc(var(--growfund-spacing-4) * 2) 0;
+  }
+
+  .growfund-campaign-tab-content-campaign-container-layout {
+    width: 100%;
+  }
+
+  .growfund-campaign-tab-content-title {
+    font-size: var(--growfund-font-size-3xl);
+    margin-bottom: var(--growfund-spacing-6);
+  }
+}

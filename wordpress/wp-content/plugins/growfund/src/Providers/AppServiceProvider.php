@@ -72,7 +72,7 @@ class AppServiceProvider extends ServiceProvider
             return;
         }
 
-        $root = growfund_input_server('DOCUMENT_ROOT');
+        $root = growfund_input_server('DOCUMENT_ROOT', '');
         $env_file_path = sprintf('%s/.env', $root);
 
         if (!file_exists($env_file_path)) {

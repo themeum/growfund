@@ -34,10 +34,7 @@ class ShowAdminNotice extends BaseHook
                 '<a href="' . $permalink_url . '">' . $permalink_text . '</a>'
             );
 
-            printf(
-                '<div class="notice notice-error is-dismissible"><p>%s</p></div>',
-                wp_kses_post($message)
-            );
+            growfund_echo_safe_html(sprintf('<div class="notice notice-error is-dismissible"><p>%s</p></div>', $message));
         }
 
         if (!growfund_is_plugin_menu() && growfund_app()->is_migration_available_from_crowdfunding()) {

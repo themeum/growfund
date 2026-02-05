@@ -1,0 +1,21 @@
+.growfund-image {
+  width: 100%;
+  height: 100%;
+}
+
+.growfund-image-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.growfund-image-fallback {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--growfund-text-surface);
+  font-weight: var(--growfund-font-weight-bold);
+  font-size: var(--growfund-font-size-6xl);
+}

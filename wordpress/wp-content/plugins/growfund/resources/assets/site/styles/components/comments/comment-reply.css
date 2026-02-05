@@ -1,0 +1,25 @@
+.growfund-comment-item.is-reply {
+  margin-left: 0px;
+}
+
+.growfund-comment-item.is-reply::before {
+  content: '';
+  position: absolute;
+  left: -32px;
+  top: -20px;
+  width: 32px;
+  height: 40px;
+  z-index: 1;
+}
+
+.growfund-comment-item.growfund-is-reply .growfund-reply-hook {
+  position: absolute;
+  left: -32px;
+  width: 32px;
+  border-bottom: 2px solid var(--growfund-bg-gray-8);
+  border-left: 2px solid var(--growfund-bg-gray-8);
+  border-bottom-left-radius: var(--growfund-radius-3xl);
+  z-index: 2;
+  top: 0px;
+  height: 24px;
+}

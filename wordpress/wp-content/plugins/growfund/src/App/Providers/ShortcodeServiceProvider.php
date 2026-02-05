@@ -7,6 +7,7 @@ defined( 'ABSPATH' ) || exit;
 use Growfund\Core\ServiceProvider;
 use Growfund\SiteExceptionHandler;
 use Exception;
+use Growfund\View;
 
 class ShortcodeServiceProvider extends ServiceProvider
 {
@@ -33,11 +34,11 @@ class ShortcodeServiceProvider extends ServiceProvider
         foreach ($shortcodes as $shortcode) {
             add_shortcode($shortcode->get_name(), function () use ($shortcode) {
                 try {
-                    if (is_admin() || defined('REST_REQUEST')) {
+                    if (is_admin() || (defined('REST_REQUEST') && REST_REQUEST)) {
                         return '<div class="growfund-shortcode-placeholder">' . esc_html__('Shortcode Preview', 'growfund') . '</div>';
                     }
-
-                    return $shortcode->callback(...func_get_args());
+                    
+                    return wp_kses($shortcode->resolve(...func_get_args()), View::get_allowed_html_tags());
                 } catch (Exception $error) {
                     return SiteExceptionHandler::handle($error);
                 }

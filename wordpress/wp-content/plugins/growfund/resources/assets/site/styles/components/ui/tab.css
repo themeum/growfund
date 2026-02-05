@@ -1,0 +1,108 @@
+/* ===============================
+   Growfund Tab Wrapper
+================================ */
+
+.growfund-tab-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.growfund-tab-contents-header {
+  display: flex;
+  gap: var(--growfund-spacing-6);
+  flex: 1;
+}
+.growfund-tab-contents-item {
+  padding-bottom: var(--growfund-spacing-6);
+  color: var(--growfund-text-secondary);
+  font-size: var(--growfund-font-size-md);
+  line-height: 122%;
+  display: flex;
+  align-items: center;
+  gap: var(--growfund-spacing-1);
+  position: relative;
+}
+
+.growfund-tab-contents-item:hover {
+  color: var(--growfund-icon-primary);
+}
+.growfund-tab-contents-item.active {
+  color: var(--growfund-text-primary);
+  font-weight: var(--growfund-font-weight-semibold);
+  border-bottom: transparent;
+}
+
+.growfund-tab-contents-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 1px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: var(--growfund-bg-inverse);
+  transform: translateY(3px);
+}
+.growfund-tab-contents-header-wrapper {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--growfund-border-border);
+}
+.growfund-tab-contents-header-back-button-wrapper {
+  margin-bottom: var(--growfund-spacing-3);
+  width: 163px;
+  height: 44px;
+}
+.growfund-tab-contents-header-back-button {
+  background-color: var(--growfund-bg-fill-brand);
+  color: var(--growfund-text-surface);
+  width: 100%;
+  height: 100%;
+  padding: var(--growfund-spacing-3) 0;
+  border-radius: var(--growfund-radius-md);
+  font-weight: var(--growfund-font-weight-medium);
+  font-size: var(--growfund-font-size-md);
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--growfund-spacing-1);
+  text-align: center;
+  justify-content: center;
+  line-height: 20px;
+}
+
+.growfund-tab-contents-header-back-button:hover {
+  background-color: var(--growfund-bg-brand-hover);
+}
+
+@media (max-width: 1024px) {
+  .growfund-tab-contents-header-wrapper {
+    flex-direction: column;
+    gap: var(--growfund-spacing-4);
+    border-bottom: none;
+  }
+
+  .growfund-tab-contents-header {
+    overflow-x: auto;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: calc(var(var(--growfund-spacing-1) * 7));
+    width: 100%;
+    padding-bottom: 0;
+  }
+
+  .growfund-tab-contents-header::-webkit-scrollbar {
+    display: none;
+  }
+
+  .growfund-tab-contents-item {
+    flex: 0 0 auto;
+    padding-bottom: var(--growfund-spacing-4);
+  }
+
+  .growfund-tab-contents-header-back-button-wrapper {
+    display: none;
+  }
+}

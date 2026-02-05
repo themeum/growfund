@@ -32,7 +32,7 @@ class ChargeBackersScheduler extends BaseHook
         $service_args = $data['args'] ?? [];
 
         if (empty($service_class_name) || !class_exists($service_class_name)) {
-            error_log( // phpcs:ignore
+            growfund_error_log(
                 sprintf(
                     /* translators: %s: service class */
                     __('The service class %s is not valid.', 'growfund'),
@@ -47,7 +47,7 @@ class ChargeBackersScheduler extends BaseHook
         try {
             $service->charge();
         } catch (Exception $error) {
-            error_log($error->getMessage()); // phpcs:ignore
+            growfund_error_log($error->getMessage());
         }
     }
 }

@@ -37,4 +37,30 @@ class Currency
             ? sprintf('%s%s', $formatted_amount, $currency_symbol)
             : sprintf('%s%s', $currency_symbol, $formatted_amount);
     }
+
+    /**
+     * Get the currency symbol.
+     * 
+     * @since 1.0.4
+     * @return string
+     */
+    public static function get_symbol()
+    {
+        $currency_settings = growfund_app()->make(CurrencyConfig::class)->get();
+        $currency_parts = explode(':', $currency_settings['currency']);
+
+        return $currency_parts[0] ?? '$';
+    }
+
+    /**
+     * Get the currency position.
+     * 
+     * @since 1.0.4
+     * @return string
+     */
+    public static function get_currency_position() {
+        $currency_settings = growfund_app()->make(CurrencyConfig::class)->get();
+
+        return $currency_settings['currency_position'];
+    }
 }

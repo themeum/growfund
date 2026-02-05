@@ -80,7 +80,7 @@ abstract class BaseMigration implements Migration
      *
      * @return void
      */
-    protected function drop_table($table_name)
+	protected function drop_table($table_name)
     {
         global $wpdb;
 

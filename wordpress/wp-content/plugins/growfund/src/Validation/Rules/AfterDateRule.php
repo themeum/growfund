@@ -35,6 +35,6 @@ class AfterDateRule extends BaseRule
     public function get_error_message()
     {
         /* translators: 1: field name, 2: rule value */
-        return sprintf(__('The %1$s field must be after %2$s.', 'growfund'), $this->key, $this->rule_value);
+        return sprintf(__('The %1$s field must be after %2$s.', 'growfund'), str_replace(['_', '.'], ' ', $this->key), $this->rule_value);
     }
 }

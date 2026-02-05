@@ -4,8 +4,9 @@ namespace Growfund\Http;
 
 defined( 'ABSPATH' ) || exit;
 
-use Growfund\Contracts\Request as BaseRequest;
+use Growfund\Contracts\Request as RequestContract;
 use Growfund\Sanitizer;
+use Growfund\Supports\Arr;
 use WP_REST_Request;
 
 /**
@@ -13,7 +14,7 @@ use WP_REST_Request;
  *
  * @since 1.0.0
  */
-class Request implements BaseRequest
+class Request implements RequestContract
 {
     /**
      * The request's input attributes.
@@ -185,18 +186,6 @@ class Request implements BaseRequest
         return array_diff_key($this->attributes, array_flip($attributes));
     }
 
-    /**
-     * Get a single input attribute by key.
-     *
-     * @since 1.0.0
-     *
-     * @param string $key The key of the attribute.
-     * @return mixed|null
-     */
-    public function only(string $key)
-    {
-        return $this->attributes[$key] ?? null;
-    }
 
     /**
      * Alias for the `only()` method.
@@ -204,11 +193,25 @@ class Request implements BaseRequest
      * @since 1.0.0
      *
      * @param string $key The key of the attribute.
+     * @param string|null $type type to cast the result to: int, float, bool, string, array with proper sanitization.
      * @return mixed|null
      */
-    public function input(string $key)
+    public function input(string $key, $type = null)
     {
-        return $this->only($key);
+        $input = $this->attributes[$key] ?? null;
+
+        if (!is_null($type)) {
+            return Sanitizer::apply_rule($input, $type);
+        }
+
+        return $input;
+    }
+
+    public function only(array $keys)
+    {
+        $keys = Arr::isAssociative($keys) ? array_keys($keys) : $keys;
+        
+        return array_intersect_key($this->all(), array_flip($keys));
     }
 
     /**
@@ -223,11 +226,10 @@ class Request implements BaseRequest
      */
     public function get(string $key, string $type, $default = null)
     {
-        $value = isset($this->attributes[$key]) ? $this->attributes[$key] : $default;
+        $value = $this->input($key) ?? $default;
+        $type = $type ? $type : Sanitizer::TEXT;
 
-        $value = Sanitizer::apply_rule($value, $type);
-
-        return $value;
+        return Sanitizer::apply_rule($value, $type);
     }
 
     /**
@@ -242,6 +244,27 @@ class Request implements BaseRequest
     public function get_string(string $key, $default = null)
     {
         return $this->get($key, Sanitizer::TEXT, $default);
+    }
+
+    /**
+     * Get a column value with sanitization applied.
+     *
+     * @since 1.0.0
+     *
+     * @param string $key The key to retrieve.
+     * @param string|null $default Default value if the key doesn't exist.
+     * @param array $whitelist Optional whitelist of allowed values.
+     * @return string|null
+     */
+    public function get_column(string $key, $default = null, array $whitelist = [])
+    {
+        $value = $this->get($key, Sanitizer::COLUMN, $default);
+
+        if (!empty($whitelist)) {
+            return in_array($value, $whitelist, true) ? $value : $default;
+        }
+
+        return $value;
     }
 
     /**

@@ -69,7 +69,7 @@ class DonationMigrationService
 
             QueryBuilder::commit();
         } catch (Exception $e) {
-            error_log($e->getMessage()); // phpcs:ignore
+            growfund_error_log($e->getMessage());
             QueryBuilder::rollback();
         }
 

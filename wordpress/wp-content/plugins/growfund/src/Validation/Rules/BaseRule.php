@@ -154,6 +154,6 @@ abstract class BaseRule implements Rule
     public function get_error_message()
     {
         /* translators: %s: field name */
-        return sprintf(__('The value provided for %s is invalid.', 'growfund'), $this->key);
+        return sprintf(__('The value provided for %s is invalid.', 'growfund'), str_replace(['_', '.'], ' ', $this->key));
     }
 }

@@ -127,12 +127,14 @@ class Renderer
      *
      * @param string $path - template path
      * @param array $data
+     * 
+     * @return void
      */
     public function render(string $path, array $data = [])
     {
         $output = $this->get_html($path, $data);
 
-        echo $output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- trusted content, contains HTML, loaded from template file.
+        growfund_echo_safe_html($output);
     }
 
     /**

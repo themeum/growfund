@@ -1,0 +1,108 @@
+.growfund-comment-item {
+  padding-bottom: var(--growfund-spacing-4);
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  gap: var(--growfund-spacing-2);
+  min-height: 80px;
+}
+.growfund-comment-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.growfund-comment-avatar {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  background: var(--growfund-bg-gray-8);
+  border-radius: var(--growfund-radius-circle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--growfund-font-weight-medium);
+  font-size: var(--growfund-font-size-lg);
+  text-transform: uppercase;
+  color: var(--growfund-icon-secondary);
+  z-index: 2;
+}
+
+.growfund-comment-details {
+  width: 100%;
+}
+
+.growfund-comment-author-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: var(--growfund-spacing-5);
+}
+
+.growfund-comment-author {
+  font-weight: var(--growfund-font-weight-semibold);
+  font-size: var(--growfund-font-size-md);
+}
+
+.growfund-comment-time {
+  color: var(--growfund-text-accent-foreground);
+  font-size: var(--growfund-font-size-md);
+}
+
+.growfund-comment-text {
+  color: var(--growfund-bg-gray-6);
+  font-size: var(--growfund-font-size-md);
+  line-height: 150%;
+  margin-bottom: var(--growfund-spacing-4);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  word-wrap: break-word;
+}
+
+.growfund-comment-reply-btn {
+  background: none;
+  border: none;
+  color: var(--growfund-text-gray);
+  font-size: var(--growfund-font-size-md);
+  display: flex;
+  margin-bottom: var(--growfund-spacing-2);
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.growfund-comment-reply-input-box {
+  border: none;
+  padding: 0;
+}
+
+.growfund-comment-replies-thread-wrapper {
+  margin-top: var(--growfund-spacing-5);
+}
+
+.growfund-comment-replies-thread {
+  position: relative;
+}
+
+.growfund-comment-item .growfund-v-line {
+  position: absolute;
+  width: 2px;
+  background-color: var(--growfund-bg-gray-8);
+  left: 24px;
+  z-index: 1;
+  top: 48px;
+  bottom: 0;
+}
+
+.growfund-comment-reply-load-more {
+  text-align: center;
+  margin-top: var(--growfund-spacing-2);
+  font-size: var(--growfund-font-size-md);
+  font-weight: var(--growfund-font-weight-medium);
+  cursor: pointer;
+}
+
+.growfund-comment-reply-load-more:hover {
+  text-decoration: underline;
+}

@@ -92,6 +92,7 @@ class RewardDTO extends DTO
 
     public static function validation_rules()
     {
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
         return apply_filters(HookNames::GROWFUND_REWARD_VALIDATION_RULES_FILTER, [
             'title' => 'required|string',
             'amount' => 'required|number',

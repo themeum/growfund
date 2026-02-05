@@ -249,7 +249,7 @@ class RewardService
         $dto->amount = (int) $meta_data['amount'];
         $dto->description = $reward->post_content;
         $dto->image = $thumbnail_id !== false ? MediaAttachment::make($thumbnail_id) : null;
-        $dto->quantity_type = $meta_data['quantity_type'] ?? null;
+        $dto->quantity_type = $meta_data['quantity_type'] ?? QuantityType::UNLIMITED;
         $dto->quantity_limit = !empty($meta_data['quantity_limit'])
             ? (int) $meta_data['quantity_limit']
             : null;

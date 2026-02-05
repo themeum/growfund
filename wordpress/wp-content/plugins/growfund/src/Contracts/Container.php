@@ -42,7 +42,7 @@ interface Container
      * @param string $abstract
      * @return void
      */
-    public function alias(string $alias, string $abstract); // phpcs:ignore
+    public function alias(string $alias, string $abstract);
 
     /**
      * Tag services for grouped resolution.

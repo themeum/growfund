@@ -1,0 +1,226 @@
+.growfund-campaign-list {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--growfund-spacing-5);
+}
+
+.growfund-campaign-card-wrapper {
+  position: relative;
+  height: 100%;
+  max-width: 312px;
+  overflow: visible;
+  min-height: 312px;
+}
+
+.growfund-campaign-card {
+  display: block;
+  background: var(--growfund-bg-surface);
+  width: 100%;
+  min-width: 280px;
+  overflow: visible;
+  border-radius: var(--growfund-radius-10);
+  text-decoration: none;
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  border: 1px solid var(--growfund-border-border);
+}
+
+.growfund-campaign-card:hover {
+  z-index: 10;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.growfund-campaign-card-image {
+  position: relative;
+  height: auto;
+  width: 100%;
+  aspect-ratio: var(--growfund-aspect-ratio-16-9);
+  overflow: hidden;
+  background-color: var(--growfund-bg-gray-3);
+  border-radius: var(--growfund-radius-10) var(--growfund-radius-10) 0 0;
+}
+
+.growfund-campaign-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.growfund-campaign-card-image-placeholder {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--growfund-text-surface);
+  font-weight: bold;
+  font-size: var(--growfund-font-size-5xl);
+}
+
+.growfund-campaign-card-time-left {
+  position: absolute;
+  top: var(--growfund-spacing-3);
+  left: var(--growfund-spacing-3);
+  color: var(--growfund-text-primary);
+  background-color: var(--growfund-bg-gray);
+  padding: var(--growfund-spacing-1) 10px;
+  border-radius: var(--growfund-radius-md);
+  font-size: var(--growfund-font-size-sm);
+  line-height: 18px;
+  font-weight: var(--growfund-font-weight-semibold);
+}
+
+.growfund-campaign-card-content {
+  padding: var(--growfund-spacing-6) var(--growfund-spacing-5);
+  background: var(--growfund-bg-surface);
+  border-radius: var(--growfund-radius-10);
+}
+
+.growfund-campaign-card-creator-info {
+  display: flex;
+  align-items: center;
+  gap: var(--growfund-spacing-2);
+}
+
+.growfund-campaign-card-creator-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.growfund-campaign-card-creator-name {
+  font-size: var(--growfund-font-size-md);
+  color: var(--growfund-text-accent-foreground);
+  font-weight: var(--growfund-font-weight-normal);
+  flex-grow: 1;
+}
+
+.growfund-campaign-card-link {
+  text-decoration: none;
+}
+
+.growfund-campaign-card-title {
+  font-size: var(--growfund-font-size-lg);
+  font-weight: var(--growfund-font-weight-medium);
+  color: var(--growfund-text-primary);
+  line-height: 26px;
+  margin-top: var(--growfund-spacing-2);
+  margin-bottom: var(--growfund-spacing-3);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-all;
+}
+
+.growfund-campaign-card-link:hover .growfund-campaign-card-title {
+  text-decoration: underline;
+  color: var(--growfund-border-special);
+}
+
+.growfund-campaign-card-progress-bar {
+  height: 6px;
+  background: var(--growfund-green-percentage);
+  border-radius: var(--growfund-radius-3);
+  overflow: hidden;
+  margin-bottom: var(--growfund-spacing-2);
+}
+
+.growfund-campaign-card-progress-fill {
+  height: 100%;
+  background: var(--growfund-green-percentage-2);
+  border-radius: var(--growfund-radius-3);
+}
+
+.growfund-campaign-card-fund-amount {
+  font-size: var(--growfund-font-size-md);
+  font-weight: var(--growfund-font-weight-semibold);
+  color: var(--growfund-text-primary);
+  line-height: 118%;
+  letter-spacing: 0;
+}
+
+.growfund-campaign-card-description {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  border-radius: 0 0 var(--growfund-radius-10) var(--growfund-radius-10);
+  box-shadow: var(--growfund-box-shadow-6);
+  opacity: 0;
+  pointer-events: none;
+  background: var(--growfund-bg-surface);
+  z-index: 20;
+  font-size: var(--growfund-font-size-md);
+  font-weight: var(--growfund-font-weight-normal);
+  line-height: 21px;
+  color: var(--growfund-text-primary);
+}
+
+.growfund-campaign-card-description .growfund-campaign-card-description-border-top {
+  border-top: 1.62px solid var(--growfund-border-border);
+  margin: 0 var(--growfund-spacing-4);
+}
+
+.growfund-campaign-card-description-content {
+  padding: var(--growfund-spacing-4);
+}
+
+.growfund-campaign-card:hover .growfund-campaign-card-description {
+  z-index: 20;
+  max-height: 400px;
+  opacity: 1;
+}
+.growfund-campaign-card:hover {
+  border: none;
+  box-shadow: var(--growfund-box-shadow-6);
+}
+
+.growfund-campaign-card-goal-progres {
+  margin-top: var(--growfund-spacing-5);
+}
+
+.growfund-campaign-bookmark-button.growfund-campaign-card-bookmark-button {
+  position: absolute;
+  top: var(--growfund-spacing-3);
+  right: var(--growfund-spacing-3);
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--growfund-radius-circle);
+  font-size: var(--growfund-font-size-xl);
+  transition: all 0.2s ease;
+  z-index: 2;
+  opacity: 0.8;
+}
+
+.growfund-campaign-card-bookmark-button .growfund-campaign-bookmark-button-label {
+  display: none;
+}
+
+.growfund-campaign-bookmark-button.growfund-campaign-card-bookmark-button
+  .growfund-campaign-bookmark-icon
+  path {
+  stroke: var(--growfund-bg-fill-brand);
+}
+.growfund-campaign-card-bookmark-button.growfund-campaign-is-bookmarked
+  .growfund-campaign-bookmark-icon
+  path {
+  stroke: var(--growfund-bg-surface);
+}
+
+.growfund-campaign-card-bookmark-button.growfund-campaign-is-bookmarked:hover
+  .growfund-campaign-bookmark-icon
+  path {
+  stroke: var(--growfund-bg-surface);
+}

@@ -26,10 +26,6 @@ class SiteResponse
         wp_send_json_success($data, $status_code);
     }
 
-
-
-
-
     /**
      * Send a plain HTML response (for non-AJAX requests)
      *
@@ -42,7 +38,8 @@ class SiteResponse
         if ($status_code !== 200) {
             http_response_code($status_code);
         }
-        echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped  -- output is already escaped. this is intentional
+        
+        growfund_echo_safe_html($html);
         exit;
     }
 
@@ -55,7 +52,7 @@ class SiteResponse
      */
     public function redirect($url, $status_code = 302)
     {
-        wp_redirect($url, $status_code); // phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect
+        growfund_redirect($url, [], $status_code);
         exit;
     }
 

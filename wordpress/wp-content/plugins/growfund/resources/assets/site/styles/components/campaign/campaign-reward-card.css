@@ -1,0 +1,33 @@
+.growfund-campaign-reward-card {
+  border-radius: var(--growfund-radius-sm);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--growfund-bg-surface-secondary);
+}
+.growfund-campaign-reward-card-padded {
+  padding: var(--growfund-spacing-4) var(--growfund-spacing-4) 0 var(--growfund-spacing-4);
+}
+.growfund-campaign-reward-card-pledge-button {
+  padding: 0 var(--growfund-spacing-4) var(--growfund-spacing-4) var(--growfund-spacing-4);
+}
+
+.growfund-campaign-reward-card-image {
+  width: 100%;
+  aspect-ratio: var(--growfund-aspect-ratio-4-3);
+  overflow: hidden;
+}
+
+.growfund-campaign-reward-card-image img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--growfund-radius-sm) var(--growfund-radius-sm) 0 0;
+}
+
+@media (max-width: 1023px) {
+  .growfund-campaign-card-reward-title {
+    font-size: var(--growfund-font-size-lg);
+    line-height: 20px;
+  }
+}

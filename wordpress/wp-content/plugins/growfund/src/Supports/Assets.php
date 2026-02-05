@@ -39,7 +39,7 @@ class Assets
             );
         }
 
-        if (has_growfund_pro()) {
+        if (growfund_has_growfund_pro()) {
             return;
         }
 
@@ -116,10 +116,9 @@ class Assets
     /**
      * Generates the window.growfund JavaScript configuration object.
      *
-     * @param bool $as_guest config script based on the guest user or login user.
      * @return string The JavaScript object assignment for window.growfund.
      */
-    public static function get_growfund_config_script($as_guest = false)
+    public static function get_growfund_config_script()
     {
         $user_role = growfund_user()->get_active_role();
 
@@ -141,8 +140,8 @@ class Assets
             'debug' => growfund_is_dev_mode(),
             'mode' => GROWFUND_ENV_MODE,
             'assets_url' => static::get_assets_url(),
-            'as_guest' => $as_guest,
-            'has_growfund_pro' => has_growfund_pro(),
+            'as_guest' => Utils::is_public_route(),
+            'has_growfund_pro' => growfund_has_growfund_pro(),
             /** @deprecated since 1.0.2 */
             'features' => [], // @todo: deprecated since 1.0.2 -- keep this for backward compatibility, will be removed in version 1.1.0
             'is_migration_available_from_crowdfunding' => growfund_app()->is_migration_available_from_crowdfunding(),

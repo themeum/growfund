@@ -1,0 +1,49 @@
+.growfund-checkbox-field-label {
+  font-weight: 500;
+  color: #636363;
+  font-size: 14px;
+  line-height: 21px;
+}
+.growfund-checkbox-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.growfund-checkbox-field input {
+  border: 1px solid #e6e6e6;
+  background-color: #ffffff;
+}
+
+.growfund-checkbox-field input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #e6e6e6;
+  border-radius: 3px;
+  background-color: #ffffff;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  -webkit-appearance: none;
+  appearance: none;
+  max-height: 16px;
+  box-sizing: border-box;
+}
+
+.growfund-checkbox-field input[type='checkbox']:checked {
+  background-color: #28a745;
+}
+
+.growfund-checkbox-field input[type='checkbox']:checked::after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 4px;
+  width: 4px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}

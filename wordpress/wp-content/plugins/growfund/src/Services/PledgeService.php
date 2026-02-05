@@ -45,6 +45,7 @@ use Growfund\Supports\Money;
 use Growfund\Supports\PriceCalculator;
 use DateTime;
 use Exception;
+use Growfund\Supports\Currency;
 
 class PledgeService
 {
@@ -93,6 +94,7 @@ class PledgeService
         $campaign = PledgeCampaignDTO::from_array([
             'id' => (string) $record->campaign_id,
             'title' => $record->campaign_title,
+            'slug' => $record->campaign_slug,
             'status' => $record->campaign_status,
             'fund_raised' => $this->get_total_pledges_amount_for_campaign($record->campaign_id),
             'goal_type' => $record->campaign_goal_type,
@@ -164,6 +166,7 @@ class PledgeService
             ->select([
                 'pledges.*',
                 'campaigns.post_title as campaign_title',
+                'campaigns.post_name as campaign_slug',
                 'campaign_status_meta.meta_value as campaign_status',
                 'campaign_images_meta.meta_value as campaign_images',
                 'campaign_start_date_meta.meta_value as campaign_start_date',
@@ -205,7 +208,7 @@ class PledgeService
                 sprintf("campaigns.post_author = campaign_author.ID")
             );
 
-        if ($params->user_id !== growfund_user()->get_id() && growfund_user()->is_fundraiser()) {
+        if (!empty($params->user_id) && $params->user_id !== growfund_user()->get_id() && growfund_user()->is_fundraiser()) {
             $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
             $query->where_in('pledges.campaign_id', $campaign_ids);
         }
@@ -680,7 +683,7 @@ class PledgeService
         $campaign_service = new CampaignService();
         $campaign = $campaign_service->get_by_id($dto->campaign_id);
 
-        $this->check_campaign_constraints($dto, $campaign);
+        $this->check_campaign_constraints($campaign);
 
         $is_manual = !empty($dto->is_manual);
 
@@ -693,13 +696,17 @@ class PledgeService
         if ($dto->pledge_option === PledgeOption::WITH_REWARDS) {
             $reward_service = new RewardService();
             $reward = $reward_service->get_by_id($dto->reward_id);
-            $this->check_reward_constraints($dto, $reward);
+            $this->check_reward_constraints($reward);
+        } else {
+            $this->check_amount_constraints((int) $dto->amount, $campaign);
         }
 
-        $backer_dto = (new UserService())->get_by_user_id($dto->user_id);
-        $backer_dto->image = $backer_dto->image['id'] ?? null;
-        $user_info = PledgeBackerDTO::from_array($backer_dto->to_array());
-        $dto->user_info = wp_json_encode($user_info->to_array());
+        if (empty($dto->user_info)) {
+            $backer_dto = (new UserService())->get_by_user_id($dto->user_id);
+			$backer_dto->image = $backer_dto->image['id'] ?? null;
+			$user_info = PledgeBackerDTO::from_array($backer_dto->to_array());
+			$dto->user_info = wp_json_encode($user_info->to_array());
+        }
 
         if ($dto->reward_id) {
             $reward_dto = (new RewardService())->get_by_id($dto->reward_id);
@@ -726,7 +733,9 @@ class PledgeService
 
         $amount = PriceCalculator::calculate_pledge_amount($dto, $reward);
         $bonus_support_amount = PriceCalculator::calculate_pledge_bonus_amount($dto);
-        $shipping_cost = PriceCalculator::calculate_shipping_cost($user_info->shipping_address, $reward);
+
+        $user_info = growfund_is_valid_json($dto->user_info) ? json_decode($dto->user_info, true) : [];
+        $shipping_cost = PriceCalculator::calculate_shipping_cost($user_info['shipping_address'] ?? [], $reward);
 
         $dto->uid = growfund_uuid();
         $dto->is_manual = $is_manual;
@@ -740,6 +749,7 @@ class PledgeService
 
         $dto->payment_status = $this->get_payment_status($dto->status, $is_manual);
         $dto->payment_method = wp_json_encode($dto->payment_method);
+        $dto->payment_engine = growfund_payment_engine();
 
         $pledge_id = QueryBuilder::query()->table(Tables::PLEDGES)->create($dto->to_array());
 
@@ -791,18 +801,28 @@ class PledgeService
 
     /**
      * Check campaign constraints for donation
-     * @return void
+     * @param CampaignDTO $campaign_dto
+     * @param bool $throwable
+     * @return bool
      * @throws ValidationException
      */
-    protected function check_campaign_constraints(CreatePledgeDTO $pledge_dto, CampaignDTO $campaign_dto)
+    public function check_campaign_constraints(CampaignDTO $campaign_dto, $throwable = true)
     {
         if (!$campaign_dto->is_launched) {
+            if (!$throwable) {
+                return false;
+            }
+
             throw ValidationException::with_errors([
                 'campaign_id' => [esc_html__('The campaign is not launched yet', 'growfund')]
             ]);
         }
 
         if ($campaign_dto->is_ended) {
+            if (!$throwable) {
+                return false;
+            }
+
             throw ValidationException::with_errors([
                 'campaign_id' => [esc_html__('Ended campaigns are not allowed to take pledges.', 'growfund')]
             ]);
@@ -812,52 +832,117 @@ class PledgeService
             $campaign_dto->reaching_action === ReachingAction::CLOSE
             && CampaignGoal::is_reached($campaign_dto)
         ) {
+            if (!$throwable) {
+                return false;
+            }
+
             throw ValidationException::with_errors([
                 'campaign_id' => [esc_html__('The campaign gaol already reached', 'growfund')]
             ]);
         }
 
-        if (empty($pledge_dto->reward_id)) {
-            if ($campaign_dto->appreciation_type === AppreciationType::GIVING_THANKS) {
-                return;
-            }
-
-            if (empty($campaign_dto->allow_pledge_without_reward)) {
-                throw ValidationException::with_errors([
-                    'reward_id' => [esc_html__('The campaign does not allow pledging without reward', 'growfund')],
-                ]);
-            }
-
-            if ((int) $pledge_dto->amount < (int) $campaign_dto->min_pledge_amount) {
-                throw ValidationException::with_errors([
-                    /* translators: %s: min pledge amount */
-                    'amount' => [sprintf(esc_html__('Minimum pledge amount is %s', 'growfund'), esc_html(Money::prepare_for_display($campaign_dto->min_pledge_amount)))],
-                ]);
-            }
-
-            if ((int) $pledge_dto->amount > (int) $campaign_dto->max_pledge_amount) {
-                throw ValidationException::with_errors([
-                    /* translators: %s: max pledge amount */
-                    'amount' => [sprintf(esc_html__('Cannot pledge more than %s', 'growfund'), esc_html(Money::prepare_for_display($campaign_dto->max_pledge_amount)))],
-                ]);
-            }
-        }
+        return true;
     }
 
     /**
-     * Check reward constraints for donation
-     * @return void
+     * Check amount constraints for pledge
+     * @param int $pledge_amount
+     * @param CampaignDTO $campaign_dto
+     * @param bool $throwable
+     * @return bool
      * @throws ValidationException
      */
-    protected function check_reward_constraints(CreatePledgeDTO $dto, RewardDTO $reward_dto)
+    public function check_amount_constraints(int $pledge_amount, CampaignDTO $campaign_dto, $throwable = true) {
+        if ($campaign_dto->appreciation_type === AppreciationType::GIVING_THANKS) {
+            $min_amount = $campaign_dto->giving_thanks[0]['pledge_from'] ?? 0;
+            $max_amount = $campaign_dto->giving_thanks[0]['pledge_to'] ?? 0;
+
+			foreach ($campaign_dto->giving_thanks ?? [] as $option) {
+				if ($option['pledge_from'] <= $min_amount) {
+					$min_amount = $option['pledge_from'];
+				}
+
+				if ($option['pledge_to'] >= $max_amount) {
+					$max_amount = $option['pledge_to'];
+				}
+			}
+
+			if ($pledge_amount < (int) $min_amount) {
+                if (!$throwable) {
+                    return false;
+                }
+
+				throw ValidationException::with_errors([
+					/* translators: %s: min pledge amount */
+					'amount' => [sprintf(esc_html__('Minimum pledge amount is %s', 'growfund'), esc_html(Currency::format(Money::prepare_for_display($min_amount))))],
+				]);
+			}
+
+			if ($pledge_amount > (int) $max_amount) {
+                if (!$throwable) {
+                    return false;
+                }
+
+				throw ValidationException::with_errors([
+					/* translators: %s: max pledge amount */
+					'amount' => [sprintf(esc_html__('Cannot pledge more than %s', 'growfund'), esc_html(Currency::format(Money::prepare_for_display($max_amount))))],
+				]);
+			}
+
+            return true;
+		}
+
+		if (empty($campaign_dto->allow_pledge_without_reward)) {
+            if (!$throwable) {
+                return false;
+			}
+                
+			throw ValidationException::with_errors([
+				'reward_id' => [esc_html__('The campaign does not allow pledging without reward', 'growfund')],
+			]);
+		}
+
+		if ($pledge_amount < (int) $campaign_dto->min_pledge_amount) {
+            if (!$throwable) {
+                return false;
+			}
+                
+			throw ValidationException::with_errors([
+				/* translators: %s: min pledge amount */
+				'amount' => [sprintf(esc_html__('Minimum pledge amount is %s', 'growfund'), esc_html(Currency::format(Money::prepare_for_display($campaign_dto->min_pledge_amount))))],
+			]);
+		}
+
+		if ($pledge_amount > (int) $campaign_dto->max_pledge_amount) {
+            if (!$throwable) {
+                return false;
+			}
+                
+			throw ValidationException::with_errors([
+				/* translators: %s: max pledge amount */
+				'amount' => [sprintf(esc_html__('Cannot pledge more than %s', 'growfund'), esc_html(Currency::format(Money::prepare_for_display($campaign_dto->max_pledge_amount))))],
+			]);
+		}
+
+        return true;
+    }
+
+    /**
+     * Check reward constraints for pledge
+     * @param int $campaign_id
+     * @param RewardDTO $reward_dto
+     * @param bool $throwable
+     * @return bool
+     * @throws ValidationException
+     */
+    public function check_reward_constraints(RewardDTO $reward_dto, $throwable = true)
     {
         if ($reward_dto->quantity_type === QuantityType::LIMITED) {
-            $reward_count = QueryBuilder::query()->table(Tables::PLEDGES)
-                ->where('campaign_id', $dto->campaign_id)
-                ->where('reward_id', $reward_dto->id)
-                ->count();
-
-            if ((int) $reward_count >= (int) $reward_dto->quantity_limit) {
+            if ($reward_dto->reward_left === 0) {
+                if (!$throwable) {
+					return false;
+				}
+            
                 throw ValidationException::with_errors([
                     'reward_id' => [esc_html__('Reward limit reached', 'growfund')]
                 ]);
@@ -868,18 +953,28 @@ class PledgeService
             $is_reward_available = !empty($reward_dto->limit_start_date) ? Date::is_date_in_past_or_present($reward_dto->limit_start_date) : false;
             $is_reward_ended = !empty($reward_dto->limit_end_date) ? Date::is_date_in_past($reward_dto->limit_end_date) : true;
 
-            if (! $is_reward_available) {
+            if (!$is_reward_available) {
+                if (!$throwable) {
+					return false;
+				}
+            
                 throw ValidationException::with_errors([
                     'reward_id' => [esc_html__('Reward is not yet available', 'growfund')]
                 ]);
             }
 
             if ($is_reward_ended) {
+                if (!$throwable) {
+					return false;
+				}
+
                 throw ValidationException::with_errors([
                     'reward_id' => [esc_html__('Reward time expired', 'growfund')]
                 ]);
             }
         }
+
+        return true;
     }
 
     /**

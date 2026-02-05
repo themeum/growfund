@@ -22,9 +22,19 @@ class WP
     const USERS_TABLE = 'users';
 
     /**
-     * WP default postmeta table
+     * WP default usermeta table
      */
     const USER_META_TABLE = 'usermeta';
+
+    /**
+     * WP default comments table
+     */
+    const COMMENTS_TABLE = 'comments';
+
+    /**
+     * WP default commentmeta table
+     */
+    const COMMENT_META_TABLE = 'commentmeta';
 
     /**
      * WP Options table

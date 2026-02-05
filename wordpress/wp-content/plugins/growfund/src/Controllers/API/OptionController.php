@@ -113,7 +113,7 @@ class OptionController
                 break;
         }
 
-        $new_data = apply_filters(HookNames::GROWFUND_BEFORE_OPTION_UPDATE_FILTER, $new_data, $data);
+        $new_data = apply_filters(HookNames::GROWFUND_BEFORE_OPTION_UPDATE_FILTER, $new_data, $data); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
 
         return $new_data;
     }

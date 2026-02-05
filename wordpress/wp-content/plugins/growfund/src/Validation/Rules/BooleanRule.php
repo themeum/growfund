@@ -49,6 +49,6 @@ class BooleanRule extends BaseRule
     public function get_error_message()
     {
         /* translators: %s: field name */
-        return sprintf(__('The %s field must be of type boolean.', 'growfund'), $this->key);
+        return sprintf(__('The %s field must be of type boolean.', 'growfund'), str_replace(['_', '.'], ' ', $this->key));
     }
 }

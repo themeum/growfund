@@ -1,0 +1,35 @@
+/* creator */
+.growfund-campaign-creator-card {
+  display: flex;
+  align-items: center;
+  gap: var(--growfund-spacing-3);
+}
+
+.growfund-campaign-creator-card-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--growfund-radius-circle);
+  overflow: hidden;
+  background-color: var(--growfund-border-border);
+  flex-shrink: 0;
+}
+
+.growfund-campaign-creator-card-avatar img {
+  width: 50px;
+  height: 50px;
+  border-radius: var(--growfund-radius-circle);
+  object-fit: cover;
+}
+
+.growfund-campaign-creator-card-name {
+  font-size: var(--growfund-font-size-md);
+  font-weight: var(--growfund-font-weight-semibold);
+  margin-bottom: 6px;
+  color: var(--growfund-bg-inverse);
+}
+
+.growfund-campaign-creator-card-stats {
+  font-size: var(--growfund-font-size-md);
+  color: var(--growfund-text-subdued);
+  line-height: 1.3;
+}

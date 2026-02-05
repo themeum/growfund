@@ -1,0 +1,148 @@
+.growfund-checkout-successful-toaster-container {
+  display: flex;
+  gap: 14px;
+  flex-direction: column;
+  width: 440px;
+}
+.growfund-checkout-successful-toaster-title-wrapper {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 6px;
+  justify-content: center;
+  padding-bottom: var(--growfund-spacing-6);
+  border-bottom: 1px solid var(--growfund-border-blue-2);
+  margin-top: var(--growfund-spacing-5);
+}
+.growfund-checkout-successful-toaster-title {
+  font-weight: var(--growfund-font-weight-semibold);
+  font-size: var(--growfund-font-size-2xl);
+  line-height: 28px;
+  text-align: center;
+  color: var(--growfund-text-primary);
+}
+.growfund-checkout-successful-toaster-subtitle {
+  font-weight: var(--growfund-font-weight-normal);
+  font-size: var(--growfund-font-size-md);
+  line-height: 21px;
+  color: var(--growfund-text-secondary);
+}
+.growfund-checkout-successful-toaster-amount-group {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 6px;
+  justify-content: center;
+}
+.growfund-checkout-successful-toaster-amount-label {
+  font-weight: var(--growfund-font-weight-normal);
+  font-size: var(--growfund-font-size-md);
+  line-height: 21px;
+  color: var(--growfund-text-secondary);
+}
+.growfund-checkout-successful-toaster-amount-value {
+  font-weight: var(--growfund-font-weight-semibold);
+  font-size: var(--growfund-font-size-3xl);
+  line-height: 32px;
+  color: var(--growfund-text-primary);
+}
+.growfund-checkout-successful-toaster-section-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.growfund-checkout-successful-toaster-section-header {
+  display: flex;
+  gap: 8px;
+  color: var(--growfund-text-subdued);
+}
+.growfund-checkout-successful-toaster-section-title {
+  font-weight: var(--growfund-font-weight-semibold);
+  font-size: var(--growfund-font-size-sm);
+  line-height: 18px;
+  display: flex;
+  align-items: center;
+}
+.growfund-checkout-successful-toaster-wrapper {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+.growfund-checkout-successful-toaster-info-card {
+  border-radius: 6px;
+  border: 1px solid var(--growfund-border-secondary);
+  gap: 4px;
+  display: flex;
+  flex-direction: column;
+  padding: var(--growfund-spacing-3);
+}
+.growfund-checkout-successful-toaster-card-label {
+  font-weight: var(--growfund-font-weight-normal);
+  font-size: var(--growfund-font-size-sm);
+  line-height: 18px;
+  color: var(--growfund-text-secondary);
+}
+
+.growfund-checkout-successful-toaster-card-value {
+  font-weight: var(--growfund-font-weight-medium);
+  font-size: var(--growfund-font-size-md);
+  color: var(--growfund-text-primary);
+  line-height: 21px;
+  max-width: 320px;
+}
+.growfund-checkout-successful-toaster-funding-note-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.growfund-checkout-successful-toaster-funding-note {
+  font-weight: var(--growfund-font-weight-normal);
+  font-size: var(--growfund-font-size-sm);
+  line-height: 18px;
+  color: var(--growfund-text-secondary);
+}
+.growfund-checkout-successful-toaster-back-button {
+  width: 100%;
+  border: 1px solid var(--growfund-border-secondary);
+  border-radius: var(--growfund-radius-md);
+  padding: var(--growfund-spacing-2) var(--growfund-spacing-4);
+  font-weight: var(--growfund-font-weight-medium);
+  color: var(--growfund-text-primary);
+  font-size: var(--growfund-font-size-md);
+  line-height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.growfund-checkout-successful-toaster-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--growfund-radius-circle);
+  background-color: var(--growfund-bg-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--growfund-text-surface);
+}
+.growfund-checkout-successful-toaster-icon svg {
+  fill: var(--growfund-bg-surface);
+  height: 20px;
+  width: 20px;
+}
+
+.growfund-checkout-successful-toaster-icon-wrapper {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--growfund-radius-circle);
+  background-color: var(--growfund-bg-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  box-shadow: var(--growfund-box-shadow-1);
+  transform: translate(-50%, -50%);
+}

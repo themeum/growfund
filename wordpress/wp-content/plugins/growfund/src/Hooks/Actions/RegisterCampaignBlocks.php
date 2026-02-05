@@ -8,6 +8,7 @@ use Growfund\Constants\HookNames;
 use Growfund\Constants\HookTypes;
 use Growfund\Hooks\BaseHook;
 use Growfund\Supports\Template;
+use Growfund\View;
 
 class RegisterCampaignBlocks extends BaseHook
 {
@@ -34,11 +35,11 @@ class RegisterCampaignBlocks extends BaseHook
 
     public function render_campaigns_block($attributes)
     {
-        return Template::get_campaign_archive_content();
+        return wp_kses(Template::get_campaign_archive_content(), View::get_allowed_html_tags());
     }
 
     public function render_campaign_details_block($attributes)
     {
-        return Template::get_campaign_details_content();
+        return wp_kses(Template::get_campaign_details_content(), View::get_allowed_html_tags());
     }
 }

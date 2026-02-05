@@ -11,6 +11,7 @@ use Growfund\QueryBuilder;
 use Growfund\Services\Analytics\DonationAnalyticService;
 use Growfund\Supports\Arr;
 use Exception;
+use Growfund\Constants\HookNames;
 
 /**
  * FundService class
@@ -95,5 +96,14 @@ class FundService
         $fund->id = (string) $fund->ID;
 
         return FundDTO::from_array((array) $fund);
+    }
+
+    /**
+     * Get list of all funds without pagination
+     *
+     * @return array
+     */
+    public function all() {
+        return apply_filters(HookNames::GROWFUND_FUND_LIST_FILTER, []); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
     }
 }

@@ -79,12 +79,13 @@ class Utils
      * Returns the success URL from the application configuration.
      *
      * @param string $payment_method The payment method
-     * @param string $campaign_id The campaign UID
+     * @param string $campaign_id The campaign ID
+     * @param string $pledge_uid The pledge UID
      * @return string 
      */
-    public static function get_payment_confirm_url($payment_method, $campaign_id)
+    public static function get_payment_confirm_url($payment_method, $campaign_id, $pledge_uid)
     {
-        return site_url('payment/confirm/?payment_method=' . $payment_method . '&campaign_id=' . $campaign_id);
+        return site_url('payment/confirm/?payment_method=' . $payment_method . '&campaign_id=' . $campaign_id . '&uid=' . $pledge_uid);
     }
 
     /**
@@ -119,7 +120,7 @@ class Utils
         $checkout_page = growfund_settings(AppSettings::PAYMENT)->get('checkout_page', null);
 
         if (empty($checkout_page)) {
-            $checkout_page = site_url(URLs::DEFAULT_CHECKOUT_URL);
+            $checkout_page = static::get_default_checkout_url();
         } else {
             $checkout_page = get_permalink($checkout_page);
         }
@@ -135,6 +136,16 @@ class Utils
         }
 
         return add_query_arg($args, $checkout_page);
+    }
+
+    /**
+     * Returns the URL for default checkout page.
+     *
+     * @return string The URL for checkout page.
+     */
+    protected static function get_default_checkout_url()
+    {
+        return site_url('campaign/checkout');
     }
 
     /**
@@ -258,5 +269,34 @@ class Utils
         }
 
         return true;
+    }
+
+    public static function is_public_page()
+    {
+        return SiteRouter::get_current_route_name() === 'public';
+    }
+
+    public static function public_url() {
+        return static::get_site_url('public/#');
+    }
+
+    public static function donation_receipt_url($uid) {
+        return static::get_site_url("public/#donations/$uid/receipt");
+    }
+
+    public static function ecard_url($uid) {
+        return static::get_site_url("public/#donations/$uid/ecard");
+    }
+
+    public static function pledge_receipt_url($uid) {
+        return static::get_site_url("public/#pledges/$uid/receipt");
+    }
+
+    public static function get_site_url($path = '') {
+        return site_url($path);
+    }
+
+    public static function is_react_site() {
+        return static::is_dashboard_route() || static::is_public_route();
     }
 }
