@@ -162,7 +162,13 @@ class Date
      */
     public static function human_readable_time_diff(string $date)
     {
-        return human_time_diff(strtotime($date), current_time('timestamp', 1)) . ' ago'; // phpcs:ignore
+        $suffix = 'ago';
+
+        if (static::is_date_in_future_or_present($date)) {
+            $suffix = ' left';
+        }
+
+        return human_time_diff(strtotime($date), time()) . ' ' . $suffix; 
     }
 
     /**

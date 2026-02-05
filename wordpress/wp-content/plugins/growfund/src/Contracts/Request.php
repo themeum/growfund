@@ -60,24 +60,25 @@ interface Request
     public function except(array $attributes);
 
     /**
-     * Get a single attribute by key.
+     * Get request data only including specified attribute keys.
      *
      * @since 1.0.0
      *
-     * @param string $key The key to retrieve.
-     * @return mixed|null
+     * @param array $keys Keys to include.
+     * @return array
      */
-    public function only(string $key);
+    public function only(array $keys);
 
     /**
-     * Alias of `only()`. Get input value by key.
+     * Get input value by key.
      *
      * @since 1.0.0
      *
      * @param string $key The key to retrieve.
+     * @param string|null $type type to cast the result to: int, float, bool, string, array with proper sanitization.
      * @return mixed|null
      */
-    public function input(string $key);
+    public function input(string $key, $type = null);
 
     /**
      * Get a value from the request with optional default and type casting.
@@ -108,9 +109,21 @@ interface Request
      *
      * @param string $key     The key to retrieve.
      * @param string|null  $default Default value if the key doesn't exist.
-     * @return string
+     * @return string|null
      */
     public function get_string(string $key, $default = null);
+
+    /**
+     * Get a column value.
+     *
+     * @since 1.0.0
+     *
+     * @param string $key     The key to retrieve.
+     * @param string|null  $default Default value if the key doesn't exist.
+     * @param array $whitelist Optional whitelist of allowed values.
+     * @return string|null
+     */
+    public function get_column(string $key, $default = null, array $whitelist = []);
 
     /**
      * Get a date value.

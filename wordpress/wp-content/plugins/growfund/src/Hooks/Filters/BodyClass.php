@@ -24,7 +24,7 @@ class BodyClass extends BaseHook
     {
         $classes = $args[0];
 
-        if (growfund_is_dashboard_route() || is_admin()) {
+        if (growfund_is_react_site() || is_admin()) {
             return array_merge($classes, ['toplevel_page_growfund']);
         }
 

@@ -136,10 +136,9 @@ class CampaignController
     /**
      * Create a new campaign.
      *
-     * @param Request $request
      * @return \Growfund\Http\Response
      */
-    public function create(Request $request) // phpcs:ignore
+    public function create() 
     {
         $this->policy->authorize_create();
 

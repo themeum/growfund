@@ -28,7 +28,7 @@ class FeatureManager
      * @return bool
      */
     public function is_pro() {
-        return has_growfund_pro();
+        return growfund_has_growfund_pro();
     }
 
     /**
@@ -39,6 +39,6 @@ class FeatureManager
      * @return bool
      */
     public function has_growfund_pro() {
-        return has_growfund_pro();
+        return growfund_has_growfund_pro();
     }
 }

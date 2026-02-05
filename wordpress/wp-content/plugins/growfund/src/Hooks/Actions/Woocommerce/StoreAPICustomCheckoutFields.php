@@ -57,6 +57,11 @@ class StoreAPICustomCheckoutFields extends BaseHook
     protected function register_donation_fields()
     {
         $contribution_info_dto = Woocommerce::get_custom_cart_info_from_session();
+        
+        if (!$contribution_info_dto) {
+            return;
+        }
+
         $funds = Fund::get_funds_for_donation($contribution_info_dto->campaign_id);
 
         if (!empty($funds)) {

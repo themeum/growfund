@@ -1,0 +1,265 @@
+/* =========================================
+   RESET & BASE STYLES
+   ========================================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* Accent / Text */
+
+  --growfund-text-critical: hsl(0, 100%, 42%, 1);
+  --growfund-text-warning: hsla(42, 100%, 18%, 1);
+  --growfund-text-accent-foreground: hsl(240, 6%, 10%);
+  --growfund-text-subdued: hsl(0, 0%, 55%);
+  --growfund-text-emphasis: hsla(220, 100%, 50%, 1);
+  --growfund-text-brand: hsl(145, 47%, 37%, 1);
+  --growfund-text-special-2: hsl(205, 100%, 40%);
+  --growfund-text-primary: hsl(0, 0%, 20%);
+  --growfund-text-secondary: hsl(0, 0%, 39%);
+  --growfund-text-light: hsl(0, 0%, 98%);
+  --growfund-text-muted-foreground: hsl(240, 5%, 46%);
+  --growfund-green-percentage: hsla(110, 40%, 55%, 0.2);
+  --growfund-green-percentage-2: hsl(110, 40%, 55%);
+  --growfund-text-surface: hsl(0, 0%, 100%);
+  --growfund-text-gray: hsl(0, 0%, 40%);
+  --growfund-text-gray-2: hsl(0, 0%, 72%);
+
+  /* background */
+  --growfund-bg-fill-brand: hsla(145, 47%, 37%, 1);
+  --growfund-bg-fill-warning-secondary: hsla(38, 100%, 92%, 1);
+  --growfund-bg-surface: hsl(0, 0%, 100%);
+  --growfund-bg-primary-20: hsla(240, 6%, 10%, 0.2);
+  --growfund-bg-fill-secondary: hsl(0, 0%, 98%);
+  --growfund-bg-inverse: hsl(0, 0%, 11%);
+  --growfund-bg-surface-disabled: hsl(0, 0%, 84%);
+  --growfund-bg-surface-secondary: hsl(0, 0%, 97%);
+  --growfund-bg-fill-tertiary: hsl(0, 0%, 84%);
+  --growfund-bg-fill-success-secondary: hsla(141, 100%, 95%, 1);
+  --growfund-bg-fill-special-secondary: hsla(187 100% 93%);
+  --growfund-bg-fill-critical: hsl(0, 100%, 42%, 1);
+  --growfund-bg-critical: hsla(2, 100%, 95%, 1);
+  --growfund-bg-info: hsl(203, 88%, 91%);
+  --growfund-bg-black: hsl(0, 0%, 0%);
+  --growfund-bg-black-2: hsla(0, 0%, 0%, 0.7);
+  --growfund-bg-success: hsl(155, 64%, 39%);
+  --growfund-bg-disbaled: hsl(0, 0%, 85%);
+
+  --growfund-bg-green: hsl(145, 47%, 12%);
+  --growfund-bg-light-green: hsl(133, 100%, 98%);
+  --growfund-bg-brand-hover: hsl(134, 61%, 28%);
+  --growfund-bg-gray: hsla(0, 0%, 100%, 0.8);
+  --growfund-bg-gray-1: hsl(0, 0%, 95%);
+  --growfund-bg-gray-2: hsl(0, 0%, 99%);
+  --growfund-bg-gray-3: hsl(0, 0%, 94%);
+  --growfund-bg-gray-4: hsl(0, 0%, 96%);
+  --growfund-bg-gray-5: hsl(0, 0%, 93%);
+  --growfund-bg-gray-6: hsl(240, 5%, 46%);
+  --growfund-bg-gray-7: hsl(240, 10%, 4%);
+  --growfund-bg-gray-8: hsl(0, 0%, 88%);
+  --growfund-bg-gray-9: hsl(0, 0%, 93%);
+
+  --growfund-bg-overlay: hsla(0, 0%, 0%, 0.5);
+  --growfund-video-thumb-shadow: hsl(0, 0%, 28%);
+
+  /* border */
+  --growfund-border-border: hsl(0, 0%, 90%);
+  --growfund-border-critical: hsla(0, 70%, 71%, 1);
+  --growfund-border-warning: hsla(45, 100%, 51%, 1);
+  --growfund-border-special: hsl(220, 100%, 50%);
+  --growfund-border-fill-brand: hsl(145, 47%, 37%);
+  --growfund-border-light: hsl(0, 0%, 80%);
+  --growfund-border-secondary: hsl(240, 6%, 90%);
+  --growfund-border-blue: hsl(199, 100%, 33%);
+  --growfund-border-blue-2: hsl(216, 12%, 92%);
+
+  /* icon */
+  --growfund-icon-primary: hsl(0, 0%, 30%);
+  --growfund-icon-secondary: hsl(0, 0%, 55%);
+
+  /* Effects */
+  --growfund-box-shadow: 0px 4px 6px -4px #0000001a;
+  --growfund-box-shadow-1: 0px 6px 16px 0px rgba(122, 122, 122, 0.12);
+  --growfund-box-shadow-2:
+    0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --growfund-box-shadow-3: 0px 8px 32px 0px rgba(102, 102, 102, 0.16);
+  --growfund-box-shadow-4: 0 -10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --growfund-box-shadow-5: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  --growfund-box-shadow-6: 0 4px 4px rgba(0, 0, 0, 0.1);
+  --growfund-box-shadow-7: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+  /* Spacing */
+  --growfund-spacing-1: 4px;
+  --growfund-spacing-2: calc(var(--growfund-spacing-1) * 2);
+  --growfund-spacing-3: calc(var(--growfund-spacing-1) * 3);
+  --growfund-spacing-4: calc(var(--growfund-spacing-1) * 4);
+  --growfund-spacing-5: calc(var(--growfund-spacing-1) * 5);
+  --growfund-spacing-6: calc(var(--growfund-spacing-1) * 6);
+  --growfund-spacing-15: 15px;
+
+  /* Border radius */
+  --growfund-radius-0: 0;
+  --growfund-radius-xs: 2px;
+  --growfund-radius-sm: 4px;
+  --growfund-radius-md: 6px;
+  --growfund-radius-lg: 8px;
+  --growfund-radius-xl: 12px;
+  --growfund-radius-2xl: 16px;
+  --growfund-radius-3xl: 20px;
+
+  --growfund-radius-3: 3px;
+  --growfund-radius-5: 5px;
+  --growfund-radius-10: 10px;
+  --growfund-radius-circle: 50%;
+
+  /* Layout */
+  --growfund-max-width: 1320px;
+
+  /* Typography */
+  --growfund-font-family:
+    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --growfund-font-size-2xs: 8px;
+  --growfund-font-size-xs: 10px;
+  --growfund-font-size-sm: 12px;
+  --growfund-font-size-md: 14px;
+  --growfund-font-size-lg: 16px;
+  --growfund-font-size-xl: 18px;
+  --growfund-font-size-2xl: 20px;
+  --growfund-font-size-3xl: 24px;
+  --growfund-font-size-4xl: 28px;
+  --growfund-font-size-5xl: 32px;
+  --growfund-font-size-6xl: 48px;
+
+  --growfund-font-weight-light: 300;
+  --growfund-font-weight-normal: 400;
+  --growfund-font-weight-medium: 500;
+  --growfund-font-weight-semibold: 600;
+  --growfund-font-weight-bold: 700;
+  --growfund-font-weight-extrabold: 800;
+
+  --growfund-aspect-ratio-16-9: 16/9;
+  --growfund-aspect-ratio-1-17: 1.17;
+  --growfund-aspect-ratio-4-3: 4/3;
+  --growfund-aspect-ratio-1-1: 1/1;
+  --growfund-aspect-ratio-1-2: 1.2;
+  --growfund-video-aspect-ratio: 16/9;
+}
+
+.no-scroll {
+  overflow: hidden;
+  height: 100vh;
+}
+
+.growfund-container {
+  max-width: 1320px;
+  margin: auto;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--growfund-font-family);
+  background-color: var(--growfund-gray-1);
+  color: var(--growfund-gray-15);
+  font-size: var(--growfund-font-size-4);
+  font-weight: var(--growfund-font-weight-normal);
+  line-height: 1;
+  overflow-x: hidden;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+button:active,
+button:focus,
+button:focus-within {
+  outline: none;
+  border: none;
+}
+a:active,
+a:focus {
+  outline: none !important;
+  border: none !important;
+  text-decoration: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+input,
+textarea,
+select {
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: inherit;
+  outline: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul,
+li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+li {
+  display: block;
+  text-align: inherit;
+  unicode-bidi: normal;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+[type='button'],
+[type='submit'],
+button {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.growfund-hidden {
+  display: none !important;
+}
+
+.growfund-show {
+  display: block !important;
+}
+
+.growfund-form-error {
+  color: red;
+  font-size: 14px;
+  line-height: 20px;
+  margin-top: 4px;
+}
+
+.growfund-branding-btn {
+  background-color: hsla(var(--growfund-brand-bg, 145, 47%, 37%, 1)) !important;
+  color: hsla(var(--growfund-brand-foreground, 0, 0%, 98%)) !important;
+}
+
+.growfund-branding-btn:hover {
+  background-color: hsla(var(--growfund-brand-bg-hover, 134, 61%, 28%)) !important;
+}

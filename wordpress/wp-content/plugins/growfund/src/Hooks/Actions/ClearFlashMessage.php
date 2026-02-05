@@ -21,6 +21,11 @@ class ClearFlashMessage extends BaseHook
         return HookTypes::ACTION;
     }
 
+    public function get_priority()
+    {
+        return 1;
+    }
+
     public function handle(...$args)
     {
         FlashMessage::flush();

@@ -5,8 +5,9 @@ namespace Growfund\Shortcodes;
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Core\Shortcode;
-use Growfund\DTO\Site\Campaign\CampaignFiltersDTO;
-use Growfund\Services\Site\CampaignService;
+use Growfund\DTO\Campaign\CampaignFiltersDTO;
+use Growfund\Services\CampaignService;
+use Growfund\Views\Components\Campaign\CampaignList as CampaignListView;
 
 class CampaignList extends Shortcode
 {
@@ -14,31 +15,32 @@ class CampaignList extends Shortcode
 
     /**
      * supported attributes
-     * - header = list header
-     * - category = category slug
-     * - tag = campaign tags
-     * - status = published, completed, funded (can use multiple status separated by comma)
-     * - sort = newest or end_date
-     * - start_date = campaign start date
-     * - end_date = campaign end date
+     * - category_slug = category slug
+     * - status = all, launched, launched-and-beyond, published, completed, funded
+     * - order = asc or desc
+     * - orderby = created_date, start_date, end_date
      * - limit = any positive integer number
-     * - featured = true or false
-     * - only_active = true or false
+     * - page = any positive integer number
+     * - is_featured = true or false
+     * - post_ids = comma separated post ids
+     * - author_id = campaign creator id
+     * - start_date = start date in 'Y-m-d' format -- filter by start date
+     * - end_date = end date in 'Y-m-d' format -- filter by end date
      */
     public function callback($shortcode_attr, string $content = '', string $shortcode_tag = '')
     {
         $campaign_service = new CampaignService();
-        if (isset($shortcode_attr['status'])) {
-            $shortcode_attr['status'] = explode(',', $shortcode_attr['status']);
-        }
-        $filters_dto = CampaignFiltersDTO::from_array($shortcode_attr);
-        $campaigns = $campaign_service->paginated($filters_dto);
 
-        $html = growfund_renderer()
-                        ->get_html('site.components.campaign-list', [
-                            'campaigns' => $campaigns,
-                            'show_header' => false
-                        ]);
-        return '<div class="growfund-page-container">' . $html . '</div>';
+        if (isset($shortcode_attr['post_ids'])) {
+            $shortcode_attr['post_ids'] = explode(',', $shortcode_attr['post_ids']);
+        }
+
+        $filters_dto = CampaignFiltersDTO::from_array($shortcode_attr);
+        $paginated = $campaign_service->paginated($filters_dto);
+
+        $campaign_list = new CampaignListView();
+        $campaign_list->campaigns = $paginated->results;
+
+        return growfund_get_html($campaign_list);
     }
 }

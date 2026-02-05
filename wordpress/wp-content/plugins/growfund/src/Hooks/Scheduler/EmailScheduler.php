@@ -33,7 +33,7 @@ class EmailScheduler extends BaseHook
         $mailer_args = $data['args'] ?? [];
 
         if (empty($mailer_class_name) || !class_exists($mailer_class_name) || !is_subclass_of($mailer_class_name, Mailer::class)) {
-            error_log( // phpcs:ignore
+            growfund_error_log(
                 sprintf(
                     /* translators: %s: mailer class */
                     __('The mailer class %s is not valid.', 'growfund'),
@@ -48,7 +48,7 @@ class EmailScheduler extends BaseHook
                 ->with($mailer_args)
                 ->send();
         } catch (Exception $error) {
-            error_log($error->getMessage()); // phpcs:ignore
+            growfund_error_log($error->getMessage());
         }
     }
 }

@@ -6,10 +6,10 @@ defined( 'ABSPATH' ) || exit;
 
 use Growfund\Contracts\Middleware;
 use Growfund\Exceptions\InvalidMiddlewareException;
-use Growfund\Exceptions\NotFoundException;
 use Growfund\Http\SiteRequest;
 use Exception;
 use Growfund\Constants\HookNames;
+use Growfund\Core\AssetHandler;
 
 /**
  * Custom site router for handling front-end routes using rewrite rules.
@@ -97,7 +97,30 @@ class SiteRouter
     {
         add_action('init', [static::class, 'register_rewrite_rules']);
         add_filter('query_vars', [static::class, 'add_query_var']);
-        add_action('template_redirect', [static::class, 'resolve']);
+
+        if (growfund_is_block_theme()) {
+			add_action('init', function() {
+                register_block_type('growfund/site-page', [
+                    'render_callback' => [static::class, 'resolve'],
+                ]);
+
+                if (growfund_is_react_site()) {
+                    register_block_type('growfund/react-header', [
+						'render_callback' => function () {
+                            return block_template_part('header');
+                        },
+					]);
+
+                    register_block_type('growfund/react-footer', [
+						'render_callback' => function () {
+                            return block_template_part('footer');
+                        },
+					]);
+                }
+			});
+        } else {
+			add_action('template_redirect', [static::class, 'resolve']);
+        }
     }
 
     /**
@@ -136,6 +159,7 @@ class SiteRouter
      */
     public static function register_rewrite_rules()
     {
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
         do_action(HookNames::GROWFUND_BEFORE_REGISTER_SITE_ROUTES_ACTION);
 
         foreach (static::$routes as $route) {
@@ -167,7 +191,7 @@ class SiteRouter
             return null;
         }
 
-        $request_method = Sanitizer::apply_rule(wp_unslash(growfund_input_server('REQUEST_METHOD')), Sanitizer::TEXT);
+        $request_method = wp_unslash(growfund_input_server('REQUEST_METHOD', ''));
         $route = static::find_route($request_method, $query);
 
         if (empty($route)) {
@@ -201,7 +225,7 @@ class SiteRouter
             return false;
         }
 
-        $request_method = Sanitizer::apply_rule(wp_unslash(growfund_input_server('REQUEST_METHOD')), Sanitizer::TEXT);
+        $request_method = wp_unslash(growfund_input_server('REQUEST_METHOD', ''));
         $route = static::find_route($request_method, $query);
 
         if (empty($route)) {
@@ -222,7 +246,7 @@ class SiteRouter
             return;
         }
 
-        $request_method = Sanitizer::apply_rule(wp_unslash(growfund_input_server('REQUEST_METHOD')), Sanitizer::TEXT);
+        $request_method = wp_unslash(growfund_input_server('REQUEST_METHOD', ''));
         $route = static::find_route($request_method, $query);
 
         if (empty($route)) {
@@ -234,25 +258,25 @@ class SiteRouter
         }
 
 		if ($route->needs_nonce_check) {
-            $request_nonce = growfund_input_post('_wpnonce') ?? growfund_input_get('_wpnonce') ?? '';
-			$nonce = Sanitizer::apply_rule(wp_unslash($request_nonce), Sanitizer::TEXT);
+            $request_nonce = wp_unslash(growfund_input_post('_wpnonce') ?? growfund_input_get('_wpnonce') ?? '');
 			$nonce_action = $route->nonce_action ?? growfund_with_prefix('site_nonce');
 
-			if (!wp_verify_nonce($nonce, $nonce_action) ) {
+			if (!wp_verify_nonce($request_nonce, $nonce_action) ) {
 				wp_die(esc_html__('Security check failed.', 'growfund'), 403);
 			}
 		}
 
 
         try {
-            $controller = new $route->action[0]; // phpcs:ignore
+            $controller_name = $route->action[0];
+            $controller = new $controller_name();
             $method_name = $route->action[1];
             $request = static::get_request_instance();
 
             $params = static::extract_params($route->pattern);
             array_unshift($params, $request);
 
-            $request_method = Sanitizer::apply_rule(wp_unslash(growfund_input_server('REQUEST_METHOD')), Sanitizer::TEXT);
+            $request_method = wp_unslash(growfund_input_server('REQUEST_METHOD', ''));
 
             if ($request_method === $route->method) {
                 $final_callback = function () use ($controller, $method_name, $params) {
@@ -272,15 +296,27 @@ class SiteRouter
                 }
 
                 if (is_string($result)) {
-                    return add_filter('the_content', function () use ($result) {
-                        return $result;
-                    });
+                    growfund_app(AssetHandler::class)->load_assets();
+
+                    if (growfund_is_block_theme()) {
+                        return wp_kses($result, View::get_allowed_html_tags());
+                    }
+
+                    $is_react_view = growfund_is_react_site();
+
+                    growfund_get_header($is_react_view);
+
+                    add_filter('the_content', function () use ($result) {                        
+                        return wp_kses($result, View::get_allowed_html_tags());
+                    }, 20);
+
+                    growfund_get_footer($is_react_view);
+
+                    return;
                 }
 
                 exit;
             }
-        } catch (NotFoundException $e) {
-            growfund_redirect(home_url());
         } catch (Exception $e) {
             return SiteExceptionHandler::handle($e);
         }
@@ -306,7 +342,7 @@ class SiteRouter
      */
     protected static function extract_params($pattern)
     {
-        $url = trim(wp_parse_url(growfund_input_server('REQUEST_URI'), PHP_URL_PATH), '/');
+        $url = trim(wp_parse_url(growfund_input_server('REQUEST_URI', ''), PHP_URL_PATH), '/');
         $url_parts = explode('/', $url);
         $pattern_parts = explode('/', trim($pattern, '/'));
 

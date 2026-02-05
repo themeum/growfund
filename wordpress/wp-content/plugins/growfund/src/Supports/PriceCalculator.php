@@ -61,7 +61,7 @@ class PriceCalculator
      */
     public static function calculate_shipping_cost($backer_shipping_address, $reward_dto = null)
     {
-        if (empty($reward_dto->shipping_costs) || empty($backer_shipping_address)) {
+        if (empty($reward_dto->shipping_costs) || empty($backer_shipping_address) || empty($backer_shipping_address['country'])) {
             return 0;
         }
 
@@ -73,7 +73,7 @@ class PriceCalculator
 
         if (empty($estimated_shipping)) {
             $rest_of_the_world = $shipping_costs->find(function ($shipping) {
-                return $shipping['location'] === Shipping::SHIPPING_REST_OF_THE_WORLD;
+                return $shipping['location'] === Location::REST_OF_THE_WORLD;
             });
 
             return $rest_of_the_world['cost'] ?? 0;

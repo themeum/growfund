@@ -30,7 +30,7 @@ class NewUserRegistered extends BaseHook
     {
         $user_id = $args[0];
 
-        $is_apply_email_verification = apply_filters(HookNames::GROWFUND_IS_APPLY_EMAIL_VERIFICATION, true);
+        $is_apply_email_verification = apply_filters(HookNames::GROWFUND_IS_APPLY_EMAIL_VERIFICATION, true); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
 
         if (!$is_apply_email_verification) {
             return;

@@ -89,7 +89,7 @@ class CreateFundTable extends BaseMigration
                 $trigger_name
             );
     
-            if (!$wpdb->get_var($check_trigger_sql)) { // phpcs:ignore
+            if (!$wpdb->get_var($check_trigger_sql)) { // phpcs:ignore -- already prepared
                 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange
                 $sql = sprintf("CREATE TRIGGER %s BEFORE DELETE ON %s
                 FOR EACH ROW

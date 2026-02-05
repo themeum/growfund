@@ -48,6 +48,7 @@ use Growfund\Hooks\Filters\BodyClass;
 use Growfund\Hooks\Filters\HideAdminBar;
 use Growfund\Hooks\Filters\LoginRedirect;
 use Growfund\Hooks\Filters\RegisterCustomBlockTemplates;
+use Growfund\Hooks\Filters\Woocommerce\AttachmentUploadAccess;
 use Growfund\Hooks\Filters\Woocommerce\ClassicCustomCheckoutFields;
 use Growfund\Hooks\Filters\Woocommerce\CustomSuccessPage;
 use Growfund\Hooks\Filters\Woocommerce\NeedShipping;
@@ -112,7 +113,8 @@ return [
         CheckoutItemName::class,
         NeedShipping::class,
         ClassicCustomCheckoutFields::class,
-        CustomSuccessPage::class
+        CustomSuccessPage::class,
+        AttachmentUploadAccess::class,
     ],
     'schedulers' => [
         ChargeBackersScheduler::class,

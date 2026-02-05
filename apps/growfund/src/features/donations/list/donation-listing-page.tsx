@@ -53,17 +53,19 @@ import {
 } from '@/features/donations/services/donations';
 import { AppConfigKeys } from '@/features/settings/context/settings-context';
 import { useCurrency } from '@/hooks/use-currency';
+import useCurrentUser from '@/hooks/use-current-user';
 import { useFormQuerySync } from '@/hooks/use-form-query-sync';
 import { DATE_FORMATS } from '@/lib/date';
 import { registry } from '@/lib/registry';
 import { type TableColumnDef } from '@/types';
-import { emptyCell } from '@/utils';
+import { emptyCell, isDefined } from '@/utils';
 import { matchPaginatedQueryStatus } from '@/utils/match-paginated-query-status';
 
 const columnsHelper = createColumnHelper<Donation>();
 
 const DonationsList = ({ donorId }: { donorId?: string }) => {
   const { appConfig } = useAppConfig();
+  const { isAdmin } = useCurrentUser();
   const navigate = useNavigate();
   const { toCurrency } = useCurrency();
   const [isOpen, setIsOpen] = useState(false);
@@ -215,12 +217,12 @@ const DonationsList = ({ donorId }: { donorId?: string }) => {
           icon: Trash2Icon,
           is_critical: true,
         },
-        { label: __('View', 'growfund'), value: 'view', icon: ScanEye },
+        { label: __('View', 'growfund'), value: 'view', icon: ScanEye, hidden: !isAdmin },
       ];
     }
 
     return [
-      { label: __('View', 'growfund'), value: 'view', icon: ScanEye },
+      { label: __('View', 'growfund'), value: 'view', icon: ScanEye, hidden: !isAdmin },
       {
         label: __('Trash', 'growfund'),
         value: 'trash',
@@ -228,7 +230,7 @@ const DonationsList = ({ donorId }: { donorId?: string }) => {
         is_critical: true,
       },
     ];
-  }, [isTrashDonations]);
+  }, [isTrashDonations, isAdmin]);
 
   const handleActionSelect = useCallback(
     (action: string, donationId: string) => {
@@ -351,10 +353,7 @@ const DonationsList = ({ donorId }: { donorId?: string }) => {
             ['guest', __('Guest', 'growfund')],
           ]);
 
-          const donorType =
-            Number(props.row.original.donor.id) > 0
-              ? 'registered'
-              : 'guest';
+          const donorType = Number(props.row.original.donor.id) > 0 ? 'registered' : 'guest';
           return (
             <Badge
               variant={variants.has(donorType) ? variants.get(donorType) : 'outline'}
@@ -439,10 +438,18 @@ const DonationsList = ({ donorId }: { donorId?: string }) => {
           return (
             <div className="growfund-flex growfund-gap-2 growfund-opacity-0 group-hover/row:growfund-opacity-100">
               <ThreeDotsOptions
-                options={rowDropdownActions.map((action) => ({
-                  ...action,
-                  disabled: action.value === 'trash' && status !== 'pending',
-                }))}
+                options={rowDropdownActions
+                  .filter((action) => {
+                    if (isDefined(action.hidden) && action.hidden) {
+                      return false;
+                    }
+
+                    return true;
+                  })
+                  .map((action) => ({
+                    ...action,
+                    disabled: action.value === 'trash' && status !== 'pending',
+                  }))}
                 onOptionSelect={(action) => {
                   handleActionSelect(action, donationId);
                 }}

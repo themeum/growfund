@@ -1,0 +1,51 @@
+.growfund-badge-container {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--growfund-spacing-2);
+  border-radius: var(--growfund-radius-md);
+  padding: var(--growfund-spacing-3);
+  font-family: var(--growfund-font-family);
+  border: 1px solid transparent;
+}
+
+.growfund-badge-text {
+  font-size: var(--growfund-font-size-sm);
+  font-weight: var(--growfund-font-weight-normal);
+  line-height: 27px;
+}
+.growfund-badge-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.growfund-badge-icon svg path {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor !important;
+}
+
+.growfund-badge-container.growfund-badge-success-text {
+  color: var(--growfund-text-brand);
+  background-color: var(--growfund-bg-fill-success-secondary);
+  border-color: var(--growfund-text-brand);
+}
+
+.growfund-badge-container.growfund-badge-warning-text {
+  color: var(--growfund-text-warning);
+  background-color: var(--growfund-bg-fill-warning-secondary);
+  border-color: var(--growfund-border-warning);
+}
+
+.growfund-badge-container.growfund-badge-info-text {
+  color: var(--growfund-text-special-2);
+  background-color: var(--growfund-bg-fill-special-secondary);
+  border-color: var(--growfund-text-special-2);
+}
+
+.growfund-badge-container.growfund-badge-error-text {
+  color: var(--growfund-text-critical);
+  background-color: var(--growfund-bg-critical);
+  border-color: var(--growfund-border-critical);
+}

@@ -6,7 +6,9 @@
   </description>
 
   <!-- WordPress Coding Standards -->
-  <rule ref="WordPress-Core"/>
+  <rule ref="WordPress-Core"> 
+  <exclude name="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound" />
+  </rule>
   <rule ref="WordPress-Docs"/>
   <rule ref="WordPress-Extra">
     <!-- Excluded rules from WordPress-Extra -->
@@ -54,6 +56,7 @@
   <rule ref="Generic.NamingConventions.UpperCaseConstantName.ClassConstantNotUpperCase"><severity>0</severity></rule>
   <rule ref="Generic.WhiteSpace.ArbitraryParenthesesSpacing"><severity>0</severity></rule>
   <rule ref="Universal.NamingConventions.NoReservedKeywordParameterNames"><severity>0</severity></rule>
+  <rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound"><severity>0</severity></rule>
   
   
 

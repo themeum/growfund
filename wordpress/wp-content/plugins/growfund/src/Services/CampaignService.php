@@ -38,9 +38,12 @@ use Growfund\Taxonomies\Category;
 use Growfund\Taxonomies\Tag;
 use DateTime;
 use Exception;
+use Growfund\Constants\Campaign\FundSelectionType;
+use Growfund\Constants\Campaign\SuggestedOptionType;
+use Growfund\Constants\Campaign\TributeNotificationPreference;
 use Growfund\Constants\HookNames;
+use Growfund\DTO\Fundraiser\CollaboratorDTO;
 use Growfund\Supports\MetaQueryFilter;
-use Throwable;
 use WP_Post;
 use WP_Query;
 
@@ -72,15 +75,48 @@ class CampaignService
         $limit = $filters_dto->limit;
         $page = $filters_dto->page;
 
+        $query = $this->get_query($filters_dto);
+
+        $results = [];
+
+        if ($query->have_posts()) {
+            foreach ($query->posts as $campaign) {
+                $results[] = $this->prepare_campaign_dto($campaign);
+            }
+        }
+
+        remove_filter('posts_where', [$this, 'filter_out_non_admin_draft_campaigns']);
+        remove_filter('posts_where', $this->filter_out_campaigns_by_author($filters_dto));
+        remove_filter('posts_where', [new MetaQueryFilter(), 'update_meta_value_is_null']);
+
+        return PaginatedCollectionDTO::from_array([
+            'results' => $results,
+            'total' => $query->found_posts,
+            'count' => count($results),
+            'per_page' => $limit,
+            'current_page' => $page,
+            'has_more' => $page < $query->max_num_pages,
+            'overall' => PaginationSupport::get_overall_post_count(Campaign::NAME, ['post__in' => $query_args['post__in'] ?? []]),
+        ]);
+    }
+
+    /**
+     * Get query
+     * @param CampaignFiltersDTO $filters_dto
+     * @return WP_Query
+     */
+    protected function get_query(CampaignFiltersDTO $filters_dto) {
+		$limit = $filters_dto->limit;
+        $page = $filters_dto->page;
+
         $query_args = [
             'post_type'      => Campaign::NAME,
             'posts_per_page' => $limit,
             'post_status'    => ['publish', 'draft', 'trash'],
             'paged'          => $page,
-            's'              => $filters_dto->search,
-            'orderby'        => 'ID',
-            'apply_admin_filter' => true,
         ];
+
+        $query_args = $this->apply_sorting($filters_dto, $query_args);
 
         // Make a way so that we can get the campaigns within the provided ids only
         if (empty($filters_dto->author_id) && !empty($filters_dto->post_ids)) {
@@ -90,6 +126,15 @@ class CampaignService
         // Search by title/content
         if (!empty($filters_dto->search)) {
             $query_args['s'] = $filters_dto->search;
+        }
+
+        if (!empty($filters_dto->category_slug)) {
+            $query_args['tax_query'][] = [
+                'taxonomy' => Category::NAME,
+                'field'    => 'slug',
+                'terms'    => $filters_dto->category_slug,
+                'include_children' => true
+            ];
         }
 
         // Filter by custom meta field 'status'
@@ -200,6 +245,14 @@ class CampaignService
                 break;
         }
 
+        if (!empty($filters_dto->is_featured)) {
+            $query_args['meta_query'][] = [
+                'key'     => growfund_with_prefix('is_featured'),
+                'value'   => $filters_dto->is_featured ? '1' : '0',
+                'compare' => '='
+            ];
+        }
+
         // Filter by start date
         if (!empty($filters_dto->start_date)) {
             $query_args['meta_query'][] = [
@@ -225,35 +278,51 @@ class CampaignService
             $query_args['meta_query']['relation'] = 'AND';
         }
 
-        $filter_campaigns_by_author_callback = $this->filter_out_campaigns_by_author($filters_dto);
-
-        add_filter('posts_where', $filter_campaigns_by_author_callback);
+        add_filter('posts_where', $this->filter_out_campaigns_by_author($filters_dto));
         add_filter('posts_where', [$this, 'filter_out_non_admin_draft_campaigns']);
         add_filter('posts_where', [new MetaQueryFilter(), 'update_meta_value_is_null']);
 
         $query = new WP_Query($query_args);
 
-        $results = [];
+        return $query;
+    }
 
-        if ($query->have_posts()) {
-            foreach ($query->posts as $campaign) {
-                $results[] = $this->prepare_campaign_dto($campaign);
-            }
+    protected function apply_sorting(CampaignFiltersDTO $filters_dto, array $query_args)
+    {
+        $query_args['order'] = strtoupper($filters_dto->order ?? 'DESC');
+
+        if (empty($filters_dto->orderby)) {
+            $query_args['orderby'] = 'ID';
+
+            return $query_args;
         }
 
-        remove_filter('posts_where', [$this, 'filter_out_non_admin_draft_campaigns']);
-        remove_filter('posts_where', $filter_campaigns_by_author_callback);
-        remove_filter('posts_where', [new MetaQueryFilter(), 'update_meta_value_is_null']);
-
-        return PaginatedCollectionDTO::from_array([
-            'results' => $results,
-            'total' => $query->found_posts,
-            'count' => count($results),
-            'per_page' => $limit,
-            'current_page' => $page,
-            'has_more' => $page < $query->max_num_pages,
-            'overall' => PaginationSupport::get_overall_post_count(Campaign::NAME, ['post__in' => $query_args['post__in'] ?? []]),
-        ]);
+        switch ($filters_dto->orderby) {
+            case 'created_date':
+                $query_args = array_merge($query_args, [
+                    'orderby' => 'date',
+                ]);
+                break;
+            case 'start_date': 
+                $query_args = array_merge($query_args, [
+                    'orderby' => 'meta_value',
+                    'meta_key' => growfund_with_prefix('start_date'), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+                    'meta_type' => 'DATE' // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+                ]);
+                break;
+			case 'end_date':
+                $query_args = array_merge($query_args, [
+                    'orderby' => 'meta_value',
+                    'meta_key' => growfund_with_prefix('end_date'), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+                    'meta_type' => 'DATE' // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+                ]);
+                break;
+            default:
+                $query_args['orderby'] = $filters_dto->orderby;
+                break;
+        }
+        
+        return $query_args;
     }
 
     /**
@@ -331,6 +400,35 @@ class CampaignService
     }
 
     /**
+     * Get recommended campaigns.
+     *
+     * @param string $category_slug The category slug.
+     * @return CampaignDTO[] The recommended campaigns.
+     */
+    public function get_recommended_campaigns(string $category_slug)
+    {
+        $filters_dto = new CampaignFiltersDTO();
+        $filters_dto->limit = 4;
+        $filters_dto->category_slug = $category_slug;
+        $filters_dto->order = 'desc';
+        $filters_dto->orderby = 'rand';
+
+        $query = $this->get_query($filters_dto);
+
+        if ($query->have_posts()) {
+            foreach ($query->posts as $campaign) {
+                $results[] = $this->prepare_campaign_dto($campaign);
+            }
+        }
+
+        remove_filter('posts_where', [$this, 'filter_out_non_admin_draft_campaigns']);
+        remove_filter('posts_where', $this->filter_out_campaigns_by_author($filters_dto));
+        remove_filter('posts_where', [new MetaQueryFilter(), 'update_meta_value_is_null']);
+
+        return $results;
+    }
+
+    /**
      * Get campaigns by user id.
      *
      * @param CampaignFiltersDTO $filters_dto The filters to apply to the query.
@@ -387,6 +485,7 @@ class CampaignService
             'post_title'   => 'Untitled',
             'post_status'  => Campaign::DEFAULT_POST_STATUS,
             'post_author'  => get_current_user_id(),
+            'comment_status' => 'open'
         ], true);
 
         if (is_wp_error($post_id)) {
@@ -451,7 +550,7 @@ class CampaignService
         wp_set_object_terms($campaign_id, $categories, Category::NAME);
         wp_set_object_terms($campaign_id, $dto->tags, Tag::NAME, false);
 
-        do_action(HookNames::GROWFUND_CAMPAIGN_AFTER_SAVE_ACTION, $campaign_id, $dto);
+        do_action(HookNames::GROWFUND_CAMPAIGN_AFTER_SAVE_ACTION, $campaign_id, $dto); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
 
         growfund_event(new CampaignUpdateEvent($campaign, $dto));
         growfund_event(new CampaignStatusUpdateEvent($campaign, $dto->status));
@@ -460,12 +559,18 @@ class CampaignService
     }
 
     protected function continue_campaign_when_reaching_action_is_changed(CampaignDTO $campaign, UpdateCampaignDTO $dto){
-        if ($campaign->reaching_action === $dto->reaching_action || !$campaign->is_ended) {
+        if ($campaign->reaching_action === $dto->reaching_action) {
             return;
         }
 
-		if ($campaign->status === CampaignStatus::FUNDED && $dto->reaching_action === ReachingAction::CONTINUE) {
-            PostMeta::delete($campaign->id, 'is_ended');
+		if ($campaign->status === CampaignStatus::FUNDED) {
+            if ($dto->reaching_action === ReachingAction::CONTINUE && $campaign->is_ended) {
+                PostMeta::delete($campaign->id, 'is_ended');
+            }
+
+            if ($dto->reaching_action === ReachingAction::CLOSE && !$campaign->is_ended) {
+                $this->mark_campaign_as_ended($campaign->id);
+            }
         }
     }
 
@@ -522,7 +627,7 @@ class CampaignService
             $deleted_campaign_posts = (new CampaignPostService())->delete_by_parent_id($id);
 
             if (!empty($deleted_campaign)) {
-                do_action(HookNames::GROWFUND_CAMPAIGN_AFTER_PERMANENT_DELETE_ACTION, $id);
+                do_action(HookNames::GROWFUND_CAMPAIGN_AFTER_PERMANENT_DELETE_ACTION, $id); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
             }
 
             return !empty($deleted_campaign);
@@ -963,14 +1068,6 @@ class CampaignService
             ? Date::is_date_in_past_or_present($dto->start_date)
             : false;
 
-        // If the campaign end date is defined and it reaches the end date
-        // Then we mark the campaign as ended.
-        // Also if the campaign is marked as ended forcefully then we mark it ended.
-        $dto->is_ended = !empty($dto->end_date)
-            ? Date::is_date_in_past($dto->end_date)
-            : false;
-        $dto->is_ended = $dto->is_ended || boolval($metadata['is_ended'] ?? false);
-
         $dto->risk = $metadata['risk'] ?? null;
         $dto->has_goal = isset($metadata['has_goal'])
             ? filter_var($metadata['has_goal'], FILTER_VALIDATE_BOOLEAN)
@@ -1005,8 +1102,8 @@ class CampaignService
             $dto->tribute_options = !empty($metadata['tribute_options'])
                 ? maybe_unserialize($metadata['tribute_options'])
                 : [];
-            $dto->tribute_notification_preference = $metadata['tribute_notification_preference'] ?? 'donor-decide';
-            $dto->fund_selection_type = $metadata['fund_selection_type'] ?? 'fixed';
+            $dto->tribute_notification_preference = $metadata['tribute_notification_preference'] ?? TributeNotificationPreference::LET_DONOR_DECIDE;
+            $dto->fund_selection_type = $metadata['fund_selection_type'] ?? FundSelectionType::FIXED;
             $dto->default_fund = $metadata['default_fund'] ?? null;
             $dto->fund_choices = !empty($metadata['fund_choices']) && is_array($metadata['fund_choices'])
                 ? array_map('strval', $metadata['fund_choices'])
@@ -1016,7 +1113,7 @@ class CampaignService
                 : false;
             $dto->min_donation_amount = $metadata['min_donation_amount'] ?? null;
             $dto->max_donation_amount = $metadata['max_donation_amount'] ?? null;
-            $dto->suggested_option_type = $metadata['suggested_option_type'] ?? 'amount-only';
+            $dto->suggested_option_type = $metadata['suggested_option_type'] ?? SuggestedOptionType::AMOUNT_ONLY;
             $dto->suggested_options = !empty($metadata['suggested_options'])
                 ? maybe_unserialize($metadata['suggested_options'])
                 : [];
@@ -1052,9 +1149,27 @@ class CampaignService
         }
 
         $dto->last_decline_reason = $last_decline_reason;
-        $dto->preview_url = growfund_campaign_url($campaign->ID) ?: null; // phpcs:ignore
+        $dto->preview_url = growfund_campaign_url($campaign->ID);
         $dto->is_paused = boolval($metadata['is_paused'] ?? false);
         $dto->is_hidden = boolval($metadata['is_hidden'] ?? false);
+        // If the campaign end date is defined and it reaches the end date
+        // Then we mark the campaign as ended.
+        // Else if the goal reaching action is set to close
+        // Then we mark the campaign as ended.
+        // Also if the campaign is marked as ended forcefully then we mark it ended.
+        $dto->is_ended = !empty($dto->end_date)
+            ? Date::is_date_in_past($dto->end_date)
+            : false;
+        $dto->is_ended = $dto->is_ended || ($dto->status === CampaignStatus::FUNDED && $dto->reaching_action === ReachingAction::CLOSE) || boolval($metadata['is_ended'] ?? false);
+
+
+        // To check if the campaign is bookmarked by a user in site
+        if (!growfund_is_plugin_menu()) {
+            $bookmark_service = new BookmarkService();
+            $dto->is_bookmarked = $bookmark_service->is_bookmarked(growfund_user()->get_id(), (int) $dto->id);
+        } else {
+            $dto->exclude(['is_bookmarked']);
+        }
 
         /**
          * Individual contribution count is the total number of contributions by a specific
@@ -1079,6 +1194,36 @@ class CampaignService
         $ids = wp_list_pluck($records, 'collaborator_id');
 
         return $ids;
+    }
+
+    /**
+     * Gets the detail of collaborators associated with a given campaign ID.
+     *
+     * @param int $id The ID of the campaign to retrieve collaborators for.
+     * @return array An array of collaborator dto
+     */
+    public function get_collaborator_list_by_id($id)
+    {
+        $collaborator_ids = $this->get_collaborators_by_id($id);
+
+        return apply_filters(HookNames::GROWFUND_COLLABORATOR_LIST_FILTER, [], $collaborator_ids); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
+    }
+
+    /**
+     * @param int|null $author_id
+     * @return CollaboratorDTO
+     */
+    public function get_campaign_author($author_id) {
+        if (empty($author_id)) {
+            return null;
+        }
+        
+        $author = get_user($author_id);
+
+        if (!$author) {
+            return null;
+        }
+        return (new UserService())->prepare_collaborator_dto($author);
     }
 
     public function get_campaign_ids_by_collaborator($user_id)
@@ -1191,7 +1336,7 @@ class CampaignService
     {
         $collaborators = $this->get_collaborators_by_id($campaign_id);
 
-        return in_array($user_id, $collaborators); // phpcs:ignore
+        return in_array((int) $user_id, $collaborators, true);
     }
 
     /**

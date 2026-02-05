@@ -22,7 +22,7 @@ class HideAdminBar extends BaseHook
 
     public function handle(...$args)
     {
-        if (growfund_is_dashboard_route()) {
+        if (growfund_is_react_site()) {
             return false;
         }
 

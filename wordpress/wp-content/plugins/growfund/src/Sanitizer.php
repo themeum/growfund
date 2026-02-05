@@ -4,9 +4,9 @@ namespace Growfund;
 
 defined( 'ABSPATH' ) || exit;
 
+use Growfund\Contracts\Request;
 use Growfund\Supports\Date;
 use Growfund\Supports\Money;
-use InvalidArgumentException;
 
 /**
  * Class Sanitizer.
@@ -29,6 +29,13 @@ class Sanitizer
      * @var string
      */
     const TEXT = 'text';
+
+    /**
+     * Sanitize the value as column.
+     *
+     * @var string
+     */
+    const COLUMN = 'column';
 
     /**
      * Sanitize the rich text content.
@@ -197,13 +204,20 @@ class Sanitizer
     /**
      * Sanitize the data.
      *
-     * @param array $data
+     * @param array|Request $data
      * @param array $rules
      * 
      * @return static
      */
-    public static function make(array $data = [], array $rules = [])
+    public static function make($data, array $rules = [])
     {
+        if ($data instanceof Request) {
+            return new static(
+                $data->only($rules),
+                $rules
+            );
+        }
+
         return new static($data, $rules);
     }
 
@@ -302,13 +316,9 @@ class Sanitizer
      */
     public static function apply_rule($value, $type, array $data = [])
     {
-        // For the null values, we don't need to sanitize them.
-        if (is_null($value)) {
-            return null;
-        }
-
-        if (is_null($type)) {
-            throw new InvalidArgumentException(esc_html__('The rule type cannot be null.', 'growfund'));
+        // For the null values or raw values, we don't need to sanitize them.
+        if (is_null($value) || is_null($type)) {
+            return $value;
         }
 
         switch ($type) {
@@ -317,6 +327,9 @@ class Sanitizer
                 break;
             case static::TEXT:
                 $value = sanitize_text_field($value);
+                break;
+            case static::COLUMN:
+                $value = sanitize_key($value);
                 break;
             case static::RICH_TEXT:
                 $value = wp_kses_post($value);
@@ -356,6 +369,14 @@ class Sanitizer
                 $value = Money::prepare_for_storage((float) $value);
                 break;
             case static::BOOL:
+                if (strtolower($value) === 'true') {
+                    $value = true;
+                }
+
+                if (strtolower($value) === 'false') {
+                    $value = false;
+                }
+                
                 $value = (bool) $value;
                 break;
             case static::ARRAY:
@@ -403,8 +424,6 @@ class Sanitizer
             default:
                 if (is_callable($type)) {
                     $value = $type($value, $data);
-                } else {
-                    throw new InvalidArgumentException(esc_html__('Provide valid rule type.', 'growfund'));
                 }
                 break;
         }

@@ -1,0 +1,26 @@
+.growfund-infinite-scroll {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem 0;
+}
+
+.growfund-infinite-scroll .growfund-infinite-scroll-loader {
+  font-size: 1rem;
+  font-weight: var(--growfund-font-weight-normal);
+  color: var(--growfund-text-secondary);
+  margin: 0;
+  padding: 0;
+  animation: growfund_loading_text_fade 1.5s infinite ease-in-out;
+}
+
+@keyframes growfund_loading_text_fade {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}

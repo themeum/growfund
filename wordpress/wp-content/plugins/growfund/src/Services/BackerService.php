@@ -53,8 +53,8 @@ class BackerService extends UserService
 
         $limit = isset($params['limit']) ? (int) $params['limit'] : 10;
         $page = isset($params['page']) ? (int) $params['page'] : 1;
-        $orderby = isset($params['orderby']) ? (int) $params['orderby'] : 'ID';
-        $order = isset($params['order']) ? (int) $params['order'] : 'DESC';
+        $orderby = isset($params['orderby']) ? $params['orderby'] : 'ID';
+        $order = isset($params['order']) ? $params['order'] : 'DESC';
         $search = !empty($params['search']) ? $params['search'] : '';
         $status = !empty($params['status']) ? $params['status'] : 'all';
 

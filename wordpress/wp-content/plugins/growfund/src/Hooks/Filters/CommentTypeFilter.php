@@ -6,8 +6,9 @@ defined( 'ABSPATH' ) || exit;
 
 use Growfund\Constants\HookNames;
 use Growfund\Constants\HookTypes;
-use Growfund\Constants\Site\Comment as CommentConstants;
 use Growfund\Hooks\BaseHook;
+use Growfund\PostTypes\Campaign;
+use Growfund\PostTypes\CampaignPost;
 
 /**
  * Comment Type Filter Hook
@@ -33,8 +34,8 @@ class CommentTypeFilter extends BaseHook
         $comment_types = $args[0] ?? [];
 
         // Add growfund custom comment types to the existing dropdown
-        $comment_types[CommentConstants::TYPE_CAMPAIGN_COMMENT] = __('Campaign', 'growfund');
-        $comment_types[CommentConstants::TYPE_UPDATE_COMMENT] = __('Campaign Post', 'growfund');
+        $comment_types[Campaign::COMMENT_TYPE] = __('Campaign', 'growfund');
+        $comment_types[CampaignPost::COMMENT_TYPE] = __('Campaign Post', 'growfund');
 
         return $comment_types;
     }

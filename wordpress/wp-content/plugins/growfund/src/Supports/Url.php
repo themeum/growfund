@@ -15,7 +15,7 @@ class Url
         return add_query_arg($data, $referer);
     }
 
-    public static function redirect($url, $data = [])
+    public static function redirect($url, $data = [], $status = 302)
     {
         $referer = $url;
         $redirect_url = add_query_arg($data, $referer);
@@ -27,14 +27,13 @@ class Url
             exit;
         }
 
-        wp_safe_redirect($redirect_url);
+        wp_safe_redirect($redirect_url, $status);
         exit;
     }
 
-    public static function redirect_back($data = [])
+    public static function redirect_back($query_params = [])
     {
-        $referer = wp_get_referer();
-        $redirect_url = add_query_arg($data, $referer);
+        $redirect_url = static::get_previous_url($query_params);
 
         static::filter_safe_url($redirect_url);
 
@@ -47,6 +46,14 @@ class Url
         exit;
     }
 
+    public static function get_previous_url(array $query_params = [])
+    {
+        $referer = wp_get_referer();
+        $redirect_url = add_query_arg($query_params, $referer);
+
+        return $redirect_url;
+    }
+    
     protected static function filter_safe_url($redirect_url)
     {
         add_filter('wp_safe_redirect_fallback', function ($url) use ($redirect_url) {
@@ -58,7 +65,7 @@ class Url
                         return $item['type'] === PaymentGatewayType::ONLINE;
                     })->some(function ($item) use ($redirect_url) {
                         $domain = $item['config']['domain_name'] ?? strtolower($item['config']['label'] ?? '');
-                        return !empty($domain) && str_contains($redirect_url, $domain);
+                        return !empty($domain) && strpos($redirect_url, $domain) !== false;
                     });
 
 				// for payment gateways allowed safe redirect

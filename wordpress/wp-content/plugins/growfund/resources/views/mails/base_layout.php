@@ -4,16 +4,12 @@ use Growfund\Mailer;
 
 defined( 'ABSPATH' ) || exit;
 
-$content = $template['content'] ?? [];
-$colors = $template['colors'] ?? [];
-$media = $template['media'] ?? [];
-
-$data = [
+$growfund_mail_data = [
     'message' => $message,
     'heading' => $heading,
-    'content' => $content,
-    'colors' => $colors,
-    'media' => $media,
+    'content' => $template['content'] ?? [],
+    'colors' => $template['colors'] ?? [],
+    'media' => $template['media'] ?? [],
 ];
 
 ?>
@@ -57,10 +53,10 @@ $data = [
                         padding-bottom:32px;text-align:center;">
                             <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><![endif]-->
 
-                            <?php growfund_renderer()->render('mails.layouts.header', $data); ?>
-                            <?php growfund_renderer()->render('mails.layouts.body', $data); ?>
-                            <?php growfund_renderer()->render('mails.layouts.additional', $data); ?>
-                            <?php growfund_renderer()->render('mails.layouts.footer', $data); ?>
+                            <?php growfund_renderer()->render('mails.layouts.header', $growfund_mail_data); ?>
+                            <?php growfund_renderer()->render('mails.layouts.body', $growfund_mail_data); ?>
+                            <?php growfund_renderer()->render('mails.layouts.additional', $growfund_mail_data); ?>
+                            <?php growfund_renderer()->render('mails.layouts.footer', $growfund_mail_data); ?>
                         </td>
                     </tr>
                 </tbody>

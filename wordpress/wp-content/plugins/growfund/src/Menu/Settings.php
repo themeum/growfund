@@ -5,7 +5,6 @@ namespace Growfund\Menu;
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Constants\MenuTypes;
-use Growfund\Renderer;
 
 class Settings extends Menu
 {

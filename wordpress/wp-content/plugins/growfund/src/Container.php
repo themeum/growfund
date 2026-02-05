@@ -122,7 +122,7 @@ class Container implements ContainerContract
      * @param string $abstract
      * @return void
      */
-    public function alias(string $alias, string $abstract) // phpcs:ignore
+    public function alias(string $alias, string $abstract)
     {
         if ($alias === $abstract) {
             /* translators: %s: abstract class name */
@@ -226,7 +226,7 @@ class Container implements ContainerContract
      * @param array $parameters
      * @return mixed
      */
-    protected function autowire(string $class, array $parameters = []) // phpcs:ignore
+    protected function autowire(string $class, array $parameters = [])
     {
         // Check for circular dependencies
         if (in_array($class, $this->resolved, true)) {

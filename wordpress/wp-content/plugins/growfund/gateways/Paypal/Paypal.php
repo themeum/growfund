@@ -246,7 +246,7 @@ class Paypal implements PaymentGatewayContract, FuturePaymentContract
         }
 
         if (!$approval_url) {
-            error_log("PayPal approval URL not found in setup token response. Full response: " . print_r($setup_token, true)); // phpcs:ignore
+            growfund_error_log("PayPal approval URL not found in setup token response. Full response: " . is_string($setup_token) ? $setup_token : wp_json_encode($setup_token));
             throw new Exception(esc_html__('PayPal approval URL not found in setup token response.', 'growfund'));
         }
 
@@ -625,7 +625,7 @@ class Paypal implements PaymentGatewayContract, FuturePaymentContract
                     $transaction_id = $payment_token_id;
                     $customer_id = $paypal_customer_id;
                 } else {
-                    error_log('VAULT.PAYMENT-TOKEN.CREATED webhook missing payment_token_id or customer_id.'); // phpcs:ignore
+                    growfund_error_log('VAULT.PAYMENT-TOKEN.CREATED webhook missing payment_token_id or customer_id.');
                     $status = PaymentEventStatus::FAILED;
                 }
                 break;
@@ -736,7 +736,7 @@ class Paypal implements PaymentGatewayContract, FuturePaymentContract
         $result = json_decode($response_body, true);
 
         if ($code >= 400 || ($result['verification_status'] ?? '') !== 'SUCCESS') {
-            error_log('PayPal webhook verification failed: ' . print_r($result, true)); // phpcs:ignore
+            growfund_error_log('PayPal webhook verification failed: ' . is_string($result) ? $result : wp_json_encode($result));
             throw new Exception(esc_html__('PayPal webhook signature verification failed.', 'growfund'));
         }
 

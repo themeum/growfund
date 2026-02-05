@@ -361,9 +361,9 @@ class QueryBuilder
             $operator = '=';
         }
 
-        $this->where_clauses[] = ['DATE(' . $column . ')', $operator, $value];
+        $protected_column = $this->protect_identifier($column);
 
-        return $this;
+        return $this->where_raw("DATE({$protected_column}) {$operator} :val", ['val' => $value]);
     }
 
     /**
@@ -962,6 +962,7 @@ class QueryBuilder
         }
 
         $columns = array_keys($data[0]);
+        $protected_columns = array_map([$this, 'protect_identifier'], $columns);
 
         $value_sets = [];
         $bindings = [];
@@ -981,7 +982,7 @@ class QueryBuilder
             $value_sets[] = '(' . implode(',', $placeholders) . ')';
         }
 
-        $sql = 'INSERT INTO ' . $this->table . ' (' . implode(',', $columns) . ') VALUES ' . implode(',', $value_sets);
+        $sql = 'INSERT INTO ' . $this->table . ' (' . implode(',', $protected_columns) . ') VALUES ' . implode(',', $value_sets);
 
         $prepared_sql = $this->db->prepare($sql, $bindings);
 
@@ -1031,12 +1032,49 @@ class QueryBuilder
 
 
     /**
+     * Protect an identifier (column or table name) by wrapping it in backticks.
+     * Handles table.column format.
+     *
+     * @param string $identifier
+     * @return string
+     */
+    protected function protect_identifier(string $identifier)
+    {
+        if ($identifier === '*') {
+            return '*';
+        }
+
+        if (preg_match('/^([A-Za-z_]+)\((.+)\)$/i', trim($identifier), $matches)) {
+            $function = $matches[1];
+            $inner    = $matches[2];
+            
+            if ($inner === '*') {
+                return "{$function}(*)";
+            }
+
+            $innerParts = explode('.', $inner);
+            $innerParts = array_map(function($part){
+                    return '`' . str_replace('`', '', trim($part)) . '`';
+			}, $innerParts);
+
+            return "{$function}(" . implode('.', $innerParts) . ")";
+        }
+
+        $parts = explode('.', $identifier);
+        $parts = array_map(function($part) {
+            return '`' . str_replace('`', '', trim($part)) . '`';
+        }, $parts);
+
+        return implode('.', $parts);
+    }
+
+    /**
      * Build SQL query string.
      *
      * @param string $type
      * @return string
      */
-    public function build_query(string $type = 'select'): string
+    public function build_query(string $type = 'select')
     {
         if (empty($this->table)) {
             throw new Exception(esc_html__('Table name is required', 'growfund'));
@@ -1062,7 +1100,7 @@ class QueryBuilder
                 $this->query .= ' SET ';
 
                 foreach ($this->set_clauses as $key => $value) {
-                    $this->query .= $key . ' = ' . $this->get_placeholder_by_value($value) . ', ';
+                    $this->query .= $this->protect_identifier($key) . ' = ' . $this->get_placeholder_by_value($value) . ', ';
                     $this->add_binding($value);
                 }
 
@@ -1118,13 +1156,13 @@ class QueryBuilder
                         $this->add_binding($item);
                     }
 
-                    $where_clause[] = implode(' ', [$where[0], $where[1], '(' . implode(',', $placeholders) . ')']);
+                    $where_clause[] = implode(' ', [$this->protect_identifier($where[0]), $where[1], '(' . implode(',', $placeholders) . ')']);
                 } elseif ($where[1] === 'LIKE') {
                     $value = str_replace('%', '%%', $where[2]);
-                    $where_clause[] = implode(' ', [$where[0], $where[1],  $this->get_placeholder_by_value($value)]);
+                    $where_clause[] = implode(' ', [$this->protect_identifier($where[0]), $where[1],  $this->get_placeholder_by_value($value)]);
                     $this->add_binding($value);
                 } else {
-                    $where_clause[] = implode(' ', [$where[0], $where[1], $this->get_placeholder_by_value($where[2])]);
+                    $where_clause[] = implode(' ', [$this->protect_identifier($where[0]), $where[1], $this->get_placeholder_by_value($where[2])]);
                     $this->add_binding($where[2]);
                 }
             }
@@ -1136,7 +1174,7 @@ class QueryBuilder
             $where_between_clause = [];
 
             foreach ($this->where_between_clauses as $where) {
-                $where_between_clause[] = implode(' ', ['(', $where[0], 'BETWEEN', $this->get_placeholder_by_value($where[1]), 'AND', $this->get_placeholder_by_value($where[2]), ')']);
+                $where_between_clause[] = implode(' ', ['(', $this->protect_identifier($where[0]), 'BETWEEN', $this->get_placeholder_by_value($where[1]), 'AND', $this->get_placeholder_by_value($where[2]), ')']);
                 $this->add_binding($where[1]);
                 $this->add_binding($where[2]);
             }
@@ -1152,7 +1190,7 @@ class QueryBuilder
             $or_where_clause = [];
 
             foreach ($this->or_where_clauses as $orWhere) {
-                $or_where_clause[] = implode(' ', [$orWhere[0], $orWhere[1], $this->get_placeholder_by_value($orWhere[2])]);
+                $or_where_clause[] = implode(' ', [$this->protect_identifier($orWhere[0]), $orWhere[1], $this->get_placeholder_by_value($orWhere[2])]);
                 $this->add_binding($orWhere[2]);
             }
 
@@ -1160,7 +1198,8 @@ class QueryBuilder
         }
 
         if (!empty($this->group_by_clauses)) {
-            $this->query .= ' GROUP BY ' . implode(', ', $this->group_by_clauses);
+            $group_by_clauses = array_map([$this, 'protect_identifier'], $this->group_by_clauses);
+            $this->query .= ' GROUP BY ' . implode(', ', $group_by_clauses);
         }
 
         if (!empty($this->having_clauses) || !empty($this->or_having_clauses)) {
@@ -1170,7 +1209,7 @@ class QueryBuilder
         if (!empty($this->having_clauses)) {
             $having_clauses = [];
             foreach ($this->having_clauses as $having) {
-                $having_clauses[] = implode(' ', [$having[0], $having[1], $this->get_placeholder_by_value($having[2])]);
+                $having_clauses[] = implode(' ', [$this->protect_identifier($having[0]), $having[1], $this->get_placeholder_by_value($having[2])]);
                 $this->add_binding($having[2]);
             }
 
@@ -1180,7 +1219,7 @@ class QueryBuilder
         if (!empty($this->or_having_clauses)) {
             $or_having_clauses = [];
             foreach ($this->or_having_clauses as $or_having) {
-                $or_having_clauses[] = implode(' ', [$or_having[0], $or_having[1], $this->get_placeholder_by_value($or_having[2])]);
+                $or_having_clauses[] = implode(' ', [$this->protect_identifier($or_having[0]), $or_having[1], $this->get_placeholder_by_value($or_having[2])]);
                 $this->add_binding($or_having[2]);
             }
 
@@ -1192,10 +1231,23 @@ class QueryBuilder
             $order_by_clause = [];
 
             foreach ($this->order_by_clauses as $orderBy) {
-                $order_by_clause[] = implode(' ', $orderBy);
+                $column = $this->protect_identifier($orderBy[0]);
+                $direction = strtoupper($orderBy[1]);
+
+                if (!in_array($direction, ['ASC', 'DESC'], true)) {
+                    $direction = 'ASC';
+                }
+
+                $order_by = sanitize_sql_orderby("$column $direction");
+
+                if ($order_by) {
+                    $order_by_clause[] = $order_by;
+                }
             }
 
-            $this->query .= ' ORDER BY ' . implode(', ', $order_by_clause);
+            if (!empty($order_by_clause)) {
+                $this->query .= ' ORDER BY ' . implode(', ', $order_by_clause);
+            }
         }
 
         if (isset($this->limit)) {
@@ -1297,7 +1349,7 @@ class QueryBuilder
      * @param mixed $value
      * @return string
      */
-    protected function get_placeholder_by_value($value): string
+    protected function get_placeholder_by_value($value)
     {
         if (is_null($value)) {
             return 'NULL';

@@ -38,4 +38,11 @@ class PaginatedCollectionDTO extends DTO
             'overall' => 0,
         ];
     }
+
+    public function get_casts()
+    {
+        return [
+            'results.*' => DTO::class,
+        ];
+    }
 }

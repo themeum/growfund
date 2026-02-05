@@ -25,8 +25,10 @@ use Growfund\Supports\FlashMessage;
 use Growfund\Supports\Location;
 use Growfund\Supports\Url;
 use Growfund\Supports\Payment;
+use Growfund\Supports\RequestInput;
 use Growfund\Supports\Utils;
 use Growfund\Supports\Woocommerce;
+use Growfund\View;
 
 if (!function_exists('growfund_app')) {
     /**
@@ -60,6 +62,61 @@ if (!function_exists('growfund_renderer')) {
     function growfund_renderer()
     {
         return growfund_app()->make(Renderer::class);
+    }
+}
+
+if (!function_exists('growfund_render')) {
+    /**
+     * Render the view class.
+     * @since 1.0.3
+     * 
+     * @param View $view_class
+     * @return void
+     */
+    function growfund_render(View $view_class)
+    {
+        $view_class->render();
+    }
+}
+
+if (!function_exists('growfund_get_html')) {
+    /**
+     * Get the html for the view class.
+     * @since 1.0.3
+     * 
+     * @param View $view_class
+     * @return string
+     */
+    function growfund_get_html(View $view_class)
+    {        
+        return $view_class->get_html();
+    }
+}
+
+
+if (!function_exists('growfund_echo_safe_html')) {
+    /**
+     * Render a view with allowed tags
+     * @param string $content
+     * @return void
+     */
+    function growfund_echo_safe_html($content) {
+        return View::echo_safe_html($content);
+    }
+}
+
+if (!function_exists('growfund_get_safe_html')) {
+    /**
+     * Render a view with allowed tags
+     * @param View|string $content
+     * @return string
+     */
+    function growfund_get_safe_html($content) {
+        if (is_subclass_of($content, View::class)) {
+            return $content->get_safe_html();
+        }
+
+        return View::safe_html($content);
     }
 }
 
@@ -232,9 +289,9 @@ if (!function_exists('growfund_redirect')) {
     /**
      * Redirect to the given location.
      */
-    function growfund_redirect($location)
+    function growfund_redirect($location, $data = [], $status = 302)
     {
-        Url::redirect($location);
+        Url::redirect($location, $data, $status);
     }
 }
 
@@ -307,7 +364,7 @@ if (!function_exists('growfund_flash_set_message')) {
      * Set the flash message.
      * 
      * @param string $key
-     * @param string $message
+     * @param string|array $message
      * @return void
      */
     function growfund_flash_set_message($key, $message)
@@ -477,7 +534,7 @@ if (!function_exists('growfund_campaign_url')) {
 
         $post = get_page_by_path($identifier, OBJECT, Campaign::NAME);
 
-        return $post ? get_permalink($post->ID) : false;
+        return $post ? get_permalink($post->ID) : null;
     }
 }
 
@@ -553,7 +610,7 @@ if (!function_exists('growfund_pledge_receipt_download_url')) {
      */
     function growfund_pledge_receipt_download_url(string $uid)
     {
-        return site_url("public/#pledges/$uid/receipt");
+        return Utils::pledge_receipt_url($uid);
     }
 }
 
@@ -565,7 +622,7 @@ if (!function_exists('growfund_donation_receipt_download_url')) {
      */
     function growfund_donation_receipt_download_url(string $uid)
     {
-        return site_url("public/#donations/$uid/receipt");
+        return Utils::donation_receipt_url($uid);
     }
 }
 
@@ -619,7 +676,7 @@ if (!function_exists('growfund_user_dashboard_url')) {
     function growfund_user_dashboard_url($user_id = null)
     {
         if (growfund_user($user_id)->is_admin()) {
-            return admin_url('?page=growfund');
+            return admin_url('admin.php?page=growfund');
         }
 
         if (growfund_user($user_id)->is_fundraiser()) {
@@ -1021,6 +1078,20 @@ if (!function_exists('growfund_is_public_route')) {
     }
 }
 
+if (!function_exists('growfund_is_react_site')) {
+    /**
+     * Check if the current route is running as a React site.
+     *
+     * This function will return true if the current route is running as a React site and false otherwise.
+     *
+     * @return bool
+     */
+    function growfund_is_react_site()
+    {
+        return Utils::is_react_site();
+    }
+}
+
 if (!function_exists('growfund_is_plugin_menu')) {
     /**
      * Check if the current route is a plugin menu page.
@@ -1072,11 +1143,11 @@ if (!function_exists('growfund_is_wc_checkout')) {
         if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
 
 			// Safely get the request URI.
-			$route = Sanitizer::apply_rule(wp_unslash(growfund_input_server('REQUEST_URI')), Sanitizer::TEXT);  
+			$route = wp_unslash(growfund_input_server('REQUEST_URI', ''));  
 
-			if ( str_contains( $route, '/wc/store/' ) && str_contains( $route, 'checkout' ) ) {
-				return true;
-			}
+            if (strpos($route, '/wc/store/') !== false && strpos($route, 'checkout') !== false) {
+                return true;
+            }
 		}
 
 
@@ -1123,13 +1194,18 @@ if (!function_exists('growfund_add_inline_script')) {
     /**
      * Localize a script.
      * 
-     * @param string $hook_name The hook name to add the action to.
      * @param string $inline_js The inline JavaScript to add.
+     * @param string|false $hook_name admin_enqueue_scripts|wp_enqueue_scripts -- The hook name to add the action to.
      * @param int $priority The priority of the action.
      * 
      * @return void
      */
-    function growfund_add_inline_script($hook_name, $inline_js, $priority = 30) {
+    function growfund_add_inline_script($inline_js, $hook_name = false, $priority = 20) {
+        if ($hook_name === false) {
+            wp_add_inline_script('growfund-inline-script', $inline_js);
+            return;
+        }
+        
         add_action($hook_name, function() use ($inline_js) {
 			wp_add_inline_script('growfund-inline-script', $inline_js);
         }, $priority);
@@ -1140,14 +1216,19 @@ if (!function_exists('growfund_localize_script')) {
     /**
      * Localize a script.
      * 
-     * @param string $hook_name The hook name to add the action to.
      * @param string $object_name The name of the object to localize.
      * @param array $data The data to localize.
+     * @param string|false $hook_name admin_enqueue_scripts|wp_enqueue_scripts -- The hook name to add the action to.
      * @param int $priority The priority of the action.
      * 
      * @return void
      */
-    function growfund_localize_script($hook_name, $object_name, $data, $priority = 30) {
+    function growfund_localize_script($object_name, $data, $hook_name = false, $priority = 20) {
+        if ($hook_name === false) {
+            wp_localize_script('growfund-inline-script', $object_name, $data);
+            return;
+        }
+
         add_action($hook_name, function() use ( $object_name, $data) {
             wp_localize_script('growfund-inline-script', $object_name, $data);
         }, $priority);
@@ -1160,16 +1241,13 @@ if (!function_exists('growfund_input_get')) {
      * 
      * @param string $key The key to retrieve.
      * @param mixed $default The default value to return if the key is not found.
+     * @param string $sanitizer_type The type of sanitizer to apply to the value.
      * @return mixed The value of the key, or the default value if not found.
      */
-    function growfund_input_get($key, $default = null) {
-        $input =  filter_input(INPUT_GET, $key, FILTER_DEFAULT);
+    function growfund_input_get($key, $default = null, $sanitizer_type = Sanitizer::TEXT) {
+        $input = new RequestInput('get', $key, $default, $sanitizer_type);
 
-        if (is_null($input)) {
-            return $default;
-        }
-
-        return $input;
+        return $input->get();
     }
 }
 
@@ -1179,16 +1257,13 @@ if (!function_exists('growfund_input_post')) {
      * 
      * @param string $key The key to retrieve.
      * @param mixed $default The default value to return if the key is not found.
+     * @param string $sanitizer_type The type of sanitizer to apply to the value.
      * @return mixed The value of the key, or the default value if not found.
      */
-    function growfund_input_post($key, $default = null) {
-        $input =  filter_input(INPUT_POST, $key, FILTER_DEFAULT);
+    function growfund_input_post($key, $default = null, $sanitizer_type = Sanitizer::TEXT) {
+        $input = new RequestInput('post', $key, $default, $sanitizer_type);
 
-        if (is_null($input)) {
-            return $default;
-        }
-
-        return $input;
+        return $input->get();
     }
 }
 
@@ -1197,27 +1272,24 @@ if (!function_exists('growfund_input_server')) {
      * Retrieve a value from the $_SERVER.
      * 
      * @param string $key The key to retrieve.
+     * @param string $sanitizer_type The type of sanitizer to apply to the value.
      * @param mixed $default The default value to return if the key is not found.
      * @return mixed The value of the key, or the default value if not found.
      */
-    function growfund_input_server($key, $default = null) {
-        $input =  filter_input(INPUT_SERVER, $key, FILTER_DEFAULT);
+    function growfund_input_server($key, $default = null, $sanitizer_type = Sanitizer::TEXT) {
+        $input = new RequestInput('server', $key, $default, $sanitizer_type);
 
-        if (is_null($input)) {
-            return $default;
-        }
-
-        return $input;
+        return $input->get();
     }
 }
 
-if (!function_exists('has_growfund_pro')) {
+if (!function_exists('growfund_has_growfund_pro')) {
     /**
      * Check if the pro version is activated.
      *
      * @return bool
      */
-    function has_growfund_pro()
+    function growfund_has_growfund_pro()
     {
         if (!function_exists('is_plugin_active')) {
             include_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -1230,20 +1302,29 @@ if (!function_exists('has_growfund_pro')) {
 
 if (!function_exists('growfund_query_log')) {
     function growfund_query_log($query) {
-        if (defined('WP_DEBUG') && WP_DEBUG) {
+        if (growfund_is_dev_mode() && defined('WP_DEBUG') && WP_DEBUG) {
 			add_filter( 'query', function( $query ) {
 				$log_file = GROWFUND_DIR_PATH . '/sql-query.log';
-                $overwrite = apply_filters(HookNames::GROWFUND_QUERY_LOG_OVERWRITE, false);
+                $overwrite = apply_filters(HookNames::GROWFUND_QUERY_LOG_OVERWRITE, false); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
 
                 if ($overwrite) {
-                    file_put_contents($log_file, " $query\n\n"); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+                    file_put_contents($log_file, " $query\n\n"); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents -- logging in dev mode
 
                     return $query;
                 }
                 
-				file_put_contents($log_file, " $query\n", FILE_APPEND); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+				file_put_contents($log_file, " $query\n", FILE_APPEND); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents -- logging in dev mode
 				return $query;
 			});
+        }
+    }
+}
+
+
+if (!function_exists('growfund_error_log')) {
+    function growfund_error_log(string $message) {
+        if (growfund_is_dev_mode() && defined('WP_DEBUG_LOG') && WP_DEBUG_LOG) {
+            error_log($message); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- logging in dev mode
         }
     }
 }

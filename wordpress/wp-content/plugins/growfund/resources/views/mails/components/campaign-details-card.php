@@ -2,7 +2,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$description = esc_html($campaign['description']);
 ?>
 <div style="">
     <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:600px;" width="600" bgcolor="#ffffff" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
@@ -45,12 +44,12 @@ $description = esc_html($campaign['description']);
                                                     </tr>
                                                     <tr>
                                                         <td align="left" style="font-size:0px;padding:15px 0 0 0;word-break:break-word;">
-                                                            <div style="font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:16px;font-weight:400;line-height:24px;text-align:left;color:#000000;"><?php printf('%s%s', wp_kses_post(substr($description, 0, 100)), strlen($description) > 100 ? '...' : ''); ?></div>
+                                                            <div style="font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:16px;font-weight:400;line-height:24px;text-align:left;color:#000000;"><?php growfund_echo_safe_html(sprintf('%s%s', substr($campaign['description'] ?? '', 0, 100), strlen($campaign['description'] ?? '') > 100 ? '...' : '')); ?></div>
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td align="center" vertical-align="middle" style="font-size:0px;padding:20px 0 0 0;word-break:break-word;">
-                                                            <?php echo wp_kses_post($button); ?>
+                                                            <?php growfund_echo_safe_html($button); ?>
                                                         </td>
                                                     </tr>
                                                 </tbody>

@@ -9,14 +9,21 @@ use Growfund\Constants\UserTypes\Backer;
 use Growfund\Constants\UserTypes\Donor;
 use Growfund\Constants\UserTypes\Fundraiser;
 
-use Growfund\DTO\Site\Auth\LoginDTO;
-use Growfund\DTO\Site\Auth\RegisterDTO;
-use Growfund\DTO\Site\Auth\ResetPasswordDTO;
-use Growfund\Services\Site\AuthService;
+use Growfund\DTO\Auth\LoginDTO;
+use Growfund\DTO\Auth\RegisterDTO;
+use Growfund\DTO\Auth\ResetPasswordDTO;
+use Growfund\Services\AuthService;
 use Growfund\Validation\Validator;
 use Growfund\Exceptions\ValidationException;
 use Growfund\Sanitizer;
 use Exception;
+use Growfund\Supports\Auth;
+use Growfund\Supports\Url;
+use Growfund\Views\Components\Auth\ForgotPassword;
+use Growfund\Views\Components\Auth\Login;
+use Growfund\Views\Components\Auth\ResetLink;
+use Growfund\Views\Components\Auth\ResetPassword;
+use Growfund\Views\Components\Auth\Signup;
 
 /**
  * Authentication Controller for Site
@@ -49,43 +56,51 @@ class AuthController
      */
     public function show_login()
     {
-        return growfund_renderer()->get_html('site.auth.login', [
-            'redirect_to' => growfund_user_dashboard_url(),
-            'is_shortcode' => false,
-        ]);
+        $login_page = new Login();
+
+        return growfund_get_html($login_page);
     }
 
     /**
-     * Handle AJAX login
      * 
      * @param Request $request
      * @return void
      */
-    public function ajax_login(Request $request)
+    public function login(Request $request)
     {
         $raw_data = [
             'user_login' => $request->get_string('user_login'),
             'password' => $request->get_string('password'),
-            'redirect_to' => $request->get_url('redirect_to')
         ];
 
         $validator = Validator::make($raw_data, LoginDTO::validation_rules());
 
         if ($validator->is_failed()) {
-            throw ValidationException::with_errors($validator->get_errors(), esc_html__('Login validation failed!', 'growfund')); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- validation exception intentionally ignored
+            growfund_flash_set_message('login_form_old', $raw_data);
+            growfund_flash_set_message('login_form_errors', $validator->get_errors());
+            growfund_redirect(growfund_login_url());
+            return;
         }
 
         $sanitized_data = Sanitizer::make($raw_data, LoginDTO::sanitization_rules())->get_sanitized_data();
 
         $login_dto = LoginDTO::from_array($sanitized_data);
 
-        $redirect_url = $this->auth_service->login($login_dto);
-
-        if (empty($redirect_url)) {
-            $redirect_url = home_url();
+        try {
+			$redirect_url = $this->auth_service->login($login_dto);
+        } catch (ValidationException $error) {
+            growfund_flash_set_message('login_form_old', $raw_data);
+            growfund_flash_set_message('login_form_errors', $error->get_errors());
+            growfund_redirect(growfund_login_url());
+            return;
+        } catch (Exception $error) {
+            growfund_flash_set_message('login_form_old', $raw_data);
+			growfund_flash_set_message('login_error', $error->getMessage());
+            growfund_redirect(growfund_login_url());
+            return;
         }
+        
 
-        // @todo: Need to return JSON response for AJAX requests
         growfund_redirect($redirect_url);
     }
 
@@ -97,47 +112,27 @@ class AuthController
      */
     public function show_register()
     {
-        return growfund_renderer()->get_html('site.auth.register', [
-            'is_shortcode' => false,
-            'is_fundraiser' => false,
-            'redirect_to' => growfund_login_url()
-        ]);
+        $signup_page = new Signup();
+        
+        return growfund_get_html($signup_page);
     }
 
     /**
-     * Handle AJAX registration
+     * registration handler
      * 
      * @param Request $request
      * @return \Growfund\Http\SiteResponse
      */
-    public function ajax_register(Request $request)
+    public function register(Request $request)
     {
-        $is_donation_mode = growfund_app()->is_donation_mode();
-        $role = $is_donation_mode ? Donor::ROLE : Backer::ROLE;
+        $user_type = $request->get_string('user_type', 'regular');
 
-        return $this->handle_registration($request, $role);
-    }
+        $role = growfund_app()->is_donation_mode() ? Donor::ROLE : Backer::ROLE;
 
-    /**
-     * Handle AJAX fundraiser registration
-     * 
-     * @param Request $request
-     * @return \Growfund\Http\SiteResponse
-     */
-    public function ajax_register_fundraiser(Request $request)
-    {
-        return $this->handle_registration($request, Fundraiser::ROLE);
-    }
-
-    /**
-     * Common registration handler
-     * 
-     * @param Request $request
-     * @param string $role
-     * @return \Growfund\Http\SiteResponse
-     */
-    protected function handle_registration(Request $request, string $role)
-    {
+        if ($user_type === 'fundraiser') {
+            $role = Fundraiser::ROLE;
+        }
+        
         $raw_data = [
             'first_name' => $request->get_string('first_name'),
             'last_name' => $request->get_string('last_name'),
@@ -146,52 +141,65 @@ class AuthController
             'password' => $request->get_string('password'),
             'password_confirmation' => $request->get_string('password_confirmation'),
             'role' => $role,
-            'redirect_to' => $request->get_url('redirect_to')
         ];
 
         $validator = Validator::make($raw_data, RegisterDTO::validation_rules());
 
         if ($validator->is_failed()) {
-            throw ValidationException::with_errors($validator->get_errors()); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- validation exception intentionally ignored
+            growfund_flash_set_message('registration_form_old', $raw_data);
+            growfund_flash_set_message('registration_form_errors', $validator->get_errors());
+            Url::redirect_back();
+            return;
         }
 
         $sanitized_data = Sanitizer::make($raw_data, RegisterDTO::sanitization_rules())->get_sanitized_data();
 
         $register_dto = RegisterDTO::from_array($sanitized_data);
 
-        if ($this->auth_service->register($register_dto)) {
-            return growfund_site_response()->json([
-                'message' => __('Registration successful. Please check your email to verify your account.', 'growfund'),
-                'redirect_url' => growfund_login_url()
-            ]);
+        try {
+			$is_registered = $this->auth_service->register($register_dto);
+        } catch (ValidationException $validator) {
+            growfund_flash_set_message('registration_form_old', $raw_data);
+			growfund_flash_set_message('registration_form_errors', $validator->get_errors());
+            Url::redirect_back();
+            return;
+        } catch (Exception $e) {
+            growfund_flash_set_message('registration_form_old', $raw_data);
+            growfund_flash_set_message('registration_error', $e->getMessage());
+            Url::redirect_back();
+            return;
         }
+        
+
+        if ($is_registered) {
+            growfund_redirect(growfund_login_url());
+            return;
+        }
+
+        growfund_flash_set_message('registration_form_old', $raw_data);
+        growfund_flash_set_message('registration_error', esc_html__('Registration failed!', 'growfund'));
+        Url::redirect_back();
     }
 
     /**
      * Show forgot password page
      * 
-     * @param Request $request
      * @return string
      */
-    public function show_forgot_password(Request $request)
+    public function show_forgot_password()
     {
-        $submitted_email = $request->get_string('email');
-
-        $error = growfund_flash_get_message('growfund_reset_password_error');
-
-        return growfund_renderer()->get_html('site.auth.forgot-password', [
-            'submitted_email' => $submitted_email,
-            'error' => $error
-        ]);
+        $forgot_password = new ForgotPassword();
+        
+        return growfund_get_html($forgot_password);
     }
 
     /**
-     * Handle AJAX forgot password
+     * Handle forgot password
      * 
      * @param Request $request
      * @return \Growfund\Http\SiteResponse
      */
-    public function ajax_forgot_password(Request $request)
+    public function forgot_password(Request $request)
     {
         $raw_data = [
             'email' => $request->get_email('email')
@@ -202,7 +210,11 @@ class AuthController
         ]);
 
         if ($validator->is_failed()) {
-            throw ValidationException::with_errors($validator->get_errors()); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- validation exception intentionally ignored
+            growfund_flash_set_message('forgot_password_form_old', $raw_data);
+            growfund_flash_set_message('forgot_password_form_errors', $validator->get_errors());
+            Url::redirect_back();
+
+            return;
         }
 
         $sanitized_data = Sanitizer::make($raw_data, [
@@ -212,24 +224,37 @@ class AuthController
         try {
             $this->auth_service->send_password_reset_email(['email' => $sanitized_data['email']]);
 
-            $response = growfund_site_response();
-            $json_response = $response->json([
-                'message' => __('If the email address exists in our database, you will receive a password recovery link at your email address in a few minutes.', 'growfund'),
-                'email' => $sanitized_data['email']
-            ]);
-            return $json_response;
-        } catch (ValidationException $e) {
-            wp_send_json_error([
-                'message' => __('Please check your input and try again.', 'growfund'),
-                'errors' => $e->get_errors()
-            ], 422);
+			growfund_flash_set_message('reset_password_link_sent', 'true');
+
+            growfund_redirect(growfund_url(Auth::reset_link_url(), [
+				'sent' => true,
+				'email' => urlencode($sanitized_data['email'])
+			]));
+        } catch (ValidationException $validator) {
+            growfund_flash_set_message('forgot_password_form_old', $raw_data);
+            growfund_flash_set_message('forgot_password_form_errors', $validator->get_errors());
+            Url::redirect_back();
             return;
         } catch (Exception $e) {
-            wp_send_json_error([
-                'message' => __('We encountered an issue while processing your request. Please try again later.', 'growfund')
-            ], 500);
+            growfund_flash_set_message('forgot_password_error', __('We encountered an issue while processing your request. Please try again later.', 'growfund'));
+            Url::redirect_back();
             return;
         }
+    }
+
+    public function show_reset_password_link(Request $request) {
+        $resent_link_sent = $request->get_bool('sent', false);
+        $email = urldecode($request->get_string('email', ''));
+
+        if (!$resent_link_sent || !$email) {
+            growfund_redirect(site_url());
+            return;
+        }
+
+        $reset_link = new ResetLink();
+        $reset_link->user_email = $email;
+
+        return growfund_get_html($reset_link);
     }
 
     /**
@@ -251,34 +276,42 @@ class AuthController
         ]);
 
         if ($validator->is_failed()) {
-            $this->redirect_with_error(__('Sorry, your reset password link is no longer valid. You can request another one below.', 'growfund'));
+            growfund_flash_set_message('forgot_password_error', __('Sorry, your reset password link is no longer valid. You can request another one below.', 'growfund'));
+			growfund_redirect(growfund_forget_password_url());
+
+            return;
         }
 
         $user = get_user_by('login', $raw_data['login']);
 
         if (!$user || !$this->auth_service->is_valid_reset_key($user->ID, $raw_data['key'])) {
-            $this->redirect_with_error(__('Sorry, your reset password link is no longer valid. You can request another one below.', 'growfund'));
+            growfund_flash_set_message('forgot_password_error', __('Sorry, your reset password link is no longer valid. You can request another one below.', 'growfund'));
+			growfund_redirect(growfund_forget_password_url());
+
+            return;
         }
 
-        if ($this->auth_service->is_reset_key_viewed($user->ID)) {
-            $this->redirect_with_error(__('Sorry, your reset password link is no longer valid. You can request another one below.', 'growfund'));
+        if ($this->auth_service->is_reset_key_consumed($user->ID)) {
+            growfund_flash_set_message('forgot_password_error', __('Sorry, your reset password link is no longer valid. You can request another one below.', 'growfund'));
+			growfund_redirect(growfund_forget_password_url());
+
+            return;
         }
 
-        $this->auth_service->mark_reset_key_viewed($user->ID);
+        $reset_password = new ResetPassword();
+        $reset_password->username = $user->user_login;
+        $reset_password->token = $raw_data['key'];
 
-        return growfund_renderer()->get_html('site.auth.reset-password', [
-            'key' => $raw_data['key'],
-            'login' => $raw_data['login']
-        ]);
+        return growfund_get_html($reset_password);
     }
 
     /**
-     * Handle AJAX reset password
+     * Handle reset password
      * 
      * @param Request $request
      * @return \Growfund\Http\SiteResponse
      */
-    public function ajax_reset_password(Request $request)
+    public function reset_password(Request $request)
     {
         $raw_data = [
             'password' => $request->get_string('password'),
@@ -289,8 +322,16 @@ class AuthController
 
         $validator = Validator::make($raw_data, ResetPasswordDTO::validation_rules());
 
+        
         if ($validator->is_failed()) {
-            throw ValidationException::with_errors($validator->get_errors()); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- validation exception intentionally ignored
+            growfund_flash_set_message('reset_password_form_old', $raw_data);
+            growfund_flash_set_message('reset_password_form_errors', $validator->get_errors());
+            growfund_redirect(growfund_url(growfund_reset_password_url(), [
+				'key' => $raw_data['key'],
+				'login' => urlencode($raw_data['login'])
+			]));
+
+            return;
         }
 
         $sanitized_data = Sanitizer::make($raw_data, ResetPasswordDTO::sanitization_rules())->get_sanitized_data();
@@ -299,30 +340,23 @@ class AuthController
 
         $user = get_user_by('login', $reset_password_dto->login);
 
-        if ($user && $this->auth_service->is_reset_key_consumed($user->ID)) {
-            throw ValidationException::with_errors(['system' => esc_html__('This password reset link has already been used. Please request a new one.', 'growfund')]);
+        if (!$user || $this->auth_service->is_reset_key_consumed($user->ID)) {
+            growfund_flash_set_message('forgot_password_error', __('Sorry, your reset password link is no longer valid. You can request another one below.', 'growfund'));
+			growfund_redirect(growfund_forget_password_url());
+
+            return;
         }
 
-        if ($user && !$this->auth_service->is_reset_key_viewed($user->ID)) {
-            throw ValidationException::with_errors(['system' => esc_html__('This password reset link is invalid. Please request a new one.', 'growfund')]);
-        }
+        if ($this->auth_service->reset_password($reset_password_dto, $user->ID)) {
+            growfund_redirect(growfund_login_url());
 
-        if ($this->auth_service->reset_password($reset_password_dto)) {
-            return growfund_site_response()->json([
-                'message' => __('Password has been reset successfully. You can now log in with your new password.', 'growfund')
-            ]);
+            return;
         }
-    }
-
-    /**
-     * Redirect to forgot password page with error message
-     * 
-     * @param string $message
-     * @return void
-     */
-    protected function redirect_with_error($message)
-    {
-        growfund_flash_set_message('growfund_reset_password_error', $message);
-        return growfund_redirect(growfund_forget_password_url());
+        
+        growfund_flash_set_message('reset_password_error', __('Failed to reset your password. Please try again.', 'growfund'));
+		growfund_redirect(growfund_url(growfund_reset_password_url(), [
+			'key' => $raw_data['key'],
+			'login' => urlencode($raw_data['login'])
+		]));
     }
 }

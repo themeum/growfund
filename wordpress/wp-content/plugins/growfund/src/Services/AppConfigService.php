@@ -44,7 +44,7 @@ class AppConfigService
     protected function public_config()
     {
         return [
-            AppConfigKeys::IS_DONATION_MODE => growfund_app()->is_donation_mode(),
+            AppConfigKeys::IS_DONATION_MODE => Option::get(AppConfigKeys::IS_DONATION_MODE, '0'),
             AppConfigKeys::GENERAL => [
                 'organization' => [
                     'name' => growfund_settings(AppSettings::GENERAL)->get_organization_name(),
@@ -72,13 +72,17 @@ class AppConfigService
             $manifest_path = GROWFUND_DIR_PATH . 'gateways/Paypal/manifest.json';
 
 			if (!file_exists($manifest_path)) {
-				error_log('Manifest file not exist: ' . $manifest_path); // phpcs:ignore
+				growfund_error_log('Manifest file not exist: ' . $manifest_path);
+
+                return;
 			}
     
 			$manifest_file_content = file_get_contents($manifest_path);
             
 			if (!growfund_is_valid_json($manifest_file_content)) {
-				error_log('Invalid manifest file'); // phpcs:ignore
+				growfund_error_log('Invalid manifest file');
+
+                return;
 			}
     
 			$manifest = json_decode($manifest_file_content, true);
@@ -86,7 +90,7 @@ class AppConfigService
 			$service = new PaymentGatewayService();
 			$service->store_gateway_info($manifest['name'], $manifest);
 		} catch (Exception $error) {
-			error_log($error->getMessage()); // phpcs:ignore
+			growfund_error_log($error->getMessage());
 		}
 	}
 }

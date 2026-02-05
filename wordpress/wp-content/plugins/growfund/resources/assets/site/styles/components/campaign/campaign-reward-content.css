@@ -1,0 +1,140 @@
+.growfund-campaign-reward-content {
+  max-width: 445px;
+  flex: 1;
+}
+.growfund-campaign-reward-content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--growfund-spacing-4);
+  color: var(--growfund-text-primary);
+  font-size: var(--growfund-font-size-2xl);
+}
+
+.growfund-campaign-reward-content-title {
+  font-size: 22px;
+  font-weight: var(--growfund-font-weight-semibold);
+  color: var(--growfund-text-primary);
+  margin: 0;
+}
+
+.growfund-campaign-reward-content-price {
+  font-size: var(--growfund-font-size-2xl);
+  font-weight: var(--growfund-font-weight-semibold);
+  color: var(--growfund-text-primary);
+}
+
+.growfund-campaign-reward-content-description {
+  color: var(--growfund-text-primary);
+  font-size: var(--growfund-font-size-md);
+  line-height: 20px;
+  margin-bottom: var(--growfund-spacing-3);
+}
+
+.growfund-campaign-reward-content-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--growfund-spacing-2);
+  padding: var(--growfund-spacing-2) 0;
+}
+
+.growfund-campaign-reward-content-stat-item {
+  display: flex;
+  align-items: center;
+  gap: var(--growfund-spacing-2);
+  margin-bottom: var(--growfund-spacing-2);
+  font-size: var(--growfund-font-size-md);
+  color: var(--growfund-icon-primary);
+}
+
+.growfund-campaign-reward-content-stat-icon {
+  font-size: var(--growfund-font-size-md);
+}
+
+.growfund-campaign-reward-content-stat-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--growfund-spacing-1);
+  font-size: var(--growfund-font-size-sm);
+  line-height: 14px;
+  color: var(--growfund-bg-gray-6);
+}
+
+.growfund-campaign-reward-content-stat-label {
+  color: var(--growfund-bg-gray-6);
+}
+
+.growfund-campaign-reward-content-stat-count {
+  font-size: var(--growfund-font-size-sm);
+  line-height: 14px;
+  color: var(--growfund-bg-gray-7);
+}
+
+.growfund-campaign-reward-content-included-section {
+  margin: var(--growfund-spacing-2) 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.growfund-campaign-reward-content-included-title {
+  font-size: var(--growfund-font-size-lg);
+  font-weight: var(--growfund-font-weight-semibold);
+  margin-bottom: var(--growfund-spacing-3);
+}
+
+.growfund-campaign-reward-content-item-pill {
+  display: flex;
+  align-items: center;
+  gap: var(--growfund-spacing-3);
+  background: var(--growfund-text-surface);
+  border: 1px solid var(--growfund-border-border);
+  padding: var(--growfund-spacing-2);
+  border-radius: var(--growfund-radius-lg);
+  margin-bottom: var(--growfund-spacing-1);
+}
+
+.growfund-campaign-reward-content-item-pill img {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--growfund-radius-sm);
+  object-fit: cover;
+}
+
+.growfund-campaign-reward-content-item-name {
+  display: block;
+  font-size: var(--growfund-font-size-md);
+  font-weight: var(--growfund-font-weight-medium);
+  color: var(--growfund-text-primary);
+}
+
+.growfund-campaign-reward-content-item-quantity {
+  font-size: var(--growfund-font-size-sm);
+  color: var(--growfund-bf-gray-6);
+}
+
+.growfund-campaign-reward-content-button-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.growfund-campaign-reward-content-button {
+  width: 100%;
+  background-color: var(--growfund-bg-surface);
+  color: var(--growfund-text-primary);
+  border-radius: var(--growfund-radius-md);
+  border: 1px solid var(--growfund-border-secondary);
+  padding: var(--growfund-spacing-3) 0;
+}
+
+.growfund-campaign-reward-content-button:hover {
+  background-color: var(--growfund-bg-fill-brand);
+  color: var(--growfund-text-light);
+}
+
+@media (max-width: 1023px) {
+  .growfund-campaign-content-reward-title {
+    font-size: var(--growfund-font-size-lg);
+    line-height: 20px;
+  }
+}

@@ -32,7 +32,6 @@ class RegisterCustomBlockTemplates extends BaseHook
     {
         list($templates, $query, $template_type) = $args;
 
-
         if ($template_type !== 'wp_template' || !growfund_is_block_theme()) {
             return $templates;
         }
@@ -47,8 +46,8 @@ class RegisterCustomBlockTemplates extends BaseHook
             $template_name = 'campaigns/archive';
             $slug = sprintf('archive-%s', Campaign::NAME);
         } elseif (SiteRouter::is_valid_route()) {
-            $template_name = 'custom-page-template';
-            $slug = 'page';
+            $template_name = growfund_is_react_site() ? 'react-page-template' : 'custom-page-template';
+            $slug = 'growfund-page-' . str_replace(['.', '_'], '-', SiteRouter::get_current_route_name());
         }
 
         if (!$template_name) {
@@ -86,9 +85,7 @@ class RegisterCustomBlockTemplates extends BaseHook
     protected static function get_template_content(string $file_path): string
     {
         if (!is_readable($file_path)) {
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log("Growfund: Template not readable at $file_path"); // phpcs:ignore
-            }
+			growfund_error_log("Growfund: Template not readable at $file_path");
 
             return '';
         }

@@ -381,14 +381,28 @@ class User
     }
 
     /**
+     * Check if the current user can contribute
+     *
+     * @return bool
+     */
+    public function can_contribute()
+    {
+        return $this->is_admin() || $this->is_fundraiser() || $this->is_backer() || $this->is_donor();
+    }
+
+    /**
      * Get the current user meta
      *
      * @param string $key
      * @param mixed $default
      * @return mixed
      */
-    public function get_meta(string $key, $default = null) // phpcs:ignore
+    public function get_meta(string $key, $default = null)
     {
+        if (!$this->get_id()) {
+            return $default;
+        }
+        
         $meta = UserMeta::get($this->get_id(), $key);
 
         return !empty($meta) ? $meta : $default;

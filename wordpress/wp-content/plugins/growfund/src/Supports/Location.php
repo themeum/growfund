@@ -24,12 +24,16 @@ class Location
      */
     const COUNTRIES_FILE_PATH = GROWFUND_DIR_PATH . 'resources/data/countries.json';
 
+    const REST_OF_THE_WORLD = 'rest-of-the-world';
+
     /**
      * Get all countries with their basic information
+     * 
+     * @param bool $include_rest_of_the_world Whether to include the "Rest of the World" option
      *
      * @return array Array of countries with code, name, and flag
      */
-    public static function get_countries()
+    public static function get_countries(bool $include_rest_of_the_world = false)
     {
         if (!isset(static::$cache['countries'])) {
             $data = static::load_countries_data();
@@ -51,7 +55,21 @@ class Location
             }, $data);
         }
 
-        return static::$cache['countries'];
+        $countries = static::$cache['countries'];
+
+        if ($include_rest_of_the_world) {
+            $countries[] = [
+				'value' => static::REST_OF_THE_WORLD,
+				'label' => __('Rest of the World', 'growfund'),
+				'flag' => '🌐',
+				'phone_code' => '',
+				'currency' => '',
+				'currency_symbol' => '',
+				'states' => []
+			];
+        }
+
+        return $countries;
     }
 
     /**
@@ -59,11 +77,13 @@ class Location
      *
      * @param bool $include_empty Whether to include an empty option
      * @param string $empty_label Label for the empty option
+     * @param bool $include_rest_of_the_world Whether to include the "Rest of the World" option
      * @return array Array formatted for dropdown options
      */
-    public static function get_countries_for_dropdown(bool $include_empty = true, string $empty_label = 'Select Country')
-    {
-        $countries = static::get_countries();
+    public static function get_countries_for_dropdown(
+        bool $include_empty = true, string $empty_label = 'Select Country', bool $include_rest_of_the_world = false
+    ){
+        $countries = static::get_countries($include_rest_of_the_world);
 
         if ($include_empty) {
             array_unshift($countries, [
@@ -106,13 +126,17 @@ class Location
     /**
      * Get states formatted for dropdown options
      *
-     * @param string $country_code ISO 2-letter country code
+     * @param string|null $country_code ISO 2-letter country code
      * @param bool $include_empty Whether to include an empty option
      * @param string $empty_label Label for the empty option
      * @return array Array formatted for dropdown options
      */
-    public static function get_states_for_dropdown(string $country_code, bool $include_empty = true, string $empty_label = 'Select State')
+    public static function get_states_for_dropdown($country_code, bool $include_empty = true, string $empty_label = 'Select State')
     {
+        if (empty($country_code)) {
+            return [];
+        }
+        
         $states = static::get_states($country_code);
 
         if ($include_empty) {
@@ -129,11 +153,12 @@ class Location
      * Get country information by code
      *
      * @param string $country_code ISO 2-letter country code
+     * @param bool $include_rest_of_the_world Whether to include the "Rest of the World" option
      * @return array|null Country information or null if not found
      */
-    public static function get_country_by_code(string $country_code)
+    public static function get_country_by_code(string $country_code, bool $include_rest_of_the_world = false)
     {
-        $countries = static::get_countries();
+        $countries = static::get_countries($include_rest_of_the_world);
 
         foreach ($countries as $country) {
             if ($country['value'] === strtoupper($country_code)) {
@@ -144,7 +169,7 @@ class Location
         return null;
     }
 
-    public static function get_pretty_location(string $location)
+    public static function get_pretty_location(string $location, bool $include_rest_of_the_world = false)
     {
         if (empty($location)) {
             return '';
@@ -152,7 +177,7 @@ class Location
 
         $location = explode(':', $location);
 
-        $country = static::get_country_by_code($location[0]);
+        $country = static::get_country_by_code($location[0], $include_rest_of_the_world);
 
         $state = '';
 

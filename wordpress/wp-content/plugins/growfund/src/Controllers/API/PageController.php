@@ -24,11 +24,10 @@ class PageController
     /**
      * Retrieve all pages.
      *
-     * @param Request $request The HTTP request instance.
      * @return Response JSON response containing all pages data.
      */
 
-    public function all(Request $request) // phpcs:ignore
+    public function all()
     {
         $results = $this->service->all();
 

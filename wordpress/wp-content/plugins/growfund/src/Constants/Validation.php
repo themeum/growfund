@@ -38,7 +38,6 @@ use Growfund\Validation\Rules\RequiredRule;
 use Growfund\Validation\Rules\SameAsRule;
 use Growfund\Validation\Rules\Sanitizer;
 use Growfund\Validation\Rules\StringRule;
-use Growfund\Validation\Rules\TributeFieldsRule;
 use Growfund\Validation\Rules\UrlRule;
 use Growfund\Validation\Rules\UserExists;
 
@@ -88,6 +87,5 @@ class Validation
         'gte' => GreaterThanEqualRule::class,
         'lt' => LessThanRule::class,
         'lte' => LessThanEqualRule::class,
-        'tribute_fields' => TributeFieldsRule::class,
     ];
 }

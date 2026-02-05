@@ -5,7 +5,10 @@ namespace Growfund\App\Settings;
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Constants\AppConfigKeys;
+use Growfund\Constants\Comment\CampaignUpdateVisibility;
 use Growfund\Constants\HookNames;
+use Growfund\Constants\Comment\CommentModeration;
+use Growfund\Constants\Comment\CommentVisibility;
 use Growfund\Core\AppSettings;
 use Growfund\Supports\Option;
 
@@ -61,7 +64,7 @@ class CampaignSettings extends AppSettings
      */
     public function campaign_update_visibility()
     {
-        return $this->settings['campaign_update_visibility'] ?? 'public';
+        return $this->settings['campaign_update_visibility'] ?? CampaignUpdateVisibility::PUBLIC;
     }
 
     /**
@@ -83,7 +86,7 @@ class CampaignSettings extends AppSettings
      */
     public function allow_comments()
     {
-        return apply_filters(HookNames::GROWFUND_ALLOW_CAMPAIGN_COMMENTS_FILTER, false, $this->settings);
+        return apply_filters(HookNames::GROWFUND_ALLOW_CAMPAIGN_COMMENTS_FILTER, false, $this->settings); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
     }
 
     /**
@@ -94,7 +97,7 @@ class CampaignSettings extends AppSettings
      */
     public function comment_moderation()
     {
-        return $this->settings['comment_moderation'] ?? 'immediate';
+        return $this->settings['comment_moderation'] ?? CommentModeration::IMMEDIATE;
     }
 
     /**
@@ -105,7 +108,7 @@ class CampaignSettings extends AppSettings
      */
     public function comment_visibility()
     {
-        return $this->settings['comment_visibility'] ?? 'public';
+        return $this->settings['comment_visibility'] ?? CommentVisibility::PUBLIC;
     }
 
     /**
@@ -116,7 +119,7 @@ class CampaignSettings extends AppSettings
      */
     public function allow_tribute()
     {
-        return apply_filters(HookNames::GROWFUND_ALLOW_CAMPAIGN_TRIBUTE_FILTER, false, $this->settings);
+        return apply_filters(HookNames::GROWFUND_ALLOW_CAMPAIGN_TRIBUTE_FILTER, false, $this->settings); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
     }
 
     /**
@@ -127,6 +130,6 @@ class CampaignSettings extends AppSettings
      */
     public function allow_fund()
     {
-        return apply_filters(HookNames::GROWFUND_ALLOW_CAMPAIGN_FUND_FILTER, false, $this->settings);
+        return apply_filters(HookNames::GROWFUND_ALLOW_CAMPAIGN_FUND_FILTER, false, $this->settings); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
     }
 }

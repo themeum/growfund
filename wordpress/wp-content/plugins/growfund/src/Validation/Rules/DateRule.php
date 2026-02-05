@@ -36,6 +36,6 @@ class DateRule extends BaseRule
     public function get_error_message()
     {
         /* translators: 1: field name, 2: db date format */
-        return sprintf(__('The %1$s field must be a valid date time in the format %2$s.', 'growfund'), $this->key, DateTimeFormats::DB_DATE);
+        return sprintf(__('The %1$s field must be a valid date time in the format %2$s.', 'growfund'), str_replace(['_', '.'], ' ', $this->key), DateTimeFormats::DB_DATE);
     }
 }

@@ -45,7 +45,7 @@ class RecurringScheduler extends BaseHook
 
 
         if (empty($class_name) || !class_exists($class_name) || !is_subclass_of($class_name, RecurrableScheduler::class)) {
-            error_log( // phpcs:ignore
+            growfund_error_log(
                 sprintf(
                     /* translators: 1: resolving class, 2: RecurrableScheduler::class */
                     __('The class %1$s is not valid. it should be a subclass of %2$s', 'growfund'),
@@ -80,7 +80,7 @@ class RecurringScheduler extends BaseHook
                 $this->update_with_new_args($class_name, $new_args, $uid, $group);
             }
         } catch (Exception $error) {
-            error_log($error->getMessage()); // phpcs:ignore
+            growfund_error_log($error->getMessage());
         }
     }
 
@@ -136,7 +136,7 @@ class RecurringScheduler extends BaseHook
                     ]);
 
                 if (empty($is_updated)) {
-                    error_log( // phpcs:ignore
+                    growfund_error_log(
                         sprintf(
                             /* translators: %s: action ID */
                             __('Failed to update recurring action with ID: %s', 'growfund'),

@@ -30,6 +30,7 @@ class WebhookController
     public function handle(Request $request)
     {
         $gateway = growfund_payment_gateway($request->get_string('gateway'));
+        // phpcs:ignore -- to handle webhook raw request body we need to use. php://input 
         $body = file_get_contents('php://input');
         $headers = getallheaders();
 

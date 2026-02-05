@@ -66,7 +66,7 @@ class DonorController
             'page' => $request->get_int('page', 1),
             'limit' => $request->get_int('per_page', 10),
             'search' => $request->get_string('search'),
-            'orderby' => $request->get_string('orderby'),
+            'orderby' => $request->get_column('orderby', 'ID', ['ID', 'user_email']),
             'order' => $request->get_string('order'),
             'start_date' => $request->get_date('start_date'),
             'end_date' => $request->get_date('end_date'),
@@ -166,7 +166,7 @@ class DonorController
         $data = $this->service->get_overview($donor_id);
 
         return growfund_response()->json([
-            'data' => apply_filters(HookNames::GROWFUND_DONOR_OVERVIEW_FILTER, $data, $donor_id),
+            'data' => apply_filters(HookNames::GROWFUND_DONOR_OVERVIEW_FILTER, $data, $donor_id), // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
             'message' => '',
         ]);
     }
@@ -322,7 +322,7 @@ class DonorController
         $activity_filter_dto = ActivityFilterDTO::from_array([
             'page' => $request->get_int('page', 1),
             'limit' => $request->get_int('per_page', 10),
-            'orderby' => $request->get_string('orderby', 'created_at'),
+            'orderby' => $request->get_column('orderby', 'created_at', ['ID', 'type', 'created_at']),
             'order' => $request->get_string('order', 'DESC'),
             'user_id' => $donor_id,
         ]);

@@ -343,4 +343,21 @@ class CampaignCategoryService
 
         return $default_term[0] ?? 0;
     }
+
+    /**
+     * Get category by id
+     * 
+     * @param int $id
+     * @return WP_Term
+     */
+    public function get_by_id(int $id)
+    {
+        $category = get_term($id, Category::NAME);
+
+        if (!$category || is_wp_error($category)) {
+            throw new Exception(esc_html__('Category not found.', 'growfund'), (int) Response::NOT_FOUND);
+        }
+
+        return $category;
+    }
 }

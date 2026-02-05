@@ -26,6 +26,10 @@ class PledgeDTO extends DTO
         'is_manual' => BooleanAttribute::class,
         'created_at' => DateTimeAttribute::class,
         'updated_at' => DateTimeAttribute::class,
+        'payment' => PledgePaymentDTO::class,
+        'campaign' => PledgeCampaignDTO::class,
+        'backer' => PledgeBackerDTO::class,
+        'reward' => PledgeRewardDTO::class
     ];
 
     /** @var string */
@@ -42,9 +46,6 @@ class PledgeDTO extends DTO
 
     /** @var string */
     public $pledge_option;
-
-    /** @var object|null */
-    public $payment_method;
 
     /** @var string|null */
     public $notes;

@@ -1,0 +1,108 @@
+.growfund-faq-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.growfund-faq-item-answer-wrapper {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.growfund-faq-item-answer {
+  padding: 0 0 24px 0;
+  color: #333333;
+  line-height: 1.6;
+}
+.growfund-faq-item-answer p {
+  padding-left: 36px;
+  font-size: 14px;
+  font-weight: 400;
+}
+.growfund-faq-list-question {
+  width: 100%;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  padding: 0 0 24px 0;
+  justify-content: flex-start;
+  align-items: flex-start;
+  background-color: transparent;
+  border: none;
+  text-align: left;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333333;
+  transition: color 0.2s ease;
+  position: relative;
+  outline-offset: 2px;
+  gap: 20px;
+}
+.growfund-faq-list-item.active .growfund-faq-item-answer-wrapper {
+  max-height: 1000px;
+}
+
+/* Icon Styling */
+.growfund-faq-item-icon {
+  margin-top: 6px;
+  position: relative;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.growfund-faq-item-icon-line {
+  position: absolute;
+  background-color: #000;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.growfund-faq-item-icon-line.horizontal {
+  width: 100%;
+  height: 2px;
+}
+
+.growfund-faq-item-icon-line.vertical {
+  width: 2px;
+  height: 100%;
+}
+
+.growfund-faq-list-item.active .growfund-faq-item-icon-line.vertical {
+  transform: rotate(90deg);
+  opacity: 0;
+}
+
+.growfund-faq-list-item.active .growfund-faq-item-icon-line.horizontal {
+  transform: rotate(180deg);
+}
+@media (max-width: 768px) {
+  .growfund-faq-list-question {
+    font-size: 16px;
+    gap: 12px;
+    padding-bottom: 16px;
+  }
+
+  .growfund-faq-item-icon {
+    width: 12px;
+    height: 12px;
+    min-width: 12px;
+    margin-top: 5px;
+  }
+
+  .growfund-faq-item-answer p {
+    font-size: 12px;
+    padding-left: 24px;
+  }
+
+  .growfund-faq-item-answer {
+    padding-bottom: 16px;
+  }
+}

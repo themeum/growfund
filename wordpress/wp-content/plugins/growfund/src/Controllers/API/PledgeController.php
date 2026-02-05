@@ -303,7 +303,7 @@ class PledgeController
         $activity_filter_dto = ActivityFilterDTO::from_array([
             'page' => $request->get_int('page', 1),
             'limit' => $request->get_int('per_page', 10),
-            'orderby' => $request->get_string('orderby', 'created_at'),
+            'orderby' => $request->get_column('orderby', 'created_at', ['ID', 'type', 'created_at']),
             'order' => $request->get_string('order', 'DESC'),
             'pledge_id' => $pledge_id,
         ]);

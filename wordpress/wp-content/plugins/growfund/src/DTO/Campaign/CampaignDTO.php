@@ -29,9 +29,6 @@ class CampaignDTO extends DTO
     /** @var int|string|null */
     public $id;
 
-    /** @var int|string|null */
-    public $author_id;
-
     /** @var string|null */
     public $title;
 
@@ -149,6 +146,9 @@ class CampaignDTO extends DTO
     /** @var string|null */
     public $last_decline_reason;
 
+    /** @var int|string|null */
+    public $author_id;
+
     /** @var string|null */
     public $created_by;
 
@@ -209,6 +209,9 @@ class CampaignDTO extends DTO
     /** @var array|null */
     public $faqs;
 
+    /** @var bool */
+    public $is_bookmarked = false;
+
     protected function get_casts()
     {
         return [
@@ -252,6 +255,8 @@ class CampaignDTO extends DTO
             'min_donation_amount' => MoneyAttribute::class,
             'max_donation_amount' => MoneyAttribute::class,
             'has_tribute' => BooleanAttribute::class,
+            'giving_thanks.*.pledge_from' => MoneyAttribute::class,
+            'giving_thanks.*.pledge_to' => MoneyAttribute::class,
         ];
     }
 }

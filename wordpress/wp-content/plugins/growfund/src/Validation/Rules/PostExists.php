@@ -47,7 +47,7 @@ class PostExists extends BaseRule
     public function get_error_message()
     {
         /* translators: 1: field name, 2: field value */
-        return sprintf(__('Resource with %1$s %2$s does not exist.', 'growfund'), $this->key, $this->value);
+        return sprintf(__('Resource with %1$s %2$s does not exist.', 'growfund'), str_replace(['_', '.'], ' ', $this->key), $this->value);
     }
 
     /**

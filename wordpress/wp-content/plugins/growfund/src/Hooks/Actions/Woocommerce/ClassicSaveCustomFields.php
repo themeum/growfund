@@ -30,31 +30,27 @@ class ClassicSaveCustomFields extends BaseHook
 
         $order = $args[0];
 
-        $bonus_support_amount = growfund_input_post(growfund_with_prefix('bonus_support_amount'));
+        $bonus_support_amount = growfund_input_post(growfund_with_prefix('bonus_support_amount'), null, Sanitizer::FLOAT);
 
         if (!is_null($bonus_support_amount)) {
-            $bonus_support_amount = Sanitizer::apply_rule($bonus_support_amount, Sanitizer::FLOAT);
             $order->update_meta_data(growfund_with_prefix('bonus_support_amount'), $bonus_support_amount);
         }
 
-        $donation_amount = growfund_input_post(growfund_with_prefix('donation_amount'));
+        $donation_amount = growfund_input_post(growfund_with_prefix('donation_amount'), null, Sanitizer::FLOAT);
 
         if (!is_null($donation_amount)) {
-            $donation_amount = Sanitizer::apply_rule($donation_amount, Sanitizer::FLOAT);
             $order->update_meta_data(growfund_with_prefix('donation_amount'), $donation_amount);
         }
 
-        $is_anonymous = growfund_input_post(growfund_with_prefix('is_anonymous'));
+        $is_anonymous = growfund_input_post(growfund_with_prefix('is_anonymous'), null, Sanitizer::INT);
 
         if (!is_null($is_anonymous)) {
-            $is_anonymous = Sanitizer::apply_rule($is_anonymous, Sanitizer::INT);
             $order->update_meta_data(growfund_with_prefix('is_anonymous'), $is_anonymous);
         }
 
-        $fund_id = growfund_input_post(growfund_with_prefix('fund_id'));
+        $fund_id = growfund_input_post(growfund_with_prefix('fund_id'), null, Sanitizer::INT);
 
         if (!is_null($fund_id)) {
-            $fund_id = Sanitizer::apply_rule($fund_id, Sanitizer::INT);
             $order->update_meta_data(growfund_with_prefix('fund_id'), $fund_id);
         }
     }

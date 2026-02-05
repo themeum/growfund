@@ -2,14 +2,14 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$background_color = $colors['background'] ?? '#ffffff';
-$text_color = $colors['text'] ?? '#333333';
+$growfund_background_color = $colors['background'] ?? '#ffffff';
+$growfund_text_color = $colors['text'] ?? '#333333';
 ?>
-<!-- Footer --><!--[if mso | IE]><tr><td class="" width="560px" ><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:560px;" width="560" bgcolor="<?php echo esc_attr($background_color); ?>" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+<!-- Footer --><!--[if mso | IE]><tr><td class="" width="560px" ><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:560px;" width="560" bgcolor="<?php echo esc_attr($growfund_background_color); ?>" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
 <div
-    style="background:<?php echo esc_attr($background_color); ?>;background-color:<?php echo esc_attr($background_color); ?>;margin:0px auto;border-radius:0 0 8px 8px;max-width:560px;">
+    style="background:<?php echo esc_attr($growfund_background_color); ?>;background-color:<?php echo esc_attr($growfund_background_color); ?>;margin:0px auto;border-radius:0 0 8px 8px;max-width:560px;">
     <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation"
-        style="background:<?php echo esc_attr($background_color); ?>;background-color:<?php echo esc_attr($background_color); ?>;width:100%;border-radius:0 0 8px 8px;">
+        style="background:<?php echo esc_attr($growfund_background_color); ?>;background-color:<?php echo esc_attr($growfund_background_color); ?>;width:100%;border-radius:0 0 8px 8px;">
         <tbody>
             <tr>
                 <td
@@ -27,8 +27,8 @@ $text_color = $colors['text'] ?? '#333333';
                                                     <tr>
                                                         <td align="center" style="font-size:0px;padding:0;word-break:break-word;">
                                                             <div
-                                                                style="font-family:Inter, sans-serif;font-size:16px;font-weight:normal;letter-spacing:0%;line-height:1.5;text-align:center;text-decoration:none;color:<?php echo esc_attr($text_color); ?>;">
-                                                                <?php echo wp_kses_post($content['footer']); ?>
+                                                                style="font-family:Inter, sans-serif;font-size:16px;font-weight:normal;letter-spacing:0%;line-height:1.5;text-align:center;text-decoration:none;color:<?php echo esc_attr($growfund_text_color); ?>;">
+                                                                <?php growfund_echo_safe_html($content['footer']); ?>
                                                             </div>
                                                         </td>
                                                     </tr>

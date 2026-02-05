@@ -28,6 +28,9 @@ use Growfund\Mails\PasswordResetLinkMail;
 use Growfund\Supports\Arr;
 use Growfund\Supports\User as UserSupport;
 use Exception;
+use Growfund\DTO\Fundraiser\CollaboratorDTO;
+use Growfund\PostTypes\Campaign;
+use WP_User;
 
 /**
  * User service class 
@@ -535,5 +538,39 @@ class UserService
             $query->query_from .= " INNER JOIN {$table} AS tbl_campaign_filter ON tbl_campaign_filter.user_id = {$users_table}.ID ";
             $query->query_where .= QueryBuilder::get_db()->prepare(" AND tbl_campaign_filter.campaign_id = %d ", $campaign_id);
         };
+    }
+
+
+    /**
+     * Get total campaigns created by user.
+     * 
+     * @param int $user_id
+     * 
+     * @return int
+     */
+    public function get_total_campaigns_created(int $user_id)
+    {
+        return (int) count_user_posts($user_id, Campaign::NAME, true);
+    }
+
+    public function prepare_collaborator_dto(WP_User $user)
+    {
+        $donation_service = new DonationService();
+        $pledge_service = new PledgeService();
+
+        $dto = new CollaboratorDTO();
+
+        $dto->id = (string) $user->ID;
+        $dto->display_name = $user->display_name ?? '';
+        $dto->email = $user->email ?? '';
+        $dto->phone = UserSupport::get_phone_number($user->ID);
+        $dto->image = UserSupport::get_avatar_image($user->ID);
+        $dto->status = UserSupport::get_status($user->ID);
+        $dto->total_campaign_created = $this->get_total_campaigns_created($user->ID);
+        $dto->total_number_of_contributions = growfund_app()->is_donation_mode()
+            ? $donation_service->get_total_number_of_donations($user->ID)
+            : $pledge_service->get_total_number_of_pledges($user->ID);
+
+        return $dto;
     }
 }

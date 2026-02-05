@@ -68,7 +68,7 @@ class DonationController
         $dto->start_date = $request->get_date('start_date');
         $dto->end_date = $request->get_date('end_date');
         $dto->user_id = $request->get_int('user_id');
-        $dto->orderby = $request->get_string('orderby', 'created_at');
+        $dto->orderby = $request->get_column('orderby', 'created_at', ['ID', 'created_at', 'status']);
         $dto->order = $request->get_string('order', 'DESC');
 
         if (growfund_user()->is_donor()) {
@@ -272,7 +272,7 @@ class DonationController
         $activity_filter_dto = ActivityFilterDTO::from_array([
             'page' => $request->get_int('page', 1),
             'limit' => $request->get_int('per_page', 10),
-            'orderby' => $request->get_string('orderby', 'created_at'),
+            'orderby' => $request->get_column('orderby', 'created_at', ['ID', 'type', 'created_at']),
             'order' => $request->get_string('order', 'DESC'),
             'donation_id' => $donation_id,
         ]);

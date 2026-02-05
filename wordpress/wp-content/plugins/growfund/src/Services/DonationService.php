@@ -24,7 +24,6 @@ use Growfund\DTO\Donation\AnnualReceiptFilterDTO;
 use Growfund\DTO\Donation\CreateDonationDTO;
 use Growfund\DTO\Donation\DonationAnnualReceiptDTO;
 use Growfund\DTO\Donation\DonationCampaignDTO;
-use Growfund\DTO\Donor\DonorDTO;
 use Growfund\DTO\Donation\DonationDTO;
 use Growfund\DTO\Donation\DonationFilterParamsDTO;
 use Growfund\DTO\Donation\DonationFundDTO;
@@ -39,10 +38,14 @@ use Growfund\Supports\MediaAttachment;
 use Growfund\Supports\Money;
 use Growfund\Core\AppSettings;
 use Growfund\Payments\DTO\PaymentMethodDTO;
-use Growfund\Supports\Payment;
 use DateTime;
 use Exception;
-use Stripe\PaymentMethod;
+use Growfund\Constants\Campaign\FundSelectionType;
+use Growfund\Constants\Campaign\TributeNotificationPreference;
+use Growfund\Constants\Campaign\TributeRequirement;
+use Growfund\Constants\UserTypes\Donor;
+use Growfund\DTO\Donation\DonationDonorDTO;
+use Growfund\Supports\Payment;
 
 class DonationService
 {
@@ -144,7 +147,7 @@ class DonationService
             $user_info = json_decode($donation->user_info, true);
             $user_info['image'] = !empty($user_info['image']) ? MediaAttachment::make($user_info['image']) : null;
             $user_info['is_verified'] = !empty($user_info['id']) && growfund_user($user_info['id'])->is_verified();
-            $donor_dto = DonorDTO::from_array($user_info);
+            $donor_dto = DonationDonorDTO::from_array($user_info);
             $donor_dto->id = (string) $donor_dto->id;
             $donor_dto->phone = $donor_dto->phone;
         }
@@ -175,6 +178,7 @@ class DonationService
 
         $donation_campaign = new DonationCampaignDTO();
         $donation_campaign->id = $donation->campaign_id;
+        $donation_campaign->slug = $donation->campaign_slug;
         $donation_campaign->title = $donation->campaign_name;
         $donation_campaign->status = $donation->campaign_status;
         $donation_campaign->fund_raised = $this->get_total_donated_amount($donation->campaign_id);
@@ -219,7 +223,7 @@ class DonationService
         $donation = $this->get_query(new DonationFilterParamsDTO())->find($uid, 'donations.uid');
 
         if (!$donation) {
-            throw new Exception(__('Donation not found', 'growfund'), Response::NOT_FOUND); // phpcs:ignore
+            throw new Exception(esc_html__('Donation not found', 'growfund'), (int) Response::NOT_FOUND);
         }
 
         return $this->prepare_donation_dto($donation);
@@ -236,7 +240,7 @@ class DonationService
         $donation = $this->get_query(new DonationFilterParamsDTO())->where('donations.transaction_id', $id)->first();
 
         if (!$donation) {
-            throw new Exception(__('Donation not found', 'growfund'), Response::NOT_FOUND); // phpcs:ignore
+            throw new Exception(esc_html__('Donation not found', 'growfund'), (int) Response::NOT_FOUND);
         }
 
         return $this->prepare_donation_dto($donation);
@@ -254,41 +258,53 @@ class DonationService
         $campaign_service = new CampaignService();
         $campaign = $campaign_service->get_by_id($dto->campaign_id);
 
-        if (empty($dto->fund_id)) {
+        if (!growfund_settings(AppSettings::CAMPAIGNS)->allow_fund()) {
             $dto->fund_id = (new FundService())->get_default_fund()->id;
         }
 
-        $this->check_campaign_constraints($campaign, $dto);
+        if (growfund_settings(AppSettings::CAMPAIGNS)->allow_fund() && $campaign->fund_selection_type === FundSelectionType::FIXED) {
+            $dto->fund_id = $campaign->default_fund ?? (new FundService())->get_default_fund()->id;
+        }
 
+        if (empty($dto->status)) {
+            $dto->status = DonationStatus::PENDING;
+        }
+
+        if (growfund_settings(AppSettings::CAMPAIGNS)->allow_tribute() && $campaign->tribute_notification_preference !== TributeNotificationPreference::LET_DONOR_DECIDE) {
+            $dto->tribute_notification_type = $campaign->tribute_notification_preference;
+        }
+
+        
+        $this->check_campaign_constraints($campaign, $dto);
+        $this->check_amount_constraints((int) $dto->amount, $campaign);
+        
         $dto->uid = growfund_uuid();
+        $dto->payment_engine = growfund_payment_engine();
+        $dto->is_anonymous = growfund_settings(AppSettings::PERMISSIONS)->allow_anonymous_donation() && !empty($dto->is_anonymous);
         $dto->created_at = Date::current_sql_safe();
         $dto->created_by = growfund_user()->get_id();
         $dto->updated_at = Date::current_sql_safe();
         $dto->updated_by = growfund_user()->get_id();
         $dto->tribute_notification_recipient_address =  wp_json_encode($dto->tribute_notification_recipient_address);
 
-        if ($dto->status === DonationStatus::PENDING) {
-            $dto->payment_status = PaymentStatus::UNPAID;
-        } elseif ($dto->status === DonationStatus::COMPLETED) {
-            $dto->payment_status = PaymentStatus::PAID;
-        } elseif ($dto->status === DonationStatus::FAILED || $dto->status === DonationStatus::CANCELLED) {
-            $dto->payment_status = PaymentStatus::FAILED;
-        }
+        $dto->payment_status = $this->get_payment_status($dto->status);
 
-        if (!empty($dto->user_id)) {
+        if (empty($dto->user_info)) {
             $donor_dto = (new UserService())->get_by_user_id($dto->user_id);
             $donor_dto->image = $donor_dto->image['id'] ?? null;
-            $user_info = DonorDTO::from_array($donor_dto->to_array());
-            $dto->user_info = wp_json_encode($user_info);
+            $user_info = DonationDonorDTO::from_array($donor_dto->to_array());
+            $dto->user_info = wp_json_encode($user_info->to_array());
             $dto->email = $user_info->email;
         }
 
-        $dto->payment_method = wp_json_encode($dto->payment_method);
+        $dto->payment_method = empty($dto->payment_method) || is_string($dto->payment_method) 
+            ? Payment::get_payment_method_by_name($dto->payment_method ?? '') 
+            : wp_json_encode($dto->payment_method->to_array());
 
         $donation_id = QueryBuilder::query()->table(Tables::DONATIONS)->create($dto->to_array());
 
         if ($donation_id === false) {
-            throw new Exception(__('Failed to create the donation', 'growfund')); // phpcs:ignore
+            throw new Exception(esc_html__('Failed to create the donation', 'growfund'));
         }
 
         if ($campaign->status !== CampaignStatus::FUNDED && CampaignGoal::is_reached($campaign, $dto)) {
@@ -311,60 +327,129 @@ class DonationService
         return $donation_id;
     }
 
+    protected function get_payment_status($status) {
+        if ($status === DonationStatus::COMPLETED) {
+            return PaymentStatus::PAID;
+        } elseif ($status === DonationStatus::FAILED || $status === DonationStatus::CANCELLED) {
+            return PaymentStatus::FAILED;
+        }
+
+        return PaymentStatus::UNPAID;
+    }
+
     /**
      * Check campaign constraints for donation
-     * @return void
+     * 
+     * @param CampaignDTO $campaign_dto
+     * @param CreateDonationDTO $donation_dto
+     * @param bool $throwable
+     * @return bool
      * @throws ValidationException
      */
-    protected function check_campaign_constraints(CampaignDTO $campaign_dto, CreateDonationDTO $donation_dto)
+    public function check_campaign_constraints(CampaignDTO $campaign_dto, CreateDonationDTO $donation_dto, $throwable = true)
     {
         if (!$campaign_dto->is_launched) {
+            if (!$throwable) {
+                return false;
+            }
+
             throw ValidationException::with_errors([
-                'reward_id' => [esc_html__('Campaign is not launched yet', 'growfund')]
+                'campaign_id' => [esc_html__('Campaign is not launched yet', 'growfund')]
             ]);
         }
 
         if ($campaign_dto->is_ended) {
+            if (!$throwable) {
+                return false;
+            }
+
             throw ValidationException::with_errors([
-                'reward_id' => [esc_html__('Campaign has ended', 'growfund')]
+                'campaign_id' => [esc_html__('Campaign has ended', 'growfund')]
             ]);
         }
 
         if (growfund_settings(AppSettings::CAMPAIGNS)->allow_fund() && !$donation_dto->fund_id) {
+            if (!$throwable) {
+                return false;
+            }
+
             throw ValidationException::with_errors([
                 'fund_id' => [esc_html__('Fund is required', 'growfund')]
             ]);
         }
 
-        if (growfund_settings(AppSettings::CAMPAIGNS)->allow_tribute() && $campaign_dto->has_tribute && $campaign_dto->tribute_requirement === 'required' && empty($donation_dto->tribute_type)) {
+        if (growfund_settings(AppSettings::CAMPAIGNS)->allow_tribute() && $campaign_dto->has_tribute && $campaign_dto->tribute_requirement === TributeRequirement::REQUIRED && empty($donation_dto->tribute_type)) {
+            if (!$throwable) {
+                return false;
+            }
+
             throw ValidationException::with_errors([
                 'tribute_type' => [esc_html__('Tribute is required', 'growfund')]
             ]);
         }
 
-        if (!(growfund_user()->is_admin() || growfund_user()->is_fundraiser())) {
+        if (
+            $campaign_dto->reaching_action === ReachingAction::CLOSE
+            && $campaign_dto->has_goal
+            && CampaignGoal::is_reached($campaign_dto)
+        ) {
+            if (!$throwable) {
+                return false;
+            }
+
+            throw ValidationException::with_errors([
+                'campaign_id' => [esc_html__('Campaign gaol already reached', 'growfund')]
+            ]);
+        }
+
+        return true;
+    }
+
+    /**
+     * Check amount constraints for donation
+     * @param int $donation_amount
+     * @param CampaignDTO $campaign_dto
+     * @param bool $throwable
+     * 
+     * @return bool
+     * @throws ValidationException
+     */
+    public function check_amount_constraints(int $donation_amount, CampaignDTO $campaign_dto, $throwable = true) {
+        if (growfund_user()->get_active_role() === Donor::ROLE) {
             $allowed_option = Arr::make($campaign_dto->suggested_options ?? [])
-                ->find(function ($item) use ($donation_dto) {
-                    return (int) $item['amount'] === (int) $donation_dto->amount;
+                ->some(function ($item) use ($donation_amount) {
+                    return (int) $item['amount'] === $donation_amount;
                 });
 
             if (!$campaign_dto->allow_custom_donation) {
-                if (empty($allowed_option)) {
+                if (!$allowed_option) {
+                    if (!$throwable) {
+                        return false;
+                    }
+
                     throw ValidationException::with_errors([
                         'amount' => [esc_html__('Donation amount is not allowed', 'growfund')],
                     ]);
                 }
             }
 
-            if ($campaign_dto->allow_custom_donation && empty($allowed_option)) {
-                if ((int) $donation_dto->amount < (int) $campaign_dto->min_donation_amount) {
+            if ($campaign_dto->allow_custom_donation && !$allowed_option) {
+                if ($donation_amount < (int) $campaign_dto->min_donation_amount) {
+                    if (!$throwable) {
+                        return false;
+                    }
+
                     throw ValidationException::with_errors([
                         /* translators: %s: minimum donation amount */
                         'amount' => [sprintf(esc_html__('Minimum donation amount is %s', 'growfund'), esc_html(Money::prepare_for_display($campaign_dto->min_donation_amount)))],
                     ]);
                 }
 
-                if ((int) $donation_dto->amount > (int) $campaign_dto->max_donation_amount) {
+                if ($donation_amount > (int) $campaign_dto->max_donation_amount) {
+                    if (!$throwable) {
+                        return false;
+                    }
+
                     throw ValidationException::with_errors([
                         /* translators: %s: maximum donation amount */
                         'amount' => [sprintf(esc_html__('Cannot donate more than %s', 'growfund'), esc_html(Money::prepare_for_display($campaign_dto->max_donation_amount)))],
@@ -373,15 +458,7 @@ class DonationService
             }
         }
 
-        if (
-            $campaign_dto->reaching_action === ReachingAction::CLOSE
-            && $campaign_dto->has_goal
-            && CampaignGoal::is_reached($campaign_dto)
-        ) {
-            throw ValidationException::with_errors([
-                'campaign_id' => [esc_html__('Campaign gaol already reached', 'growfund')]
-            ]);
-        }
+        return true;
     }
 
     /**
@@ -713,6 +790,7 @@ class DonationService
             ->select([
                 'donations.*',
                 'campaigns.post_title as campaign_name',
+                'campaigns.post_name as campaign_slug',
                 'campaign_status_meta.meta_value as campaign_status',
                 'campaign_start_date_meta.meta_value as campaign_start_date',
                 'campaign_images_meta.meta_value as campaign_images',
@@ -764,7 +842,7 @@ class DonationService
                 'funds.ID'
             );
 
-        if ($params->user_id !== growfund_user()->get_id() && growfund_user()->is_fundraiser()) {
+        if (!empty($params->user_id) && $params->user_id !== growfund_user()->get_id() && growfund_user()->is_fundraiser()) {
             $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
             $query->where_in('donations.campaign_id', $campaign_ids);
         }

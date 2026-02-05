@@ -1,0 +1,101 @@
+.growfund-login-main-wrapper {
+  padding: calc(var(--growfund-spacing-4) * 2);
+  box-shadow: var(--growfund-box-shadow-7);
+  background: var(--growfund-bg-surface);
+  border: 1px solid var(--growfund-border-border);
+  border-radius: var(--growfund-radius-lg);
+  max-width: 496px;
+  margin: auto;
+}
+
+.growfund-login-main-wrapper-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: calc(var(--growfund-spacing-4) * 2);
+  font-weight: var(--growfund-font-weight-semibold);
+  font-family: var(--growfund-font-family);
+  font-size: var(--growfund-font-size-2xl);
+  color: var(--growfund-text-primary);
+}
+
+.growfund-login-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--growfund-spacing-4);
+}
+
+.growfund-login-submit-button {
+  border-radius: var(--growfund-radius-md);
+  padding: var(--growfund-spacing-2) var(--growfund-spacing-4);
+  background-color: var(--growfund-bg-fill-brand);
+  color: var(--growfund-text-light);
+  width: 100%;
+  font-size: var(--growfund-font-size-md);
+  font-weight: var(--growfund-font-weight-medium);
+  font-family: var(--growfund-font-family);
+  height: 44px;
+  border: none;
+  cursor: pointer;
+}
+
+.growfund-login-submit-button:hover {
+  background-color: var(--growfund-bg-brand-hover);
+}
+
+.growfund-login-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--growfund-spacing-4) * 2);
+}
+
+.growfund-login-forgot-link {
+  color: var(--growfund-text-subdued);
+  font-size: var(--growfund-font-size-md);
+  font-family: var(--growfund-font-family);
+  text-decoration: none;
+}
+
+.growfund-login-forgot-link:hover {
+  color: var(--growfund-text-primary);
+}
+
+.growfund-login-prompt {
+  margin-top: var(--growfund-spacing-5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--growfund-spacing-1);
+  color: var(--growfund-text-subdued);
+  font-size: var(--growfund-font-size-md);
+  font-weight: var(--growfund-font-weight-normal);
+  font-family: var(--growfund-font-family);
+}
+.growfund-login-terms-text {
+  font-weight: var(--growfund-font-weight-normal);
+  font-family: var(--growfund-font-family);
+  font-size: var(--growfund-font-size-md);
+  color: var(--growfund-text-subdued);
+}
+
+.growfund-login-text {
+  color: var(--growfund-text-subdued);
+}
+.growfund-login-terms-text .growfund-login-link {
+  color: var(--growfund-text-primary);
+  text-decoration: none;
+}
+
+.growfund-login-sign-link {
+  color: var(--growfund-text-primary);
+  text-decoration: none;
+  font-weight: var(--growfund-font-weight-medium);
+}
+.growfund-login-forgot-password-link {
+  font-family: var(--growfund-font-family);
+  font-weight: var(--growfund-font-weight-normal);
+  font-size: var(--growfund-font-size-md);
+  color: var(--growfund-text-emphasis);
+  text-decoration: none;
+}

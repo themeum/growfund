@@ -11,6 +11,9 @@ use Growfund\Exceptions\ValidationException;
 use Growfund\Validation\Rules\BaseRule;
 use Growfund\Validation\Rules\NullableRule;
 use Closure;
+use Growfund\Contracts\Request;
+use Growfund\Sanitizer;
+use Growfund\Supports\Arr;
 use InvalidArgumentException;
 
 /**
@@ -63,12 +66,19 @@ class Validator
     /**
      * Static factory method for creating a Validator instance.
      *
-     * @param array $data
+     * @param array|Request $data
      * @param array $rules
      * @return static
      */
-    public static function make(array $data, array $rules)
+    public static function make($data, array $rules)
     {
+        if ($data instanceof Request) {
+            return new static(
+                $data->only($rules),
+                $rules
+            );
+        }
+
         return new static($data, $rules);
     }
 

@@ -175,4 +175,40 @@ class CampaignGoal
 
         return $percentage >= 50;
     }
+
+    /**
+     * @since 1.0.4
+     * 
+     * get the goal info for display
+     * 
+     * @param CampaignDTO $campaign_dto
+     * 
+     * @return string
+     */
+    public static function get_goal_info_for_display(CampaignDTO $campaign_dto)
+    {
+        if (!$campaign_dto->has_goal) {
+            return '';
+        }
+
+        $is_donation_mode = growfund_app()->is_donation_mode();
+
+        switch ($campaign_dto->goal_type) {
+            case GoalType::NO_OF_CONTRIBUTIONS:
+                return $is_donation_mode
+                /* translators: %s: donation number */
+                    ? sprintf(_n('%s donation has made', '%s donations have made', $campaign_dto->number_of_contributions, 'growfund'), $campaign_dto->number_of_contributions)
+                    /* translators: %s: pledge number */
+                    : sprintf(_n('%s pledge has made', '%s pledges have made', $campaign_dto->number_of_contributions, 'growfund'), $campaign_dto->number_of_contributions);
+            case GoalType::NO_OF_CONTRIBUTORS:
+                return $is_donation_mode
+                    /* translators: %s: donor count */
+                    ? sprintf(_n('%s donor has contributed', '%s donors have contributed', $campaign_dto->number_of_contributors, 'growfund'), $campaign_dto->number_of_contributors)
+                    /* translators: %s: backer count */
+                    : sprintf(_n('%s backer has contributed', '%s backers have contributed', $campaign_dto->number_of_contributors, 'growfund'), $campaign_dto->number_of_contributors);
+            default:
+				/* translators: %s: raised amount */
+                return sprintf(__('%s raised', 'growfund'), Currency::format($campaign_dto->fund_raised ?? 0));
+        }
+    }
 }

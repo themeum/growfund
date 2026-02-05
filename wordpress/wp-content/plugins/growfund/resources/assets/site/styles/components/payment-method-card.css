@@ -1,0 +1,41 @@
+.growfund-payment-method-card-title {
+  font-weight: var(--growfund-font-weight-semibold);
+  font-size: var(--growfund-font-size-lg);
+  line-height: 20px;
+}
+.growfund-payment-method-card-title-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--growfund-spacing-1);
+  margin-bottom: var(--growfund-spacing-4);
+}
+.growfund-payment-method-card-wrapper {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--growfund-border-border);
+  background-color: var(--growfund-bg-surface);
+  border-radius: var(--growfund-radius-md);
+  margin-top: var(--growfund-spacing-4);
+}
+.growfund-payment-method-card-option-item .growfund-radio-input {
+  display: none !important;
+}
+.growfund-payment-method-card-option-item:has(.growfund-radio-input:checked) {
+  border: 2px solid var(--growfund-text-brand);
+  border-radius: var(--growfund-radius-md);
+  background-color: var(--growfund-bg-light-green);
+}
+
+.growfund-payment-method-card-option-item {
+  min-height: 60px;
+  padding: var(--growfund-spacing-3) var(--growfund-spacing-4);
+  border-bottom: 1px solid var(--growfund-border-border);
+  font-weight: var(--growfund-font-weight-medium);
+  font-size: var(--growfund-font-size-lg);
+  line-height: 24px;
+  cursor: pointer;
+}
+
+.growfund-payment-method-card-option-item:last-child {
+  border-bottom: none;
+}

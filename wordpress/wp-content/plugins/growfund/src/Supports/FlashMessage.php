@@ -15,7 +15,7 @@ class FlashMessage
      * Set a flash message in cookie.
      *
      * @param string $key
-     * @param string $message
+     * @param string|array $message
      * @param string $type
      */
     public static function set($key, $message)
@@ -111,6 +111,10 @@ class FlashMessage
 
     public static function flush()
     {
+        if (headers_sent()) {
+            return;
+        }
+        
         $messages = static::get_all();
 
         foreach ($messages as $key => $message) {

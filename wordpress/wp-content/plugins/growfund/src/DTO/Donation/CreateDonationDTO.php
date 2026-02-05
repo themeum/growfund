@@ -5,13 +5,19 @@ namespace Growfund\DTO\Donation;
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Constants\Campaign\FundSelectionType;
+use Growfund\Constants\Campaign\TributeNotificationPreference;
 use Growfund\Constants\Status\DonationStatus;
-use Growfund\Constants\TributeNotificationType;
+use Growfund\Constants\Campaign\TributeNotificationType;
+use Growfund\Constants\Campaign\TributeRequirement;
+use Growfund\Core\AppSettings;
 use Growfund\DTO\DTO;
 use Growfund\Payments\DTO\PaymentMethodDTO;
 use Growfund\PostTypes\Campaign;
 use Growfund\Sanitizer;
+use Growfund\Supports\Arr;
+use Growfund\Supports\Payment;
 use Growfund\Supports\PostMeta;
+use Growfund\Validation\Rules\EmailRule;
 
 /**
  * Data Transfer Object for Creating Donation
@@ -74,10 +80,10 @@ class CreateDonationDTO extends DTO
     /** @var string|null */
     public $payment_engine;
 
-    /** @var string|null */
+    /** @var PaymentMethodDTO|null */
     public $payment_method;
 
-    /** @var PaymentMethodDTO|null */
+    /** @var string|null */
     public $payment_status;
 
     /** @var bool */
@@ -106,42 +112,140 @@ class CreateDonationDTO extends DTO
      *
      * @return array
      */
-    public static function validation_rules(): array
+    public static function validation_rules()
     {
+        return array_merge(
+            [
+				'campaign_id' => 'required|string|post_exists:post_type=' . Campaign::NAME,
+				'fund_id' => [
+					function ($value, $key, $data) {
+						$fund_selection_type = PostMeta::get((int) $data['campaign_id'], 'fund_selection_type') ?? FundSelectionType::DONOR_DECIDE;
+
+						if (growfund_settings(AppSettings::CAMPAIGNS)->allow_fund() && $fund_selection_type === FundSelectionType::DONOR_DECIDE && empty($value)) {
+							/* translators: %s: field name */
+							return sprintf(__('The %s field is required.', 'growfund'), str_replace(['_', '.'], ' ', $key));
+						}
+
+						return true;
+					},
+					'integer',
+				],
+				'user_id' => 'nullable|user_exists|integer',
+				'amount' => [
+                    'required',
+                    'float',
+                    function ($value) {
+                        if ((int) $value <= 0) {
+                            return __('The amount is required.', 'growfund');
+                        }
+
+                        return true;
+                    }
+                ],
+				'notes' => 'nullable|string',
+				'status' => 'string|in:' . implode(',', DonationStatus::get_constant_values()),
+				'is_anonymous' => 'boolean',
+				'payment_method' => [
+					'required',
+					'string',
+					function($value, $key) {
+						if (!Payment::is_valid_payment_method($value)) {
+							/* translators: %s: field name */
+							return sprintf(__('The %s is not valid.', 'growfund'), str_replace('_', ' ', $key));
+						}
+
+						return true;
+					}
+				],
+			],
+            self::tribute_validation_rules()
+        );
+    }
+
+    protected static function tribute_validation_rules() {
+        if (!growfund_settings(AppSettings::CAMPAIGNS)->allow_tribute()) {
+            return [];
+        }
+
+        $tribute_recipient_address_required_rules = 'required_if:tribute_notification_type,' . implode(';', [TributeNotificationType::POST_MAIL, TributeNotificationType::BOTH]);
+
         return [
-            'campaign_id'                              => 'required|string|post_exists:post_type=' . Campaign::NAME,
-            'fund_id'                                  => [
+            'tribute_type' => [
+                'string',
+                function ($value, $key, $data) {
+                    $has_tribute = PostMeta::get((int) $data['campaign_id'], 'has_tribute');
+                    $has_tribute = isset($has_tribute)
+                        ? filter_var($has_tribute, FILTER_VALIDATE_BOOLEAN)
+                        : false;
+
+                    $tribute_options = PostMeta::get((int) $data['campaign_id'], 'tribute_options');
+					$tribute_options = !empty($tribute_options)
+                        ? maybe_unserialize($tribute_options)
+                        : [];
+
+                    $tribute_requirement = PostMeta::get((int) $data['campaign_id'], 'tribute_requirement') ?? TributeRequirement::OPTIONAL;
+
+                    if ($has_tribute) {
+                        if (empty($value) && $tribute_requirement === TributeRequirement::REQUIRED) {
+                            return __('The tribute type is required.', 'growfund');
+                        }
+
+                        if (!empty($value)) {
+                            $is_valid_type = Arr::make($tribute_options)->some(function($option) use ($value) {
+								return $option['message'] === $value;
+							});
+
+                            if (!$is_valid_type) {
+								return __('The tribute type is not valid.', 'growfund');
+                            }
+                        }
+                    }
+
+                    return true;
+                }
+            ],
+            'tribute_salutation' => 'required_if_exists:tribute_type|string',
+            'tribute_to' => 'required_if_exists:tribute_type|string',
+            'tribute_notification_type' =>  [
+                function ($value, $key, $data) {
+                    $tribute_notification_preference = PostMeta::get((int) $data['campaign_id'], 'tribute_notification_preference') ?? TributeNotificationPreference::LET_DONOR_DECIDE;
+
+                    if (!empty($data['tribute_type']) && $tribute_notification_preference === TributeNotificationPreference::LET_DONOR_DECIDE && empty($value)) {
+                        return __('The tribute notification type is required.', 'growfund');
+                    }
+
+                    if (!empty($value) && !in_array($value, TributeNotificationType::get_constant_values(), true)) {
+                        return __('The tribute notification type is not valid.', 'growfund');
+                    }
+
+                    return true;
+                },
+                'string',
+            ],
+            'tribute_notification_recipient_name' => 'required_if_exists:tribute_type|string',
+            'tribute_notification_recipient_phone' => 'required_if_exists:tribute_type|string',
+            'tribute_notification_recipient_email' => [
 				function ($value, $key, $data) {
-                    $fund_selection_type = PostMeta::get($data['campaign_id'], 'fund_selection_type');
-					if ($fund_selection_type === FundSelectionType::DONOR_DECIDE && empty($value)) {
-						/* translators: %s: field name */
-						return sprintf(__('The %s field is required.', 'growfund'), $key);
+					if (!empty($data['tribute_type']) && empty($value)) {
+						return __('The recipient email is required.', 'growfund');
 					}
 
-					return true;
-				},
-				'integer',
-			],
-            'user_id'                                  => 'nullable|user_exists|integer',
-            'amount'                                   => 'required|integer|min:1',
-            'tribute_type'                             => 'required_if_exists:tribute_notification_type|string',
-            'tribute_salutation'                       => 'required_if_exists:tribute_type|string',
-            'tribute_to'                               => 'required_if_exists:tribute_type|string',
-            'tribute_notification_type'                => 'required_if_exists:tribute_type|string|in:' . implode((','), TributeNotificationType::get_constant_values()),
-            'tribute_notification_recipient_name'      => 'required_if_exists:tribute_type|string',
-            'tribute_notification_recipient_phone'     => 'required_if:tribute_notification_type,' . implode(';', [TributeNotificationType::ECARD, TributeNotificationType::BOTH]) . '|string',
-            'tribute_notification_recipient_email'     => 'required_if:tribute_notification_type,' . implode(';', [TributeNotificationType::ECARD, TributeNotificationType::BOTH]) . '|email',
-            'tribute_notification_recipient_address'   => 'required_if:tribute_notification_type,' . implode(';', [TributeNotificationType::POST_MAIL, TributeNotificationType::BOTH]) . '|array',
-            'tribute_notification_recipient_address.address'     => 'required_if:tribute_notification_type,' . implode(';', [TributeNotificationType::POST_MAIL, TributeNotificationType::BOTH]) . '|string',
-            'tribute_notification_recipient_address.address2'    => 'string',
-            'tribute_notification_recipient_address.city'        => 'required_if:tribute_notification_type,' . implode(';', [TributeNotificationType::POST_MAIL, TributeNotificationType::BOTH]) . '|string',
-            'tribute_notification_recipient_address.state'       => 'string',
-            'tribute_notification_recipient_address.zip_code'    => 'required_if:tribute_notification_type,' . implode(';', [TributeNotificationType::POST_MAIL, TributeNotificationType::BOTH]) . '|string',
-            'tribute_notification_recipient_address.country'     => 'required_if:tribute_notification_type,' . implode(';', [TributeNotificationType::POST_MAIL, TributeNotificationType::BOTH]) . '|string',
-            'notes'                                    => 'nullable|string',
-            'status'                                   => 'required|string|in:' . implode(',', DonationStatus::get_constant_values()),
-            'is_anonymous'                             => 'required|boolean',
-            'payment_method'                           => 'required|string',
+                    $email_rule = new EmailRule($key, $value, null, $data);
+
+                    if (!empty($value) && !$email_rule->validate_rule()) {
+                        return $email_rule->get_error_message();
+                    }
+
+                    return true;
+				}
+            ],
+            'tribute_notification_recipient_address' =>  $tribute_recipient_address_required_rules . '|array',
+            'tribute_notification_recipient_address.address' => $tribute_recipient_address_required_rules . '|string',
+            'tribute_notification_recipient_address.address_2' => 'string',
+            'tribute_notification_recipient_address.city' => $tribute_recipient_address_required_rules . '|string',
+            'tribute_notification_recipient_address.state' => 'string',
+            'tribute_notification_recipient_address.zip_code' => $tribute_recipient_address_required_rules . '|string',
+            'tribute_notification_recipient_address.country'=> $tribute_recipient_address_required_rules . '|string',
         ];
     }
 
@@ -151,14 +255,13 @@ class CreateDonationDTO extends DTO
      *
      * @return array
      */
-    public static function sanitization_rules(): array
+    public static function sanitization_rules()
     {
         return [
             'campaign_id'                              => Sanitizer::INT,
             'fund_id'                                  => Sanitizer::INT,
             'user_id'                                  => Sanitizer::INT,
             'amount'                                   => Sanitizer::MONEY,
-            'dedicate_donation'                        => Sanitizer::TEXT,
             'tribute_requirement'                      => Sanitizer::TEXT,
             'tribute_type'                             => Sanitizer::TEXT,
             'tribute_salutation'                       => Sanitizer::TEXT,
@@ -169,7 +272,7 @@ class CreateDonationDTO extends DTO
             'tribute_notification_recipient_email'     => Sanitizer::EMAIL,
             'tribute_notification_recipient_address'   => Sanitizer::ARRAY,
             'tribute_notification_recipient_address.address'   => Sanitizer::TEXT,
-            'tribute_notification_recipient_address.address2'  => Sanitizer::TEXT,
+            'tribute_notification_recipient_address.address_2'  => Sanitizer::TEXT,
             'tribute_notification_recipient_address.city'      => Sanitizer::TEXT,
             'tribute_notification_recipient_address.state'     => Sanitizer::TEXT,
             'tribute_notification_recipient_address.zip_code'  => Sanitizer::TEXT,
@@ -186,44 +289,46 @@ class CreateDonationDTO extends DTO
      *
      * @return array
      */
-    public static function checkout_validation_rules(): array
+    public static function checkout_validation_rules()
     {
-        return [
-            'campaign_id'                                    => 'required|integer|post_exists:post_type=' . Campaign::NAME,
-            'fund_id'                                        => [
-				function ($value, $key, $data) {
-                    $fund_selection_type = PostMeta::get($data['campaign_id'], 'fund_selection_type');
-					if ($fund_selection_type === FundSelectionType::DONOR_DECIDE && empty($value)) {
-						/* translators: %s: field name */
-						return sprintf(__('The %s field is required.', 'growfund'), $key);
-					}
+        $rules = self::validation_rules();
 
-					return true;
-				},
-				'integer',
-			],
-            'amount'                                         => 'required|integer|min:1',
-            'dedicate_donation'                              => 'nullable|string',
-            'tribute_requirement'                            => 'tribute_fields',
-            'tribute_notification_preference'                => 'tribute_fields',
-            'tribute_type'                                   => 'tribute_fields',
-            'tribute_salutation'                             => 'tribute_fields',
-            'tribute_first_name'                             => 'tribute_fields',
-            'tribute_last_name'                              => 'tribute_fields',
-            'tribute_notification_type'                      => 'tribute_fields',
-            'tribute_notification_recipient_name'            => 'tribute_fields',
-            'tribute_notification_recipient_phone'           => 'tribute_fields',
-            'tribute_notification_recipient_email'           => 'tribute_fields',
-            'tribute_notification_recipient_address'         => 'tribute_fields',
-            'tribute_notification_recipient_address.address' => 'tribute_fields',
-            'tribute_notification_recipient_address.address2' => 'tribute_fields',
-            'tribute_notification_recipient_address.city'     => 'tribute_fields',
-            'tribute_notification_recipient_address.state'    => 'tribute_fields',
-            'tribute_notification_recipient_address.zip_code' => 'tribute_fields',
-            'tribute_notification_recipient_address.country' => 'tribute_fields',
-            'notes'                                          => 'nullable|string',
-            'payment_method'                                 => 'required|string',
-            'is_anonymous'                                   => 'boolean',
-        ];
+        unset($rules['user_id']);
+
+        return array_merge($rules, [
+            'billing_address' => 'required|array',
+            'billing_address.address'  => 'required|string',
+            'billing_address.address_2'  => 'string',
+            'billing_address.city' => 'required|string',
+            'billing_address.state' => 'string',
+            'billing_address.zip_code'  => 'required|string',
+            'billing_address.country'  => 'required|string',
+            'contact_info' => 'required|array',
+            'contact_info.email' => 'required|email',
+            'contact_info.first_name' => 'required|string',
+            'contact_info.last_name' => 'required|string',
+        ]);
+    }
+
+    /**
+     * Return sanitization rules for checkout page
+     *
+     * @return array
+     */
+    public static function checkout_sanitization_rules()
+    {
+        return array_merge(self::sanitization_rules(), [
+            'billing_address'               => Sanitizer::ARRAY,
+            'billing_address.address'       => Sanitizer::TEXT,
+            'billing_address.address_2'     => Sanitizer::TEXT,
+            'billing_address.city'          => Sanitizer::TEXT,
+            'billing_address.state'         => Sanitizer::TEXT,
+            'billing_address.zip_code'      => Sanitizer::TEXT,
+            'billing_address.country'       => Sanitizer::TEXT,
+            'contact_info'                  => Sanitizer::ARRAY,
+            'contact_info.email'            => Sanitizer::EMAIL,
+            'contact_info.first_name'       => Sanitizer::TEXT,
+            'contact_info.last_name'        => Sanitizer::TEXT,
+        ]);
     }
 }

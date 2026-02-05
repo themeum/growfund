@@ -23,7 +23,7 @@ class RegisterRestApi extends BaseHook
 
     public function handle(...$args)
     {
-        do_action(HookNames::GROWFUND_ROUTE_BEFORE_INIT_ACTION);
+        do_action(HookNames::GROWFUND_ROUTE_BEFORE_INIT_ACTION); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
 
         $routes = Route::get_routes();
 

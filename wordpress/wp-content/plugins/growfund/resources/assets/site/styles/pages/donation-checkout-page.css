@@ -1,0 +1,395 @@
+.growfund-donation-checkout-page {
+  border-radius: 32px;
+  background-color: var(--growfund-bg-surface-secondary);
+  padding: calc(var(--growfund-spacing-4) * 3) 56px 56px 56px;
+  max-width: 708px;
+  margin: auto;
+  margin-top: calc(var(--growfund-spacing-4) * 3);
+  margin-bottom: calc(var(--growfund-spacing-4) * 3);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--growfund-spacing-4) * 2);
+}
+
+.growfund-donation-checkout-page-donation {
+  display: flex;
+  gap: var(--growfund-spacing-6);
+}
+.growfund-donation-checkout-page-donation img {
+  height: 100%;
+  object-fit: contain;
+}
+.growfund-donation-checkout-page-donation-image {
+  width: 156px;
+  height: 112px;
+  min-width: 156px;
+  flex-shrink: 0;
+  border-radius: var(--growfund-radius-xl);
+  overflow: hidden;
+}
+.growfund-donation-checkout-page-donation-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.growfund-donation-checkout-page-donation-tittle-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--growfund-spacing-2);
+  min-width: 0;
+  width: 100%;
+}
+
+.growfund-donation-checkout-page-donation-text {
+  font-weight: var(--growfund-font-weight-normal);
+  font-size: var(--growfund-font-size-lg);
+  line-height: 150%;
+  color: var(--growfund-text-secondary);
+}
+
+.growfund-donation-checkout-page-donation-tittle {
+  font-weight: var(--growfund-font-weight-semibold);
+  font-size: var(--growfund-font-size-2xl);
+  line-height: 120%;
+  color: var(--growfund-text-primary);
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.growfund-donation-checkout-page-donation-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--growfund-spacing-4);
+  padding-bottom: calc(var(--growfund-spacing-4) * 2);
+  border-bottom: 1px solid var(--growfund-border-border);
+}
+
+.growfund-donation-checkout-page-donation-amount-text {
+  font-weight: var(--growfund-font-weight-semibold);
+  font-size: var(--growfund-font-size-xl);
+
+  line-height: 122%;
+  color: var(--growfund-text-primary);
+}
+
+.growfund-donation-checkout-page-donation-amount {
+  border-radius: var(--growfund-radius-md);
+  border: 1px solid var(--growfund-border-secondary);
+  padding-top: var(--growfund-spacing-5);
+  padding-right: var(--growfund-spacing-6);
+  padding-bottom: var(--growfund-spacing-5);
+  padding-left: var(--growfund-spacing-6);
+  gap: 10px;
+  background-color: var(--growfund-bg-surface);
+  font-weight: var(--growfund-font-weight-normal);
+  font-size: var(--growfund-font-size-xl);
+  color: var(--growfund-text-primary);
+}
+
+.growfund-donation-checkout-page-support-wrapper {
+  display: flex;
+  gap: var(--growfund-spacing-4);
+  flex-direction: column;
+  padding-bottom: calc(var(--growfund-spacing-4) * 2);
+  border-bottom: 1px solid var(--growfund-border-border);
+}
+
+.growfund-donation-checkout-page-support-title {
+  font-weight: var(--growfund-font-weight-semibold);
+  font-size: var(--growfund-font-size-xl);
+  color: var(--growfund-text-primary);
+  line-height: 122%;
+}
+
+.growfund-donation-checkout-page-tribute-wrapper {
+  border-radius: var(--growfund-radius-md);
+  border: 1px solid var(--growfund-border-secondary);
+  background-color: var(--growfund-bg-surface);
+  padding: var(--growfund-spacing-5);
+}
+.growfund-donation-checkout-page-tribute-checkbox {
+  color: var(--growfund-text-muted-foreground) !important;
+}
+.growfund-donation-checkout-page-contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--growfund-spacing-6);
+}
+.growfund-donation-checkout-page-contact-info-title {
+  font-weight: var(--growfund-font-weight-normal);
+  font-size: var(--growfund-font-size-2xl);
+  line-height: 120%;
+  color: var(--growfund-text-primary);
+}
+.growfund-donation-checkout-page-contact-info-fname-lname {
+  display: flex;
+  gap: var(--growfund-spacing-3);
+}
+.growfund-donation-checkout-page-contact-info-fname-lname > * {
+  width: 50%;
+}
+.growfund-donation-checkout-page-donate-main-wrapper {
+  padding-top: calc(var(--growfund-spacing-4) * 2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--growfund-spacing-5);
+}
+.growfund-donation-checkout-page-donate-title {
+  font-weight: var(--growfund-font-weight-semibold);
+  color: var(--growfund-text-primary);
+  font-size: var(--growfund-font-size-md);
+}
+.growfund-donation-checkout-page-donate-wrapper {
+  display: flex;
+  justify-content: space-between;
+  font-family: Inter;
+  font-weight: var(--growfund-font-weight-normal);
+  padding-bottom: var(--growfund-spacing-5);
+  font-size: var(--growfund-font-size-lg);
+
+  line-height: 122%;
+  color: var(--growfund-text-muted-foreground);
+  border-bottom: 1px solid var(--growfund-border-secondary);
+}
+.growfund-donation-checkout-page-total-due-wrapper {
+  display: flex;
+  justify-content: space-between;
+  font-weight: var(--growfund-font-weight-medium);
+  font-size: var(--growfund-font-size-2xl);
+  line-height: 122%;
+  padding-bottom: var(--growfund-spacing-5);
+  color: var(--growfund-text-primary);
+  border-bottom: 1px solid var(--growfund-border-secondary);
+}
+.growfund-donation-checkout-page-is-anonymous-checkbox {
+  color: var(--growfund-text-primary) !important;
+}
+.growfund-donation-checkout-page-payment-method-payment-option-item .growfund-radio-input {
+  display: none !important;
+}
+.growfund-donation-checkout-page-donation-radio-wrapper .growfund-radio-input {
+  display: none !important;
+}
+.growfund-donation-checkout-page-donation-amount-wrapper {
+  display: flex;
+  gap: var(--growfund-spacing-2);
+}
+.growfund-donation-checkout-page-donation-radio-wrapper {
+  border-radius: var(--growfund-radius-md);
+  border: 1px solid var(--growfund-border-secondary);
+  padding-top: var(--growfund-spacing-5);
+  padding-right: var(--growfund-spacing-6);
+  padding-bottom: var(--growfund-spacing-5);
+  padding-left: var(--growfund-spacing-6);
+  gap: 10px;
+  background-color: var(--growfund-bg-surface);
+  font-weight: var(--growfund-font-weight-normal);
+  font-size: var(--growfund-font-size-xl);
+  color: var(--growfund-text-primary);
+  cursor: pointer;
+}
+.growfund-donation-checkout-page-donation-radio-wrapper .selected {
+  background-color: var(--growfund-bg-fill-brand);
+  color: var(--growfund-text-light);
+}
+
+.growfund-donation-checkout-page-donate-button-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.growfund-donation-checkout-page-donate-button {
+  width: 100%;
+  background-color: var(--growfund-bg-fill-brand);
+  color: var(--growfund-text-light);
+  border-radius: var(--growfund-radius-md);
+  padding: var(--growfund-spacing-3) 0;
+}
+
+.growfund-donation-checkout-page-donate-button:hover {
+  background-color: var(--growfund-bg-brand-hover);
+}
+
+.growfund-donation-checkout-page-donation-radio-wrapper:has(.growfund-radio-input:checked) {
+  color: var(--growfund-text-light);
+  background-color: var(--growfund-bg-fill-brand);
+}
+.growfund-donation-checkout-page-billing-country-label {
+  font-weight: var(--growfund-font-weight-medium);
+  font-size: var(--growfund-font-size-md);
+  color: var(--growfund-text-primary);
+  line-height: 22px;
+}
+.growfund-donation-checkout-page-right-section-state-city-wrapper {
+  display: flex;
+  gap: var(--growfund-spacing-3);
+  flex-direction: row;
+}
+.growfund-donation-checkout-page-billing-country {
+  display: flex;
+  flex-direction: column;
+  gap: var(--growfund-spacing-2);
+}
+
+.growfund-donation-checkout-page-tribute-dedication-type-options {
+  display: flex;
+  flex-direction: row;
+  gap: 46px;
+  font-size: var(--growfund-font-size-md);
+  font-weight: var(--growfund-font-weight-normal);
+  color: var(--growfund-text-primary);
+}
+.growfund-donation-checkout-page-tribute-dedication-type-options input[type='radio'] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  transform: scale(0.85);
+  margin: 0;
+}
+.growfund-donation-checkout-page-tribute-dedication-type-title {
+  margin-top: var(--growfund-spacing-4);
+}
+
+.growfund-donation-checkout-page-tribute-dedication-type-title,
+.growfund-donation-checkout-page-tribute-details-title,
+.growfund-donation-checkout-page-tribute-notification-title {
+  font-size: var(--growfund-font-size-xl);
+  font-weight: var(--growfund-font-weight-semibold);
+  color: var(--growfund-text-primary);
+  margin-bottom: var(--growfund-spacing-4);
+}
+.growfund-donation-checkout-page-tribute-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--growfund-spacing-6);
+}
+
+.growfund-donation-checkout-page-tribute-details-content .growfund-text-field-main-wrapper {
+  flex: 1 1 calc(50% - 10px);
+  min-width: 0;
+}
+
+.growfund-donation-checkout-page-tribute-details-content
+  .growfund-text-field-main-wrapper:nth-child(5) {
+  flex: 1 1 100%;
+}
+.growfund-donation-checkout-page-tribute-details-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--growfund-spacing-5);
+  width: 100%;
+}
+.growfund-donation-checkout-page-tribute-notification-type-label {
+  font-size: var(--growfund-font-size-md);
+  font-weight: var(--growfund-font-weight-normal);
+  color: var(--growfund-text-primary);
+}
+.growfund-donation-checkout-page-tribute-message .growfund-textarea-label {
+  font-size: var(--growfund-font-size-md);
+  font-weight: var(--growfund-font-weight-normal);
+  color: var(--growfund-text-primary);
+}
+.growfund-donation-checkout-page-tribute-notification-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--growfund-spacing-2);
+}
+.growfund-donation-checkout-page-privacy-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--growfund-spacing-2);
+}
+.growfund-donation-checkout-page-tribute-recipient-address {
+  margin-top: var(--growfund-spacing-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--growfund-spacing-4);
+}
+
+@media (max-width: 1024px) {
+  .growfund-donation-checkout-page-donation-amount-wrapper {
+    flex-wrap: wrap;
+  }
+
+  .growfund-donation-checkout-page-donation-radio-wrapper {
+    font-size: var(--growfund-font-size-lg);
+    padding: var(--growfund-spacing-3) var(--growfund-spacing-4);
+  }
+  .growfund-donation-checkout-page-donation-tittle {
+    font-size: var(--growfund-font-size-lg);
+    line-height: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .growfund-donation-checkout-page-donation-amount-wrapper {
+    flex-wrap: wrap;
+    gap: var(--growfund-spacing-3);
+  }
+
+  .growfund-donation-checkout-page-donation-radio-wrapper {
+    font-size: var(--growfund-font-size-md);
+    padding: 10px var(--growfund-spacing-3);
+  }
+  .growfund-donation-checkout-page-donation {
+    display: flex;
+    flex-direction: column;
+  }
+  .growfund-donation-checkout-page-donation-amount-text {
+    font-size: var(--growfund-font-size-lg);
+  }
+  .growfund-donation-checkout-page-support-title {
+    font-size: var(--growfund-font-size-lg);
+    line-height: var(--growfund-font-size-xl);
+  }
+  .growfund-donation-checkout-page-contact-info-title {
+    font-size: var(--growfund-font-size-lg);
+  }
+  .growfund-donation-checkout-page-total-due-wrapper {
+    font-size: var(--growfund-font-size-xl);
+    line-height: 122%;
+  }
+}
+
+@media (max-width: 480px) {
+  .growfund-donation-checkout-page-donation-amount-wrapper {
+    flex-wrap: wrap;
+    gap: var(--growfund-spacing-2);
+  }
+
+  .growfund-donation-checkout-page-donation-radio-wrapper {
+    font-size: var(--growfund-font-size-xs);
+    padding: var(--growfund-spacing-2) 10px;
+  }
+  .growfund-donation-checkout-page-tribute-details-content {
+    gap: var(--growfund-spacing-4);
+  }
+  .growfund-donation-checkout-page-tribute-details-content .growfund-text-field-main-wrapper {
+    flex: 1 1 100%;
+  }
+  .growfund-donation-checkout-page-tribute-dedication-type-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .growfund-donation-checkout-page-donation-input-wrapper .growfund-number-field-main-wrapper {
+    max-width: 160px;
+  }
+
+  .growfund-donation-checkout-page-donation-input-wrapper .growfund-number-field-wrapper {
+    padding: 2px;
+    height: 40px;
+  }
+
+  .growfund-donation-checkout-page-donation-input-wrapper .growfund-number-field {
+    font-size: var(--growfund-font-size-md);
+    width: 100%;
+  }
+
+  .growfund-donation-checkout-page-donation-input-wrapper .growfund-number-field-currency {
+    font-size: var(--growfund-font-size-md);
+  }
+}

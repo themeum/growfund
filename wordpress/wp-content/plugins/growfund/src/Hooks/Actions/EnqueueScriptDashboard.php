@@ -33,7 +33,7 @@ class EnqueueScriptDashboard extends BaseHook
 
     public function handle(...$args)
     {
-        if (!growfund_is_dashboard_route() && !growfund_is_public_route()) {
+        if (!growfund_is_react_site()) {
             return;
         }
 
@@ -65,6 +65,7 @@ class EnqueueScriptDashboard extends BaseHook
         wp_enqueue_editor();
 
         wp_enqueue_media();
+        
         // phpcs:ignore -- intentionally ignored enqueue version
         wp_enqueue_style('growfund-admin-style-extended', GROWFUND_DIR_URL . 'resources/assets/css/admin-style-extended.css');
 

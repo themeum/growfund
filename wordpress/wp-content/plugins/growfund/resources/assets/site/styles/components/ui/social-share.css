@@ -1,0 +1,11 @@
+.growfund-social-share {
+  display: flex;
+  align-items: center;
+  gap: var(--growfund-spacing-2);
+}
+
+.growfund-social-share-button {
+  display: flex;
+  align-items: center;
+  gap: var(--growfund-spacing-2);
+}

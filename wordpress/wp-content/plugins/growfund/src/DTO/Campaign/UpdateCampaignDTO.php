@@ -10,6 +10,7 @@ use Growfund\Constants\Campaign\GoalType;
 use Growfund\Constants\Campaign\ReachingAction;
 use Growfund\Constants\Campaign\SuggestedOptionType;
 use Growfund\Constants\Campaign\TributeNotificationPreference;
+use Growfund\Constants\Campaign\TributeRequirement;
 use Growfund\Constants\HookNames;
 use Growfund\Constants\Status\CampaignStatus;
 use Growfund\Core\AppSettings;
@@ -173,7 +174,7 @@ class UpdateCampaignDTO extends DTO
     public static function validation_rules()
     {
         return apply_filters(
-            HookNames::GROWFUND_CAMPAIGN_UPDATE_VALIDATION_RULES_FILTER,
+            HookNames::GROWFUND_CAMPAIGN_UPDATE_VALIDATION_RULES_FILTER, // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
             array_merge([
                 'id' => 'required|post_exists:post_type=' . Campaign::NAME,
                 'title' => 'required|string',
@@ -199,7 +200,7 @@ class UpdateCampaignDTO extends DTO
                     function ($value, $key, $data) {
                         if ($data['status'] === CampaignStatus::PUBLISHED && $data['has_goal'] === true && empty($value)) {
                             /* translators: %s: field name */
-                            return sprintf(__('The %s field is required.', 'growfund'), $key);
+                            return sprintf(__('The %s field is required.', 'growfund'), str_replace(['_', '.'], ' ', $key));
                         }
 
                         return true;
@@ -211,7 +212,7 @@ class UpdateCampaignDTO extends DTO
                     function ($value, $key, $data) {
                         if ($data['status'] === CampaignStatus::PUBLISHED && $data['has_goal'] === true && empty($value)) {
                             /* translators: %s: field name */
-                            return sprintf(__('The %s field is required.', 'growfund'), $key);
+                            return sprintf(__('The %s field is required.', 'growfund'), str_replace(['_', '.'], ' ', $key));
                         }
 
                         return true;
@@ -223,12 +224,12 @@ class UpdateCampaignDTO extends DTO
                     function ($value, $key, $data) {
                         if ($data['status'] === CampaignStatus::PUBLISHED && $data['has_goal'] === true && empty($value)) {
                             /* translators: %s: field name */
-                            return sprintf(__('The %s field is required.', 'growfund'), $key);
+                            return sprintf(__('The %s field is required.', 'growfund'), str_replace(['_', '.'], ' ', $key));
                         }
 
                         if (!empty($value) && $value !== ReachingAction::CLOSE) {
                             /* translators: 1: field name 2: reaching action */
-                            return sprintf(__('The %1$s field must be %2$s.', 'growfund'), $key, ReachingAction::CLOSE);
+                            return sprintf(__('The %1$s field must be %2$s.', 'growfund'), str_replace(['_', '.'], ' ', $key), ReachingAction::CLOSE);
                         }
 
                         return true;
@@ -240,7 +241,7 @@ class UpdateCampaignDTO extends DTO
                 'faqs' => 'prohibited',
             ], growfund_app()->is_donation_mode() ? array_merge(
                     [
-                        'suggested_option_type' => 'in:' . SuggestedOptionType::AMOUNT_ONLY,
+                        'suggested_option_type' => 'in:' . implode(',', SuggestedOptionType::get_constant_values()),
                         'suggested_options' => 'required_if:status,published|array',
                         'suggested_options.*.amount' => 'required|number|min:1',
                         'suggested_options.*.is_default' => 'boolean',
@@ -249,7 +250,7 @@ class UpdateCampaignDTO extends DTO
                             function ($value, $key, $data) {
                                 if ($data['status'] === CampaignStatus::PUBLISHED && $data['allow_custom_donation'] === true && empty($value)) {
                                     /* translators: %s: field name */
-                                    return sprintf(__('The %s field is required.', 'growfund'), $key);
+                                    return sprintf(__('The %s field is required.', 'growfund'), str_replace(['_', '.'], ' ', $key));
                                 }
 
                                 return true;
@@ -261,7 +262,7 @@ class UpdateCampaignDTO extends DTO
                             function ($value, $key, $data) {
                                 if ($data['status'] === CampaignStatus::PUBLISHED && $data['allow_custom_donation'] === true && empty($value)) {
                                     /* translators: %s: field name */
-                                    return sprintf(__('The %s field is required.', 'growfund'), $key);
+                                    return sprintf(__('The %s field is required.', 'growfund'), str_replace(['_', '.'], ' ', $key));
                                 }
 
                                 return true;
@@ -275,18 +276,18 @@ class UpdateCampaignDTO extends DTO
                             function ($value, $key, $data) {
                                 if ($data['status'] === CampaignStatus::PUBLISHED && $data['has_tribute'] === true && empty($value)) {
                                     /* translators: %s: field name */
-                                    return sprintf(__('The %s field is required.', 'growfund'), $key);
+                                    return sprintf(__('The %s field is required.', 'growfund'), str_replace(['_', '.'], ' ', $key));
                                 }
 
                                 return true;
                             },
-                            'in:optional,required',
+                            'in:' . implode(',', TributeRequirement::get_constant_values()),
                         ],
                         'tribute_title' => [
                             function ($value, $key, $data) {
                                 if ($data['status'] === CampaignStatus::PUBLISHED && $data['has_tribute'] === true && empty($value)) {
                                     /* translators: %s: field name */
-                                    return sprintf(__('The %s field is required.', 'growfund'), $key);
+                                    return sprintf(__('The %s field is required.', 'growfund'), str_replace(['_', '.'], ' ', $key));
                                 }
 
                                 return true;
@@ -297,7 +298,7 @@ class UpdateCampaignDTO extends DTO
                             function ($value, $key, $data) {
                                 if ($data['status'] === CampaignStatus::PUBLISHED && $data['has_tribute'] === true && empty($value)) {
                                     /* translators: %s: field name */
-                                    return sprintf(__('The %s field is required.', 'growfund'), $key);
+                                    return sprintf(__('The %s field is required.', 'growfund'), str_replace(['_', '.'], ' ', $key));
                                 }
 
                                 return true;
@@ -308,7 +309,7 @@ class UpdateCampaignDTO extends DTO
                             function ($value, $key, $data) {
                                 if ($data['status'] === CampaignStatus::PUBLISHED && $data['has_tribute'] === true && empty($value)) {
                                     /* translators: %s: field name */
-                                    return sprintf(__('The %s field is required.', 'growfund'), $key);
+                                    return sprintf(__('The %s field is required.', 'growfund'), str_replace(['_', '.'], ' ', $key));
                                 }
 
                                 return true;
@@ -319,7 +320,7 @@ class UpdateCampaignDTO extends DTO
                             function ($value, $key, $data) {
                                 if ($data['status'] === CampaignStatus::PUBLISHED && $data['has_tribute'] === true && !isset($value)) {
                                     /* translators: %s: field name */
-                                    return sprintf(__('The %s field is required.', 'growfund'), $key);
+                                    return sprintf(__('The %s field is required.', 'growfund'), str_replace(['_', '.'], ' ', $key));
                                 }
 
                                 return true;
@@ -330,7 +331,7 @@ class UpdateCampaignDTO extends DTO
                             function ($value, $key, $data) {
                                 if ($data['status'] === CampaignStatus::PUBLISHED && $data['has_tribute'] === true && empty($value)) {
                                     /* translators: %s: field name */
-                                    return sprintf(__('The %s field is required.', 'growfund'), $key);
+                                    return sprintf(__('The %s field is required.', 'growfund'), str_replace(['_', '.'], ' ', $key));
                                 }
 
                                 return true;
@@ -345,7 +346,7 @@ class UpdateCampaignDTO extends DTO
                             function ($value, $key, $data) {
                                 if ($data['status'] === CampaignStatus::PUBLISHED && $data['fund_selection_type'] === FundSelectionType::FIXED && empty($value)) {
                                     /* translators: %s: field name */
-                                    return sprintf(__('The %s field is required.', 'growfund'), $key);
+                                    return sprintf(__('The %s field is required.', 'growfund'), str_replace(['_', '.'], ' ', $key));
                                 }
 
                                 return true;
@@ -356,7 +357,7 @@ class UpdateCampaignDTO extends DTO
                             function ($value, $key, $data) {
                                 if ($data['status'] === CampaignStatus::PUBLISHED && $data['fund_selection_type'] === FundSelectionType::DONOR_DECIDE && empty($value)) {
                                     /* translators: %s: field name */
-                                    return sprintf(__('The %s field is required.', 'growfund'), $key);
+                                    return sprintf(__('The %s field is required.', 'growfund'), str_replace(['_', '.'], ' ', $key));
                                 }
 
                                 return true;
@@ -371,7 +372,7 @@ class UpdateCampaignDTO extends DTO
                         function ($value, $key, $data) {
                             if ($data['status'] === CampaignStatus::PUBLISHED && $data['appreciation_type'] === AppreciationType::GIVING_THANKS && empty($value)) {
                                 /* translators: %s: field name */
-                                return sprintf(__('The %s field is required.', 'growfund'), $key);
+                                return sprintf(__('The %s field is required.', 'growfund'), str_replace(['_', '.'], ' ', $key));
                             }
 
                             return true;
@@ -389,7 +390,7 @@ class UpdateCampaignDTO extends DTO
 
                             if ($data['giving_thanks'][$index]['pledge_from'] > $value) {
                                 /* translators: 1: field name, 2: field index */
-                                return sprintf(__('The %1$s field must be greater than giving_thanks.%2$s.pledge_from', 'growfund'), $key, $index);
+                                return sprintf(__('The %1$s field must be greater than giving_thanks.%2$s.pledge_from', 'growfund'), str_replace(['_', '.'], ' ', $key), $index);
                             }
                             return true;
                         }
@@ -399,7 +400,7 @@ class UpdateCampaignDTO extends DTO
                         function ($value, $key, $data) {
                             if ($data['status'] === CampaignStatus::PUBLISHED && $data['appreciation_type'] === AppreciationType::GOODIES && empty($value)) {
                                 /* translators: %s: field name */
-                                return sprintf(__('The %s field is required.', 'growfund'), $key);
+                                return sprintf(__('The %s field is required.', 'growfund'), str_replace(['_', '.'], ' ', $key));
                             }
 
                             return true;
@@ -412,7 +413,7 @@ class UpdateCampaignDTO extends DTO
                         function ($value, $key, $data) {
                             if ($data['status'] === CampaignStatus::PUBLISHED && $data['allow_pledge_without_reward'] === true && empty($value)) {
                                 /* translators: %s: field name */
-                                return sprintf(__('The %s field is required.', 'growfund'), $key);
+                                return sprintf(__('The %s field is required.', 'growfund'), str_replace(['_', '.'], ' ', $key));
                             }
 
                             return true;
@@ -423,7 +424,7 @@ class UpdateCampaignDTO extends DTO
                         function ($value, $key, $data) {
                             if ($data['status'] === CampaignStatus::PUBLISHED && $data['allow_pledge_without_reward'] === true && empty($value)) {
                                 /* translators: %s: field name */
-                                return sprintf(__('The %s field is required.', 'growfund'), $key);
+                                return sprintf(__('The %s field is required.', 'growfund'), str_replace(['_', '.'], ' ', $key));
                             }
 
                             return true;
@@ -498,8 +499,8 @@ class UpdateCampaignDTO extends DTO
             ) : [
                 'appreciation_type' => Sanitizer::TEXT,
                 'giving_thanks' => Sanitizer::ARRAY ,
-                'giving_thanks.*.pledge_from' => Sanitizer::FLOAT,
-                'giving_thanks.*.pledge_to' => Sanitizer::FLOAT,
+                'giving_thanks.*.pledge_from' => Sanitizer::MONEY,
+                'giving_thanks.*.pledge_to' => Sanitizer::MONEY,
                 'giving_thanks.*.appreciation_message' => Sanitizer::TEXTAREA,
                 'rewards' => Sanitizer::ARRAY ,
                 'rewards.*' => Sanitizer::INT,

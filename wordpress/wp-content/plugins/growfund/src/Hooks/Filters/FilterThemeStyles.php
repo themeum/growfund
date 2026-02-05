@@ -38,7 +38,7 @@ class FilterThemeStyles extends BaseHook
             return $args[0];
         }
 
-        if (!growfund_is_dashboard_route()) {
+        if (!growfund_is_react_site()) {
             return $args[0];
         }
 

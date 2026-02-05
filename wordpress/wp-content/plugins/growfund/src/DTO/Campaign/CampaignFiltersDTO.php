@@ -31,4 +31,28 @@ class CampaignFiltersDTO extends DTO
 
     /** @var array<int> */
     public $post_ids = [];
+
+    /** 
+     * @since 1.0.4
+     * @var string|null 
+     */
+    public $category_slug;
+
+    /** 
+     * @since 1.0.4
+     * @var int|null - 1|0 
+     */
+    public $is_featured;
+
+    /** 
+     * @since 1.0.4
+     * @var string|null -- 'created_date' | 'end_date' | 'start_date'
+     */
+    public $orderby;
+
+    /** 
+     * @since 1.0.4
+     * @var string|null -- 'asc'|'desc'
+     */
+    public $order;
 }

@@ -1,0 +1,67 @@
+.growfund-signup-main-wrapper {
+  padding: calc(var(--growfund-spacing-4) * 2);
+  box-shadow: var(--growfund-box-shadow-7);
+  background: var(--growfund-bg-surface);
+  border: 1px solid var(--growfund-border-border);
+  border-radius: var(--growfund-radius-lg);
+  font-family: var(--growfund-font-family);
+  max-width: 496px;
+  margin: auto;
+}
+.growfund-signup-main-wrapper-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: calc(var(--growfund-spacing-4) * 2);
+}
+
+.growfund-signup-name-row {
+  display: flex;
+  gap: var(--growfund-spacing-4);
+  flex-direction: row;
+  width: 100%;
+}
+.growfund-signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--growfund-spacing-4);
+}
+.growfund-signup-submit-button {
+  border-radius: var(--growfund-radius-md);
+  padding: var(--growfund-spacing-2) var(--growfund-spacing-4);
+  background-color: var(--growfund-bg-fill-brand);
+  color: var(--growfund-text-light);
+  width: 100%;
+  font-size: var(--growfund-font-size-md);
+  font-family: var(--growfund-font-family);
+  font-weight: var(--growfund-font-weight-medium);
+  height: 44px;
+}
+.growfund-signup-submit-button:hover {
+  background-color: var(--growfund-bg-brand-hover);
+}
+.growfund-signup-login-prompt {
+  margin-top: calc(var(--growfund-spacing-4) * 2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--growfund-text-subdued);
+  font-size: var(--growfund-font-size-md);
+  font-weight: var(--growfund-font-weight-normal);
+  font-family: var(--growfund-font-family);
+  gap: var(--growfund-spacing-2);
+}
+.growfund-signup-terms-text {
+  font-weight: var(--growfund-font-weight-normal);
+  font-family: var(--growfund-font-family);
+  font-size: var(--growfund-font-size-md);
+  color: var(--growfund-text-subdued);
+}
+.growfund-signup-terms-text .growfund-signup-link {
+  color: var(--growfund-text-primary);
+  text-decoration: none;
+}
+.growfund-signup-login-link {
+  color: var(--growfund-text-primary);
+  text-decoration: none;
+}

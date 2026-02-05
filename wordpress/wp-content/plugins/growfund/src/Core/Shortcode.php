@@ -30,6 +30,16 @@ abstract class Shortcode implements ShortcodeContract
         return $this->name;
     }
 
+    public function resolve($attributes, string $content = '', string $shortcode_tag = '')
+    {
+        $html = $this->callback($attributes, $content, $shortcode_tag);
+        
+        // After calling callback() we need to load assets, otherwise assets will not be loaded
+        growfund_app(AssetHandler::class)->load_assets();
+        
+        return $html;
+    }
+
     /**
      * The shortcode callback function.
      *

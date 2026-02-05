@@ -6,13 +6,17 @@ defined( 'ABSPATH' ) || exit;
 
 use Growfund\CastAttributes\DateTimeAttribute;
 use Growfund\CastAttributes\MoneyAttribute;
+use Growfund\Constants\PaymentEngine;
 use Growfund\Constants\PledgeOption;
+use Growfund\Constants\Reward\RewardType;
 use Growfund\Constants\Status\PledgeStatus;
 use Growfund\DTO\DTO;
 use Growfund\Payments\DTO\PaymentMethodDTO;
 use Growfund\PostTypes\Campaign;
 use Growfund\PostTypes\Reward;
 use Growfund\Sanitizer;
+use Growfund\Supports\Payment;
+use Growfund\Supports\PostMeta;
 
 /**
  * Data Transfer Object for Creating Pledge
@@ -51,7 +55,7 @@ class CreatePledgeDTO extends DTO
     public $status;
 
     /** @var bool */
-    public $is_manual;
+    public $is_manual = false;
 
     /** @var string */
     public $pledge_option;
@@ -118,7 +122,18 @@ class CreatePledgeDTO extends DTO
             'bonus_support_amount'       => 'float|min:0',
             'notes'                      => 'string',
             'is_manual'                  => 'boolean',
-            'payment_method'             => 'required|string',
+            'payment_method'             => [
+                'required',
+                'string',
+                function($value, $key) {
+                    if (!Payment::is_valid_payment_method($value)) {
+                        /* translators: %s: field name */
+                        return sprintf(__('The %s is not valid.', 'growfund'), $key);
+                    }
+
+                    return true;
+                }
+            ],
         ];
     }
 
@@ -140,17 +155,44 @@ class CreatePledgeDTO extends DTO
             'notes'                      => Sanitizer::TEXTAREA,
             'is_manual'                  => Sanitizer::BOOL,
             'payment_method'             => Sanitizer::TEXT,
-            'country'                    => Sanitizer::TEXT,
-            'address'                    => Sanitizer::TEXT,
-            'address_2'                  => Sanitizer::TEXT,
-            'city'                       => Sanitizer::TEXT,
-            'state'                      => Sanitizer::TEXT,
-            'zip_code'                   => Sanitizer::TEXT,
         ];
     }
 
     /**
-     * Return validation rules for checkout page
+     * Return sanitization rules for checkout
+     *
+     * @return array
+     */
+    public static function checkout_sanitization_rules(): array
+    {
+        return [
+            'campaign_id'                => Sanitizer::INT,
+            'pledge_option'              => Sanitizer::TEXT,
+            'reward_id'                  => Sanitizer::INT,
+            'amount'                     => Sanitizer::MONEY,
+            'bonus_support_amount'       => Sanitizer::MONEY,
+            'notes'                      => Sanitizer::TEXTAREA,
+            'payment_method'             => Sanitizer::TEXT,
+            'shipping_address'              => Sanitizer::ARRAY,
+            'shipping_address.address'      => Sanitizer::TEXT,
+            'shipping_address.address_2'    => Sanitizer::TEXT,
+            'shipping_address.city'         => Sanitizer::TEXT,
+            'shipping_address.state'        => Sanitizer::TEXT,
+            'shipping_address.zip_code'     => Sanitizer::TEXT,
+            'shipping_address.country'      => Sanitizer::TEXT,
+            'billing_address'               => Sanitizer::ARRAY,
+            'billing_address.address'       => Sanitizer::TEXT,
+            'billing_address.address_2'     => Sanitizer::TEXT,
+            'billing_address.city'          => Sanitizer::TEXT,
+            'billing_address.state'         => Sanitizer::TEXT,
+            'billing_address.zip_code'      => Sanitizer::TEXT,
+            'billing_address.country'       => Sanitizer::TEXT,
+            'is_billing_address_same'       => Sanitizer::BOOL,
+        ];
+    }
+
+    /**
+     * Return validation rules for checkout
      *
      * @return array
      */
@@ -158,18 +200,143 @@ class CreatePledgeDTO extends DTO
     {
         return [
             'campaign_id'                => 'required|post_exists:post_type=' . Campaign::NAME,
-            'reward_id'                  => 'nullable',
-            'pledge_option'              => 'required|string|in:' . PledgeOption::WITH_REWARDS . ',' . PledgeOption::WITHOUT_REWARDS,
-            'amount'                     => 'required_if:pledge_option,' . PledgeOption::WITHOUT_REWARDS . '|float|min:1',
-            'bonus_support_amount'       => 'nullable|float|min:0',
-            'notes'                      => 'nullable|string',
-            'payment_method'             => 'required|string',
-            'country'                    => 'required_if:pledge_option,' . PledgeOption::WITH_REWARDS . '|string',
-            'address'                    => 'required_if:pledge_option,' . PledgeOption::WITH_REWARDS . '|string',
-            'city'                       => 'required_if:pledge_option,' . PledgeOption::WITH_REWARDS . '|string',
-            'zip_code'                   => 'required_if:pledge_option,' . PledgeOption::WITH_REWARDS . '|string',
-            'state'                      => 'required_if:pledge_option,' . PledgeOption::WITH_REWARDS . '|string',
-            'address_2'                  => 'nullable|string',
+            'pledge_option'              => 'required|string|in:' . implode(',', PledgeOption::get_constant_values()),
+            'reward_id'                  => 'required_if:pledge_option,' . PledgeOption::WITH_REWARDS . '|post_exists:post_type=' . Reward::NAME,
+            'amount'                     => [
+                'required_if:pledge_option,' . PledgeOption::WITHOUT_REWARDS,
+                'float',
+                function($value, $key, $data) {
+                    if ($data['pledge_option'] === PledgeOption::WITHOUT_REWARDS && (int) $value <= 0) {
+                        return __('The amount is required.', 'growfund');
+                    }
+
+                    return true;
+                }
+            ],
+            'bonus_support_amount'       => 'float|min:0',
+            'notes'                      => 'string',
+            'payment_method'             => [
+                'required',
+                'string',
+                function($value, $key) {
+                    if (!Payment::is_valid_payment_method($value)) {
+                        /* translators: %s: field name */
+                        return sprintf(__('The %s is not valid.', 'growfund'), str_replace('_', ' ', $key));
+                    }
+
+                    return true;
+                }
+            ],
+            'shipping_address' => [
+                'array',
+                function($value, $key, $data) {
+                    if (empty($value)) {
+                        if ($data['pledge_option'] === PledgeOption::WITH_REWARDS) {
+                            if (PostMeta::get($data['reward_id'], 'reward_type') !== RewardType::DIGITAL_GOODS) {
+                                return __('The shipping address is required.', 'growfund');
+                            }
+                            
+                        }
+                    }
+                    return true;
+                }
+            ],
+            'shipping_address.address' => [
+                'string',
+                function($value, $key, $data) {
+                    if (empty($value) && !empty($data['shipping_address'])) {
+                        return __('The shipping address is required.', 'growfund');
+                    }
+
+                    return true;
+                }
+            ],
+            'shipping_address.address_2' => 'string',
+            'shipping_address.city' => [
+                'string',
+                function($value, $key, $data) {
+                    if (empty($value) && !empty($data['shipping_address'])) {
+                        return __('The shipping city is required.', 'growfund');
+                    }
+
+                    return true;
+                }
+            ],
+            'shipping_address.state' => 'string',
+            'shipping_address.zip_code' => [
+                'string',
+                function($value, $key, $data) {
+                    if (empty($value) && !empty($data['shipping_address'])) {
+                        return __('The shipping country is required.', 'growfund');
+                    }
+
+                    return true;
+                }
+            ],
+            'shipping_address.country' => [
+                'string',
+                function($value, $key, $data) {
+                    if (empty($value) && !empty($data['shipping_address'])) {
+                        /* translators: %s: field name */
+                        return sprintf(__('The %s is required.', 'growfund'), str_replace('.', ' ', $key));
+                    }
+
+                    return true;
+                }
+            ],
+            'billing_address' => [
+                'array',
+                function ($value, $key, $data) {
+                    if (empty($data['is_billing_address_same'] ?? false) && empty($value)) {
+						return __('The bulling address is required.', 'growfund');
+                    }
+
+                    return true;
+                }
+            ],
+            'billing_address.address'  => [
+                'string',
+                function ($value, $key, $data) {
+                    if (empty($data['is_billing_address_same'] ?? false) && empty($value)) {
+                        return __('The billing address is required.', 'growfund');
+                    }
+
+                    return true;
+                }
+            ],
+            'billing_address.address_2'  => 'string',
+            'billing_address.city' => [
+                'string',
+                function ($value, $key, $data) {
+                    if (empty($data['is_billing_address_same'] ?? false) && empty($value)) {
+                        return __('The billing city is required.', 'growfund');
+                    }
+
+                    return true;
+                }
+            ],
+            'billing_address.state' => 'string',
+            'billing_address.zip_code'  => [
+                'string',
+                function ($value, $key, $data) {
+                    if (empty($data['is_billing_address_same'] ?? false) && empty($value)) {
+                        return __('The billing zip/postal code is required.', 'growfund');
+                    }
+
+                    return true;
+                }
+            ],
+            'billing_address.country'  => [
+                'string',
+                function ($value, $key, $data) {
+                    if (empty($data['is_billing_address_same'] ?? false) && empty($value)) {
+                        return __('The billing country is required.', 'growfund');
+                    }
+
+                    return true;
+                }
+            ],
+            'is_billing_address_same' => 'boolean',
         ];
     }
 }

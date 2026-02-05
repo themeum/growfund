@@ -48,4 +48,9 @@ class Auth
     {
         return home_url('/auth/reset-password/');
     }
+
+	public static function reset_link_url()
+    {
+        return home_url('auth/reset-password-link');
+    }
 }
