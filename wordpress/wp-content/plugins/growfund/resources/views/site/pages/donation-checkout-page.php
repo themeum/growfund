@@ -8,6 +8,7 @@ use Growfund\Constants\Campaign\SuggestedOptionType;
 use Growfund\Constants\Campaign\TributeNotificationPreference;
 use Growfund\Constants\Campaign\TributeNotificationType;
 use Growfund\Constants\Campaign\TributeRequirement;
+use Growfund\Constants\PaymentEngine;
 use Growfund\Core\AppSettings;
 use Growfund\Supports\Arr;
 use Growfund\Supports\Currency;
@@ -452,11 +453,13 @@ $growfund_checkout_consent = growfund_settings(AppSettings::GENERAL)->get_tnc_te
         </div>
 
         <?php
-            $growfund_payment_methods = new PaymentMethodCard();
-            $growfund_payment_methods->payment_methods = $donation_checkout_page->payment_methods;
-            $growfund_payment_methods->error_msg = growfund_flash_get_message('checkout_form_errors')['payment_method'][0] ?? '';
+		if (growfund_settings(AppSettings::PAYMENT)->get_payment_engine() === PaymentEngine::NATIVE) {
+			$growfund_payment_methods = new PaymentMethodCard();
+			$growfund_payment_methods->payment_methods = $donation_checkout_page->payment_methods;
+			$growfund_payment_methods->error_msg = growfund_flash_get_message('checkout_form_errors')['payment_method'][0] ?? '';
 
-            growfund_render($growfund_payment_methods);
+			growfund_render($growfund_payment_methods);
+		}
         ?>
 
         <div class="growfund-donation-checkout-page-donate-main-wrapper">

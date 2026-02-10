@@ -136,12 +136,12 @@ if (!function_exists('growfund_settings')) {
     /**
      * Get the settings instance.
      *
-     * @template T of 'general'|'campaigns'|'notifications'|'payment'|'permissions'|'receipts'|'security'|'advanced'|'branding'
+     * @template T of 'general'|'pages'|'campaigns'|'notifications'|'payment'|'permissions'|'receipts'|'security'|'advanced'|'branding'
      * @param T $key
-     * @return (T is 'branding' ? \Growfund\App\Settings\BrandingSettings : (T is 'campaigns' ? \Growfund\App\Settings\CampaignSettings : (T is 'notifications' ? \Growfund\App\Settings\EmailAndNotificationSettings : (T is 'payment' ? \Growfund\App\Settings\PaymentSettings : (T is 'permissions' ? \Growfund\App\Settings\PermissionSettings : (T is 'receipts' ? \Growfund\App\Settings\ReceiptSettings : (T is 'security' ? \Growfund\App\Settings\SecuritySettings : (T is 'advanced' ? \Growfund\App\Settings\AdvancedSettings : \Growfund\App\Settings\GeneralSettings))))))))
+     * @return (T is 'branding' ? \Growfund\App\Settings\BrandingSettings : (T is 'campaigns' ? \Growfund\App\Settings\CampaignSettings : (T is 'notifications' ? \Growfund\App\Settings\EmailAndNotificationSettings : (T is 'pages' ? \Growfund\App\Settings\PageSettings : (T is 'payment' ? \Growfund\App\Settings\PaymentSettings : (T is 'permissions' ? \Growfund\App\Settings\PermissionSettings : (T is 'receipts' ? \Growfund\App\Settings\ReceiptSettings : (T is 'security' ? \Growfund\App\Settings\SecuritySettings : (T is 'advanced' ? \Growfund\App\Settings\AdvancedSettings : \Growfund\App\Settings\GeneralSettings)))))))))
      */
     function growfund_settings($key)
-    {
+    {        
         return growfund_app()->make($key);
     }
 }
@@ -456,6 +456,13 @@ if (!function_exists('growfund_wc_product_id')) {
     }
 }
 
+if (!function_exists('growfund_wc_product_slug')) {
+    function growfund_wc_product_slug()
+    {
+        return Woocommerce::get_growfund_product_slug();
+    }
+}
+
 /**
  * Make a scheduler instance.
  * 
@@ -546,7 +553,9 @@ if (!function_exists('growfund_campaign_archive_url')) {
 	 */
     function growfund_campaign_archive_url()
     {
-        return get_post_type_archive_link(Campaign::NAME);
+        $page_id = growfund_settings(AppSettings::PAGES)->get_campaigns_page_id();
+        
+        return !empty($page_id) ? get_permalink($page_id) : get_post_type_archive_link(Campaign::NAME);
     }
 }
 
@@ -882,14 +891,18 @@ if (!function_exists('growfund_remote_request_url')) {
 if (!function_exists('growfund_terms_and_conditions_url')) {
     function growfund_terms_and_conditions_url()
     {
-        return get_privacy_policy_url(); // @todo
+        $page_id = (int) growfund_settings(AppSettings::PAGES)->get_terms_and_conditions_page_id();
+
+        return !empty($page_id) ? get_permalink($page_id) : site_url();
     }
 }
 
 if (!function_exists('growfund_privacy_policy_url')) {
     function growfund_privacy_policy_url()
     {
-        return get_privacy_policy_url(); // @todo
+        $page_id = (int) growfund_settings(AppSettings::PAGES)->get_privacy_policy_page_id();
+        
+        return !empty($page_id) ? get_permalink($page_id) : site_url();
     }
 }
 
@@ -1136,22 +1149,7 @@ if (!function_exists('growfund_is_wc_checkout')) {
      */
     function growfund_is_wc_checkout()
     {
-        if (function_exists('is_checkout') && is_checkout()) {
-            return true;
-        }
-
-        if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
-
-			// Safely get the request URI.
-			$route = wp_unslash(growfund_input_server('REQUEST_URI', ''));  
-
-            if (strpos($route, '/wc/store/') !== false && strpos($route, 'checkout') !== false) {
-                return true;
-            }
-		}
-
-
-        return false;
+        return Utils::is_woocommerce_checkout_page();
     }
 }
 

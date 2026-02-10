@@ -45,6 +45,16 @@ const GeneralSettingsSchema = z
     }
   });
 
+const PageSettingsSchema = z.object({
+  login_page: z.string().optional().nullable(),
+  registration_page: z.string().optional().nullable(),
+  fundraiser_registration_page: z.string().optional().nullable(),
+  campaigns_page: z.string().optional().nullable(),
+  checkout_page: z.string().optional().nullable(),
+  privacy_policy_page: z.string().optional().nullable(),
+  terms_and_conditions_page: z.string().optional().nullable(),
+});
+
 const SocialShareProviders = z.enum(['facebook', 'x', 'linkedin', 'whatsapp', 'telegram']);
 
 const CampaignSettingsSchema = z.object({
@@ -303,6 +313,7 @@ const UserSchema = z.object({
 
 const AppConfigSchema = z.object({
   [AppConfigKeys.General]: GeneralSettingsSchema.nullish(),
+  [AppConfigKeys.Page]: PageSettingsSchema.nullish(),
   [AppConfigKeys.Campaign]: CampaignSettingsSchema.nullish(),
   [AppConfigKeys.UserAndPermissions]: UserPermissionsSettingsSchema.nullish(),
   [AppConfigKeys.Payment]: PaymentSettingsSchema.nullish(),
@@ -330,6 +341,7 @@ type AppConfig = z.infer<typeof AppConfigSchema>;
 type SocialShareProviders = z.infer<typeof SocialShareProviders>;
 type User = z.infer<typeof UserSchema>;
 type MailServerForm = z.infer<typeof MailServerSchema>;
+type PageSettingsSchemaForm = z.infer<typeof PageSettingsSchema>;
 
 export {
   AdvancedSettingsSchema,
@@ -343,11 +355,11 @@ export {
   GeneralSettingsSchema,
   LicenseSettingsSchema,
   MailServerSchema,
+  PageSettingsSchema,
   PaymentSettingsSchema,
   PDFReceiptSettingsSchema,
   SecuritySettingsSchema,
   UserPermissionsSettingsSchema,
-  UserSchema,
   type AdvancedSettingsForm,
   type AppConfig,
   type BrandingSettingsForm,
@@ -356,6 +368,7 @@ export {
   type GeneralSettingsForm,
   type LicenseSettingsForm,
   type MailServerForm,
+  type PageSettingsSchemaForm,
   type PaymentSettingsForm,
   type PDFReceiptSettingsForm,
   type SecuritySettingsForm,

@@ -165,15 +165,20 @@
   font-weight: var(--growfund-font-weight-normal);
   line-height: 21px;
   color: var(--growfund-text-primary);
+  padding: 0 var(--growfund-spacing-4) var(--growfund-spacing-4);
 }
 
 .growfund-campaign-card-description .growfund-campaign-card-description-border-top {
   border-top: 1.62px solid var(--growfund-border-border);
-  margin: 0 var(--growfund-spacing-4);
+  margin-bottom: var(--growfund-spacing-4);
 }
 
 .growfund-campaign-card-description-content {
-  padding: var(--growfund-spacing-4);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .growfund-campaign-card:hover .growfund-campaign-card-description {

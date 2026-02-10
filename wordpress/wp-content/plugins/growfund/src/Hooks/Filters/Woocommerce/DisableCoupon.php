@@ -7,12 +7,13 @@ defined( 'ABSPATH' ) || exit;
 use Growfund\Constants\HookNames;
 use Growfund\Constants\HookTypes;
 use Growfund\Hooks\BaseHook;
+use Growfund\Supports\Woocommerce;
 
-class ClassicCustomCheckoutFields extends BaseHook
+class DisableCoupon extends BaseHook
 {
     public function get_name()
     {
-        return HookNames::WC_CLASSIC_CHECKOUT_FIELDS;
+        return HookNames::WC_COUPONS_ENABLE;
     }
 
     public function get_type()
@@ -22,12 +23,16 @@ class ClassicCustomCheckoutFields extends BaseHook
 
     public function handle(...$args)
     {
-        $fields = $args[0];
+        $enabled = $args[0];
+        
+        if (!WC()->cart) {
+			return $enabled;
+		}
 
-        if (growfund_is_wc_checkout()) {
-            return [];
+        if (Woocommerce::has_growfund_product_in_cart()) {
+            return false;
         }
 
-        return $fields;
+		return $enabled;
     }
 }

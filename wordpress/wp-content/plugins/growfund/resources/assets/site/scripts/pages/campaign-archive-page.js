@@ -1,8 +1,13 @@
 (function () {
   function getPaginatedCampaigns() {
     let page = 1;
-    let hasMore = true;
+    let hasMore = false;
     let isLoading = false;
+
+    const currentList = document.querySelector('#growfund_archive_page_campaigns_list');
+    if (!currentList) return;
+
+    hasMore = currentList.getAttribute('data-has-more') === 'true' ? true : false;
 
     function fetchCampaigns(params, reset = false) {
       if ((!reset && !hasMore) || isLoading) return;
@@ -14,9 +19,6 @@
           .get('growfund_ajax_get_paginated_campaigns', params)
           .then((response) => {
             if (response.success && response.data && response.data.html) {
-              const currentList = document.querySelector('#growfund_archive_page_campaigns_list');
-              if (!currentList) return;
-
               page = response.data.data.current_page;
               hasMore = response.data.data.has_more;
 
@@ -82,8 +84,14 @@
 
   function getPaginatedFeaturedCampaigns() {
     let page = 1;
-    let hasMore = true;
+    let hasMore = false;
     let isLoading = false;
+
+    const currentList = document.querySelector('#growfund_featured_campaigns_slider_campaign_list');
+    if (!currentList) return;
+
+    hasMore = currentList.getAttribute('data-has-more') === 'true' ? true : false;
+
     function fetchFeaturedCampaigns(pageNo) {
       if (!hasMore || isLoading) return;
 
@@ -94,10 +102,8 @@
           .get('growfund_ajax_get_featured_campaigns', { page: pageNo })
           .then((response) => {
             if (response.success && response.data && response.data.html) {
-              const currentList = document.querySelector(
-                '#growfund_featured_campaigns_slider_campaign_list',
-              );
-              if (!currentList) return;
+              page = response.data.data.current_page;
+              hasMore = response.data.data.has_more;
 
               const temp = document.createElement('div');
               temp.innerHTML = response.data.html;
@@ -105,8 +111,6 @@
               const newList = temp.querySelector('.growfund-ajax-campaign-list');
               if (!newList) return;
 
-              page = response.data.data.current_page;
-              hasMore = response.data.data.has_more;
               currentList.insertAdjacentHTML('beforeend', newList.innerHTML);
 
               if (growfundEvents.recalculateCampaignSlider) {
@@ -127,10 +131,9 @@
     });
   }
 
-  getPaginatedCampaigns();
-  getPaginatedFeaturedCampaigns();
-
   document.addEventListener('DOMContentLoaded', () => {
+    getPaginatedCampaigns();
+    getPaginatedFeaturedCampaigns();
     growfundObserveInfiniteScroll('#growfund_archive_page_campaigns_infinite_scroll');
   });
 })();

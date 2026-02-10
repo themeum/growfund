@@ -30,27 +30,18 @@ class AddToCartValidation extends BaseHook
     {
         list($passed, $product_id) = $args;
 
-        if ($product_id === Woocommerce::get_growfund_product_id()) {
-            if ($passed) {
-                WC()->cart->empty_cart();
+        if (Woocommerce::is_growfund_product($product_id)) {
+			if ($passed) {
+                Woocommerce::empty_cart();
             }
 
             return $passed;
-        }
+		}
 
-        $this->remove_growfund_product_from_cart();
+        if (Woocommerce::has_growfund_product_in_cart()) {
+            Woocommerce::empty_cart();
+        }
 
         return $passed;
-    }
-
-    protected function remove_growfund_product_from_cart()
-    {
-        foreach (WC()->cart->get_cart() as $key => $cart_item) {
-            if ((int) $cart_item['product_id'] === (int) Woocommerce::get_growfund_product_id()) {
-                WC()->cart->remove_cart_item($key);
-            }
-        }
-
-        Woocommerce::unset_custom_cart_info_from_session();
     }
 }

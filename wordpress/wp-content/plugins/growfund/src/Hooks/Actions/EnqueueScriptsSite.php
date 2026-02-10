@@ -92,7 +92,7 @@ class EnqueueScriptsSite extends BaseHook
 
     protected function load_woocommerce_assets()
     {
-        if (function_exists('is_checkout') && is_checkout() && Woocommerce::is_native_checkout()) {
+        if (growfund_is_wc_checkout()) {
             wp_enqueue_script(
                 'growfund-woocommerce-classic-checkout',
                 GROWFUND_DIR_URL . 'resources/assets/site/scripts/woocommerce/classic-checkout.js',

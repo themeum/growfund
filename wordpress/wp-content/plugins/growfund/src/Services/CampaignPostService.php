@@ -8,9 +8,12 @@ use Growfund\App\Events\CampaignPostUpdateEvent;
 use Growfund\PostTypes\CampaignPost;
 use Growfund\Sanitizer;
 use Exception;
+use Growfund\Constants\Tables;
+use Growfund\Constants\WP;
 use Growfund\DTO\CampaignPost\CampaignPostDTO;
 use Growfund\DTO\CampaignPost\CampaignPostFilterDTO;
 use Growfund\DTO\PaginatedCollectionDTO;
+use Growfund\QueryBuilder;
 use Growfund\Supports\MediaAttachment;
 use Growfund\Supports\Pagination;
 use Growfund\Supports\User;
@@ -23,7 +26,8 @@ use WP_Query;
  */
 class CampaignPostService
 {
-    public function paginated(CampaignPostFilterDTO $dto) {
+    public function paginated(CampaignPostFilterDTO $dto)
+    {
         $args = [
             'post_type'      => CampaignPost::NAME,
             'paged'          => $dto->page,
@@ -56,7 +60,8 @@ class CampaignPostService
         ]);
     }
 
-    public function get_by_id(int $id) {
+    public function get_by_id(int $id) 
+    {
 		$campaign_update = get_post($id);
 
         if (!$campaign_update || $campaign_update->post_type !== CampaignPost::NAME) {
@@ -66,31 +71,45 @@ class CampaignPostService
 
         return $this->prepare_campaign_update_dto($campaign_update);
     }
+
     /**
      * Retrieves the adjacent (previous and next) post IDs for a specific update.
      */
-    public function get_neighbors(int $current_id) {
-		
-		$args = [
-			'post_type'      => CampaignPost::NAME,
-			'posts_per_page' => -1, 
-			'fields'         => 'ids', 
-			'orderby'        => 'date',
-			'order'          => 'DESC',
-		];
+    public function get_neighbors(CampaignPostDTO $post) 
+    {
+        $prev = QueryBuilder::query()
+            ->table(WP::POSTS_TABLE)
+            ->select(['ID as id'])
+            ->where('post_type', CampaignPost::NAME)
+            ->where('post_status', CampaignPost::DEFAULT_POST_STATUS)
+            ->where('post_parent', $post->campaign_id)
+            ->where('ID', '<', $post->id)
+            ->order_by('ID', 'DESC')
+            ->limit(1)
+            ->first();
 
-		$query = new \WP_Query($args);
-		$ids = array_map('intval', $query->posts);
-        $current_index = array_search((int) $current_id, $ids, true);
+		$next = QueryBuilder::query()
+            ->table(WP::POSTS_TABLE)
+            ->select(['ID as id'])
+            ->where('post_type', CampaignPost::NAME)
+            ->where('post_status', CampaignPost::DEFAULT_POST_STATUS)
+            ->where('post_parent', (int) $post->campaign_id)
+            ->where('ID', '>', (int) $post->id)
+            ->order_by('ID', 'ASC')
+            ->limit(1)
+            ->first();
 
+        $prev_id = $prev ? $prev->id : 0;
+		$next_id = $next ? $next->id : 0;
 
 		return [
-			'prev_id' => ($current_index > 0) ? $ids[$current_index - 1] : 0,
-			'next_id' => ($current_index < count($ids) - 1) ? $ids[$current_index + 1] : 0,
+			'prev_id' => $prev_id,
+			'next_id' => $next_id,
 		];
 	}
 
-    protected function prepare_campaign_update_dto(WP_Post $campaign_update) {
+    protected function prepare_campaign_update_dto(WP_Post $campaign_update) 
+    {
         $dto = new CampaignPostDTO();
 
         $image_id = get_post_thumbnail_id($campaign_update->ID);
@@ -98,7 +117,7 @@ class CampaignPostService
         $author = growfund_user($campaign_update->post_author);
 
         $dto->id = (string) $campaign_update->ID;
-        $dto->campaign_id = $campaign_update->parent;
+        $dto->campaign_id = (string) $campaign_update->post_parent;
         $dto->title = $campaign_update->post_title;
         $dto->slug = $campaign_update->post_name;
         $dto->description = $campaign_update->post_content;

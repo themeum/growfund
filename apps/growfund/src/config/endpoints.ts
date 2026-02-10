@@ -139,6 +139,10 @@ const endpoints = {
   DONATION_RECEIPT: (uid: string) => `/donations/${uid}/receipt`,
   ECard: (uid: string) => `/donations/${uid}/ecard`,
   PLEDGE_RECEIPT: (uid: string) => `/pledges/${uid}/receipt`,
+
+  // manual pages generation endpoints
+  MANUAL_PAGES: '/growfund-pages',
+  REGENERATE_PAGES: '/growfund-pages',
 } as const;
 
 export { endpoints };

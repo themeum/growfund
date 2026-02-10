@@ -24,33 +24,50 @@ class Payment
      */
     public static function get_installed_payment_methods()
     {
-        if (growfund_payment_engine() === PaymentEngine::WOOCOMMERCE && function_exists('WC')) {
-            $wc_payment_gateways = WC()->payment_gateways->get_available_payment_gateways();
-            $offline_gateways = ['cod', 'bacs', 'cheque'];
-
-            $payment_gateways = [];
-
-            foreach ($wc_payment_gateways as $gateway) {
-                $type = in_array($gateway->id, $offline_gateways, true) ? PaymentGatewayType::MANUAL : PaymentGatewayType::ONLINE;
-                $payment_gateways[] = new PaymentGatewayDTO([
-                    'name' => $gateway->id,
-                    'type' => $type,
-                    'config' => [
-                        'label' => $gateway->method_title ?? $gateway->id,
-                        'logo' => null,
-                        'title' => $gateway->method_title ?? $gateway->id,
-                        'instruction' => $gateway->instructions ?? ''
-                    ],
-                    'is_enabled' => $gateway->enabled === 'yes',
-                    'is_installed' => $gateway->enabled === 'yes'
-                ]);
-			}
-
-            return $payment_gateways;
+        if (growfund_payment_engine() === PaymentEngine::WOOCOMMERCE) {
+            return static::get_woocommerce_manual_payment_methods();
         }
         
 
         return growfund_settings(AppSettings::PAYMENT)->get_installed_payment_gateways();
+    }
+
+    /**
+     * @return PaymentGatewayDTO[]
+     */
+    public static function get_woocommerce_manual_payment_methods() {
+        if (!Woocommerce::is_active() || !function_exists('WC')) {
+            return [];   
+        }
+
+        $wc_payment_gateways = WC()->payment_gateways->get_available_payment_gateways();
+        $offline_gateways = ['cod', 'bacs', 'cheque'];
+
+        $payment_gateways = [];
+
+		foreach ($wc_payment_gateways as $gateway) {
+			$type = in_array($gateway->id, $offline_gateways, true) ? PaymentGatewayType::MANUAL : PaymentGatewayType::ONLINE;
+			$payment_gateways[] = new PaymentGatewayDTO([
+				'name' => $gateway->id,
+				'type' => $type,
+				'config' => [
+					'label' => $gateway->method_title ?? $gateway->id,
+					'logo' => null,
+					'title' => $gateway->method_title ?? $gateway->id,
+					'instruction' => $gateway->instructions ?? ''
+				],
+				'is_enabled' => $gateway->enabled === 'yes',
+				'is_installed' => $gateway->enabled === 'yes'
+			]);
+		}
+
+        return $payment_gateways;
+    }
+
+    public static function is_woocommerce_manual_payment_method($name) {
+        return Arr::make(static::get_woocommerce_manual_payment_methods())->some(function ($method) use ($name) {
+            return $method->name === $name;
+        });
     }
 
     /**
@@ -150,6 +167,10 @@ class Payment
 	 */
     public static function support_future_payment(string $name)
     {
+        if (empty($name)) {
+            return false;
+        }
+
         try {
             $payment_gateway = growfund_payment_gateway($name);
         } catch (Exception $error) {

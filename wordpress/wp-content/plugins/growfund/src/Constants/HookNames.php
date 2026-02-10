@@ -36,21 +36,22 @@ class HookNames
     const REST_REQUEST_AFTER_CALLBACKS = 'rest_request_after_callbacks';
     
     // Woocommerce hooks
-    const WC_BEFORE_CALCULATE_TOTAL = 'woocommerce_before_calculate_totals';
     const WC_PRODUCT_GET_NAME = 'woocommerce_product_get_name';
     const WC_CHECKOUT_ORDER_PROCESSED = 'woocommerce_checkout_order_processed';
     const WC_STORE_API_CHECKOUT_ORDER_PROCESSED = 'woocommerce_store_api_checkout_order_processed';
-    const WC_ORDER_STATUS_CHANGED = 'woocommerce_order_status_changed';
-    const WC_AFTER_ORDER_NOTES = 'woocommerce_after_order_notes';
-    const WC_STORE_API_CHECKOUT_UPDATE_ORDER_FROM_REQUEST = 'woocommerce_store_api_checkout_update_order_from_request';
-    const WC_ADD_TO_CART_VALIDATION = 'woocommerce_add_to_cart_validation';
-    const WC_CART_NEEDS_SHIPPING = 'woocommerce_cart_needs_shipping';
     const WC_CLASSIC_CHECKOUT_FIELDS = 'woocommerce_checkout_fields';
-    const WC_PACKAGE_RATES = 'woocommerce_package_rates';
-    const WC_CLASSIC_CHECKOUT_FORM = 'woocommerce_after_checkout_form';
-    const WC_CLASSIC_CHECKOUT_CREATE_ORDER = 'woocommerce_checkout_create_order';
+    const WC_CHECKOUT_ORDER_LINE_ITEM  = 'woocommerce_checkout_create_order_line_item';
+    const WC_BLOCK_CHECKOUT_FIELDS = 'woocommerce_get_country_locale';
+    const WC_ORDER_STATUS_CHANGED = 'woocommerce_order_status_changed';
+    const WC_BEFORE_CALCULATE_TOTAL = 'woocommerce_before_calculate_totals';
+    const WC_ADD_TO_CART_VALIDATION = 'woocommerce_add_to_cart_validation';
     const WC_CHECKOUT_ORDER_RECEIVED_URL = 'woocommerce_get_checkout_order_received_url';
     const WC_PREVENT_ADMIN_ACCESS = 'woocommerce_prevent_admin_access';
+    const WC_BEFORE_PRODUCT_SAVE = 'woocommerce_before_product_object_save';
+	const WC_COUPONS_ENABLE = 'woocommerce_coupons_enabled';
+	const WC_PRODUCT_IS_TAXABLE = 'woocommerce_product_is_taxable';
+    const WC_SOLD_INDIVIDUALLY = 'woocommerce_is_sold_individually';
+    const WC_REMOVE_CART_ITEM = 'woocommerce_remove_cart_item';
 
     // Plugin Updater hooks
     /** @deprecated since 1.0.3 */

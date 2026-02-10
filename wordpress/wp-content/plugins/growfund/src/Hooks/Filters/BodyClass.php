@@ -28,6 +28,11 @@ class BodyClass extends BaseHook
             return array_merge($classes, ['toplevel_page_growfund']);
         }
 
+        if (growfund_is_wc_checkout()) {
+            $classes[] = 'growfund-wc-checkout';
+            return $classes;
+        }
+
         return $args[0];
     }
 }

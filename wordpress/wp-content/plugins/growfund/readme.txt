@@ -5,7 +5,7 @@ Tags: crowdfunding, donation, fundraising, charity, rewards
 Requires at least: 5.9
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -375,6 +375,13 @@ order details (campaign_id, amount, currency, and transaction ID) to PayPal's AP
 
 
 == Changelog ==
+
+= 1.0.6 - Feb 10, 2026
+* Introduced the Run Fix option to regenerate missing Growfund pages.
+* The campaign listing shortcode now supports additional parameters.
+* Improved WooCommerce checkout experience for pledges, rewards, and donations.
+* Fixed WooCommerce showing a default 1000 price at checkout.
+* Resolved campaign list loading issues on the archive page.
 
 = 1.0.5 - Feb 5, 2026
 * Updated checkout constraints

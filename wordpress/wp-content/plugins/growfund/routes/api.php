@@ -70,6 +70,8 @@ Route::group(['middleware' => AuthMiddleware::class], function () {
 
     // Page routes
     Route::get('/wp-pages', [PageController::class, 'all']);
+    Route::get('/growfund-pages', [PageController::class, 'growfund_pages']);
+    Route::post('/growfund-pages', [PageController::class, 're_generate_pages'])->middleware(AdminMiddleware::class);
 
     // Generic routes
     Route::post('/upload-media', [MediaController::class, 'upload']);

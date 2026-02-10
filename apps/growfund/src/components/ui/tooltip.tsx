@@ -13,6 +13,10 @@ const TooltipTrigger = TooltipPrimitive.Trigger;
 
 const Arrow = TooltipPrimitive.Arrow;
 
+interface InfoTooltipProps extends React.HTMLAttributes<HTMLDivElement> {
+  iconClassName?: string;
+}
+
 const TooltipContent = React.forwardRef<
   React.ComponentRef<typeof TooltipPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
@@ -32,14 +36,14 @@ const TooltipContent = React.forwardRef<
 ));
 TooltipContent.displayName = TooltipPrimitive.Content.displayName;
 
-const InfoTooltip = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ children, className, ...props }, ref) => {
+const InfoTooltip = React.forwardRef<HTMLDivElement, InfoTooltipProps>(
+  ({ children, className, iconClassName = 'growfund-text-icon-primary', ...props }, ref) => {
     return (
       <TooltipProvider>
         <Tooltip {...props} delayDuration={0}>
           <TooltipTrigger asChild>
             <Button variant="ghost" size="icon" className="growfund-size-6" data-type="tooltip">
-              <InfoCircledIcon className="growfund-text-icon-primary" />
+              <InfoCircledIcon className={iconClassName} />
             </Button>
           </TooltipTrigger>
           <TooltipContent>

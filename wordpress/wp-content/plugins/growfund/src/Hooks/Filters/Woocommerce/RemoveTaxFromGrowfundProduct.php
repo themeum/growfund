@@ -9,11 +9,11 @@ use Growfund\Constants\HookTypes;
 use Growfund\Hooks\BaseHook;
 use Growfund\Supports\Woocommerce;
 
-class NeedShipping extends BaseHook
+class RemoveTaxFromGrowfundProduct extends BaseHook
 {
     public function get_name()
     {
-        return HookNames::WC_CART_NEEDS_SHIPPING;
+        return HookNames::WC_PRODUCT_IS_TAXABLE;
     }
 
     public function get_type()
@@ -21,14 +21,19 @@ class NeedShipping extends BaseHook
         return HookTypes::FILTER;
     }
 
+    public function get_args_count()
+    {
+        return 2;
+    }
+
     public function handle(...$args)
     {
-        $contribution_info_dto = Woocommerce::get_custom_cart_info_from_session();
+        list($taxable, $product) = $args;
 
-        if (empty($contribution_info_dto->reward_id)) {
-            return false;
-        }
+		if (Woocommerce::is_growfund_product($product)) {
+			return false;
+		}
 
-        return true;
+		return $taxable;
     }
 }

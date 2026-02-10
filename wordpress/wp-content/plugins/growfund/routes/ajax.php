@@ -3,7 +3,7 @@
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\AjaxRouter;
-use Growfund\Controllers\API\CampaignPostController;
+use Growfund\Controllers\Site\CampaignPostController;
 use Growfund\Controllers\Site\CampaignController;
 use Growfund\Controllers\Site\CommentController;
 use Growfund\Controllers\Site\RewardController;

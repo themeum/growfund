@@ -28,10 +28,7 @@ use Growfund\Hooks\Actions\RestrictUserFromLogin;
 use Growfund\Hooks\Actions\ShowAdminNotice;
 use Growfund\Hooks\Actions\Woocommerce\AddToCartValidation;
 use Growfund\Hooks\Actions\Woocommerce\BeforeCalculateTotal;
-use Growfund\Hooks\Actions\Woocommerce\ClassicSaveCustomFields;
-use Growfund\Hooks\Actions\Woocommerce\RewardShipping;
-use Growfund\Hooks\Actions\Woocommerce\StoreAPICustomCheckoutFields;
-use Growfund\Hooks\Actions\Woocommerce\StoreAPIUpdateCheckoutOrder;
+use Growfund\Hooks\Actions\Woocommerce\CreateOrderLineItem;
 use Growfund\Hooks\Filters\AjaxMedia;
 use Growfund\Hooks\Filters\FilterThemeStyles;
 use Growfund\Hooks\Filters\HideRolesFromWPUserPage;
@@ -42,16 +39,21 @@ use Growfund\Hooks\Filters\Woocommerce\CheckoutItemName;
 use Growfund\Hooks\Actions\Woocommerce\OrderStatusChange;
 use Growfund\Hooks\Actions\Woocommerce\NewOrder;
 use Growfund\Hooks\Actions\Woocommerce\NewOrderStoreAPI;
+use Growfund\Hooks\Actions\Woocommerce\RemoveCartItem;
 use Growfund\Hooks\Actions\Woocommerce\RestrictProductDeletion;
+use Growfund\Hooks\Actions\Woocommerce\RestrictProductUpdate;
 use Growfund\Hooks\Filters\ActionLinks;
 use Growfund\Hooks\Filters\BodyClass;
 use Growfund\Hooks\Filters\HideAdminBar;
 use Growfund\Hooks\Filters\LoginRedirect;
 use Growfund\Hooks\Filters\RegisterCustomBlockTemplates;
 use Growfund\Hooks\Filters\Woocommerce\AttachmentUploadAccess;
+use Growfund\Hooks\Filters\Woocommerce\BlockCustomCheckoutFields;
 use Growfund\Hooks\Filters\Woocommerce\ClassicCustomCheckoutFields;
 use Growfund\Hooks\Filters\Woocommerce\CustomSuccessPage;
-use Growfund\Hooks\Filters\Woocommerce\NeedShipping;
+use Growfund\Hooks\Filters\Woocommerce\DisableCoupon;
+use Growfund\Hooks\Filters\Woocommerce\RemoveGrowfundProductQuantityField;
+use Growfund\Hooks\Filters\Woocommerce\RemoveTaxFromGrowfundProduct;
 use Growfund\Hooks\Scheduler\ChargeBackersScheduler;
 use Growfund\Hooks\Scheduler\EmailScheduler;
 use Growfund\Hooks\Scheduler\RecurringScheduler;
@@ -84,15 +86,14 @@ return [
 
         // woocommerce
         RestrictProductDeletion::class,
+        RestrictProductUpdate::class,
         BeforeCalculateTotal::class,
         NewOrder::class,
         NewOrderStoreAPI::class,
         OrderStatusChange::class,
-        StoreAPICustomCheckoutFields::class,
-        StoreAPIUpdateCheckoutOrder::class,
         AddToCartValidation::class,
-        RewardShipping::class,
-        ClassicSaveCustomFields::class,
+        CreateOrderLineItem::class,
+        RemoveCartItem::class,
     ],
     'filters' => [
         ActionLinks::class,
@@ -111,10 +112,13 @@ return [
 
         // woocommerce
         CheckoutItemName::class,
-        NeedShipping::class,
         ClassicCustomCheckoutFields::class,
         CustomSuccessPage::class,
         AttachmentUploadAccess::class,
+        RemoveGrowfundProductQuantityField::class,
+        RemoveTaxFromGrowfundProduct::class,
+        DisableCoupon::class,
+        BlockCustomCheckoutFields::class,
     ],
     'schedulers' => [
         ChargeBackersScheduler::class,

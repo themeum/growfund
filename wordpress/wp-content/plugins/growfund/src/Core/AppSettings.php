@@ -17,6 +17,7 @@ abstract class AppSettings
      * @var string
      */
     const GENERAL = 'general';
+    const PAGES = 'pages';
     const CAMPAIGNS = 'campaigns';
     const NOTIFICATIONS = 'notifications';
     const PAYMENT = 'payment';

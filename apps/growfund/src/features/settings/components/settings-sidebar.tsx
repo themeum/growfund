@@ -2,6 +2,7 @@ import { __ } from '@wordpress/i18n';
 import {
   CreditCard,
   FileHeart,
+  Files,
   Home,
   KeyRound,
   Lock,
@@ -68,6 +69,11 @@ const sidebarMenus: SidebarMenu[] = [
     label: __('Branding', 'growfund'),
     icon: Paintbrush,
     route: RouteConfig.BrandingSettings.buildLink(),
+  },
+  {
+    label: __('Pages', 'growfund'),
+    icon: Files,
+    route: RouteConfig.PagesSettings.buildLink(),
   },
   {
     label: __('Advanced', 'growfund'),

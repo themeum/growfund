@@ -7,8 +7,9 @@ defined( 'ABSPATH' ) || exit;
 use Growfund\Constants\HookNames;
 use Growfund\Constants\HookTypes;
 use Growfund\Hooks\BaseHook;
+use Growfund\Services\DonationService;
+use Growfund\Services\PledgeService;
 use Growfund\Supports\Woocommerce;
-use Growfund\Supports\WoocommerceToNative;
 
 class NewOrderStoreAPI extends BaseHook
 {
@@ -24,16 +25,39 @@ class NewOrderStoreAPI extends BaseHook
 
     public function handle(...$args)
     {
-        if (!Woocommerce::is_native_checkout()) {
+        if (!Woocommerce::has_growfund_product_in_cart()) {
             return;
         }
 
+        
         $order_id = $args[0];
 
-        if (growfund_app()->is_donation_mode()) {
-            return WoocommerceToNative::create_donation_from_order($order_id);
+        $order = wc_get_order($order_id);
+
+        if (!Woocommerce::has_growfund_product_in_order($order)) {
+            return;
         }
 
-        WoocommerceToNative::create_pledge_from_order($order_id);
+        $contribution_id = Woocommerce::get_contribution_id_from_order($order);
+
+        if (empty($contribution_id)) {
+            return;
+        }
+
+        if (growfund_app()->is_donation_mode()) {
+            $donation_service = new DonationService();
+            $donation_service->partial_update($contribution_id, [
+                'transaction_id' => 'wc_' . $order->get_id(),
+                'payment_method' => wp_json_encode(Woocommerce::get_payment_method_from_order($order)->to_array()),
+            ]);
+
+            return;
+        }
+
+        $pledge_service = new PledgeService();
+        $pledge_service->partial_update($contribution_id, [
+			'transaction_id' => 'wc_' . $order->get_id(),
+			'payment_method' => wp_json_encode(Woocommerce::get_payment_method_from_order($order)->to_array()),
+		]);
     }
 }

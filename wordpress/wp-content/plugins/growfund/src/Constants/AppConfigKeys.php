@@ -17,6 +17,11 @@ class AppConfigKeys implements Constant
     const GENERAL = 'growfund_general';
 
     /**
+     * Option to store the page settings
+     */
+    const PAGE = 'growfund_page';
+
+    /**
      * Option to store the campaign settings
      */
     const CAMPAIGN = 'growfund_campaign';

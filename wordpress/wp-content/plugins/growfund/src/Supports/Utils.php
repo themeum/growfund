@@ -6,7 +6,6 @@ defined( 'ABSPATH' ) || exit;
 
 use Growfund\Constants\AppConfigKeys;
 use Growfund\Constants\OptionKeys;
-use Growfund\Constants\URLs;
 use Growfund\Core\AppSettings;
 use Growfund\Supports\Option;
 use Growfund\SiteRouter;
@@ -89,26 +88,6 @@ class Utils
     }
 
     /**
-     * Returns the success URL from the application configuration.
-     *
-     * @return string 
-     */
-    public static function get_success_url()
-    {
-        return growfund_settings(AppSettings::PAYMENT)->get('success_url', site_url());
-    }
-
-    /**
-     * Returns the cancel URL from the application configuration.
-     *
-     * @return string 
-     */
-    public static function get_cancel_url()
-    {
-        return growfund_settings(AppSettings::PAYMENT)->get('cancel_url', site_url());
-    }
-
-    /**
      * Returns the checkout URL for a campaign.
      * First tries to get from settings, then falls back to default pattern.
      *
@@ -117,12 +96,11 @@ class Utils
      */
     public static function get_checkout_url($campaign_id = null, $reward_id = null)
     {
-        $checkout_page = growfund_settings(AppSettings::PAYMENT)->get('checkout_page', null);
+        $checkout_page = static::get_default_checkout_url();
+        $page_id = growfund_settings(AppSettings::PAGES)->get_checkout_page_id();
 
-        if (empty($checkout_page)) {
-            $checkout_page = static::get_default_checkout_url();
-        } else {
-            $checkout_page = get_permalink($checkout_page);
+        if (!empty($page_id)) {
+            $checkout_page = get_permalink($page_id);
         }
 
         if (empty($campaign_id)) {
@@ -232,6 +210,30 @@ class Utils
         if (static::is_checkout_page() && !growfund_app()->is_donation_mode()) {
             return true;
         }
+
+        return false;
+    }
+
+    public static function is_woocommerce_checkout_page()
+    {
+		if (!Woocommerce::is_active()) {
+			return false;
+		}
+
+        if (function_exists('is_checkout') && is_checkout() && Woocommerce::has_growfund_product_in_cart()) {
+            return true;
+        }
+
+        if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+
+			// Safely get the request URI.
+			$route = wp_unslash(growfund_input_server('REQUEST_URI', ''));  
+
+            if (stripos($route, 'wc/store') !== false && stripos($route, 'checkout') !== false && Woocommerce::has_growfund_product_in_cart()) {
+                return true;
+            }
+		}
+
 
         return false;
     }

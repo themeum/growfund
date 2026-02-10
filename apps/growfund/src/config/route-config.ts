@@ -50,6 +50,7 @@ export const RouteConfig = {
   BrandingSettings: defineRoute('branding'),
   AdvancedSettings: defineRoute('advanced'),
   LicenseSettings: defineRoute('license'),
+  PagesSettings: defineRoute('pages'),
 
   // settings templates
   EcardTemplate: defineRoute('/tribute/ecard-template'),

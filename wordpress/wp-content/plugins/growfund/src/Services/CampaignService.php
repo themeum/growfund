@@ -119,8 +119,12 @@ class CampaignService
         $query_args = $this->apply_sorting($filters_dto, $query_args);
 
         // Make a way so that we can get the campaigns within the provided ids only
-        if (empty($filters_dto->author_id) && !empty($filters_dto->post_ids)) {
+        if (!empty($filters_dto->post_ids)) {
             $query_args['post__in'] = $filters_dto->post_ids;
+        }
+
+        if (!empty($filters_dto->post__not_in_ids)) {
+            $query_args['post__not_in'] = $filters_dto->post__not_in_ids;
         }
 
         // Search by title/content
@@ -134,6 +138,15 @@ class CampaignService
                 'field'    => 'slug',
                 'terms'    => $filters_dto->category_slug,
                 'include_children' => true
+            ];
+        }
+
+        if (!empty($filters_dto->tag)) {
+            $query_args['tax_query'][] = [
+                'taxonomy' => Tag::NAME,
+                'field'    => 'name',
+                'terms'    => is_array($filters_dto->tag) ? $filters_dto->tag : explode(',', $filters_dto->tag),
+                'operator' => 'IN',
             ];
         }
 

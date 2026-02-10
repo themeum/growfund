@@ -4,11 +4,13 @@ namespace Growfund\DTO\Donation;
 
 defined( 'ABSPATH' ) || exit;
 
+use Elementor\App\App;
 use Growfund\Constants\Campaign\FundSelectionType;
 use Growfund\Constants\Campaign\TributeNotificationPreference;
 use Growfund\Constants\Status\DonationStatus;
 use Growfund\Constants\Campaign\TributeNotificationType;
 use Growfund\Constants\Campaign\TributeRequirement;
+use Growfund\Constants\PaymentEngine;
 use Growfund\Core\AppSettings;
 use Growfund\DTO\DTO;
 use Growfund\Payments\DTO\PaymentMethodDTO;
@@ -296,6 +298,24 @@ class CreateDonationDTO extends DTO
         unset($rules['user_id']);
 
         return array_merge($rules, [
+            'payment_method' => [
+				function($value, $key) {
+					if (growfund_settings(AppSettings::PAYMENT)->get_payment_engine() === PaymentEngine::NATIVE) {
+                        if (empty($value)) {
+							return __('The payment method is required.', 'growfund');
+						}
+                    
+                        if (!Payment::is_valid_payment_method($value)) {
+                            /* translators: %s: field name */
+                            return sprintf(__('The %s is not valid.', 'growfund'), str_replace('_', ' ', $key));
+                        }
+					}
+
+					return true;
+				},
+                'string'
+			],
+        ], [
             'billing_address' => 'required|array',
             'billing_address.address'  => 'required|string',
             'billing_address.address_2'  => 'string',

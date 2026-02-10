@@ -5,7 +5,6 @@ namespace Growfund\Controllers\Site;
 defined( 'ABSPATH' ) || exit;
 
 use Exception;
-use Growfund\Constants\PaymentEngine;
 use Growfund\Contracts\Request;
 use Growfund\Core\AppSettings;
 use Growfund\DTO\Donation\CreateDonationDTO;
@@ -41,10 +40,6 @@ class CheckoutController
         }
 
         $campaign = $this->campaign_service->get_by_id($campaign_id);
-
-        if (growfund_payment_engine() === PaymentEngine::WOOCOMMERCE) {
-            return $this->service->apply_woocommerce_checkout($campaign, $request->get_int('reward_id'), $request->get_float('amount'));
-        }
 
         if (growfund_app()->is_donation_mode()) {
             return $this->service->get_donation_checkout_page($campaign);
