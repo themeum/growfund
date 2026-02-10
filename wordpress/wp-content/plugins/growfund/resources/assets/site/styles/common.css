@@ -263,3 +263,15 @@ button {
 .growfund-branding-btn:hover {
   background-color: hsla(var(--growfund-brand-bg-hover, 134, 61%, 28%)) !important;
 }
+
+.growfund-wc-checkout .wc-block-checkout__billing-fields {
+  display: none !important;
+}
+
+.growfund-wc-checkout .wc-block-checkout__contact-fields {
+  display: none !important;
+}
+
+.growfund-wc-checkout .wc-block-checkout__order-notes {
+  display: none !important;
+}

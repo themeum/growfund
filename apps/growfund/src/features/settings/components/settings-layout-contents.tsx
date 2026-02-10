@@ -12,9 +12,9 @@ import { RouteConfig } from '@/config/route-config';
 import { useConsentDialog } from '@/features/campaigns/contexts/consent-dialog-context';
 import SettingsSidebar from '@/features/settings/components/settings-sidebar';
 import {
-    SettingsPage,
-    SettingsPageContent,
-    SettingsPageHeader,
+  SettingsPage,
+  SettingsPageContent,
+  SettingsPageHeader,
 } from '@/features/settings/components/ui/settings-page';
 import { AppConfigKeys, useSettingsContext } from '@/features/settings/context/settings-context';
 import { type AppConfig } from '@/features/settings/schemas/settings';
@@ -35,6 +35,7 @@ const settingsPageHeaders = {
   [RouteConfig.BrandingSettings.template]: __('Branding', 'growfund'),
   [RouteConfig.AdvancedSettings.template]: __('Advanced', 'growfund'),
   [RouteConfig.LicenseSettings.template]: __('License', 'growfund'),
+  [RouteConfig.PagesSettings.template]: __('Pages', 'growfund'),
 } as const;
 
 const SettingsLayoutContent = () => {
@@ -58,9 +59,8 @@ const SettingsLayoutContent = () => {
     let defaultOptions: AppConfig | null = null;
 
     try {
-      defaultOptions = (await import(
-        '../../../../../../wordpress/wp-content/plugins/growfund/resources/data/default-options.json'
-      )) as unknown as AppConfig | null;
+      defaultOptions =
+        (await import('../../../../../../wordpress/wp-content/plugins/growfund/resources/data/default-options.json')) as unknown as AppConfig | null;
     } catch {
       defaultOptions = null;
     }

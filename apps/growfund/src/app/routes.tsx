@@ -49,6 +49,9 @@ const SecuritySettingsPage = React.lazy(
 const UserPermissionsSettingsPage = React.lazy(
   () => import('@/features/settings/pages/user-permissions-settings-page'),
 );
+const ManualPagesGenerationSettingspage = React.lazy(
+  () => import('@/features/settings/pages/manual-pages-generation-page'),
+);
 
 // settings templates
 const TemplateBuilderLayout = React.lazy(() => import('@/layouts/template-builder-layout'));
@@ -460,6 +463,12 @@ const allRoutes = [
             roles: ['administrator'],
             mode: 'all',
             ignore: !growfundConfig.has_growfund_pro,
+          },
+          {
+            path: RouteConfig.PagesSettings.template,
+            Component: ManualPagesGenerationSettingspage,
+            roles: ['administrator'],
+            mode: 'all',
           },
         ],
       },

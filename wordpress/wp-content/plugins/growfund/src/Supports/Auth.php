@@ -11,15 +11,15 @@ class Auth
     public static function login_url(string $redirect = '')
     {
         $login_url = home_url('/auth/login/');
-        
-        if (!empty($redirect)) {
-            $login_url = add_query_arg('redirect_to', urlencode($redirect), $login_url);
+
+        $page_id = growfund_settings(AppSettings::PAGES)->get_login_page_id();
+
+        if (!empty($page_id)) {
+            $login_url = get_permalink($page_id);
         }
 
-        $settings = growfund_settings(AppSettings::GENERAL);
-
-        if (!empty($settings->get('login_page'))) {
-            $login_url = get_permalink($settings->get('login_page'));
+        if (!empty($redirect)) {
+            $login_url = add_query_arg('redirect_to', urlencode($redirect), $login_url);
         }
 
         return $login_url;
@@ -27,16 +27,25 @@ class Auth
 
     public static function register_url($is_fundraiser = false)
     {
-        $contributor_register_page = home_url('/auth/register/');
-        $fundraiser_register_page = home_url('/auth/register-fundraiser/');
+        if ($is_fundraiser) {
+			$fundraiser_register_page = home_url('/auth/register-fundraiser/');
+            $page_id = growfund_settings(AppSettings::PAGES)->get_fundraiser_registration_page_id();
 
-        $settings = growfund_settings(AppSettings::GENERAL);
+            if (!empty($page_id)) {
+                $fundraiser_register_page = get_permalink($page_id);
+            }
 
-        if (!empty($settings->get('registration_page'))) {
-            $contributor_register_page = get_permalink($settings->get('registration_page'));
+            return $fundraiser_register_page;
         }
 
-        return $is_fundraiser ? $fundraiser_register_page : $contributor_register_page;
+        $contributor_register_page = home_url('/auth/register/');
+        $page_id = growfund_settings(AppSettings::PAGES)->get_registration_page_id();
+
+        if (!empty($page_id)) {
+            $contributor_register_page = get_permalink($page_id);
+        }
+
+        return $contributor_register_page;
     }
 
     public static function forget_password_url()

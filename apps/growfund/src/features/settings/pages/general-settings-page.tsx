@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { __ } from '@wordpress/i18n';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import ElementWrapper from '@/components/element-wrapper';
@@ -17,10 +17,8 @@ import {
   GeneralSettingsSchema,
   type GeneralSettingsForm,
 } from '@/features/settings/schemas/settings';
-import { useWordPressPagesQuery } from '@/features/settings/services/general';
 import { useRouteBlockerGuard } from '@/hooks/use-route-blocker-guard';
 import { registry } from '@/lib/registry';
-import { type Option } from '@/types';
 import { countriesAsOptions, statesAsOptions } from '@/utils/countries';
 
 const GeneralSettingsPage = () => {
@@ -35,8 +33,6 @@ const GeneralSettingsPage = () => {
 
   const { registerForm, isCurrentFormDirty } = useSettingsContext<GeneralSettingsForm>();
 
-  const wordpressPagesQuery = useWordPressPagesQuery();
-
   useEffect(() => {
     const cleanup = registerForm(AppConfigKeys.General, form);
     return () => {
@@ -49,13 +45,6 @@ const GeneralSettingsPage = () => {
   useRouteBlockerGuard({ isDirty: isCurrentFormDirty });
 
   const countryCode = useWatch({ control: form.control, name: 'country' });
-
-  const pagesOptions = useMemo(() => {
-    if (!wordpressPagesQuery.data) {
-      return [] as Option<string>[];
-    }
-    return wordpressPagesQuery.data.map((page) => ({ label: page.name, value: page.id }));
-  }, [wordpressPagesQuery.data]);
 
   const GeneralSettingsDonationFormOptions = registry.get('GeneralSettingsDonationFormOptions');
 
@@ -116,50 +105,6 @@ const GeneralSettingsPage = () => {
               name="organization.contact_email"
               label={__('Contact Email', 'growfund')}
               placeholder={__('e.g. support@yourorg.com', 'growfund')}
-            />
-          </CardContent>
-        </Card>
-
-        {/* Page options */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{__('Page Options', 'growfund')}</CardTitle>
-            <CardDescription>
-              {__('Select the pages for different donation stages.', 'growfund')}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="growfund-space-y-4">
-            <ComboBoxField
-              control={form.control}
-              name="registration_page"
-              options={pagesOptions}
-              label={
-                isDonationMode
-                  ? __('Donor Registration Page', 'growfund')
-                  : __('Backer Registration Page', 'growfund')
-              }
-              placeholder={__('Select a page', 'growfund')}
-            />
-            <ComboBoxField
-              control={form.control}
-              name="login_page"
-              options={pagesOptions}
-              label={__('Login Page', 'growfund')}
-              placeholder={__('Select a page', 'growfund')}
-            />
-            <ComboBoxField
-              control={form.control}
-              name="privacy_policy_page"
-              options={pagesOptions}
-              label={__('Privacy Policy Page', 'growfund')}
-              placeholder={__('Select a page', 'growfund')}
-            />
-            <ComboBoxField
-              control={form.control}
-              name="terms_and_conditions_page"
-              options={pagesOptions}
-              label={__('Terms & Conditions Page', 'growfund')}
-              placeholder={__('Select a page', 'growfund')}
             />
           </CardContent>
         </Card>

@@ -83,10 +83,9 @@ class AppConfigController
 
         RewriteRule::schedule_reset();
 
-        Woocommerce::create_growfund_product();
-
         $messages = [
             AppConfigKeys::GENERAL => __('General settings saved!', 'growfund'),
+            AppConfigKeys::PAGE => __('Page settings saved!', 'growfund'),
             AppConfigKeys::CAMPAIGN => __('Campaign settings saved!', 'growfund'),
             AppConfigKeys::USER_PERMISSIONS => __('User and permissions settings saved!', 'growfund'),
             AppConfigKeys::PAYMENT => __('Payment settings saved!', 'growfund'),

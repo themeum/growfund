@@ -32,26 +32,28 @@ class CustomSuccessPage extends BaseHook
     {
         list($url, $order) = $args;
 
-        foreach ($order->get_items() as $item) {
-            $product_id = $item->get_product_id();
-
-            if ($product_id !== Woocommerce::get_growfund_product_id()) {
-                return $url;
-            }
+        if (!Woocommerce::has_growfund_product_in_order($order)) {
+            return $url;      
         }
 
-        $contribution_service = growfund_app()->is_donation_mode()
-            ? new DonationService()
-            : new PledgeService();
+        if (growfund_app()->is_donation_mode()) {
+            $donation_service = new DonationService();
+            $donation = $donation_service->get_by_id(Woocommerce::get_contribution_id_from_order($order));
 
-        $contribution = $contribution_service->get_by_transaction_id($order->get_id());
+            growfund_flash_set_message('contribution_confirmed', ['uid' => $donation->uid]);
 
-        if (empty($contribution)) {
-            return $url;
+            return growfund_url(growfund_campaign_url($donation->campaign->slug), [
+				'uid' => $donation->uid
+			]);
         }
 
-        return growfund_url(get_the_permalink($contribution->campaign->id), [
-            'uid' => $contribution->uid
+        $pledge_service = new PledgeService();
+        $pledge = $pledge_service->get_by_id(Woocommerce::get_contribution_id_from_order($order));
+
+        growfund_flash_set_message('contribution_confirmed', ['uid' => $pledge->uid]);
+
+        return growfund_url(growfund_campaign_url($pledge->campaign->slug), [
+            'uid' => $pledge->uid
         ]);
     }
 }

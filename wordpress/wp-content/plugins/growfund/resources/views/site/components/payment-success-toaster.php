@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
 
 <div class="growfund-payment-success-toaster-container">
     <div class="growfund-payment-success-toaster-icon-wrapper">
-        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 32" fill="none"><path fill="#23A26D" d="M16 2.667C8.653 2.667 2.667 8.654 2.667 16c0 7.347 5.986 13.334 13.333 13.334S29.333 23.347 29.333 16c0-7.346-5.986-13.333-13.333-13.333Zm6.373 10.267-7.56 7.56a1 1 0 0 1-1.413 0L9.627 16.72a1.006 1.006 0 0 1 0-1.413 1.006 1.006 0 0 1 1.413 0l3.067 3.067 6.853-6.854a1.006 1.006 0 0 1 1.413 0 1.006 1.006 0 0 1 0 1.414Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none"><path fill="#23A26D" d="M16 2.667C8.653 2.667 2.667 8.654 2.667 16c0 7.347 5.986 13.334 13.333 13.334S29.333 23.347 29.333 16c0-7.346-5.986-13.333-13.333-13.333Zm6.373 10.267-7.56 7.56a1 1 0 0 1-1.413 0L9.627 16.72a1.006 1.006 0 0 1 0-1.413 1.006 1.006 0 0 1 1.413 0l3.067 3.067 6.853-6.854a1.006 1.006 0 0 1 1.413 0 1.006 1.006 0 0 1 0 1.414Z"/></svg>
     </div>
     
     <div class="growfund-payment-success-toaster-title-wrapper">

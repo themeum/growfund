@@ -6,6 +6,8 @@ const WPPageSchema = z.object({
   slug: z.string(),
   parent_id: z.string().nullish(),
   url: z.string().url().nullish(),
+  status: z.string(),
+  page_key: z.string().nullish(),
 });
 
 type WPPage = z.infer<typeof WPPageSchema>;

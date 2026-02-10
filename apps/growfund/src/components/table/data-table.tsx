@@ -1,15 +1,15 @@
 /* eslint-disable react-refresh/only-export-components */
 import {
-    flexRender,
-    getCoreRowModel,
-    getSortedRowModel,
-    useReactTable,
-    type ColumnPinningState,
-    type PaginationState,
-    type RowSelectionState,
-    type SortingState,
-    type Table,
-    type VisibilityState,
+  flexRender,
+  getCoreRowModel,
+  getSortedRowModel,
+  useReactTable,
+  type ColumnPinningState,
+  type PaginationState,
+  type RowSelectionState,
+  type SortingState,
+  type Table,
+  type VisibilityState,
 } from '@tanstack/react-table';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { parseAsInteger, useQueryState } from 'nuqs';
@@ -24,12 +24,12 @@ import { Form } from '@/components/ui/form';
 import Paginator from '@/components/ui/paginator';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
-    TableBody,
-    TableCell,
-    Table as TableComponent,
-    TableHead,
-    TableHeader,
-    TableRow,
+  TableBody,
+  TableCell,
+  Table as TableComponent,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 import { type AnyObject, type Option, type TableColumnDef } from '@/types';
@@ -260,11 +260,11 @@ const DataTableContent = ({ className, ...props }: DataTableContentProps) => {
 
     return table.getRowModel().rows.length > 0 ? (
       <TableBody>
-        {table.getRowModel().rows.map((row) => {
+        {table.getRowModel().rows.map((row, index) => {
           const isSelected = row.getIsSelected();
           return (
             <TableRow
-              key={row.id}
+              key={index}
               className={cn(
                 'growfund-h-12 growfund-group/row',
                 isSelected && 'growfund-bg-background-surface-secondary',
@@ -284,7 +284,8 @@ const DataTableContent = ({ className, ...props }: DataTableContentProps) => {
                     key={cell.id}
                     className={cn(
                       'growfund-typo-tiny group-hover/row:growfund-bg-background-surface-secondary',
-                      isPinned && 'growfund-sticky growfund-z-positive growfund-bg-background-surface',
+                      isPinned &&
+                        'growfund-sticky growfund-z-positive growfund-bg-background-surface',
                       isSelected && 'growfund-bg-background-surface-secondary',
                     )}
                     style={{
@@ -344,7 +345,8 @@ const DataTableContent = ({ className, ...props }: DataTableContentProps) => {
                   <TableHead
                     key={header.id}
                     className={cn(
-                      isPinned && 'growfund-sticky growfund-z-positive growfund-bg-background-surface-secondary',
+                      isPinned &&
+                        'growfund-sticky growfund-z-positive growfund-bg-background-surface-secondary',
                     )}
                     style={{
                       width: `${header.getSize()}px`,
@@ -535,12 +537,11 @@ const DataTablePagination = ({ className, ref, ...props }: DataTablePaginationPr
 DataTablePagination.displayName = 'DataTablePagination';
 
 export {
-    DataTable,
-    DataTableContent,
-    DataTablePagination,
-    DataTableProvider,
-    DataTableWrapper,
-    DataTableWrapperHeader,
-    useDataTableContext
+  DataTable,
+  DataTableContent,
+  DataTablePagination,
+  DataTableProvider,
+  DataTableWrapper,
+  DataTableWrapperHeader,
+  useDataTableContext,
 };
-

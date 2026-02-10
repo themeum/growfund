@@ -31,5 +31,20 @@ class PageListItemDTO extends DTO
     /**
      * @var string
      */
+    public $status;
+
+    /**
+     * @var string
+     */
     public $parent_id;
+
+    /**
+     * @var bool
+     */
+    public $is_growfund_page; 
+
+    /**
+     * @var string|null
+     */
+    public $page_key;
 }

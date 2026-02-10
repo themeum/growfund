@@ -33,6 +33,7 @@ use Growfund\Views\Components\Campaign\CampaignList;
                 $growfund_campaign_list->campaigns = $campaign_slider->campaigns ?? [];
                 $growfund_campaign_list->id = $campaign_slider->id ? $campaign_slider->id . '_campaign_list' : null;
                 $growfund_campaign_list->classname = 'growfund-campaign-slider-track';
+                $growfund_campaign_list->has_more = $campaign_slider->has_more;
 
                 growfund_render($growfund_campaign_list);
             ?>

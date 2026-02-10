@@ -10,6 +10,7 @@ use Growfund\Constants\PaymentEngine;
 use Growfund\Constants\PledgeOption;
 use Growfund\Constants\Reward\RewardType;
 use Growfund\Constants\Status\PledgeStatus;
+use Growfund\Core\AppSettings;
 use Growfund\DTO\DTO;
 use Growfund\Payments\DTO\PaymentMethodDTO;
 use Growfund\PostTypes\Campaign;
@@ -213,20 +214,25 @@ class CreatePledgeDTO extends DTO
                     return true;
                 }
             ],
-            'bonus_support_amount'       => 'float|min:0',
-            'notes'                      => 'string',
-            'payment_method'             => [
-                'required',
-                'string',
-                function($value, $key) {
-                    if (!Payment::is_valid_payment_method($value)) {
-                        /* translators: %s: field name */
-                        return sprintf(__('The %s is not valid.', 'growfund'), str_replace('_', ' ', $key));
-                    }
+            'bonus_support_amount' => 'float|min:0',
+            'notes' => 'string',
+            'payment_method' => [
+				function($value, $key) {
+					if (growfund_settings(AppSettings::PAYMENT)->get_payment_engine() === PaymentEngine::NATIVE) {
+                        if (empty($value)) {
+							return __('The payment method is required.', 'growfund');
+						}
+                    
+                        if (!Payment::is_valid_payment_method($value)) {
+                            /* translators: %s: field name */
+                            return sprintf(__('The %s is not valid.', 'growfund'), str_replace('_', ' ', $key));
+                        }
+					}
 
-                    return true;
-                }
-            ],
+					return true;
+				},
+                'string'
+			],
             'shipping_address' => [
                 'array',
                 function($value, $key, $data) {

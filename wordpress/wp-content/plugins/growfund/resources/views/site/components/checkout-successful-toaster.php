@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 <div class="growfund-checkout-successful-toaster-container">
         <div class="growfund-checkout-successful-toaster-icon-wrapper">
             <div class ="growfund-checkout-successful-toaster-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 32" fill="none"><path fill="#23A26D" d="M16 2.667C8.653 2.667 2.667 8.654 2.667 16c0 7.347 5.986 13.334 13.333 13.334S29.333 23.347 29.333 16c0-7.346-5.986-13.333-13.333-13.333Zm6.373 10.267-7.56 7.56a1 1 0 0 1-1.413 0L9.627 16.72a1.006 1.006 0 0 1 0-1.413 1.006 1.006 0 0 1 1.413 0l3.067 3.067 6.853-6.854a1.006 1.006 0 0 1 1.413 0 1.006 1.006 0 0 1 0 1.414Z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none"><path fill="#23A26D" d="M16 2.667C8.653 2.667 2.667 8.654 2.667 16c0 7.347 5.986 13.334 13.333 13.334S29.333 23.347 29.333 16c0-7.346-5.986-13.333-13.333-13.333Zm6.373 10.267-7.56 7.56a1 1 0 0 1-1.413 0L9.627 16.72a1.006 1.006 0 0 1 0-1.413 1.006 1.006 0 0 1 1.413 0l3.067 3.067 6.853-6.854a1.006 1.006 0 0 1 1.413 0 1.006 1.006 0 0 1 0 1.414Z"/></svg>
             </div>
         </div>
         <div class="growfund-checkout-successful-toaster-title-wrapper">
@@ -78,7 +78,7 @@ defined( 'ABSPATH' ) || exit;
         </div>
         </div>
 
-        <?php if (growfund_support_future_payment($checkout_successful_toaster->pledge->payment->payment_method->name)) : ?>
+        <?php if (growfund_support_future_payment($checkout_successful_toaster->pledge->payment->payment_method->name ?? '')) : ?>
         <div class="growfund-checkout-successful-toaster-funding-note-wrapper">
             <span><?php growfund_echo_safe_html($checkout_successful_toaster->get_svg_icon('assets/site/icon/check.svg')); ?></span>
             <span class="growfund-checkout-successful-toaster-funding-note"><?php esc_html_e("You'll be charged only if the campaign is successfully funded.", 'growfund'); ?></span>

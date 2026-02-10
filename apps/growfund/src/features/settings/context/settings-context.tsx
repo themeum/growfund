@@ -16,6 +16,7 @@ enum AppConfigKeys {
   Advanced = 'growfund_advanced',
   DonationMode = 'growfund_is_donation_mode',
   CurrentUser = 'growfund_current_user',
+  Page = 'growfund_page',
 }
 
 interface SettingsContextType<T extends FieldValues> {

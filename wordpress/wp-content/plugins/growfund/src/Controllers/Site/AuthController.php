@@ -100,6 +100,11 @@ class AuthController
             return;
         }
         
+        $redirect_to = $request->get_string('redirect_to');
+
+        if (!empty($redirect_to) && wc_is_valid_url($redirect_to)) {
+            growfund_redirect($redirect_to);
+        }
 
         growfund_redirect($redirect_url);
     }

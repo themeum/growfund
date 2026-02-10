@@ -7,6 +7,8 @@ defined( 'ABSPATH' ) || exit;
 use Growfund\Constants\HookNames;
 use Growfund\Constants\HookTypes;
 use Growfund\Hooks\BaseHook;
+use Growfund\Services\DonationService;
+use Growfund\Services\PledgeService;
 use Growfund\Supports\Woocommerce;
 
 class CheckoutItemName extends BaseHook
@@ -30,10 +32,23 @@ class CheckoutItemName extends BaseHook
     {
         list($name) = $args;
 
-        $contribution_info_dto = Woocommerce::get_custom_cart_info_from_session();
+        if (!growfund_is_wc_checkout()) {
+            return $name;
+        }
 
-        if (growfund_is_wc_checkout() && !empty($contribution_info_dto)) {
-            return $contribution_info_dto->campaign_name ?? $name;
+        $contribution_id = Woocommerce::get_contribution_id_from_cart();
+
+        if (!empty($contribution_id)) {
+            if (growfund_app()->is_donation_mode()) {
+                $donation_service = new DonationService();
+                $donation = $donation_service->get_by_id($contribution_id);
+
+				return $donation->campaign->title ?? $name;
+            }
+
+            $pledge_service = new PledgeService();
+            $pledge = $pledge_service->get_by_id($contribution_id);
+            return $pledge->campaign->title ?? $name;
         }
 
         return $name;

@@ -2,9 +2,13 @@
 
 namespace Growfund\Services;
 
+defined( 'ABSPATH' ) || exit;
+
 use Exception;
+use Growfund\Constants\PaymentEngine;
 use Growfund\Constants\Status\PledgeStatus;
 use Growfund\Contracts\Request;
+use Growfund\Core\AppSettings;
 use Growfund\DTO\Campaign\CampaignDTO;
 use Growfund\DTO\Donation\CreateDonationDTO;
 use Growfund\DTO\Donation\DonationDTO;
@@ -12,15 +16,12 @@ use Growfund\DTO\Donation\DonationDonorDTO;
 use Growfund\DTO\Pledge\CreatePledgeDTO;
 use Growfund\DTO\Pledge\PledgeBackerDTO;
 use Growfund\DTO\Pledge\PledgeDTO;
-use Growfund\DTO\Woocommerce\WoocommerceContributionDTO;
 use Growfund\Exceptions\ValidationException;
-use Growfund\Http\Response;
 use Growfund\Payments\Contracts\FuturePaymentContract;
 use Growfund\Payments\DTO\CustomerDTO;
 use Growfund\Payments\DTO\PaymentPayloadDTO;
 use Growfund\Payments\DTO\SavePaymentMethodPayloadDTO;
 use Growfund\Sanitizer;
-use Growfund\Supports\Money;
 use Growfund\Supports\Payment;
 use Growfund\Supports\User as UserSupport;
 use Growfund\Supports\UserMeta;
@@ -28,9 +29,6 @@ use Growfund\Supports\Utils;
 use Growfund\Supports\Woocommerce;
 use Growfund\Views\Pages\DonationCheckoutPage;
 use Growfund\Views\Pages\PledgeCheckoutPage;
-use InvalidArgumentException;
-
-defined( 'ABSPATH' ) || exit;
 
 
 class CheckoutService {
@@ -59,7 +57,9 @@ class CheckoutService {
 
         $pledge_checkout = new PledgeCheckoutPage();
         $pledge_checkout->campaign = $campaign;
-        $pledge_checkout->payment_methods = Payment::get_active_payment_methods();
+        $pledge_checkout->payment_methods = growfund_settings(AppSettings::PAYMENT)->get_payment_engine() === PaymentEngine::NATIVE 
+            ? Payment::get_active_payment_methods()
+            : [];
 
         if (!empty($reward_id)) {
             $reward = $this->reward_service->get_by_id($reward_id);
@@ -72,64 +72,12 @@ class CheckoutService {
     public function get_donation_checkout_page(CampaignDTO $campaign) {
         $donation_checkout = new DonationCheckoutPage();
         $donation_checkout->campaign = $campaign;
-        $donation_checkout->payment_methods = Payment::get_active_payment_methods();
+        $donation_checkout->payment_methods = growfund_settings(AppSettings::PAYMENT)->get_payment_engine() === PaymentEngine::NATIVE 
+            ? Payment::get_active_payment_methods()
+            : [];
         $donation_checkout->funds = (new FundService())->all();
 
         return growfund_get_html($donation_checkout);
-    }
-
-    /**
-     * @param CampaignDTO $campaign
-     * @param int|null $reward_id
-     * @param float $amount
-     * @param float $bonus_amount
-     */
-    public function apply_woocommerce_checkout(CampaignDTO $campaign, $reward_id = null, $amount = 0, $bonus_amount = 0)
-    {
-        if (!Woocommerce::is_active()) {
-            return growfund_redirect(growfund_campaign_url($campaign));
-        }
-
-        if (!growfund_user()->is_logged_in() && !growfund_app()->is_donation_mode()) {
-            return growfund_redirect(growfund_login_url(growfund_campaign_url($campaign->slug)));
-        }
-
-        $wc_product_id = growfund_wc_product_id();
-
-        if (! $wc_product_id) {
-            throw new Exception(esc_html__('Product not found', 'growfund'), (int) Response::NOT_FOUND);
-        }
-
-        WC()->cart->empty_cart();
-
-        if (!empty($reward_id)) {
-            $reward = $this->reward_service->get_by_id($reward_id)->get_values();
-            $amount = $reward->amount;
-        }
-
-        $amount = $amount + Money::prepare_for_display($bonus_amount);
-
-        if (!$amount && !growfund_app()->is_donation_mode()) {
-            throw new InvalidArgumentException(esc_html__('Amount is required', 'growfund'));
-        }
-
-        $contribution_info_dto = new WoocommerceContributionDTO();
-        $contribution_info_dto->campaign_name = $campaign->title;
-        $contribution_info_dto->campaign_id = (int) $campaign->id;
-        $contribution_info_dto->contribution_amount = (float) $amount;
-        $contribution_info_dto->reward_id = $reward_id ? (int) $reward_id : null;
-        $contribution_info_dto->bonus_support_amount = (float) $bonus_amount;
-
-        Woocommerce::unset_custom_cart_info_from_session();
-        Woocommerce::set_custom_cart_info_to_session($contribution_info_dto);
-
-        $added = WC()->cart->add_to_cart($wc_product_id);
-
-        if ($added) {
-            return growfund_redirect(wc_get_checkout_url());
-        }
-
-        throw new Exception(esc_html__('Failed to connect to WooCommerce', 'growfund'));
     }
 
     /**
@@ -158,7 +106,9 @@ class CheckoutService {
 
         $create_dto->user_info = wp_json_encode($user_info->to_array());
         $create_dto->status = PledgeStatus::PENDING;
-        $create_dto->payment_method =  Payment::get_payment_method_by_name($sanitized_data['payment_method']);
+        $create_dto->payment_method = !empty($sanitized_data['payment_method']) 
+            ? Payment::get_payment_method_by_name($sanitized_data['payment_method']) 
+            :  null;
         $create_dto->is_manual = false;
 
         $pledge_id = $this->pledge_service->create($create_dto);
@@ -188,6 +138,10 @@ class CheckoutService {
      */
     protected function process_pledge_payment(PledgeDTO $pledge)
     {
+        if (growfund_settings(AppSettings::PAYMENT)->get_payment_engine() === PaymentEngine::WOOCOMMERCE) {
+            return $this->process_woocommerce_payment((int) $pledge->id);
+        }
+
         $payment_method_name = $pledge->payment->payment_method->name ?? ''; 
         if (empty($payment_method_name) || Payment::is_manual_payment_method($payment_method_name)) {
             return true;
@@ -265,7 +219,9 @@ class CheckoutService {
         $create_dto = CreateDonationDTO::from_array($sanitized_data);
         $create_dto->user_id = $user_id;
         $create_dto->is_manual = false;
-        $create_dto->payment_method = !empty($sanitized_data['payment_method']) ? Payment::get_payment_method_by_name($sanitized_data['payment_method']) :  null;
+        $create_dto->payment_method = !empty($sanitized_data['payment_method']) 
+            ? Payment::get_payment_method_by_name($sanitized_data['payment_method']) 
+            :  null;
 
         $is_dedicated_donation = $request->get_bool('dedicate_donation', false);
 
@@ -323,6 +279,10 @@ class CheckoutService {
      * @throws Exception|ValidationException When payment gateway operations fail
      */
     public function process_donation_payment(DonationDTO $donation) {
+        if (growfund_settings(AppSettings::PAYMENT)->get_payment_engine() === PaymentEngine::WOOCOMMERCE) {
+            return $this->process_woocommerce_payment((int) $donation->id);
+        }
+
         $payment_method_name = $donation->payment_method->name ?? ''; 
 
 		if (empty($payment_method_name) || Payment::is_manual_payment_method($payment_method_name)) {
@@ -362,5 +322,24 @@ class CheckoutService {
         }
 
         return $response_dto;
+    }
+
+    protected function process_woocommerce_payment(int $id) 
+    {
+        if (!Woocommerce::is_active()) {
+            throw new Exception(esc_html__('WooCommerce plugin is not activated', 'growfund'));
+        }
+
+        $is_added = Woocommerce::set_cart_item($id);
+
+        if ($is_added) {
+            if (!Woocommerce::has_checkout_page()) {
+                throw new Exception(esc_html__('Checkout is not available. Please contact with site administrator.', 'growfund'));
+            }
+
+            return growfund_redirect(wc_get_checkout_url());
+        }
+
+        throw new Exception(esc_html__('Failed to connect to WooCommerce', 'growfund'));
     }
 }

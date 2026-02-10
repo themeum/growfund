@@ -35,6 +35,7 @@ use Growfund\Views\Components\UI\InfiniteScroll;
             $growfund_slider = new CampaignSlider();
             $growfund_slider->label = __('Featured Campaigns', 'growfund');
             $growfund_slider->campaigns = $campaign_archive_page->featured_campaigns->results ?? [];
+            $growfund_slider->has_more = $campaign_archive_page->featured_campaigns->has_more;
             $growfund_slider->id = 'growfund_featured_campaigns_slider';
 
             $growfund_is_searching = !empty($campaign_archive_page->search) || !empty($campaign_archive_page->category_slug) || !empty($campaign_archive_page->orderby);
@@ -54,6 +55,7 @@ use Growfund\Views\Components\UI\InfiniteScroll;
                 <?php 
                     $growfund_campaign_list = new CampaignList();
                     $growfund_campaign_list->campaigns = $campaign_archive_page->campaigns->results ?? [];
+                    $growfund_campaign_list->has_more = $campaign_archive_page->campaigns->has_more;
                     $growfund_campaign_list->id = 'growfund_archive_page_campaigns_list';
                     $growfund_campaign_list->classname = 'growfund-archive-page-campaign-list';
 

@@ -14,7 +14,7 @@
 }
 
 .growfund-campaign-archive-page-campaigns-list-section {
-  margin-top: calc(var(--growfund-spacing-4) * 3);
+  margin-top: calc(var(--growfund-spacing-4) * 4);
   margin-bottom: calc(var(--growfund-spacing-4) * 3);
 }
 

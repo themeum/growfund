@@ -7,6 +7,7 @@ defined( 'ABSPATH' ) || exit;
 use Growfund\Constants\HookNames;
 use Growfund\Constants\HookTypes;
 use Growfund\Hooks\BaseHook;
+use Growfund\Services\PageService;
 
 class CreateDefaultPages extends BaseHook
 {
@@ -22,44 +23,7 @@ class CreateDefaultPages extends BaseHook
 
     public function handle(...$args)
     {
-        $pages = [
-            [
-                'title'   => 'Login',
-                'slug'    => 'growfund-login',
-                'content' => '[growfund_login]',
-            ],
-            [
-                'title'   => 'Register',
-                'slug'    => 'growfund-register',
-                'content' => '[growfund_register]',
-            ],
-            [
-                'title'   => 'Become a Fundraiser',
-                'slug'    => 'growfund-register-fundraiser',
-                'content' => '[growfund_register user_type="fundraiser"]',
-            ],
-            [
-                'title'   => 'Campaigns',
-                'slug'    => 'growfund-campaigns',
-                'content' => '[growfund_campaigns]',
-            ],
-            [
-                'title'   => 'Checkout',
-                'slug'    => 'growfund-checkout',
-                'content' => '[growfund_checkout]',
-            ],
-        ];
-
-        foreach ($pages as $page) {
-            wp_insert_post(
-                [
-                    'post_title' => $page['title'],
-                    'post_content' => $page['content'],
-                    'post_status' => 'publish',
-                    'post_type' => 'page',
-                    'post_name' => $page['slug'],
-                ]
-            );
-        }
+		$page_service = new PageService();
+		$page_service->generate_growfund_pages();
     }
 }

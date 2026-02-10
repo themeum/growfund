@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { __ } from '@wordpress/i18n';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import ElementWrapper from '@/components/element-wrapper';
@@ -25,7 +25,6 @@ import {
   PaymentSettingsSchema,
   type PaymentSettingsForm,
 } from '@/features/settings/schemas/settings';
-import { useWordPressPagesQuery } from '@/features/settings/services/general';
 // import { useCurrency } from '@/hooks/use-currency';
 import { useRouteBlockerGuard } from '@/hooks/use-route-blocker-guard';
 import { registry } from '@/lib/registry';
@@ -69,16 +68,6 @@ const PaymentSettingsPage = () => {
   //   control: form.control,
   //   name: 'revenue_withdrawal_type',
   // });
-  const wordpressPagesQuery = useWordPressPagesQuery();
-  const pageOptions = useMemo(() => {
-    if (!wordpressPagesQuery.data) {
-      return [];
-    }
-    return wordpressPagesQuery.data.map((page) => ({
-      label: page.name,
-      value: page.id.toString(),
-    }));
-  }, [wordpressPagesQuery.data]);
 
   // const PaymentSettingsAdminCommission = registry.get('PaymentSettingsAdminCommission');
   const PaymentSettingsGuestCheckout = registry.get('PaymentSettingsGuestCheckout');
@@ -108,15 +97,6 @@ const PaymentSettingsPage = () => {
               placeholder={__('Select an e-commerce engine', 'growfund')}
               disabled={!growfundConfig.is_woocommerce_installed}
             />
-            {eCommerceEngine === 'native' && (
-              <SelectField
-                control={form.control}
-                name="checkout_page"
-                options={pageOptions}
-                label={__('Checkout Page', 'growfund')}
-                placeholder={__('Select a checkout page', 'growfund')}
-              />
-            )}
           </CardContent>
         </Card>
 

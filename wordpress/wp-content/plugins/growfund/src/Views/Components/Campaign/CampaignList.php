@@ -18,6 +18,9 @@ class CampaignList extends View
     /** @var string */
     public $classname;
 
+    /** @var bool */
+    public $has_more = false;
+
     protected function get_template_dir()
     {
         return 'site/components/campaign';

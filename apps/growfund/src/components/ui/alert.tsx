@@ -8,7 +8,8 @@ const alertVariants = cva(
   {
     variants: {
       variant: {
-        default: 'growfund-bg-background-surface-secondary growfund-border-l-border-ring growfund-text-fg-primary',
+        default:
+          'growfund-bg-background-surface-secondary growfund-border-l-border-ring growfund-text-fg-primary',
         warning:
           'growfund-bg-background-fill-warning-secondary growfund-border-l-border-warning growfund-text-fg-caution',
         destructive:
@@ -24,8 +25,7 @@ const alertVariants = cva(
 type AlertVariants = VariantProps<typeof alertVariants>['variant'];
 
 interface AlertProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof alertVariants> {}
+  extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof alertVariants> {}
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
   ({ children, variant, className, ...props }, ref) => {

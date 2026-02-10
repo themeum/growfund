@@ -33,10 +33,22 @@ class CampaignFiltersDTO extends DTO
     public $post_ids = [];
 
     /** 
+     * @since 1.0.6
+     * @var array<int> 
+     */
+    public $post__not_in_ids = [];
+
+    /** 
      * @since 1.0.4
      * @var string|null 
      */
     public $category_slug;
+
+    /**
+     * @since 1.0.6
+     * @var string|array|null
+     */
+    public $tag;
 
     /** 
      * @since 1.0.4

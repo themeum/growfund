@@ -13,7 +13,7 @@
   width: 100%;
   flex: 1 1 100%;
   min-width: 0;
-  max-width: none;
+  max-width: 500px;
   flex-grow: 1;
   align-items: center;
 }

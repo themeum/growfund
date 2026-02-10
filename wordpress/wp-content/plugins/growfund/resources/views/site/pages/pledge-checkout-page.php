@@ -6,6 +6,7 @@
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Constants\AppreciationType;
+use Growfund\Constants\PaymentEngine;
 use Growfund\Constants\PledgeOption;
 use Growfund\Constants\Reward\RewardType;
 use Growfund\Core\AppSettings;
@@ -39,21 +40,6 @@ $growfund_input_amount = growfund_input_get('amount', 0, Sanitizer::FLOAT);
 
 ?>
 
-
-<?php 
-
-$growfund_error_badge = new Badge();
-$growfund_error_badge->variant = 'error';
-$growfund_error_badge->message =  growfund_flash_get_message('checkout_error') 
-    ?? growfund_flash_get_message('checkout_form_errors')['campaign_id'][0] 
-    ?? growfund_flash_get_message('checkout_form_errors')['reward_id'][0]
-    ?? growfund_flash_get_message('checkout_form_errors')['pledge_option'][0] 
-    ?? '';
-
-growfund_render($growfund_error_badge);
-
-?>
-
 <form method="POST" action="<?php echo esc_url(Utils::get_checkout_submit_url()); ?>">
     <?php growfund_nonce_field(); ?>
     <input type="hidden" name="campaign_id" value="<?php echo esc_attr($pledge_checkout_page->campaign->id); ?>" />
@@ -71,6 +57,20 @@ growfund_render($growfund_error_badge);
     <?php endif; ?>
 
     <div class="growfund-pledge-checkout-page">
+        <?php 
+
+        $growfund_error_badge = new Badge();
+        $growfund_error_badge->variant = 'error';
+        $growfund_error_badge->message =  growfund_flash_get_message('checkout_error') 
+            ?? growfund_flash_get_message('checkout_form_errors')['campaign_id'][0] 
+            ?? growfund_flash_get_message('checkout_form_errors')['reward_id'][0]
+            ?? growfund_flash_get_message('checkout_form_errors')['pledge_option'][0] 
+            ?? '';
+
+        growfund_render($growfund_error_badge);
+
+        ?>
+
         <div class="growfund-pledge-checkout-page-left-section">
             <div class="growfund-pledge-checkout-page-left-section-title-wrapper">
                 <?php
@@ -360,11 +360,13 @@ growfund_render($growfund_error_badge);
                 </div>
 
                 <?php
-                $growfund_payment_methods = new PaymentMethodCard();
-                $growfund_payment_methods->payment_methods = $pledge_checkout_page->payment_methods;
-                $growfund_payment_methods->error_msg = growfund_flash_get_message('checkout_form_errors')['payment_method'][0] ?? '';
+                if (growfund_settings(AppSettings::PAYMENT)->get_payment_engine() === PaymentEngine::NATIVE) {
+					$growfund_payment_methods = new PaymentMethodCard();
+					$growfund_payment_methods->payment_methods = $pledge_checkout_page->payment_methods;
+					$growfund_payment_methods->error_msg = growfund_flash_get_message('checkout_form_errors')['payment_method'][0] ?? '';
 
-                growfund_render($growfund_payment_methods);
+					growfund_render($growfund_payment_methods);
+                }
                 ?>
 
                 <div class="growfund-pledge-checkout-page-right-section-payment-method-agreement">

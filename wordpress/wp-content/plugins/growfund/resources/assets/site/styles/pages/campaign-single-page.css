@@ -407,6 +407,12 @@
     min-height: auto;
   }
 }
+@media (min-width: 1025px) and (max-width: 1280px) {
+  .growfund-campaign-single-page-growfund-recommendations-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
 
 @media (max-width: 1024px) {
   .growfund-campaign-single-page-header {

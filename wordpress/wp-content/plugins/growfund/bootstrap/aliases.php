@@ -6,6 +6,7 @@ use Growfund\Core\AppSettings;
 
 return [
     AppSettings::GENERAL => [Growfund\App\Settings\GeneralSettings::class],
+    AppSettings::PAGES => [Growfund\App\Settings\PageSettings::class],
     AppSettings::PAYMENT => [Growfund\App\Settings\PaymentSettings::class],
     AppSettings::NOTIFICATIONS => [Growfund\App\Settings\EmailAndNotificationSettings::class],
     AppSettings::CAMPAIGNS => [Growfund\App\Settings\CampaignSettings::class],
