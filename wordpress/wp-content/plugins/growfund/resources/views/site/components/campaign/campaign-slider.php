@@ -11,7 +11,7 @@ use Growfund\Views\Components\Campaign\CampaignList;
 
 <div 
     <?php echo $campaign_slider->id ? ' id="' . esc_attr($campaign_slider->id) . '"' : ''; ?>
-    class="growfund-campaign-slider <?php echo $campaign_slider->classname ? esc_attr(' ' . $campaign_slider->classname) : ''; ?>"
+    class="growfund-campaign-slider <?php echo esc_attr($campaign_slider->classname ? $campaign_slider->classname : '') ; ?>"
 >
     <div class="growfund-campaign-slider-inner">
         <div class="growfund-campaign-slider-header-wrapper">

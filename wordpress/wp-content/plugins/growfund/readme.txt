@@ -5,7 +5,7 @@ Tags: crowdfunding, donation, fundraising, charity, rewards
 Requires at least: 5.9
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -375,6 +375,12 @@ order details (campaign_id, amount, currency, and transaction ID) to PayPal's AP
 
 
 == Changelog ==
+
+= 1.0.7 - Feb 16, 2026
+* Added ABSPATH checks to all executable PHP files to prevent direct file access.
+* Sanitized and validated data passed to prevent script injection.
+* Hardened inline JavaScript handling by replacing direct string interpolation to prevent potential XSS vulnerabilities. 
+* Removed query logger function from plugin helper.
 
 = 1.0.6 - Feb 10, 2026
 * Introduced the Run Fix option to regenerate missing Growfund pages.

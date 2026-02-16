@@ -177,7 +177,13 @@ $growfund_dynamic_stack_width = 51 + (($growfund_avatars_in_view - 1) * 20);
                 
                     </span>
                     <span class="growfund-campaign-single-page-right-content-location-text">
-                        <?php echo $campaign_single_page->campaign->location ? esc_html(growfund_pretty_location($campaign_single_page->campaign->location)) : esc_html__('Not specified', 'growfund'); ?>
+                        <?php
+                        echo esc_html(
+                            $campaign_single_page->campaign->location 
+                                ? growfund_pretty_location($campaign_single_page->campaign->location)
+                                : __('Not specified', 'growfund')
+                            )
+						?>
                     </span>
                 </div>
             </div>

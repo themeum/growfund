@@ -137,8 +137,8 @@ class PageService
 		$default_pages = $this->get_default_page_contents();
 
 		$created_pages = $this->all([
-			'meta_key' => growfund_with_prefix('is_growfund_page'),
-			'meta_value' => '1',
+			'meta_key' => growfund_with_prefix('is_growfund_page'), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+			'meta_value' => '1', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 			'post_status' => $this->get_all_page_statuses(),
 		]);
 

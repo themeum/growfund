@@ -3,6 +3,8 @@
  * @var Growfund\Views\Components\Campaign\CampaignRewardContent $campaign_reward_content
  */
 
+defined( 'ABSPATH' ) || exit;
+
 use Growfund\Constants\Reward\QuantityType;
 use Growfund\Supports\Arr;
 use Growfund\Supports\Currency;
@@ -44,7 +46,13 @@ $growfund_reward_shipping_countries = $growfund_countries->filter(function ($cou
             <div class="growfund-campaign-reward-content-stat-text">
                 <span class="growfund-campaign-reward-content-stat-label"><?php esc_html_e('Ships to', 'growfund'); ?></span>
                 <span class="growfund-campaign-reward-content-stat-count">
-                    <?php echo $growfund_reward_has_shipping_rest_of_world ? esc_html__('Anywhere in the world', 'growfund') : esc_html($growfund_reward_shipping_countries); ?>
+                    <?php
+                    echo esc_html(
+                        $growfund_reward_has_shipping_rest_of_world 
+                            ? __('Anywhere in the world', 'growfund') 
+                            : $growfund_reward_shipping_countries
+                        ); 
+					?>
                 </span>
             </div>
         </div>
@@ -76,7 +84,13 @@ $growfund_reward_shipping_countries = $growfund_countries->filter(function ($cou
             <div class="growfund-campaign-reward-content-stat-text">
                 <span class="growfund-campaign-reward-content-stat-label"><?php esc_html_e('Limited Quantity', 'growfund'); ?></span>
                 <span class="growfund-campaign-reward-content-stat-count">
-                    <?php echo $campaign_reward_content->reward->quantity_type === QuantityType::LIMITED ? esc_html($campaign_reward_content->reward->quantity_limit ?? 0) : esc_html__('Unlimited', 'growfund'); ?>
+                    <?php
+                    echo esc_html(
+                        $campaign_reward_content->reward->quantity_type === QuantityType::LIMITED 
+                            ? ($campaign_reward_content->reward->quantity_limit ?? 0) 
+                            : __('Unlimited', 'growfund')
+                        );
+					?>
                 </span>
             </div>
         </div>

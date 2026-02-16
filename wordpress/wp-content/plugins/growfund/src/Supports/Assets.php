@@ -91,7 +91,7 @@ class Assets
                         sprintf(
                             'wp.i18n.setLocaleData(%s, "%s")',
                             wp_json_encode($translation_data['locale_data'][$domain]),
-                            $domain
+                            wp_json_encode($domain)
                         ),
                         'before'
                     );

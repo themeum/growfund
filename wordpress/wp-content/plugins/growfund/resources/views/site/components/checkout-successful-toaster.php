@@ -19,23 +19,29 @@ defined( 'ABSPATH' ) || exit;
         <div class="growfund-checkout-successful-toaster-title-wrapper">
             <span class="growfund-checkout-successful-toaster-title">
                 <?php 
-                    echo $checkout_successful_toaster->confirmation_title 
-                        ? esc_html($checkout_successful_toaster->confirmation_title) 
-                        : esc_html__('Pledge Successful!', 'growfund'); 
-				?>
+                    echo esc_html(
+                        $checkout_successful_toaster->confirmation_title 
+                        ? $checkout_successful_toaster->confirmation_title 
+                        : __('Pledge Successful!', 'growfund')
+                    );  
+					?>
             </span>
             <p class="growfund-checkout-successful-toaster-subtitle">
                 <?php 
-                    echo $checkout_successful_toaster->confirmation_description 
-                        ? esc_html($checkout_successful_toaster->confirmation_description) 
-                        : esc_html__('Thank you for backing this campaign. Your support brings the project closer to life.', 'growfund'); 
-                ?>
+                    echo esc_html(
+                        $checkout_successful_toaster->confirmation_description 
+                            ? $checkout_successful_toaster->confirmation_description 
+                            : __('Thank you for backing this campaign. Your support brings the project closer to life.', 'growfund')
+                    ); 
+					?>
             </p>
         </div>
 
         <div class="growfund-checkout-successful-toaster-amount-group">
             <span class="growfund-checkout-successful-toaster-amount-label"><?php esc_html_e('Total Pledged Campaign', 'growfund'); ?></span>
-            <div class="growfund-checkout-successful-toaster-amount-value"><?php echo esc_html(Currency::format($checkout_successful_toaster->pledge->payment->total ?? 0)); ?></div>
+            <div class="growfund-checkout-successful-toaster-amount-value">
+                <?php echo esc_html(Currency::format($checkout_successful_toaster->pledge->payment->total ?? 0)); ?>
+            </div>
         </div>
 
         <div class="growfund-checkout-successful-toaster-section-wrapper">
@@ -49,8 +55,16 @@ defined( 'ABSPATH' ) || exit;
                 <span class="growfund-checkout-successful-toaster-card-value"><?php echo esc_html($checkout_successful_toaster->pledge->campaign->title); ?></span>
                 </div>
             <div class="growfund-checkout-successful-toaster-info-card">
-                <span class="growfund-checkout-successful-toaster-card-label"><?php esc_attr_e('Reward Tier', 'growfund'); ?></span>
-                <span class="growfund-checkout-successful-toaster-card-value"><?php echo !empty($checkout_successful_toaster->pledge->reward) ? 'With rewards' : 'Without rewards'; ?></span>
+                <span class="growfund-checkout-successful-toaster-card-label"><?php esc_html_e('Reward Tier', 'growfund'); ?></span>
+                <span class="growfund-checkout-successful-toaster-card-value">
+                    <?php
+                    echo esc_html(
+                        !empty($checkout_successful_toaster->pledge->reward) 
+                        ? __('With rewards', 'growfund') 
+                        : __('Without rewards', 'growfund')
+                    );
+                    ?>
+                </span>
             </div>
             <div class="growfund-checkout-successful-toaster-info-card">
                 <span class="growfund-checkout-successful-toaster-card-label"><?php esc_html_e('Ref Number', 'growfund'); ?></span>
@@ -58,7 +72,9 @@ defined( 'ABSPATH' ) || exit;
             </div>
             <div class="growfund-checkout-successful-toaster-info-card">
                 <span class="growfund-checkout-successful-toaster-card-label"><?php esc_html_e('Payment Method', 'growfund'); ?></span>
-                <span class="growfund-checkout-successful-toaster-card-value"><?php echo esc_html($checkout_successful_toaster->pledge->payment->payment_method->label); ?></span>
+                <span class="growfund-checkout-successful-toaster-card-value">
+                    <?php echo esc_html($checkout_successful_toaster->pledge->payment->payment_method->label); ?>
+                </span>
             </div>
         </div>
 
@@ -69,7 +85,15 @@ defined( 'ABSPATH' ) || exit;
         <div class="growfund-checkout-successful-toaster-wrapper">
             <div class="growfund-checkout-successful-toaster-info-card">
                 <span class="growfund-checkout-successful-toaster-card-label"><?php esc_html_e('Backer Name', 'growfund'); ?></span>
-                <span class="growfund-checkout-successful-toaster-card-value"><?php printf('%s %s', esc_html($checkout_successful_toaster->pledge->backer->first_name), esc_html($checkout_successful_toaster->pledge->backer->last_name)); ?></span>
+                <span class="growfund-checkout-successful-toaster-card-value">
+                    <?php 
+                        printf(
+                            '%s %s', 
+                            esc_html($checkout_successful_toaster->pledge->backer->first_name), 
+                            esc_html($checkout_successful_toaster->pledge->backer->last_name)
+                        );
+						?>
+                </span>
             </div>
             <div class="growfund-checkout-successful-toaster-info-card">
                 <span class="growfund-checkout-successful-toaster-card-label"><?php esc_html_e('Email Address', 'growfund'); ?></span>
@@ -79,11 +103,11 @@ defined( 'ABSPATH' ) || exit;
         </div>
 
         <?php if (growfund_support_future_payment($checkout_successful_toaster->pledge->payment->payment_method->name ?? '')) : ?>
-        <div class="growfund-checkout-successful-toaster-funding-note-wrapper">
-            <span><?php growfund_echo_safe_html($checkout_successful_toaster->get_svg_icon('assets/site/icon/check.svg')); ?></span>
-            <span class="growfund-checkout-successful-toaster-funding-note"><?php esc_html_e("You'll be charged only if the campaign is successfully funded.", 'growfund'); ?></span>
-        
-        </div>
+            <div class="growfund-checkout-successful-toaster-funding-note-wrapper">
+                <span><?php growfund_echo_safe_html($checkout_successful_toaster->get_svg_icon('assets/site/icon/check.svg')); ?></span>
+                <span class="growfund-checkout-successful-toaster-funding-note"><?php esc_html_e("You'll be charged only if the campaign is successfully funded.", 'growfund'); ?></span>
+            
+            </div>
         <?php endif; ?>
         <?php
             $growfund_dashboard_button = new Button();

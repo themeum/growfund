@@ -28,7 +28,7 @@ class PledgeCheckoutPage extends View {
     }
     protected function enqueue_scripts()
     {
-        growfund_localize_script('growfundCountries', Location::get_countries());
+        wp_localize_script('growfund-core', 'growfundCountries', (array) Location::get_countries());
 
         $script_url = GROWFUND_DIR_URL . 'resources/assets/site/scripts/pages/pledge-checkout-page.js';
         wp_enqueue_script('growfund-pledge-checkout-page-script', $script_url, ['growfund-core'], GROWFUND_VERSION, true);

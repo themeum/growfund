@@ -16,7 +16,7 @@ if (growfund_user()->is_backer() || growfund_user()->is_donor()) {
 ?>
 
 <?php if ($growfund_is_allowed_to_comment) : ?>
-    <div class="growfund-comment-input-box <?php echo $comment_box->classname ? esc_attr($comment_box->classname) : ''; ?>">
+    <div class="growfund-comment-input-box <?php echo esc_attr($comment_box->classname ? $comment_box->classname : ''); ?>">
         <input type="hidden" name="post_id" value="<?php echo esc_attr($comment_box->post_id); ?>" />
         <input type="hidden" name="comment_type" value="<?php echo esc_attr($comment_box->comment_type); ?>" />
         <?php if ($comment_box->parent_id) : ?>

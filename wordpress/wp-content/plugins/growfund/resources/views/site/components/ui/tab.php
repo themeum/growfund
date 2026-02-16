@@ -22,7 +22,7 @@ defined('ABSPATH') || exit;
                     type="button"
                     class="growfund-tab-contents-item"
                     data-growfund-tab-contents-trigger="<?php echo esc_attr($growfund_tab_item['key']); ?>"
-                    aria-selected="<?php echo $growfund_index === 0 ? 'true' : 'false'; ?>"
+                    aria-selected="<?php echo esc_attr($growfund_index === 0 ? 'true' : 'false'); ?>"
                 >
                     <?php echo esc_html($growfund_tab_item['label']); ?>
                    
@@ -42,7 +42,7 @@ defined('ABSPATH') || exit;
             <div
                 class="growfund-tab-contents-panel"
                 data-growfund-tab-contents-panel="<?php echo esc_attr($growfund_tab_item['key']); ?>"
-                aria-hidden="<?php echo $growfund_index === 0 ? 'false' : 'true'; ?>"
+                aria-hidden="<?php echo esc_attr($growfund_index === 0 ? 'false' : 'true'); ?>"
             >
                 <?php growfund_echo_safe_html($growfund_tab_item['content']); ?>
             </div>

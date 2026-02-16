@@ -64,5 +64,5 @@ defined('ABSPATH') || exit;
             </div>
         </div>
     </div>
-    <div class="growfund-v-line <?php echo $comment->comment->replies->total > 0 ? '' : 'growfund-hidden'; ?>"></div>
+    <div class="growfund-v-line <?php echo esc_attr($comment->comment->replies->total > 0 ? '' : 'growfund-hidden'); ?>"></div>
 </div>

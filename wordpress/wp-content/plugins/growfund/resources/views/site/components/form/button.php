@@ -9,12 +9,12 @@ defined( 'ABSPATH' ) || exit;
 
 <?php if ($button->has_link) : ?>
     <a
-        href="<?php echo $button->disabled ? '#' : esc_url($button->href); ?>"
-        class="growfund-button <?php echo $button->classname ? esc_attr($button->classname) : ''; ?>"
+        href="<?php echo esc_url($button->disabled ? '#' : $button->href); ?>"
+        class="growfund-button <?php echo esc_attr($button->classname ? $button->classname : ''); ?>"
         type="<?php echo esc_attr($button->type); ?>"
         <?php echo $button->id ? ' id="' . esc_attr($button->id) . '"' : ''; ?>
         <?php echo $button->style ? ' style="' . esc_attr($button->style) . '"' : ''; ?>
-        <?php echo $button->disabled ? esc_attr(' disabled') : ''; ?>
+        <?php echo esc_attr($button->disabled ? ' disabled' : ''); ?>
     >
         <?php if ($button->icon_position === 'left' && $button->svg_icon) : ?>
             <span class="growfund-button-icon">
@@ -30,11 +30,11 @@ defined( 'ABSPATH' ) || exit;
     </a>
 <?php else : ?>
     <button
-        class="growfund-button <?php echo $button->classname ? esc_attr($button->classname) : ''; ?>"
+        class="growfund-button <?php echo esc_attr($button->classname ? $button->classname : ''); ?>"
         type="<?php echo esc_attr($button->type); ?>"
         <?php echo $button->id ? ' id="' . esc_attr($button->id) . '"' : ''; ?>
         <?php echo $button->style ? ' style="' . esc_attr($button->style) . '"' : ''; ?>
-        <?php echo $button->disabled ? esc_attr(' disabled') : ''; ?>
+        <?php echo esc_attr($button->disabled ? ' disabled' : ''); ?>
     >
         <?php if ($button->icon_position === 'left' && $button->svg_icon) : ?>
             <span class="growfund-button-icon">

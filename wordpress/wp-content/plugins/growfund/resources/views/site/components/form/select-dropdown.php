@@ -25,7 +25,7 @@ $growfund_has_default_dropdown_value = !is_null($select_dropdown->default_value)
     class="growfund-select-dropdown <?php echo esc_attr($select_dropdown->classname ?? ''); ?>"
     data-name="<?php echo esc_attr($select_dropdown->name); ?>"
     data-selected-value="<?php echo esc_attr($select_dropdown->default_value ?? ''); ?>"
-    data-filterable="<?php echo $select_dropdown->is_filterable ? 'true' : 'false'; ?>"
+    data-filterable="<?php echo esc_html($select_dropdown->is_filterable ? 'true' : 'false'); ?>"
 >
     <input
         type="hidden"
@@ -36,15 +36,15 @@ $growfund_has_default_dropdown_value = !is_null($select_dropdown->default_value)
 
     <div class="growfund-select-dropdown-label-wrapper">
         <div class="growfund-select-dropdown-label-inner">
-            <span class="growfund-select-dropdown-placeholder <?php echo !$growfund_has_default_dropdown_value ? 'show' : ''; ?>">
+            <span class="growfund-select-dropdown-placeholder <?php echo esc_attr(!$growfund_has_default_dropdown_value ? 'show' : ''); ?>">
                 <?php echo esc_html($select_dropdown->placeholder ?? __('Select', 'growfund')); ?>
             </span>
 
-            <span class="growfund-select-dropdown-label <?php echo $growfund_has_default_dropdown_value ? 'show' : ''; ?>">
+            <span class="growfund-select-dropdown-label <?php echo esc_attr($growfund_has_default_dropdown_value ? 'show' : ''); ?>">
                 <?php echo esc_html($growfund_selected_label); ?>
             </span>
 
-            <span class="growfund-select-dropdown-arrow-icon <?php echo $growfund_has_default_dropdown_value ? 'growfund-hidden' : ''; ?>">
+            <span class="growfund-select-dropdown-arrow-icon <?php echo esc_attr($growfund_has_default_dropdown_value ? 'growfund-hidden' : ''); ?>">
                 <?php
                 growfund_echo_safe_html(
                     $select_dropdown->get_svg_icon('assets/site/icon/arrow-down.svg')
@@ -54,7 +54,7 @@ $growfund_has_default_dropdown_value = !is_null($select_dropdown->default_value)
         </div>
 
         <?php if (!empty($select_dropdown->allow_clear)) : ?>
-            <span class="growfund-select-dropdown-clear-icon <?php echo $growfund_has_default_dropdown_value ? 'active' : ''; ?>">
+            <span class="growfund-select-dropdown-clear-icon <?php echo esc_attr($growfund_has_default_dropdown_value ? 'active' : ''); ?>">
                 <?php
                 growfund_echo_safe_html(
                     $select_dropdown->get_svg_icon('assets/site/icon/cross.svg')
