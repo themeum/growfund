@@ -283,7 +283,7 @@ $growfund_input_amount = growfund_input_get('amount', 0, Sanitizer::FLOAT);
                     growfund_render($growfund_same_as_shipping_checkbox);
 					?>
                 <?php endif; ?>
-                <div id="checkout_billing_address_section" class="growfund-pledge-checkout-page-right-section-shipping-address-wrapper <?php echo $growfund_has_physical_goods && $growfund_is_billing_address_same ? 'growfund-hidden' : ''; ?>">
+                <div id="checkout_billing_address_section" class="growfund-pledge-checkout-page-right-section-shipping-address-wrapper <?php echo $growfund_has_physical_goods && $growfund_is_billing_address_same ? esc_attr('growfund-hidden') : ''; ?>">
                     <span class="growfund-pledge-checkout-page-right-section-shipping-title"><?php esc_html_e('Billing Address', 'growfund'); ?></span>
                     <div class="growfund-pledge-checkout-page-right-section-shipping-address">
                         <?php

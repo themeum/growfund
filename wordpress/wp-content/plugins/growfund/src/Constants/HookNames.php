@@ -92,7 +92,6 @@ class HookNames
     const GROWFUND_ALLOW_GUEST_CHECKOUT_FILTER = 'growfund/payment/allow-guest-checkout';
     const GROWFUND_ALLOW_EMAIL_VERIFICATION = 'growfund/enable_email_verification';
     const GROWFUND_IS_APPLY_EMAIL_VERIFICATION = 'growfund/apply_email_verification';
-    const GROWFUND_QUERY_LOG_OVERWRITE = 'growfund/query_log_overwrite';
     const GROWFUND_COLLABORATOR_LIST_FILTER = 'growfund/collaborator/list';
     const GROWFUND_FUND_LIST_FILTER = 'growfund/fund/list';
 }

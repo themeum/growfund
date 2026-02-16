@@ -10,9 +10,9 @@ defined( 'ABSPATH' ) || exit;
     <input 
         type="checkbox" 
         name="<?php echo esc_attr($checkbox_field->name); ?>" 
-        value="<?php echo $checkbox_field->checked ? 'true' : 'false'; ?>" 
-        <?php echo checked($checkbox_field->checked); ?>
-        class="growfund-checkbox-input<?php echo $checkbox_field->classname ? ' ' . esc_attr($checkbox_field->classname) : ''; ?>"
+        value="<?php echo esc_attr($checkbox_field->checked ? 'true' : 'false'); ?>" 
+        <?php echo esc_attr(checked($checkbox_field->checked)); ?>
+        class="growfund-checkbox-input<?php echo esc_attr($checkbox_field->classname ? ' ' . $checkbox_field->classname : ''); ?>"
         <?php echo $checkbox_field->id ? 'id="' . esc_attr($checkbox_field->id) . '"' : ''; ?>
         <?php echo $checkbox_field->style ? ' style="' . esc_attr($checkbox_field->style) . '"' : ''; ?>
     />
@@ -20,10 +20,10 @@ defined( 'ABSPATH' ) || exit;
     <?php if ( ! empty( $checkbox_field->label ) ) : ?>
         <span
         class="growfund-checkbox-field-label
-        <?php echo !empty($checkbox_field->label_class) ? ' ' . esc_attr($checkbox_field->label_class) : ''; ?>
+        <?php echo esc_attr(!empty($checkbox_field->label_class) ? ' ' . $checkbox_field->label_class : ''); ?>
         "
     >
-            <?php growfund_echo_safe_html( $checkbox_field->label ); ?>
+            <?php growfund_echo_safe_html($checkbox_field->label); ?>
         </span>
     <?php endif; ?>
 </label>

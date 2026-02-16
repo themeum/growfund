@@ -3,6 +3,8 @@
  * @var Growfund\Views\Pages\DonationCheckoutPage $donation_checkout_page
  */
 
+defined( 'ABSPATH' ) || exit;
+
 use Growfund\Constants\Campaign\FundSelectionType;
 use Growfund\Constants\Campaign\SuggestedOptionType;
 use Growfund\Constants\Campaign\TributeNotificationPreference;
@@ -24,8 +26,6 @@ use Growfund\Views\Components\Form\TextField;
 use Growfund\Views\Components\PaymentMethodCard;
 use Growfund\Views\Components\UI\Badge;
 use Growfund\Views\Components\UI\Image;
-
-defined( 'ABSPATH' ) || exit;
 
 $growfund_default_donation_amount = 0;
 

@@ -10,9 +10,7 @@ use Growfund\Views\Components\Form\Button;
 
 defined( 'ABSPATH' ) || exit;
 
-
 ?>
-
 
 <div class="growfund-payment-success-toaster-container">
     <div class="growfund-payment-success-toaster-icon-wrapper">
@@ -22,23 +20,29 @@ defined( 'ABSPATH' ) || exit;
     <div class="growfund-payment-success-toaster-title-wrapper">
         <span class="growfund-payment-success-toaster-title">
             <?php 
-                echo $payment_success_toaster->confirmation_title 
-                    ? esc_html($payment_success_toaster->confirmation_title) 
-                    : esc_html__('Payment Success!', 'growfund'); 
-            ?>
+                echo esc_html(
+                    $payment_success_toaster->confirmation_title 
+                        ? $payment_success_toaster->confirmation_title 
+                        : __('Payment Success!', 'growfund')
+                ); 
+				?>
         </span>
         <p class="growfund-payment-success-toaster-subtitle">
             <?php 
-                echo $payment_success_toaster->confirmation_description 
-                    ? esc_html($payment_success_toaster->confirmation_description) 
-                    : esc_html__('Your payment has been successfully done.', 'growfund'); 
-            ?>
+                echo esc_html(
+                    $payment_success_toaster->confirmation_description 
+                        ? $payment_success_toaster->confirmation_description 
+                        : __('Your payment has been successfully done.', 'growfund')
+                    ) ; 
+				?>
         </p>
     </div>
 
     <div class="growfund-payment-success-toaster-amount-group">
         <span class="growfund-payment-success-toaster-amount-label"><?php esc_html_e('Total Payment', 'growfund'); ?></span>
-        <div class="growfund-payment-success-toaster-amount-value"><?php echo esc_html(Currency::format($payment_success_toaster->donation->amount ?? 0)); ?></div>
+        <div class="growfund-payment-success-toaster-amount-value">
+            <?php echo esc_html(Currency::format($payment_success_toaster->donation->amount ?? 0)); ?>
+        </div>
     </div>
 
    
@@ -49,15 +53,27 @@ defined( 'ABSPATH' ) || exit;
             </div>
             <div class="growfund-payment-success-toaster-info-card">
                 <span class="growfund-payment-success-toaster-card-label"><?php esc_html_e('Payment Time', 'growfund'); ?></span>
-                <span class="growfund-payment-success-toaster-card-value" data-growfund-datetime="<?php echo esc_attr($payment_success_toaster->donation->created_at); ?>"><?php echo esc_html(Date::format($payment_success_toaster->donation->created_at, DateTimeFormats::HUMAN_READABLE_DATE)); ?></span>
+                <span class="growfund-payment-success-toaster-card-value" data-growfund-datetime="<?php echo esc_attr($payment_success_toaster->donation->created_at); ?>">
+                    <?php echo esc_html(Date::format($payment_success_toaster->donation->created_at, DateTimeFormats::HUMAN_READABLE_DATE)); ?>
+                </span>
             </div>
             <div class="growfund-payment-success-toaster-info-card">
                 <span class="growfund-payment-success-toaster-card-label"><?php esc_html_e('Payment Method', 'growfund'); ?></span>
-                <span class="growfund-payment-success-toaster-card-value"><?php echo esc_html($payment_success_toaster->donation->payment_method->label ?? ''); ?></span>
+                <span class="growfund-payment-success-toaster-card-value">
+                    <?php echo esc_html($payment_success_toaster->donation->payment_method->label ?? ''); ?>
+                </span>
             </div>
             <div class="growfund-payment-success-toaster-info-card">
                 <span class="growfund-payment-success-toaster-card-label"><?php esc_html_e('Sender Name', 'growfund'); ?></span>
-                <span class="growfund-payment-success-toaster-card-value"><?php printf('%s %s', esc_html($payment_success_toaster->donation->donor->first_name ?? ''), esc_html($payment_success_toaster->donation->donor->last_name ?? '')); ?></span>
+                <span class="growfund-payment-success-toaster-card-value">
+                    <?php 
+                    printf(
+                        '%s %s', 
+                        esc_html($payment_success_toaster->donation->donor->first_name ?? ''), 
+                        esc_html($payment_success_toaster->donation->donor->last_name ?? '')
+                    ); 
+					?>
+                </span>
             </div>
         </div>
         <?php

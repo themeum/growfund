@@ -63,7 +63,6 @@ class RequestInput {
         }
 
         return $value;
-
     }
 
 

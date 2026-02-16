@@ -1188,51 +1188,6 @@ if (!function_exists('growfund_site_name')) {
     }
 }
 
-if (!function_exists('growfund_add_inline_script')) {
-    /**
-     * Localize a script.
-     * 
-     * @param string $inline_js The inline JavaScript to add.
-     * @param string|false $hook_name admin_enqueue_scripts|wp_enqueue_scripts -- The hook name to add the action to.
-     * @param int $priority The priority of the action.
-     * 
-     * @return void
-     */
-    function growfund_add_inline_script($inline_js, $hook_name = false, $priority = 20) {
-        if ($hook_name === false) {
-            wp_add_inline_script('growfund-inline-script', $inline_js);
-            return;
-        }
-        
-        add_action($hook_name, function() use ($inline_js) {
-			wp_add_inline_script('growfund-inline-script', $inline_js);
-        }, $priority);
-    }
-}
-
-if (!function_exists('growfund_localize_script')) {
-    /**
-     * Localize a script.
-     * 
-     * @param string $object_name The name of the object to localize.
-     * @param array $data The data to localize.
-     * @param string|false $hook_name admin_enqueue_scripts|wp_enqueue_scripts -- The hook name to add the action to.
-     * @param int $priority The priority of the action.
-     * 
-     * @return void
-     */
-    function growfund_localize_script($object_name, $data, $hook_name = false, $priority = 20) {
-        if ($hook_name === false) {
-            wp_localize_script('growfund-inline-script', $object_name, $data);
-            return;
-        }
-
-        add_action($hook_name, function() use ( $object_name, $data) {
-            wp_localize_script('growfund-inline-script', $object_name, $data);
-        }, $priority);
-    }
-}
-
 if (!function_exists('growfund_input_get')) {
     /**
      * Retrieve a value from the $_GET.
@@ -1294,27 +1249,6 @@ if (!function_exists('growfund_has_growfund_pro')) {
         }
 
         return is_plugin_active('growfund-pro/growfund-pro.php');
-    }
-}
-
-
-if (!function_exists('growfund_query_log')) {
-    function growfund_query_log($query) {
-        if (growfund_is_dev_mode() && defined('WP_DEBUG') && WP_DEBUG) {
-			add_filter( 'query', function( $query ) {
-				$log_file = GROWFUND_DIR_PATH . '/sql-query.log';
-                $overwrite = apply_filters(HookNames::GROWFUND_QUERY_LOG_OVERWRITE, false); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
-
-                if ($overwrite) {
-                    file_put_contents($log_file, " $query\n\n"); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents -- logging in dev mode
-
-                    return $query;
-                }
-                
-				file_put_contents($log_file, " $query\n", FILE_APPEND); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents -- logging in dev mode
-				return $query;
-			});
-        }
     }
 }
 

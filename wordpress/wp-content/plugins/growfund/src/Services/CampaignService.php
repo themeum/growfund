@@ -120,11 +120,11 @@ class CampaignService
 
         // Make a way so that we can get the campaigns within the provided ids only
         if (!empty($filters_dto->post_ids)) {
-            $query_args['post__in'] = $filters_dto->post_ids;
+            $query_args['post__in'] = (array) $filters_dto->post_ids;
         }
 
         if (!empty($filters_dto->post__not_in_ids)) {
-            $query_args['post__not_in'] = $filters_dto->post__not_in_ids;
+            $query_args['post__not_in'] = (array) $filters_dto->post__not_in_ids; // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
         }
 
         // Search by title/content

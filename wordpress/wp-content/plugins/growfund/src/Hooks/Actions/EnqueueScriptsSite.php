@@ -64,9 +64,6 @@ class EnqueueScriptsSite extends BaseHook
             ]
         ]);
 
-        wp_register_script('growfund-inline-script', false, ['growfund-core'], GROWFUND_VERSION, true);
-        wp_enqueue_script('growfund-inline-script');
-
         $main_styles_url = GROWFUND_DIR_URL . 'resources/assets/site/styles/common.css';
 
         wp_enqueue_style('growfund-main-styles', $main_styles_url, [], GROWFUND_VERSION);
