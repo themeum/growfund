@@ -377,10 +377,9 @@ order details (campaign_id, amount, currency, and transaction ID) to PayPal's AP
 == Changelog ==
 
 = 1.0.7 - Feb 16, 2026
-* Added ABSPATH checks to all executable PHP files to prevent direct file access.
-* Sanitized and validated data passed to prevent script injection.
-* Hardened inline JavaScript handling by replacing direct string interpolation to prevent potential XSS vulnerabilities. 
-* Removed query logger function from plugin helper.
+* Added stronger file protection to prevent unauthorized access.
+* Increased security to block harmful scripts.
+* Improved browser-side safety to reduce potential vulnerabilities.
 
 = 1.0.6 - Feb 10, 2026
 * Introduced the Run Fix option to regenerate missing Growfund pages.
