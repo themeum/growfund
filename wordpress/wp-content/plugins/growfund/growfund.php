@@ -96,7 +96,7 @@ define('GROWFUND_SLUG', dirname(GROWFUND_BASENAME));
  * Available values - development|production
  * @since   1.0.0
  */
-define('GROWFUND_ENV_MODE', 'development');
+define('GROWFUND_ENV_MODE', 'production');
 
 /**
  * Define plugin prefix

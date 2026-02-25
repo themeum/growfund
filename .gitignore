@@ -13,6 +13,7 @@ bundle-analysis.html
 *.zip
 release/
 growfund/
+build/
 
 # IDE files
 .idea/
