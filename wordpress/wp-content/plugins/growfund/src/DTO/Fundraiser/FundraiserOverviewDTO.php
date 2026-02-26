@@ -5,12 +5,15 @@ namespace Growfund\DTO\Fundraiser;
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\CastAttributes\MoneyAttribute;
+use Growfund\DTO\Activity\ActivityResponseDTO;
 use Growfund\DTO\DTO;
 
 class FundraiserOverviewDTO extends DTO
 {
     protected $casts = [
-        'total_amount_received' => MoneyAttribute::class
+        'total_amount_received' => MoneyAttribute::class,
+        'profile' => FundraiserDTO::class,
+        'activity_logs.*' => ActivityResponseDTO::class
     ];
 
     /**
@@ -33,9 +36,9 @@ class FundraiserOverviewDTO extends DTO
      */
     public $total_failed_campaign;
 
-    /** @var \Growfund\DTO\Fundraiser\FundraiserDTO */
+    /** @var FundraiserDTO */
     public $profile;
 
-    /** @var array */
+    /** @var ActivityResponseDTO[] */
     public $activity_logs;
 }

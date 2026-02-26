@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { __ } from '@wordpress/i18n';
+import { type AxiosResponse } from 'axios';
 import { FileEdit } from 'lucide-react';
 import React, { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
@@ -7,23 +8,23 @@ import { useForm } from 'react-hook-form';
 import { Container } from '@/components/layouts/container';
 import { Button } from '@/components/ui/button';
 import {
-    Dialog,
-    DialogCloseButton,
-    DialogContent,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogCloseButton,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
-    UserForm,
-    UserFormAddress,
-    UserFormBasics,
-    UserFormCard,
-    UserFormCardContent,
-    UserFormCardHeader,
-    UserFormPassword,
+  UserForm,
+  UserFormAddress,
+  UserFormBasics,
+  UserFormCard,
+  UserFormCardContent,
+  UserFormCardHeader,
+  UserFormPassword,
 } from '@/components/user-form/user-form';
 import { type Donor, type DonorForm, DonorFormSchema } from '@/features/donors/schemas/donor';
 import { useCreateDonorMutation, useUpdateDonorMutation } from '@/features/donors/services/donor';
@@ -34,6 +35,7 @@ interface ManageDonorDialogProps extends React.PropsWithChildren {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   defaultValues?: Donor;
+  onSaveChanges?: (donor: Donor) => void;
 }
 
 const ManageDonorDialog = ({
@@ -41,6 +43,7 @@ const ManageDonorDialog = ({
   defaultValues,
   isOpen,
   onOpenChange,
+  onSaveChanges,
 }: ManageDonorDialogProps) => {
   const formRef = useRef<HTMLFormElement>(null);
   const isEditMode = isDefined(defaultValues);
@@ -79,24 +82,24 @@ const ManageDonorDialog = ({
               form={form}
               onSubmit={(values) => {
                 if (isEditMode) {
-                  updateDonorMutation.mutate(
-                    {
-                      ...values,
-                      id: defaultValues.id,
+                  const donor = {
+                    ...values,
+                    id: defaultValues.id,
+                  };
+                  updateDonorMutation.mutate(donor, {
+                    onError: createErrorHandler(),
+                    onSuccess() {
+                      onSaveChanges?.(donor as Donor);
+                      onOpenChange(false);
+                      form.reset();
                     },
-                    {
-                      onError: createErrorHandler(),
-                      onSuccess() {
-                        onOpenChange(false);
-                        form.reset();
-                      },
-                    },
-                  );
+                  });
                   return;
                 }
                 createDonorMutation.mutate(values, {
                   onError: createErrorHandler(),
-                  onSuccess() {
+                  onSuccess(response: AxiosResponse<{ id: string }>) {
+                    onSaveChanges?.({ ...values, id: response.data.id } as Donor);
                     onOpenChange(false);
                     form.reset();
                   },

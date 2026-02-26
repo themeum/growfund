@@ -5,6 +5,7 @@ namespace Growfund\DTO\CampaignPost;
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\CastAttributes\DateTimeAttribute;
+use Growfund\DTO\Comment\CommentDTO;
 use Growfund\DTO\DTO;
 use Growfund\DTO\PaginatedCollectionDTO;
 
@@ -51,6 +52,7 @@ class CampaignPostDTO extends DTO {
 
 
     public $casts = [
-        'created_at' => DateTimeAttribute::class
+        'created_at' => DateTimeAttribute::class,
+        'comments.results.*' => CommentDTO::class,
     ];
 }

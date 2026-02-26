@@ -21,6 +21,7 @@ use Growfund\Supports\MediaAttachment;
 use Growfund\Supports\Money;
 use Growfund\Supports\Utils;
 use DateTime;
+use Growfund\DTO\Donation\DonationDonorDTO;
 
 class DonationAnalyticService
 {
@@ -299,47 +300,17 @@ class DonationAnalyticService
     public function get_top_donors(DateTime $start_date, DateTime $end_date)
     {
         $donations_table = Tables::DONATIONS;
-        $users_table = WP::USERS_TABLE;
-        $user_meta_table = WP::USER_META_TABLE;
 
         $query = QueryBuilder::query()
             ->table($donations_table . ' as donations')
             ->select([
                 "COUNT(*) as total_no_of_donations",
-                'SUM(amount) as total_contributions',
+                'SUM(donations.amount) as total_contributions',
                 'donations.user_id',
-                'users.user_email',
-                'users.display_name',
-                'first_name_meta.meta_value as first_name',
-                'last_name_meta.meta_value as last_name',
-                'phone_meta.meta_value as phone',
-                'image_meta.meta_value as image'
-            ])
-            ->join_raw(
-                "{$users_table} as users",
-                "INNER",
-                "donations.user_id = users.ID"
-            )
-            ->join_raw(
-                "{$user_meta_table} as first_name_meta",
-                "LEFT",
-                "first_name_meta.user_id = donations.user_id AND first_name_meta.meta_key = 'first_name'"
-            )
-            ->join_raw(
-                "{$user_meta_table} as last_name_meta",
-                "LEFT",
-                "last_name_meta.user_id = donations.user_id AND last_name_meta.meta_key = 'last_name'"
-            )
-            ->join_raw(
-                "{$user_meta_table} as phone_meta",
-                "LEFT",
-                sprintf("phone_meta.user_id = donations.user_id AND phone_meta.meta_key = '%s'", growfund_with_prefix('phone'))
-            )
-            ->join_raw(
-                "{$user_meta_table} as image_meta",
-                "LEFT",
-                sprintf("image_meta.user_id = donations.user_id AND image_meta.meta_key = '%s'", growfund_with_prefix('image'))
-            )->where('status', '=', DonationStatus::COMPLETED);
+                'donations.email',
+                'COALESCE(donations.user_id, donations.email) as group_key',
+                'donations.user_info',
+            ])->where('status', '=', DonationStatus::COMPLETED);
 
         if (growfund_user()->is_fundraiser()) {
             $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
@@ -347,7 +318,7 @@ class DonationAnalyticService
         }
 
         $query->where_between('DATE(donations.created_at)', $start_date->format(DateTimeFormats::DB_DATE), $end_date->format(DateTimeFormats::DB_DATE))
-            ->group_by('donations.user_id')
+            ->group_by('group_key')
             ->order_by('total_no_of_donations', 'DESC')
             ->order_by('total_contributions', 'DESC')
             ->limit(5);
@@ -358,21 +329,19 @@ class DonationAnalyticService
             return [];
         }
 
-        return Arr::make($top_donors)->map(function ($donor) {
-            if (empty($donor->first_name) && empty($donor->last_name)) {
-                $donor->first_name = $donor->display_name;
-                $donor->last_name = '';
-            }
-            
+        return Arr::make($top_donors)->map(function ($donation) {
+            $user_info = growfund_is_valid_json($donation->user_info) ? json_decode($donation->user_info, true) : [];
+            $donor = DonationDonorDTO::from_array($user_info);
+
             $donor_dto = new DonorDTO();
-            $donor_dto->id = (string) $donor->user_id;
-            $donor_dto->first_name = $donor->first_name;
+            $donor_dto->id = (string) $donation->user_id;
+            $donor_dto->first_name = empty($donor->first_name) && empty($donor->last_name) ? 'Unknown' : $donor->first_name;
             $donor_dto->last_name = $donor->last_name;
-            $donor_dto->email = $donor->user_email;
+            $donor_dto->email = $donation->email ?? $donor->email;
             $donor_dto->phone = $donor->phone;
             $donor_dto->image = !empty($donor->image) ? MediaAttachment::make($donor->image) : null;
-            $donor_dto->total_contributions = $donor->total_contributions;
-            $donor_dto->number_of_contributions = (int) $donor->total_no_of_donations;
+            $donor_dto->total_contributions = $donation->total_contributions;
+            $donor_dto->number_of_contributions = (int) $donation->total_no_of_donations;
 
             return $donor_dto;
         })->toArray();

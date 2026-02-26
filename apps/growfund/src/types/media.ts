@@ -1,6 +1,6 @@
 import { type MediaAttachment } from '@/schemas/media';
 
-type AcceptedMediaTypes = 'image' | 'video' | 'audio' | 'application/pdf';
+type AcceptedMediaTypes = 'image' | 'video' | 'audio' | 'application/pdf' | 'application/zip';
 
 interface MediaArgs {
   title?: string;

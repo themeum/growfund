@@ -60,6 +60,13 @@ const SocialShareProviders = z.enum(['facebook', 'x', 'linkedin', 'whatsapp', 't
 const CampaignSettingsSchema = z.object({
   is_login_required_to_view_campaign_detail: z.boolean().default(false),
   display_contributor_list_publicly: z.boolean().default(false),
+  display_contributor_option: z
+    .enum(['show-amount', 'show-name', 'show-amount-and-name'])
+    .default('show-amount-and-name'),
+  display_contributor_option_order_by: z
+    .enum(['top-and-recent', 'top-only', 'recent-only'])
+    .default('top-and-recent'),
+  display_contributor_option_limit: z.enum(['20', '50', '100', 'all']).default('20'),
   campaign_update_visibility: z
     .enum(['public', 'contributors', 'logged-in-users'])
     .default('public'),
@@ -323,7 +330,6 @@ const AppConfigSchema = z.object({
   [AppConfigKeys.Integrations]: z.array(z.string()).default([]),
   [AppConfigKeys.Branding]: BrandingSettingsSchema.nullish(),
   [AppConfigKeys.Advanced]: AdvancedSettingsSchema.nullish(),
-  [AppConfigKeys.CurrentUser]: UserSchema.nullish(),
   [AppConfigKeys.DonationMode]: z.enum(['0', '1']),
 });
 
@@ -360,6 +366,7 @@ export {
   PDFReceiptSettingsSchema,
   SecuritySettingsSchema,
   UserPermissionsSettingsSchema,
+  UserSchema,
   type AdvancedSettingsForm,
   type AppConfig,
   type BrandingSettingsForm,

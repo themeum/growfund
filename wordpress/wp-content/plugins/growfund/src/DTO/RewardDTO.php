@@ -29,10 +29,14 @@ class RewardDTO extends DTO
         'limit_start_date' => DateTimeAttribute::class,
         'limit_end_date' => DateTimeAttribute::class,
         'estimated_delivery_date' => DateTimeAttribute::class,
+        'items.*' => RewardItemWithQuantityDTO::class
     ];
 
     /** @var string|null */
     public $id;
+
+    /** @var string|null */
+    public $campaign_id;
 
     /** @var string */
     public $title;
@@ -66,7 +70,7 @@ class RewardDTO extends DTO
     /** @var string|null */
     public $limit_end_date;
 
-    /** @var \Growfund\Constants\Reward\RewardType */
+    /** @var value-of<\Growfund\Constants\Reward\RewardType> */
     public $reward_type;
 
     /** @var string|null */
@@ -81,7 +85,7 @@ class RewardDTO extends DTO
     /** @var string|null */
     public $local_pickup_instructions;
 
-    /** @var \Growfund\DTO\RewardItemWithQuantityDTO[] */
+    /** @var RewardItemWithQuantityDTO[] */
     public $items;
 
     /** @var int */
@@ -119,6 +123,7 @@ class RewardDTO extends DTO
     public static function sanitization_rules()
     {
         return [
+            'campaign_id' => Sanitizer::INT,
             'title' => Sanitizer::TEXT,
             'amount' => Sanitizer::MONEY,
             'description' => Sanitizer::TEXTAREA,

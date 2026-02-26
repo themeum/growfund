@@ -8,7 +8,7 @@ import { Image } from '@/components/ui/image';
 import PreviewCard from '@/components/ui/preview-card';
 import { type Reward } from '@/features/campaigns/schemas/reward';
 import RewardSelectionDialog, {
-    RewardSelectionDialogTrigger,
+  RewardSelectionDialogTrigger,
 } from '@/features/pledges/components/dialogs/reward-selection-dialog';
 import { useCurrency } from '@/hooks/use-currency';
 import { cn } from '@/lib/utils';
@@ -33,7 +33,8 @@ const PledgeRewardPreview = ({
     <Box
       className={cn(
         'growfund-mt-3',
-        showError && 'growfund-border growfund-border-border-critical growfund-bg-background-fill-critical-secondary',
+        showError &&
+          'growfund-border growfund-border-border-critical growfund-bg-background-fill-critical-secondary',
       )}
     >
       <BoxContent className="growfund-p-4 growfund-grid growfund-gap-3">
@@ -46,7 +47,9 @@ const PledgeRewardPreview = ({
               className="growfund-rounded-md"
             />
             <div className="growfund-flex growfund-flex-col growfund-gap-4">
-              <div className="growfund-typo-small growfund-font-medium growfund-text-fg-primary">{reward.title}</div>
+              <div className="growfund-typo-small growfund-font-medium growfund-text-fg-primary">
+                {reward.title}
+              </div>
               <h6 className="growfund-typo-h6 growfund-font-semibold growfund-text-fg-secondary">
                 {toCurrency(reward.amount)}
               </h6>
@@ -76,7 +79,7 @@ const PledgeRewardPreview = ({
                   key={index}
                   title={item.title}
                   /* translator: %s: quantity */
-                  subtitle={sprintf(__('Quantity: %s', 'growfund'), 1)}
+                  subtitle={sprintf(__('Quantity: %s', 'growfund'), item.quantity ?? 1)}
                   image={item.image?.url}
                   className="growfund-px-0 growfund-shadow-none"
                 />

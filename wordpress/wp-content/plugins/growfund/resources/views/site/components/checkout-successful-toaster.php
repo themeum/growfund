@@ -102,7 +102,7 @@ defined( 'ABSPATH' ) || exit;
         </div>
         </div>
 
-        <?php if (growfund_support_future_payment($checkout_successful_toaster->pledge->payment->payment_method->name ?? '')) : ?>
+        <?php if (growfund_is_support_future_payment($checkout_successful_toaster->pledge->payment->payment_method->name ?? '')) : ?>
             <div class="growfund-checkout-successful-toaster-funding-note-wrapper">
                 <span><?php growfund_echo_safe_html($checkout_successful_toaster->get_svg_icon('assets/site/icon/check.svg')); ?></span>
                 <span class="growfund-checkout-successful-toaster-funding-note"><?php esc_html_e("You'll be charged only if the campaign is successfully funded.", 'growfund'); ?></span>

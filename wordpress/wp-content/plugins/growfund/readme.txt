@@ -5,7 +5,7 @@ Tags: crowdfunding, donation, fundraising, charity, rewards
 Requires at least: 5.9
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.7
+Stable tag: 1.0.8
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -376,19 +376,29 @@ order details (campaign_id, amount, currency, and transaction ID) to PayPal's AP
 
 == Changelog ==
 
-= 1.0.7 - Feb 16, 2026
+= 1.0.8 - Feb 26, 2026 =
+* Added support for digital products in reward mode
+* Enabled option to display the donor list publicly
+* Improved donation and pledge forms to accept decimal amounts
+* Resolved WP Crowdfunding to Growfund migration issues
+* Corrected tribute card address selection in donation forms
+* Resolved payment gateway setup issues
+* Fixed donor selection when creating manual donations
+* Fixed donation form when tribute is required
+
+= 1.0.7 - Feb 16, 2026 =
 * Added stronger file protection to prevent unauthorized access.
 * Increased security to block harmful scripts.
 * Improved browser-side safety to reduce potential vulnerabilities.
 
-= 1.0.6 - Feb 10, 2026
+= 1.0.6 - Feb 10, 2026 =
 * Introduced the Run Fix option to regenerate missing Growfund pages.
 * The campaign listing shortcode now supports additional parameters.
 * Improved WooCommerce checkout experience for pledges, rewards, and donations.
 * Fixed WooCommerce showing a default 1000 price at checkout.
 * Resolved campaign list loading issues on the archive page.
 
-= 1.0.5 - Feb 5, 2026
+= 1.0.5 - Feb 5, 2026 =
 * Updated checkout constraints
 * Enhanced HTML escaping mechanisms
 * Improved data sanitization methods
@@ -396,10 +406,10 @@ order details (campaign_id, amount, currency, and transaction ID) to PayPal's AP
 * Resolved the script and style enqueue issues
 * Patched SQL security vulnerabilities
 
-= 1.0.4 - Jan 23, 2026
+= 1.0.4 - Jan 23, 2026 =
 * Resolved the payment gateway redirection issue.
 
-= 1.0.3 - Jan 6, 2026
+= 1.0.3 - Jan 6, 2026 =
 * Added a username field to the user registration form.
 * Added username-based login support.
 * Updated the goal step form in the donation mode campaign builder.
@@ -435,13 +445,6 @@ order details (campaign_id, amount, currency, and transaction ID) to PayPal's AP
 * Payment gateway integrations (PayPal)
 * Analytics, reporting, and email notifications
 * WooCommerce support
-
-= 1.0.1 - Nov 21, 2025 =
-* Updated Donation/Pledge action buttons issue
-* Updated media slider in campaign details page
-* Fixed campaign list fatal error
-* Fixed campaign ended issue
-* Fixed video thumbnails issue
 
 == Upgrade Notice ==
 It’s recommended to have a backup of your website before upgrading to a major version of Growfund.

@@ -3,8 +3,6 @@
  * @var Growfund\Views\Components\Comments\EmptyComment $empty_comment
  */
 
-
-
 defined('ABSPATH') || exit;
 ?>
 

@@ -9,6 +9,9 @@ use Growfund\Constants\Comment\CampaignUpdateVisibility;
 use Growfund\Constants\HookNames;
 use Growfund\Constants\Comment\CommentModeration;
 use Growfund\Constants\Comment\CommentVisibility;
+use Growfund\Constants\Contributor\DisplayLimit;
+use Growfund\Constants\Contributor\DisplayOption;
+use Growfund\Constants\Contributor\DisplayOptionOrderBy;
 use Growfund\Core\AppSettings;
 use Growfund\Supports\Option;
 
@@ -54,6 +57,48 @@ class CampaignSettings extends AppSettings
         return isset($this->settings['display_contributor_list_publicly'])
             ? filter_var($this->settings['display_contributor_list_publicly'], FILTER_VALIDATE_BOOLEAN)
             : false;
+    }
+
+    /**
+     * Get contributor display option.
+     * 
+     * @return string Contributor display option.
+     * @since 1.0.8
+     */
+    public function display_contributor_option()
+    {
+        return isset($this->settings['display_contributor_option'])
+            && in_array($this->settings['display_contributor_option'], DisplayOption::get_constant_values(), true)
+                ? $this->settings['display_contributor_option']
+                : DisplayOption::SHOW_AMOUNT_AND_NAME;
+    }
+
+    /**
+     * Get contributor display option order by.
+     * 
+     * @return string Contributor display option order by.
+     * @since 1.0.8
+     */
+    public function display_contributor_option_order_by()
+    {
+        return isset($this->settings['display_contributor_option_order_by'])
+            && in_array($this->settings['display_contributor_option_order_by'], DisplayOptionOrderBy::get_constant_values(), true)
+                ? $this->settings['display_contributor_option_order_by']
+                : DisplayOptionOrderBy::TOP_AND_RECENT;
+    }
+
+    /**
+     * Get contributor display option limit.
+     * 
+     * @return int Contributor display option limit.
+     * @since 1.0.8
+     */
+    public function display_contributor_option_limit()
+    {
+        return isset($this->settings['display_contributor_option_limit']) 
+            && in_array($this->settings['display_contributor_option_limit'], DisplayLimit::get_constant_values(), true)
+                ? $this->settings['display_contributor_option_limit']
+                : DisplayLimit::TWENTY;
     }
 
     /**

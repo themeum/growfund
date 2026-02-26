@@ -5,7 +5,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-
 $growfund_bookmarked_label = __('Bookmarked', 'growfund');
 $growfund_bookmark_label = __('Save for later', 'growfund');
 

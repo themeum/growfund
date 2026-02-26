@@ -6,6 +6,7 @@ defined( 'ABSPATH' ) || exit;
 
 use Growfund\Exceptions\NotFoundException;
 use Exception;
+use WP_Error;
 
 class SiteExceptionHandler
 {

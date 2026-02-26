@@ -11,6 +11,7 @@ use Growfund\Payments\Constants\PaymentGatewayType;
 use Growfund\Payments\Contracts\FuturePaymentContract;
 use Growfund\Payments\DTO\PaymentGatewayDTO;
 use Growfund\Payments\DTO\PaymentMethodDTO;
+use Throwable;
 
 class Payment
 {
@@ -36,7 +37,7 @@ class Payment
      * @return PaymentGatewayDTO[]
      */
     public static function get_woocommerce_manual_payment_methods() {
-        if (!Woocommerce::is_active() || !function_exists('WC')) {
+        if (!Woocommerce::is_active() || !Woocommerce::is_payment_gateways_loaded()) {
             return [];   
         }
 
@@ -93,11 +94,59 @@ class Payment
      */
     public static function is_valid_payment_method($name)
     {
-        $result = array_filter(static::get_installed_payment_methods(), function ($method) use ($name) {
+        return Arr::make(static::get_installed_payment_methods())->some(function ($method) use ($name) {
             return $method->name === $name;
         });
+    }
 
-        return !empty($result) && count($result) > 0;
+    /** 
+     * @return bool
+     */
+    public static function is_active_payment_method($name)
+    {
+        return Arr::make(static::get_active_payment_methods())->some(function ($method) use ($name) {
+            return $method->name === $name;
+        });
+    }
+
+    /** 
+     * @return bool
+     */
+    public static function is_configured_payment_method($name)
+    {
+        if (growfund_payment_engine() === PaymentEngine::WOOCOMMERCE) {
+            return true;
+        }
+
+        if (!static::is_active_payment_method($name)) {
+            return false;
+        }
+
+        if (static::is_manual_payment_method($name)) {
+            $payment_method = Arr::make(static::get_installed_payment_methods())->find(function ($method) use ($name) {
+				return $method->name === $name && $method->type === PaymentGatewayType::MANUAL;
+			});
+
+            if (empty($payment_method) || empty($payment_method->config['instruction'] ?? '')) {
+                return false;
+            }
+
+            return true;
+        }
+
+        $payment_gateway = growfund_payment_gateway($name, false);
+
+        if (empty($payment_gateway)) {
+            return false;
+        }
+
+        try {
+            return $payment_gateway->is_configured() ?? false;
+        } catch (Exception) {
+            return false;
+        } catch (Throwable) {
+            return false;
+        }
     }
 
     /** 
@@ -105,13 +154,9 @@ class Payment
      */
     public static function is_manual_payment_method($name)
     {
-        foreach (static::get_installed_payment_methods() as $payment_method) {
-            if ($payment_method->name === $name && $payment_method->type === PaymentGatewayType::MANUAL) {
-                return true;
-            }
-        }
-
-        return false;
+        return Arr::make(static::get_installed_payment_methods())->some(function ($method) use ($name) {
+            return $method->name === $name && $method->type === PaymentGatewayType::MANUAL;
+        });
     }
 
     /**
@@ -163,17 +208,21 @@ class Payment
 	 * Check if a payment gateway supports future payments
 	 *
 	 * @param string $name The name of the payment gateway
-	 * @return bool True if the payment gateway supports future payments, false otherwise
+	 * @return bool Returns true if the resolved gateway is an instance of
+     *              FuturePaymentContract. Returns false if:
+     *              - The name is empty,
+     *              - The gateway cannot be resolved,
+     *              - The gateway does not implement FuturePaymentContract.
 	 */
-    public static function support_future_payment(string $name)
+    public static function is_support_future_payment(string $name)
     {
         if (empty($name)) {
             return false;
         }
 
-        try {
-            $payment_gateway = growfund_payment_gateway($name);
-        } catch (Exception $error) {
+        $payment_gateway = growfund_payment_gateway($name, false);
+
+        if (empty($payment_gateway)) {
             return false;
         }
 

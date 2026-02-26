@@ -5,6 +5,7 @@ namespace Growfund\Supports;
 defined( 'ABSPATH' ) || exit;
 
 use Exception;
+use Growfund\Constants\HookNames;
 use Growfund\Constants\OptionKeys;
 use Growfund\Payments\Constants\PaymentGatewayType;
 use Growfund\Payments\DTO\PaymentMethodDTO;
@@ -18,15 +19,66 @@ class Woocommerce
     const CHECKOUT_PAGE_STATUS = 'publish';
 
     protected static $product_id = null;
+
+    protected static $is_active = false;
     
+    /**
+     * @return bool
+     */
     public static function is_active()
     {
-        if (is_plugin_active('woocommerce/woocommerce.php')) {
+        if (static::$is_active) {
+            return true;
+        }
+
+        if (is_plugin_active('woocommerce/woocommerce.php') && static::is_woocommerce_loaded()) {
+            static::$is_active = true;
+
             return true;
         }
 
         return false;
     }
+
+    /**
+     * @return bool
+     */
+    public static function is_woocommerce_loaded()
+    {
+        if (did_action('woocommerce_loaded')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public static function is_cart_loaded()
+    {
+        if (!did_action(HookNames::WP_LOADED) || !function_exists('WC') || !WC()->cart) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @return bool
+     */
+    public static function is_payment_gateways_loaded()
+    {
+        if (!function_exists('WC') || !WC()->payment_gateways) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @return int
+     */
     public static function get_growfund_product_id()
     {
         if (!static::is_active()) {
@@ -56,6 +108,10 @@ class Woocommerce
         return 'growfund-internal';
     }
 
+    /**
+     * @return int
+     * @throws Exception
+     */
     public static function create_growfund_product()
     {
         if (!static::is_active() || !class_exists('WC_Product') || !class_exists('WC_Product_Simple')) {
@@ -87,9 +143,13 @@ class Woocommerce
     }
 
 
+    /**
+     * @param int $contribution_id
+     * @return bool
+     */
     public static function set_cart_item(int $contribution_id)
     {
-        if (!static::is_active()) {
+        if (!static::is_active() || !static::is_cart_loaded()) {
             return false;
         }
 
@@ -120,8 +180,15 @@ class Woocommerce
         return !empty($is_added);
     }
 
+    /**
+     * @return void
+     */
     public static function empty_cart()
     {
+        if (!static::is_active() || !static::is_cart_loaded()) {
+            return;
+        }
+
         if (static::has_growfund_product_in_cart()) {
             $contribution_id = static::get_contribution_id_from_cart();
 
@@ -136,7 +203,7 @@ class Woocommerce
             }
         }
 
-        if (function_exists('WC')) {
+        if (static::is_cart_loaded()) {
 			WC()->cart->empty_cart();
         }
     }
@@ -167,11 +234,15 @@ class Woocommerce
      */
 	public static function has_growfund_product_in_cart($cart = null)
     {
+        if (!static::is_active() || !static::is_cart_loaded()) {
+            return false;
+        }
+
         $cart_items = [];
 
         if (empty($cart)) {
             try {
-				$cart_items = function_exists('WC') ? WC()->cart->get_cart() : [];
+				$cart_items = static::is_cart_loaded() ? WC()->cart->get_cart() : [];
 			} catch (Exception $e) {
 				$cart_items = [];
 			}
@@ -195,6 +266,10 @@ class Woocommerce
      */
     public static function has_growfund_product_in_order($order) 
     {
+        if (!static::is_active()) {
+            return false;
+        }
+
         if (is_bool($order)) {
             return false;
         }
@@ -225,6 +300,10 @@ class Woocommerce
      */
     public static function get_contribution_id_from_order($order) 
     {
+        if (!static::is_active()) {
+            return 0;
+        }
+
         if (is_bool($order)) {
             return 0;
         }
@@ -250,11 +329,15 @@ class Woocommerce
      */
 	public static function get_contribution_id_from_cart($cart = null)
     {
+        if (!static::is_active()) {
+            return 0;
+        }
+
         $cart_items = [];
 
         if (empty($cart)) {
             try {
-				$cart_items = function_exists('WC') ? WC()->cart->get_cart() : [];
+				$cart_items = static::is_cart_loaded() ? WC()->cart->get_cart() : [];
 			} catch (Exception $e) {
 				$cart_items = [];
 			}
@@ -274,12 +357,16 @@ class Woocommerce
      * @return string
      */
     public static function get_transaction_id_from_order($order) {
+        if (!static::is_active()) {
+            return '';
+        }
+
         if (is_bool($order)) {
             return '';
         }
 
         if (is_int($order)) {
-            $order = function_exists('wc_get_order') ? wc_get_order($order) : null;
+            $order = function_exists('wc_get_order') ? wc_get_order($order) : '';
         }
 
         if (empty($order) || !static::has_growfund_product_in_order($order)) {
@@ -294,6 +381,10 @@ class Woocommerce
      * @return bool
      */
     public static function is_growfund_product($product) {
+        if (!static::is_active()) {
+            return false;
+        }
+
         if (empty($product)) {
             return false;
         }
@@ -314,6 +405,10 @@ class Woocommerce
      * @return PaymentMethodDTO|null
      */
     public static function get_payment_method_from_order($order) {
+        if (!static::is_active()) {
+            return null;
+        }
+
 		if (is_bool($order)) {
             return null;
         }
@@ -338,14 +433,16 @@ class Woocommerce
 
     /**
      * Check if the woocommerce checkout page is active
+     * 
+     * @return bool
      */
     public static function has_checkout_page()
     {
-        if (!static::is_active()) {
+        if (!static::is_active() || !function_exists('wc_get_page_id')) {
             return false;
         }
 
-		$woocommerce_checkout_page_id = function_exists('wc_get_page_id') ? wc_get_page_id('checkout') : 0;
+		$woocommerce_checkout_page_id = wc_get_page_id('checkout');
 
 		return $woocommerce_checkout_page_id > 0 &&  get_post_status($woocommerce_checkout_page_id) === static::CHECKOUT_PAGE_STATUS;
 	}

@@ -20,6 +20,7 @@ use Growfund\Exceptions\ValidationException;
 use Growfund\Payments\Contracts\FuturePaymentContract;
 use Growfund\Payments\DTO\CustomerDTO;
 use Growfund\Payments\DTO\PaymentPayloadDTO;
+use Growfund\Payments\DTO\PaymentResponseDTO;
 use Growfund\Payments\DTO\SavePaymentMethodPayloadDTO;
 use Growfund\Sanitizer;
 use Growfund\Supports\Payment;
@@ -119,7 +120,7 @@ class CheckoutService {
 
         growfund_flash_set_message('contribution_confirmed', ['uid' => $pledge->uid]);
 
-        if ($response->is_redirect) {
+        if ($response instanceof PaymentResponseDTO && $response->is_redirect) {
             return $response->redirect_url;
         }
 
@@ -147,16 +148,15 @@ class CheckoutService {
             return true;
         }
 
-        try {
-            $payment_gateway = growfund_payment_gateway($payment_method_name);
-        } catch (Exception $error) {
+        $payment_gateway = growfund_payment_gateway($payment_method_name, false);
+        
+        if (empty($payment_gateway)) {
             throw ValidationException::with_errors([
-                /* translators: %s: error message */
-                'payment_method' => sprintf(esc_html__('Payment gateway configuration error: %s', 'growfund'), esc_html($error->getMessage()))
+                'payment_method' => esc_html__('Payment gateway configuration error', 'growfund')
             ]);
         }
 
-        if (!$payment_gateway instanceof FuturePaymentContract) {
+        if (!Payment::is_support_future_payment($payment_method_name)) {
             throw ValidationException::with_errors([
                 'payment_method' => esc_html__('This payment gateway does not support future payments', 'growfund')
             ]);
@@ -261,7 +261,7 @@ class CheckoutService {
 
         growfund_flash_set_message('contribution_confirmed', ['uid' => $donation->uid]);
 
-        if ($response->is_redirect) {
+        if ($response instanceof PaymentResponseDTO && $response->is_redirect) {
             return $response->redirect_url;
         }
 
@@ -289,13 +289,12 @@ class CheckoutService {
             return true;
         }
 
-        try {
-            $payment_gateway = growfund_payment_gateway($payment_method_name);
-        } catch (Exception $error) {
+        $payment_gateway = growfund_payment_gateway($payment_method_name, false);
+        
+        if (empty($payment_gateway)) {
             throw ValidationException::with_errors([
-				/* translators: %s: error message */
-				'payment_method' => sprintf(esc_html__('Payment gateway configuration error: %s', 'growfund'), esc_html($error->getMessage()))
-			]);
+                'payment_method' => esc_html__('Payment gateway configuration error', 'growfund')
+            ]);
         }
 
         $campaign_url = growfund_campaign_url((int) $donation->campaign->id);

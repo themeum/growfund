@@ -301,4 +301,25 @@ class Utils
     public static function is_react_site() {
         return static::is_dashboard_route() || static::is_public_route();
     }
+
+    public static function generate_digital_reward_download_url(string $pledge_uid, string $reward_item_id, int $expires_in_seconds = 300) {
+        $expires = (int) strtotime(Date::current_sql_safe()) + $expires_in_seconds;
+        $data = growfund_user()->get_id() . '|' . $pledge_uid . '|' . $reward_item_id . '|' . $expires;
+
+        $has_key = Option::get(OptionKeys::DOWNLOAD_HASH_KEY);
+
+        if (empty($has_key)) {
+            $has_key = growfund_uuid();
+            Option::delete(OptionKeys::DOWNLOAD_HASH_KEY);
+            Option::add(OptionKeys::DOWNLOAD_HASH_KEY, $has_key);
+        }
+
+        $signature = hash_hmac(
+            'sha256',
+            $data,
+            $has_key
+		);
+
+        return static::get_site_url("pledges/$pledge_uid/reward-items/$reward_item_id/download?signature=$signature&expires=$expires&user=" . growfund_user()->get_id());
+    }
 }

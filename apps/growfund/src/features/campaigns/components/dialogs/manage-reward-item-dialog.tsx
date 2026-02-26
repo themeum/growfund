@@ -1,55 +1,55 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { __ } from '@wordpress/i18n';
-import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { File, ShoppingBag } from 'lucide-react';
+import { useEffect } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
 
+import FileUploaderField from '@/components/form/file-uploader-field';
 import { MediaField } from '@/components/form/media-field';
+import { SelectField } from '@/components/form/select-field';
 import { TextField } from '@/components/form/text-field';
 import { Button } from '@/components/ui/button';
 import {
-    Dialog,
-    DialogCloseButton,
-    DialogContent,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogCloseButton,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { Form } from '@/components/ui/form';
 import { useCampaignBuilderContext } from '@/features/campaigns/contexts/campaign-builder';
 import {
-    RewardItemFormSchema,
-    type RewardItem,
-    type RewardItemForm,
+  RewardItemBaseSchema,
+  RewardItemFormSchema,
+  type RewardItem,
+  type RewardItemForm,
 } from '@/features/campaigns/schemas/reward-item';
 import {
-    useCreateRewardItemMutation,
-    useUpdateRewardItemMutation,
+  useCreateRewardItemMutation,
+  useUpdateRewardItemMutation,
 } from '@/features/campaigns/services/reward-item';
 import { useFormErrorHandler } from '@/hooks/use-form-error-handler';
 import { useDialogCloseMiddleware } from '@/hooks/use-wp-media';
+import { getDefaults } from '@/lib/zod';
 import { isDefined } from '@/utils';
 import { MediaType } from '@/utils/media';
 
 const ManageRewardItemDialog = ({
   defaultValues,
-  children,
+  open,
+  onOpenChange,
+  rewardItemType,
 }: {
   defaultValues?: RewardItem;
-  children: React.ReactNode;
+  rewardItemType?: 'digital' | 'physical';
+  open?: boolean;
+  onOpenChange: (open: boolean) => void;
 }) => {
-  const [open, setOpen] = useState(false);
   const form = useForm<RewardItemForm>({
     resolver: zodResolver(RewardItemFormSchema),
+    defaultValues: isDefined(defaultValues) ? defaultValues : getDefaults(RewardItemBaseSchema),
   });
-
-  useEffect(() => {
-    if (!isDefined(defaultValues)) return;
-    form.reset.call(null, {
-      title: defaultValues.title,
-      image: defaultValues.image ?? undefined,
-    });
-  }, [defaultValues, form.reset]);
 
   const { campaignId } = useCampaignBuilderContext();
 
@@ -60,14 +60,48 @@ const ManageRewardItemDialog = ({
   const { createErrorHandler } = useFormErrorHandler(form);
 
   const isEditMode = isDefined(defaultValues);
+  const assetType = useWatch({ control: form.control, name: 'asset_type' });
+
+  useEffect(() => {
+    if (!open) return;
+    if (isEditMode) {
+      form.reset({
+        ...defaultValues,
+      });
+    } else {
+      form.reset({
+        ...getDefaults(RewardItemBaseSchema),
+        type: rewardItemType,
+        asset_type: 'file',
+      });
+    }
+  }, [open, isEditMode, defaultValues, rewardItemType, form]);
+
+  useEffect(() => {
+    if (assetType === 'url') {
+      form.setValue('asset', undefined);
+    }
+
+    if (assetType === 'file') {
+      form.setValue('asset_url', '');
+    }
+  }, [assetType, form]);
 
   return (
-    <Dialog open={open} onOpenChange={applyMiddleware(setOpen)}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+    <Dialog open={open} onOpenChange={applyMiddleware(onOpenChange)}>
       <Form {...form}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{__('Add Item', 'growfund')}</DialogTitle>
+            <DialogTitle>
+              <div className="growfund-flex growfund-gap-3 growfund-items-center">
+                {rewardItemType === 'digital' ? (
+                  <File className="growfund-size-5" />
+                ) : (
+                  <ShoppingBag className="growfund-size-5" />
+                )}
+                <span>{isEditMode ? __('Edit Item', 'growfund') : __('Add Item', 'growfund')}</span>
+              </div>
+            </DialogTitle>
             <DialogCloseButton className="growfund-size-6" />
           </DialogHeader>
           <form
@@ -79,11 +113,15 @@ const ManageRewardItemDialog = ({
 
                 if (isEditMode) {
                   updateRewardItemMutation.mutate(
-                    { ...values, campaign_id: campaignId, id: defaultValues.id },
+                    {
+                      ...values,
+                      campaign_id: campaignId,
+                      id: defaultValues.id,
+                    },
                     {
                       onError: createErrorHandler(),
                       onSuccess: () => {
-                        setOpen(false);
+                        onOpenChange(false);
                         form.reset();
                       },
                     },
@@ -95,7 +133,7 @@ const ManageRewardItemDialog = ({
                   {
                     onError: createErrorHandler(),
                     onSuccess: () => {
-                      setOpen(false);
+                      onOpenChange(false);
                       form.reset();
                     },
                   },
@@ -120,12 +158,44 @@ const ManageRewardItemDialog = ({
                 label={__('Image', 'growfund')}
                 accept={[MediaType.IMAGES]}
               />
+              {rewardItemType === 'digital' && (
+                <>
+                  <SelectField
+                    control={form.control}
+                    name="asset_type"
+                    label={__('Asset Type', 'growfund')}
+                    options={[
+                      { label: __('URL', 'growfund'), value: 'url' },
+                      { label: __('File', 'growfund'), value: 'file' },
+                    ]}
+                  />
+
+                  {assetType === 'file' && (
+                    <FileUploaderField
+                      control={form.control}
+                      name="asset"
+                      label={__('File', 'growfund')}
+                      uploadButtonLabel={__('Upload file', 'growfund')}
+                    />
+                  )}
+
+                  {assetType === 'url' && (
+                    <TextField
+                      control={form.control}
+                      name="asset_url"
+                      label={__('URL', 'growfund')}
+                      placeholder="https://example.com/file.zip"
+                    />
+                  )}
+                </>
+              )}
             </div>
+
             <DialogFooter>
               <Button
                 variant="outline"
                 onClick={() => {
-                  setOpen(false);
+                  onOpenChange(false);
                 }}
               >
                 {__('Cancel', 'growfund')}

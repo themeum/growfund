@@ -1,6 +1,6 @@
 <?php
 
-/** @var Growfund\Views\Components\Campaign\Tabs\UpdateDetail $update_detail */
+/** @var \Growfund\Views\Components\CampaignUpdate\UpdateDetail $update_detail */
 
 use Growfund\Constants\DateTimeFormats;
 use Growfund\Views\Components\Comments\CommentContainer;

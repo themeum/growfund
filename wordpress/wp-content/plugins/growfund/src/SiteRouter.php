@@ -274,6 +274,10 @@ class SiteRouter
             $request = static::get_request_instance();
 
             $params = static::extract_params($route->pattern);
+
+            $request->set_attributes($params);
+            $params = array_values($params);
+
             array_unshift($params, $request);
 
             $request_method = wp_unslash(growfund_input_server('REQUEST_METHOD', ''));
@@ -350,7 +354,8 @@ class SiteRouter
 
         foreach ($pattern_parts as $i => $part) {
             if (preg_match('#^{(.+)}$#', $part)) {
-                $params[] = isset($url_parts[$i]) ? $url_parts[$i] : null;
+                $param_key = trim($part, '{}');
+                $params[$param_key] = isset($url_parts[$i]) ? $url_parts[$i] : null;
             }
         }
 

@@ -74,7 +74,9 @@ const TributeCard = ({ onRemove, onEdit }: TributeCardProps) => {
           </div>
           <>
             <div className="growfund-flex growfund-flex-col growfund-mb-2">
-              <span className="growfund-typo-tiny growfund-text-fg-secondary">{tribute.tribute_type}</span>
+              <span className="growfund-typo-tiny growfund-text-fg-secondary">
+                {tribute.tribute_type}
+              </span>
               <span className="growfund-font-medium growfund-text-fg-special-3 growfund-text-base">
                 {sprintf('%s %s', tribute.tribute_salutation, tribute.tribute_to)}
               </span>
@@ -122,7 +124,9 @@ const TributeCard = ({ onRemove, onEdit }: TributeCardProps) => {
               {fullAddress && (
                 <div className="growfund-flex growfund-gap-2">
                   <MapPin className="growfund-size-4 growfund-text-icon-secondary growfund-flex-shrink-0" />
-                  <p className="growfund-text-fg-secondary growfund-font-medium growfund-typo-small">{fullAddress}</p>
+                  <p className="growfund-text-fg-secondary growfund-font-medium growfund-typo-small">
+                    {fullAddress}
+                  </p>
                 </div>
               )}
             </div>

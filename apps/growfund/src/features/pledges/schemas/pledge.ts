@@ -56,6 +56,7 @@ type PledgePayment = z.infer<typeof PledgePaymentSchema>;
 
 const BaseSchema = z.object({
   id: z.coerce.string(),
+  uid: z.coerce.string(),
   status: PledgeStatusSchema.default('pending'),
   pledge_option: PledgeOptionSchema.nullish(),
   notes: z.string().nullish(),

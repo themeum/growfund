@@ -10,8 +10,10 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import CreateRewardItem from '@/features/campaigns/components/dialogs/manage-reward-dialog/create-reward-item';
 import SelectExistingItem from '@/features/campaigns/components/dialogs/manage-reward-dialog/select-existing-item';
 import {
-    type RewardItemForm,
-    RewardItemFormSchema,
+  type RewardItem,
+  RewardItemBaseSchema,
+  type RewardItemForm,
+  RewardItemFormSchema,
 } from '@/features/campaigns/schemas/reward-item';
 import { cn } from '@/lib/utils';
 import { getDefaults } from '@/lib/zod';
@@ -21,7 +23,9 @@ interface AddRewardItemProps {
   onOpenChange: (open: boolean) => void;
   mode?: 'create' | 'edit';
   defaultValues?: RewardItemForm;
+  rewardItems: RewardItem[];
   selectedItems?: { id: string; quantity: number }[];
+  rewardType?: 'digital-goods' | 'physical-goods';
 }
 
 const AddRewardItem = ({
@@ -29,12 +33,14 @@ const AddRewardItem = ({
   onSave,
   onOpenChange,
   selectedItems,
+  rewardType,
+  rewardItems,
 }: AddRewardItemProps) => {
   const [addType, setAddType] = useState<'existing' | 'new'>('existing');
 
   const form = useForm<RewardItemForm>({
     resolver: zodResolver(RewardItemFormSchema),
-    defaultValues: getDefaults(RewardItemFormSchema),
+    defaultValues: getDefaults(RewardItemBaseSchema),
   });
 
   return (
@@ -64,6 +70,7 @@ const AddRewardItem = ({
               onSave(values);
               onOpenChange(false);
             }}
+            rewardType={rewardType}
             onCancel={() => {
               onOpenChange(false);
             }}
@@ -72,6 +79,7 @@ const AddRewardItem = ({
         ) : (
           <SelectExistingItem
             selectedItems={selectedItems ?? []}
+            rewardItems={rewardItems}
             onSave={(values) => {
               onSave(values);
               onOpenChange(false);

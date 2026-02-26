@@ -419,7 +419,7 @@ if (!function_exists('growfund_get_all_capabilities')) {
      */
     function growfund_get_all_capabilities($role = null)
     {
-        $capabilities = require GROWFUND_DIR_PATH . '/configs/capabilities.php';
+        $capabilities = require GROWFUND_DIR_PATH . 'configs/capabilities.php';
 
         $applicable_capabilities = [];
 
@@ -592,11 +592,22 @@ if (!function_exists('growfund_payment_gateway')) {
      * Get the instance of the payment method
      *
      * @param string $name
-     * @return \Growfund\Payments\Contracts\PaymentGatewayContract
+     * @param bool $throwable
+     * @return \Growfund\Payments\Contracts\PaymentGatewayContract|\Growfund\Payments\Contracts\FuturePaymentContract|\Growfund\Payments\Contracts\PaymentConfigurationContract|null
      */
-    function growfund_payment_gateway(string $name)
+    function growfund_payment_gateway(string $name, bool $throwable = true)
     {
-        return growfund_app()->make($name);
+        if ($throwable) {
+            return growfund_app()->make($name);
+        }
+
+        try {
+            return growfund_app()->make($name);
+        } catch (Exception) {
+            return null;
+        } catch (Throwable) {
+            return null;
+        }
     }
 }
 
@@ -1153,7 +1164,7 @@ if (!function_exists('growfund_is_wc_checkout')) {
     }
 }
 
-if (!function_exists('growfund_support_future_payment')) {
+if (!function_exists('growfund_is_support_future_payment')) {
 	/**
 	 * Check if the given payment method supports future payments.
 	 *
@@ -1162,9 +1173,9 @@ if (!function_exists('growfund_support_future_payment')) {
 	 * @param string $payment_method The name of the payment method.
 	 * @return bool True if the payment method supports future payments, false otherwise.
 	 */
-    function growfund_support_future_payment($payment_method)
+    function growfund_is_support_future_payment($payment_method)
     {
-        return Payment::support_future_payment($payment_method);
+        return Payment::is_support_future_payment($payment_method);
     }
 }
 
@@ -1258,5 +1269,19 @@ if (!function_exists('growfund_error_log')) {
         if (growfund_is_dev_mode() && defined('WP_DEBUG_LOG') && WP_DEBUG_LOG) {
             error_log($message); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- logging in dev mode
         }
+    }
+}
+
+if (!function_exists('growfund_is_valid_url')) {
+    function growfund_is_valid_url($url) {
+        if (!preg_match('/^https?:\/\//', $url)) {
+			return false;
+		}
+
+		if (!filter_var($url, FILTER_VALIDATE_URL)) {
+			return false;
+		}
+
+		return true;
     }
 }

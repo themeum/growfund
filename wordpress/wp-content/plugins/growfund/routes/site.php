@@ -8,6 +8,7 @@ use Growfund\Controllers\Site\CheckoutController;
 use Growfund\Controllers\Site\DonorController;
 use Growfund\Controllers\Site\PaymentController;
 use Growfund\Controllers\Site\GuestController;
+use Growfund\Controllers\Site\RewardItemController;
 use Growfund\Controllers\Site\WebhookController;
 use Growfund\Middlewares\Site\BackerMiddleware;
 use Growfund\Middlewares\Site\DonorMiddleware;
@@ -42,5 +43,11 @@ SiteRouter::post('webhook/payment', [WebhookController::class, 'handle']);
 
 // public routes
 SiteRouter::get('public', [GuestController::class, 'show'])->name('public');
+
+// Download Links
+SiteRouter::get('pledges/{uid}/reward-items/{reward_item_id}/download', [RewardItemController::class, 'download_reward_item'])
+    ->where('uid', '[0-9a-zA-Z\-_.]+')
+    ->where('reward_item_id', '[\d]+')
+    ->name('download.reward-item');
 
 SiteRouter::register();

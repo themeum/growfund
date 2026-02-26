@@ -3,7 +3,6 @@
  * @var Growfund\Views\Components\Campaign\CampaignCard $campaign_card
  */
 
-
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Supports\CampaignGoal;

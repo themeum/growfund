@@ -9,7 +9,6 @@ use Growfund\CastAttributes\BooleanAttribute;
 use Growfund\CastAttributes\DateTimeAttribute;
 use Growfund\CastAttributes\MoneyAttribute;
 use Growfund\DTO\DTO;
-use Growfund\DTO\User\UserDTO;
 use Growfund\Payments\DTO\PaymentMethodDTO;
 
 /**
@@ -28,7 +27,7 @@ class DonationDTO extends DTO
         'updated_at' => DateTimeAttribute::class,
         'campaign' => DonationCampaignDTO::class,
         'fund' => DonationFundDTO::class,
-        'donor' => UserDTO::class,
+        'donor' => DonationDonorDTO::class,
         'payment_method' => PaymentMethodDTO::class
     ];
 
@@ -44,7 +43,7 @@ class DonationDTO extends DTO
     /** @var DonationFundDTO|null */
     public $fund;
 
-    /** @var UserDTO|null */
+    /** @var DonationDonorDTO|null */
     public $donor;
 
     /** @var int */

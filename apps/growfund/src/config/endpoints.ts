@@ -82,6 +82,8 @@ const endpoints = {
   EMPTY_PLEDGES_TRASH: '/pledges/empty-trash',
   CHARGE_BACKER: (pledgeId: string) => `/pledges/${pledgeId}/charge-backer`,
   RETRY_FAILED_PAYMENT: (pledgeId: string) => `/pledges/${pledgeId}/retry-failed-payment`,
+  REWARD_ITEM_DOWNLOAD: (uid: string, id: string | number) =>
+    `/pledges/${uid}/reward-items/${id}/download`,
 
   // Pledge Timelines endpoints
   PLEDGE_TIMELINES: (pledgeId: string) => `/pledges/${pledgeId}/timelines`,

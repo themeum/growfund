@@ -629,6 +629,8 @@ class QueryBuilder
      */
     public function count(string $column = '*')
     {
+        $this->clear_select();
+        $this->clear_order_by();
         $this->select(["COUNT({$column}) as growfund_total_count_value"]);
         $sql = $this->db->prepare($this->build_query(), $this->bindings);
         $row = $this->db->get_row($sql);
@@ -656,6 +658,7 @@ class QueryBuilder
             'or_having',
             'limit',
             'offset',
+            'order_by',
         ];
 
         if (!is_array($clauses)) {
@@ -795,6 +798,17 @@ class QueryBuilder
     }
 
     /**
+     * Clear the ORDER BY clauses.
+     *
+     * @return static
+     */
+    protected function clear_order_by()
+    {
+        $this->order_by_clauses = [];
+        return $this;
+    }
+
+    /**
      * Get the overall count of the query.
      *
      * @param string $column
@@ -814,7 +828,8 @@ class QueryBuilder
             'having',
             'or_having',
             'limit',
-            'offset'
+            'offset',
+            'order_by',
         ]);
 
         $cloned->select(["COUNT({$column}) as growfund_overall_count_value"]);

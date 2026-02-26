@@ -1,9 +1,11 @@
 import { DragHandleDots2Icon, Pencil2Icon } from '@radix-ui/react-icons';
 import { __, sprintf } from '@wordpress/i18n';
 import { Plus, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useFieldArray, useFormContext, useWatch } from 'react-hook-form';
 
+import digitalThumb from '@/assets/images/digital-thumb.svg';
+import { SelectField } from '@/components/form/select-field';
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import { Image } from '@/components/ui/image';
@@ -61,9 +63,12 @@ export const SingleRewardItem = ({
           alt={item.title}
           className="growfund-size-14 growfund-shrink-0"
           fit="cover"
+          fallbackSrc={item.type === 'digital' ? digitalThumb : undefined}
         />
         <div className="growfund-grid growfund-gap-2">
-          <p className="growfund-typo-small growfund-font-medium growfund-text-fg-primary">{item.title}</p>
+          <p className="growfund-typo-small growfund-font-medium growfund-text-fg-primary">
+            {item.title}
+          </p>
           <div className="growfund-min-h-9">
             <span className="growfund-typo-tiny growfund-text-fg-muted growfund-block group-hover/item:growfund-hidden">
               {/* translators: %s: reward item's quantity */}
@@ -127,16 +132,58 @@ const RewardItemsSelection = () => {
   });
 
   const itemsError = form.getFieldState('items').error;
+  const rewardType = useWatch({
+    control: form.control,
+    name: 'reward_type',
+  });
+
+  const filteredRewardItems = useMemo(() => {
+    return rewardItems.filter((item) => {
+      switch (rewardType) {
+        case 'digital-goods':
+          return item.type === 'digital';
+        case 'physical-goods':
+          return item.type === 'physical';
+        default:
+          return true;
+      }
+    });
+  }, [rewardItems, rewardType]);
+
+  const reward_type = useWatch({ control: form.control, name: 'reward_type' });
 
   return (
     <div className="growfund-space-y-2">
       <Box
         className={cn(
           'growfund-p-4 growfund-space-y-3',
-          !!itemsError && 'growfund-border-border-critical growfund-bg-background-fill-critical-secondary',
+          !!itemsError &&
+            'growfund-border-border-critical growfund-bg-background-fill-critical-secondary',
         )}
       >
-        <p className="growfund-typo-small growfund-font-medium growfund-text-fg-primary">{__('Items', 'growfund')}</p>
+        <SelectField
+          control={form.control}
+          name="reward_type"
+          label={__('Backers Receive', 'growfund')}
+          options={[
+            {
+              label: __('Only Physical Goods', 'growfund'),
+              value: 'physical-goods',
+            },
+            {
+              label: __('Only Digital Goods', 'growfund'),
+              value: 'digital-goods',
+            },
+            {
+              label: __('Both Physical & Digital goods', 'growfund'),
+              value: 'physical-and-digital-goods',
+            },
+          ]}
+        />
+        <p className="growfund-typo-small growfund-font-medium growfund-text-fg-primary">
+          {__('Items', 'growfund')}
+        </p>
+
         <div className="growfund-grid growfund-gap-3">
           <SortableContainer
             items={controlledFields}
@@ -157,6 +204,7 @@ const RewardItemsSelection = () => {
               if (!rewardItem) {
                 return null;
               }
+
               return (
                 <SortableItem id={item.id} key={item.id}>
                   <SingleRewardItem
@@ -184,6 +232,12 @@ const RewardItemsSelection = () => {
                 quantity: value.quantity,
               });
             }}
+            rewardType={
+              reward_type !== 'physical-and-digital-goods'
+                ? (rewardType as 'digital-goods' | 'physical-goods')
+                : undefined
+            }
+            rewardItems={filteredRewardItems}
           />
         ) : (
           <Button

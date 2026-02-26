@@ -1,4 +1,4 @@
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import { useMemo, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
@@ -31,7 +31,14 @@ const DonorSelectionCard = () => {
 
   return (
     <>
-      <ManageDonorDialog isOpen={open} onOpenChange={setOpen} defaultValues={donor} />
+      <ManageDonorDialog
+        isOpen={open}
+        onOpenChange={setOpen}
+        defaultValues={donor}
+        onSaveChanges={(donor) => {
+          form.setValue('user_id', donor.id);
+        }}
+      />
 
       <Box className="growfund-group/search">
         {!isDefined(donor) && (
@@ -45,7 +52,6 @@ const DonorSelectionCard = () => {
                 donorsQuery.data?.results
                   ? donorsQuery.data.results.map((user) => ({
                       id: user.id,
-                      name: sprintf('%s %s', user.first_name, user.last_name),
                       email: user.email,
                       image: user.image,
                       first_name: user.first_name,

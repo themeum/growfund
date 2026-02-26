@@ -7,6 +7,12 @@ defined( 'ABSPATH' ) || exit;
 class WC
 {
     /**
+     * Table name of the `woocommerce_order_items` database table
+     * @var string
+     */
+    const ORDER_ITEM = 'woocommerce_order_items';
+
+     /**
      * Table name of the `woocommerce_order_itemmeta` database table
      * @var string
      */

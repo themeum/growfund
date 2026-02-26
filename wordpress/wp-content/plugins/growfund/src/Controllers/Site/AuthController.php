@@ -102,7 +102,7 @@ class AuthController
         
         $redirect_to = $request->get_string('redirect_to');
 
-        if (!empty($redirect_to) && wc_is_valid_url($redirect_to)) {
+        if (!empty($redirect_to) && growfund_is_valid_url($redirect_to)) {
             growfund_redirect($redirect_to);
         }
 

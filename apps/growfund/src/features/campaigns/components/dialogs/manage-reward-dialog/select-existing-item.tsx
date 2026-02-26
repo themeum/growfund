@@ -7,7 +7,7 @@ import { SelectField } from '@/components/form/select-field';
 import { TextField } from '@/components/form/text-field';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
-import { useCampaignReward } from '@/features/campaigns/contexts/campaign-reward';
+import { type RewardItem } from '@/features/campaigns/schemas/reward-item';
 
 const FormSchema = z.object({
   id: z.string({ message: __('Reward item is required', 'growfund') }),
@@ -18,13 +18,13 @@ const SelectExistingItem = ({
   selectedItems,
   onSave,
   onCancel,
+  rewardItems,
 }: {
   selectedItems: { id: string; quantity: number }[];
+  rewardItems: RewardItem[];
   onSave: (value: { id: string; quantity: number }) => void;
   onCancel: () => void;
 }) => {
-  const { rewardItems } = useCampaignReward();
-
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });

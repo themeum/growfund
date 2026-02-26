@@ -34,6 +34,7 @@ class HookNames
     const USER_REGISTER = 'user_register';
     const PLUGIN_ROW_META = 'plugin_row_meta';
     const REST_REQUEST_AFTER_CALLBACKS = 'rest_request_after_callbacks';
+    const WP_LOADED = 'wp_loaded';
     
     // Woocommerce hooks
     const WC_PRODUCT_GET_NAME = 'woocommerce_product_get_name';
@@ -94,4 +95,7 @@ class HookNames
     const GROWFUND_IS_APPLY_EMAIL_VERIFICATION = 'growfund/apply_email_verification';
     const GROWFUND_COLLABORATOR_LIST_FILTER = 'growfund/collaborator/list';
     const GROWFUND_FUND_LIST_FILTER = 'growfund/fund/list';
+    const GROWFUND_CAMPAIGN_MIGRATION_BATCH_SIZE_FILTER = 'growfund/campaign_migration/batch_size';
+    const GROWFUND_DONATION_MIGRATION_BATCH_SIZE_FILTER = 'growfund/donation_migration/batch_size';
+    const GROWFUND_PLEDGE_MIGRATION_BATCH_SIZE_FILTER = 'growfund/pledge_migration/batch_size';
 }

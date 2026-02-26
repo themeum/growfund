@@ -13,7 +13,9 @@ defined( 'ABSPATH' ) || exit;
         <?php if ($modal->show_header) : ?>
         <div class="growfund-modal-header">
             <div class="growfund-modal-header-left">
+                <?php if ($modal->show_header_icon) : ?>
                 <span class="growfund-modal-close-button-icon"><?php growfund_echo_safe_html($modal->get_header_icon()); ?> </span>
+                <?php endif; ?>
                 <h2 class="growfund-modal-title"><?php echo esc_html($modal->title); ?></h2>
                 
             </div>

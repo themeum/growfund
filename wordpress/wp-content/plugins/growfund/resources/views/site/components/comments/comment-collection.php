@@ -5,7 +5,6 @@
 
 defined('ABSPATH') || exit;
 
-
 use Growfund\Views\Components\Comments\Comment;
 use Growfund\Views\Components\Comments\CommentReply;
 use Growfund\Views\Components\Comments\EmptyComment;

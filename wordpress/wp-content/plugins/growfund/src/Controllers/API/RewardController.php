@@ -70,7 +70,7 @@ class RewardController
 
         $dto = RewardDTO::from_array($sanitized_data);
 
-        $reward_id = $this->service->create($campaign_id, $dto);
+        $reward_id = $this->service->create($dto);
 
         $response = [
             'data' => ['id' => (string) $reward_id],

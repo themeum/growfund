@@ -18,6 +18,13 @@ use Growfund\Supports\User as UserSupport;
 use Growfund\Supports\UserMeta;
 use Growfund\Supports\Pagination as PaginationSupport;
 use Exception;
+use Growfund\Constants\Contributor\DisplayLimit;
+use Growfund\Constants\Contributor\DisplayOptionOrderBy;
+use Growfund\Constants\Status\DonationStatus;
+use Growfund\Core\AppSettings;
+use Growfund\DTO\Donation\DonationDonorDTO;
+use Growfund\DTO\Donor\DonorDisplayDTO;
+use Growfund\Supports\MediaAttachment;
 use WP_User;
 use WP_User_Query;
 
@@ -423,5 +430,108 @@ class DonorService extends UserService
             'succeeded' => $succeeded,
             'failed' => $failed,
         ];
+    }
+
+    public function get_public_list_for_display(int $campaign_id, int $page = 1, $limit = 0, string $sort_key = DisplayOptionOrderBy::RECENT_ONLY) {
+        if (!growfund_settings(AppSettings::CAMPAIGNS)->display_contributor_list_publicly()) {
+            return new PaginatedCollectionDTO(PaginatedCollectionDTO::defaults());
+        }
+
+        $donations_table = Tables::DONATIONS;
+
+        $query = QueryBuilder::query()
+            ->table($donations_table . ' as donations')
+            ->select([
+                "COUNT(*) as total_no_of_donations",
+                'SUM(donations.amount) as total_contribution',
+                'MAX(donations.amount) as max_contribution_amount',
+                'donations.user_id',
+                'donations.email',
+                'COALESCE(donations.user_id, donations.email) as group_key',
+                'donations.user_info',
+                'MAX(donations.created_at) as created_at',
+            ])
+            ->where('status', '=', DonationStatus::COMPLETED)
+            ->where('donations.campaign_id', $campaign_id)
+            ->group_by('group_key');
+        
+        switch (growfund_settings(AppSettings::CAMPAIGNS)->display_contributor_option_order_by()) {
+            case DisplayOptionOrderBy::TOP_AND_RECENT:
+                if ($sort_key === DisplayOptionOrderBy::RECENT_ONLY) {
+                    $query->order_by('created_at', 'DESC');
+                    break;
+                }
+
+                if ($sort_key === DisplayOptionOrderBy::TOP_ONLY) {
+                    $query->order_by('total_no_of_donations', 'DESC')
+                        ->order_by('total_contribution', 'DESC');
+                    break;
+                }
+
+                $query->order_by('total_no_of_donations', 'DESC')
+                    ->order_by('total_contribution', 'DESC')
+                    ->order_by('created_at', 'DESC');
+                break;
+            case DisplayOptionOrderBy::RECENT_ONLY:
+                $query->order_by('created_at', 'DESC');
+                break;
+            case DisplayOptionOrderBy::TOP_ONLY:
+                $query->order_by('total_no_of_donations', 'DESC')
+                    ->order_by('total_contribution', 'DESC');
+                break;
+        }
+
+        $display_contributor_option_limit = growfund_settings(AppSettings::CAMPAIGNS)->display_contributor_option_limit();
+
+        if ($limit === 0) {
+			$limit = $display_contributor_option_limit === DisplayLimit::ALL 
+                ? 20 
+                : (int) $display_contributor_option_limit;
+        }
+
+        $page = max(1, (int) $page);
+        $offset = max(0, ((int) $page - 1) * $limit);
+
+        $results = $query->limit($limit)->offset($offset)->get();
+
+        foreach ($results as $key => $donation) {
+            $user_info = growfund_is_valid_json($donation->user_info) ? json_decode($donation->user_info, true) : [];
+            $donor_dto = DonationDonorDTO::from_array($user_info);
+            $donor_dto->id = (string) $donation->user_id;
+            $donor_dto->first_name = empty($donor_dto->first_name) && empty($donor_dto->last_name) ? 'Unknown' : $donor_dto->first_name;
+            $donor_dto->email = $donation->email;
+            $donor_dto->image = !empty($donor_dto->image) ? MediaAttachment::make($donor_dto->image) : null;
+
+            $dto = new DonorDisplayDTO($donor_dto->to_array());
+            $dto->donated_at = $donation->created_at;
+            $dto->total_contribution = $donation->total_contribution;
+            $dto->max_contribution_amount = $donation->max_contribution_amount;
+
+            $results[$key] = $dto;
+        }
+
+        $count_result = QueryBuilder::raw(
+            'SELECT COUNT(*) as total FROM (
+                SELECT donations.user_id, donations.email, COALESCE(donations.user_id, donations.email) as group_key FROM wp_growfund_donations as donations WHERE `status` = :status AND `donations`.`campaign_id` = :campaign_id GROUP BY `group_key`
+            ) as grouped_donors', 
+            [
+                'status' => DonationStatus::COMPLETED,
+                'campaign_id' => $campaign_id,
+            ]
+        );
+
+        $total_count = (int) ($count_result[0]->total ?? 0);
+
+        $paginated_collection_dto = PaginatedCollectionDTO::from_array([
+            'results' => $results,
+            'count' => count($results),
+            'total' => $total_count,
+            'per_page' => $limit,
+            'current_page' => $page,
+            'has_more' => (int) ceil($total_count / $limit) > $page,
+            'overall' => $total_count,
+        ]);
+
+        return $paginated_collection_dto;
     }
 }

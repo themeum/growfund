@@ -157,6 +157,7 @@ class PledgeController
         $pledge_dto->payment_method = !empty($sanitized_data['payment_method'])
             ? Payment::get_payment_method_by_name($sanitized_data['payment_method'])
             :  null;
+        $pledge_dto->is_manual = true;
 
         $id = $this->service->create($pledge_dto);
 

@@ -41,4 +41,8 @@ class CommentDTO extends DTO
 
     /** @var PaginatedCollectionDTO */
     public $replies = [];
+
+    public $casts = [
+        'replies.results.*' => self::class,
+    ];
 }

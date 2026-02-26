@@ -2,6 +2,9 @@
 
 namespace Growfund\Services\Migration;
 
+use Growfund\Constants\HookNames;
+use Growfund\Supports\Option;
+
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Constants\DateTimeFormats;
@@ -24,11 +27,15 @@ use WP_User;
 
 class DonationMigrationService
 {
-    const BATCH_SIZE = 10;
     const OFFSET_KEY = 'growfund_donation_migration_offset';
     const TOTAL_KEY = 'growfund_donation_migration_total';
-
+    public static $batch_size = 100;
     private $statuses = ['wc-completed', 'wc-processing', 'wc-on-hold', 'wc-pending', 'wc-cancelled', 'wc-refunded', 'wc-failed'];
+
+    public function __construct()
+    {
+        static::$batch_size = apply_filters(HookNames::GROWFUND_DONATION_MIGRATION_BATCH_SIZE_FILTER, static::$batch_size);
+    }
 
     public function migrate()
     {
@@ -85,11 +92,12 @@ class DonationMigrationService
     protected function get_orders($offset)
     {
         $orders = wc_get_orders([
-            'limit' => static::BATCH_SIZE,
+            'limit' => static::$batch_size,
             'offset' => $offset,
             'status' => $this->statuses,
-            'orderby' => 'date',
+            'orderby' => 'ID',
             'order' => 'ASC',
+            'type' => 'shop_order',
         ]);
 
         return $orders ?? [];
@@ -141,15 +149,17 @@ class DonationMigrationService
     protected function link_to_growfund_product($orders)
     {
         $ids = array_map(function ($order) {
-            return $order['campaign_id'];
+            return $order['transaction_id'];
         }, $orders);
 
         $order_item_meta_table = WC::ORDER_ITEM_META;
 
-        QueryBuilder::query()->table($order_item_meta_table)
-            ->where('meta_key', '_product_id')
-            ->where_in('meta_value', $ids)->update([
-                'meta_value' => growfund_wc_product_id() // phpcs:ignore
+        QueryBuilder::query()->table($order_item_meta_table. ' as meta')
+            ->inner_join(WC::ORDER_ITEM. ' as item', 'meta.order_item_id', 'item.order_item_id')
+            ->where('meta.meta_key', '_product_id')
+            ->where_in('item.order_id', $ids)
+            ->update([
+                'meta.meta_value' => growfund_wc_product_id() // phpcs:ignore
             ]);
 
         return true;
@@ -285,17 +295,17 @@ class DonationMigrationService
 
     protected function get_offset(int $default = 0)
     {
-        return (int) get_transient(static::OFFSET_KEY) ?? $default;
+        return (int) Option::get(static::OFFSET_KEY) ?? $default;
     }
     
     protected function set_offset(int $offset)
     {
-        set_transient(static::OFFSET_KEY, $offset, time() + 24 * 60 * 60);
+        Option::set(static::OFFSET_KEY, $offset);
     }
 
     protected function get_total()
     {
-        $total = (int) get_transient(static::TOTAL_KEY);
+        $total = (int) Option::get(static::TOTAL_KEY);
 
         if (!$total) {
             $total = 0;
@@ -304,9 +314,15 @@ class DonationMigrationService
                 $total += wc_orders_count($status);
             }
                 
-            set_transient(static::TOTAL_KEY, $total, time() + 24 * 60 * 60);
+            Option::set(static::TOTAL_KEY, $total);
         }
 
         return $total;
+    }
+
+    public function remove_migration_data()
+    {
+        Option::delete(static::OFFSET_KEY);
+        Option::delete(static::TOTAL_KEY);
     }
 }

@@ -5,6 +5,7 @@ namespace Growfund\DTO\Donor;
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\CastAttributes\MoneyAttribute;
+use Growfund\DTO\Activity\ActivityResponseDTO;
 use Growfund\DTO\DTO;
 
 /**
@@ -17,6 +18,8 @@ class DonorOverviewDTO extends DTO
     protected $casts = [
         'total_contributions' => MoneyAttribute::class,
         'average_donation' => MoneyAttribute::class,
+        'profile' => DonorDTO::class,
+        'activity_logs.*' => ActivityResponseDTO::class,
     ];
 
     /** @var int */
@@ -34,9 +37,9 @@ class DonorOverviewDTO extends DTO
     /** @var int */
     public $number_of_contributions;
 
-    /** @var \Growfund\DTO\Donor\DonorDTO */
+    /** @var DonorDTO */
     public $profile;
 
-    /** @var \Growfund\DTO\Activity\ActivityResponseDTO[] */
+    /** @var ActivityResponseDTO[] */
     public $activity_logs;
 }

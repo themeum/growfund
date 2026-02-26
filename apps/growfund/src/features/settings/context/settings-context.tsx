@@ -15,7 +15,6 @@ enum AppConfigKeys {
   Branding = 'growfund_branding',
   Advanced = 'growfund_advanced',
   DonationMode = 'growfund_is_donation_mode',
-  CurrentUser = 'growfund_current_user',
   Page = 'growfund_page',
 }
 

@@ -128,6 +128,9 @@ Route::group(['middleware' => AuthMiddleware::class], function () {
     Route::post('/campaigns/{campaign_id}/reward-items', [RewardItemController::class, 'create'])->where('campaign_id', '[\d]+');
     Route::put('/campaigns/{campaign_id}/reward-items/{id}', [RewardItemController::class, 'update'])->where('id', '[\d]+')->where('campaign_id', '[\d]+');
     Route::delete('/campaigns/{campaign_id}/reward-items/{id}', [RewardItemController::class, 'delete'])->where('id', '[\d]+')->where('campaign_id', '[\d]+');
+    Route::get('/pledges/{uid}/reward-items/{id}/download', [RewardItemController::class, 'get_download_link'])
+        ->where('id', '[\d]+')
+        ->where('uid', '[0-9a-zA-Z\-_.]+');
 
     // Backers routes
     Route::get('/backers', [BackerController::class, 'paginated']);

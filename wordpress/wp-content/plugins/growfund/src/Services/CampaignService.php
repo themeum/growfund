@@ -1247,6 +1247,12 @@ class CampaignService
         return $ids;
     }
 
+    /**
+     * Gets the IDs of campaigns associated with a given fundraiser ID.
+     * 
+     * @param int $fundraiser_id The ID of the fundraiser to retrieve campaigns for.
+     * @return int[] An array of IDs of campaigns associated with the fundraiser.
+     */
     public function get_campaign_ids_by_fundraiser($fundraiser_id)
     {
         $records = QueryBuilder::query()->table(WP::POSTS_TABLE . ' as campaigns')
@@ -1267,7 +1273,7 @@ class CampaignService
             )
             ->get();
 
-        $ids = Arr::make($records ?? [])->pluck('campaign_id')->toArray();
+        $ids = Arr::make($records ?? [])->pluck('campaign_id')->map(fn ($id) => (int) $id)->toArray();
 
         return $ids;
     }

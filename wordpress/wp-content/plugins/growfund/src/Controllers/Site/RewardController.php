@@ -8,7 +8,6 @@ use Growfund\Contracts\Request;
 use Growfund\Services\CampaignService;
 use Growfund\Services\RewardService;
 use Growfund\DTO\JsonResponseDTO;
-use Growfund\Views\Components\Campaign\PledgeModalRewardCollection;
 use Growfund\Views\Components\Campaign\RewardCollection;
 
 class RewardController

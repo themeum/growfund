@@ -100,7 +100,7 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function register_migrations()
     {
-        $migrations = require GROWFUND_DIR_PATH . '/configs/migrations.php';
+        $migrations = require GROWFUND_DIR_PATH . 'configs/migrations.php';
 
         if (empty($migrations)) {
             return;
@@ -117,7 +117,7 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function register_activation_actions()
     {
-        $activations = require GROWFUND_DIR_PATH . '/configs/activations.php';
+        $activations = require GROWFUND_DIR_PATH . 'configs/activations.php';
 
         if (empty($activations)) {
             return;
@@ -134,7 +134,7 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function register_deactivation_actions()
     {
-        $deactivations = require GROWFUND_DIR_PATH . '/configs/deactivations.php';
+        $deactivations = require GROWFUND_DIR_PATH . 'configs/deactivations.php';
 
         if (empty($deactivations)) {
             return;
@@ -151,7 +151,7 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function register_uninstallation_actions()
     {
-        $uninstallation = require GROWFUND_DIR_PATH . '/configs/uninstallation.php';
+        $uninstallation = require GROWFUND_DIR_PATH . 'configs/uninstallation.php';
 
         if (empty($uninstallation)) {
             return;
@@ -168,7 +168,7 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function register_capabilities()
     {
-        $capabilities  = require GROWFUND_DIR_PATH . '/configs/capabilities.php';
+        $capabilities  = require GROWFUND_DIR_PATH . 'configs/capabilities.php';
 
         if (empty($capabilities)) {
             return;

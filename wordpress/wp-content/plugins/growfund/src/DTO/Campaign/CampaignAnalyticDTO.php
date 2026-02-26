@@ -47,7 +47,7 @@ class CampaignAnalyticDTO extends DTO
     /** @var int  */
     public $number_of_contributions;
 
-    /** @var MoneyAttribute */
+    /** @var int */
     public $fund_raised;
 
     /** @var array|null */

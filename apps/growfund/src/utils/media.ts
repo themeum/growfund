@@ -44,6 +44,7 @@ enum MediaType {
   IMAGES = 'image/*',
   VIDEOS = 'video/*',
   DOCUMENTS = 'application/*',
+  ZIP = 'application/zip',
   ALL = '*',
 }
 
@@ -51,6 +52,7 @@ const ACCEPT_TYPES = {
   [MediaType.IMAGES]: ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.avif'],
   [MediaType.VIDEOS]: ['.mp4', '.webm', '.ogg'],
   [MediaType.DOCUMENTS]: ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx'],
+  [MediaType.ZIP]: ['.zip'],
   [MediaType.ALL]: ['.*'],
 } as AcceptType;
 

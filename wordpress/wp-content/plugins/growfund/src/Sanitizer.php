@@ -7,6 +7,7 @@ defined( 'ABSPATH' ) || exit;
 use Growfund\Contracts\Request;
 use Growfund\Supports\Date;
 use Growfund\Supports\Money;
+use InvalidArgumentException;
 
 /**
  * Class Sanitizer.
@@ -369,11 +370,11 @@ class Sanitizer
                 $value = Money::prepare_for_storage((float) $value);
                 break;
             case static::BOOL:
-                if (strtolower($value) === 'true') {
+                if (strtolower($value) === 'true' || $value === '1') {
                     $value = true;
                 }
 
-                if (strtolower($value) === 'false') {
+                if (strtolower($value) === 'false' || $value === '0') {
                     $value = false;
                 }
                 
@@ -424,8 +425,10 @@ class Sanitizer
             default:
                 if (is_callable($type)) {
                     $value = $type($value, $data);
+                    break;
                 }
-                break;
+
+                throw new InvalidArgumentException(esc_html__('Provide valid rule type.', 'growfund'));  
         }
 
         return $value;

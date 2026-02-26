@@ -1,0 +1,51 @@
+.growfund-donor-list-wrapper {
+  margin-top: var(--growfund-spacing-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--growfund-spacing-4);
+}
+.growfund-donor-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--growfund-spacing-5);
+}
+.growfund-donor-list-trend-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.growfund-donor-list-header {
+  display: flex;
+  align-items: center;
+  gap: var(--growfund-spacing-3);
+  border-bottom: 1px solid var(--growfund-border-secondary);
+  padding-bottom: var(--growfund-spacing-6);
+}
+.growfund-donor-list-actions {
+  display: flex;
+  flex-direction: row;
+  width: fit-content;
+  width: 100%;
+  margin-top: var(--growfund-spacing-5);
+  justify-content: flex-end;
+  gap: var(--growfund-spacing-3);
+}
+.growfund-donor-list-button {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--growfund-spacing-2) var(--growfund-spacing-4);
+  border-radius: var(--growfund-radius-md);
+  height: 36px;
+  font-weight: var(--growfund-font-weight-medium);
+  font-size: var(--growfund-font-size-md);
+  color: var(--growfund-text-primary);
+  text-align: center;
+  background-color: var(--growfund-bg-surface);
+  border-color: var(--growfund-border-secondary);
+  width: auto;
+}

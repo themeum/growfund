@@ -26,7 +26,7 @@ class HookServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $hooks = require GROWFUND_DIR_PATH . '/configs/hooks.php';
+        $hooks = require GROWFUND_DIR_PATH . 'configs/hooks.php';
 
         if (empty($hooks)) {
             return;

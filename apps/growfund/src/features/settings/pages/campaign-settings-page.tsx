@@ -1,10 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { __ } from '@wordpress/i18n';
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
 import ElementWrapper from '@/components/element-wrapper';
 import { MultiSelectField } from '@/components/form/multiselect-field';
+import { SelectField } from '@/components/form/select-field';
 import { SwitchField } from '@/components/form/switch-field';
 import { ProRadioInput } from '@/components/pro-fallbacks/form/pro-radio-input';
 import CampaignSettingsEnableCommentsFallback from '@/components/pro-fallbacks/settings/campaign/enable-comments-fallback';
@@ -78,6 +79,11 @@ const CampaignSettingsPage = () => {
   const CampaignSettingsFund = registry.get('CampaignSettingsFund');
   const CampaignsSettingsCampaignVisibility = registry.get('CampaignsSettingsCampaignVisibility');
 
+  const displayContributorListPublicly = useWatch({
+    control: form.control,
+    name: 'display_contributor_list_publicly',
+  });
+
   return (
     <Form {...form}>
       <div className="growfund-grid growfund-gap-4">
@@ -98,26 +104,65 @@ const CampaignSettingsPage = () => {
                 'growfund',
               )}
             />
-            <SwitchField
-              control={form.control}
-              name="display_contributor_list_publicly"
-              label={
-                isDonationMode
-                  ? __('Display Donor List Publicly', 'growfund')
-                  : __('Display Backer List Publicly', 'growfund')
-              }
-              description={
-                isDonationMode
-                  ? __(
-                      'When enabled, names of donors will be visible to anyone viewing the campaign.',
-                      'growfund',
-                    )
-                  : __(
-                      'When enabled, names of backers will be visible to anyone viewing the campaign.',
-                      'growfund',
-                    )
-              }
-            />
+
+            {isDonationMode && (
+              <div className="growfund-space-y-2">
+                <SwitchField
+                  control={form.control}
+                  name="display_contributor_list_publicly"
+                  label={__('Display Donor List Publicly', 'growfund')}
+                  description={__(
+                    'When enabled, names of donors will be visible to anyone viewing the campaign.',
+                    'growfund',
+                  )}
+                />
+
+                {displayContributorListPublicly && (
+                  <>
+                    <SelectField
+                      control={form.control}
+                      name="display_contributor_option"
+                      options={[
+                        { label: __('Show donation amounts', 'growfund'), value: 'show-amount' },
+                        { label: __('Show only names', 'growfund'), value: 'show-name' },
+                        {
+                          label: __('Show names & amounts', 'growfund'),
+                          value: 'show-amount-and-name',
+                        },
+                      ]}
+                      label={__('Display Option', 'growfund')}
+                    />
+                    <div className="growfund-flex growfund-items-center growfund-gap-3">
+                      <SelectField
+                        control={form.control}
+                        name="display_contributor_option_order_by"
+                        options={[
+                          {
+                            label: __('Top & Recent (Recommended)', 'growfund'),
+                            value: 'top-and-recent',
+                          },
+                          { label: __('Recent only', 'growfund'), value: 'recent-only' },
+                          { label: __('Top only', 'growfund'), value: 'top-only' },
+                        ]}
+                        label={__('Display by', 'growfund')}
+                      />
+                      <SelectField
+                        control={form.control}
+                        name="display_contributor_option_limit"
+                        options={[
+                          { label: __('20', 'growfund'), value: '20' },
+                          { label: __('50', 'growfund'), value: '50' },
+                          { label: __('100', 'growfund'), value: '100' },
+                          { label: __('All', 'growfund'), value: 'all' },
+                        ]}
+                        label={__('Max length', 'growfund')}
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+
             <ElementWrapper
               fallback={
                 <ProRadioInput

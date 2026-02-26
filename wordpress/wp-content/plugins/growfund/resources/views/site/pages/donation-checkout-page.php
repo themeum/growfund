@@ -144,6 +144,10 @@ $growfund_checkout_consent = growfund_settings(AppSettings::GENERAL)->get_tnc_te
                     $growfund_checkbox->error_msg   = growfund_flash_get_message('checkout_form_errors')['dedicate_donation'][0] ?? '';
                     
                     growfund_render($growfund_checkbox);
+                } else {
+					?>
+                    <input type="hidden" name="dedicate_donation" value="1">
+					<?php
                 }
                 
                 ?>
