@@ -34,13 +34,16 @@ jobs:
               contains(github.ref, '-rc')
             }}
         env:
-          SVN_USERNAME: ${{ secrets.SVN_USERNAME || 'dry-run-user' }}
-          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD || 'dry-run-pass' }}
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME || 'xxxx' }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD || '****' }}
           BUILD_DIR: build
 
       - name: Create Github Release
         uses: softprops/action-gh-release@v2
         with:
           files: ${{ steps.deploy.outputs.zip-path }}
+          name: 'Growfund - ${{ github.ref }}'
+          body: '**Full Changelog**: https://github.com/themeum/growfund/compare/${{ github.ref }}...${{ github.ref }}'
+          make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
