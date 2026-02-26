@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "repository": "git@github.com:themeum/growfund.git",
+  "license": "GPL-2.0-only",
   "scripts": {
     "build": "npm-run-all -s build:apps make:pot composer:install build:gulp",
     "build:package": "npm-run-all -s build:apps make:pot composer:install build:gulp:zip",
-    "build:apps": "cd ./apps && yarn build",
+    "build:apps": "cd ./apps && yarn install && yarn build",
     "build:gulp": "gulp",
     "build:gulp:zip": "gulp zip",
     "make:pot": "cd ./apps && yarn make:pot",
