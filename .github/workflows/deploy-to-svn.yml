@@ -19,6 +19,15 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: wp-cli
+
+      - name: Install WP-CLI i18n command
+        run: wp package install wp-cli/i18n-command:@stable
+
       - name: Build the plugin
         run: yarn build
 
