@@ -29,8 +29,8 @@ jobs:
           generate-zip: true
           dry-run: true
         env:
-          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
-          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME || 'dry-run-user' }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD || 'dry-run-pass' }}
           BUILD_DIR: build
 
       - name: Create Github Release
