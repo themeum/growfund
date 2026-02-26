@@ -10,7 +10,7 @@
     "build:apps": "cd ./apps && yarn install && yarn build",
     "build:gulp": "gulp",
     "build:gulp:zip": "gulp zip",
-    "make:pot": "cd ./apps && wp i18n make-pot wp-content/plugins/growfund wp-content/plugins/growfund/languages/growfund.pot --slug=growfund --domain=growfund --include='growfund.php,**/*.php,resources/dist/*.js' --exclude='vendor'",
+    "make:pot": "wp i18n make-pot ./wordpress/wp-content/plugins/growfund ./wordpress/wp-content/plugins/growfund/languages/growfund.pot --slug=growfund --domain=growfund --include='growfund.php,**/*.php,resources/dist/*.js' --exclude='vendor'",
     "composer:install": "cd ./wordpress/wp-content/plugins/growfund && composer install --no-dev && composer dump-autoload -o"
   },
   "devDependencies": {
