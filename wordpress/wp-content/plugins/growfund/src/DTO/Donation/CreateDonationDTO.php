@@ -156,6 +156,16 @@ class CreateDonationDTO extends DTO
 							return sprintf(__('The %s is not valid.', 'growfund'), str_replace('_', ' ', $key));
 						}
 
+                        if (!Payment::is_active_payment_method($value)) {
+							/* translators: %s: field name */
+							return sprintf(__('The %s is not active.', 'growfund'), str_replace('_', ' ', $key));
+						}
+
+                        if (!Payment::is_configured_payment_method($value)) {
+							/* translators: %s: field name */
+							return sprintf(__('The %s is not configured. please contact with administrator.', 'growfund'), str_replace('_', ' ', $key));
+						}
+
 						return true;
 					}
 				],
@@ -309,6 +319,16 @@ class CreateDonationDTO extends DTO
                             /* translators: %s: field name */
                             return sprintf(__('The %s is not valid.', 'growfund'), str_replace('_', ' ', $key));
                         }
+
+                        if (!Payment::is_active_payment_method($value)) {
+							/* translators: %s: field name */
+							return sprintf(__('The %s is not active.', 'growfund'), str_replace('_', ' ', $key));
+						}
+
+                        if (!Payment::is_configured_payment_method($value)) {
+							/* translators: %s: field name */
+							return sprintf(__('The %s is not configured. please contact with administrator.', 'growfund'), str_replace('_', ' ', $key));
+						}
 					}
 
 					return true;

@@ -10,9 +10,9 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-require_once GROWFUND_DIR_PATH . '/routes/api.php';
-require_once GROWFUND_DIR_PATH . '/routes/site.php';
-require_once GROWFUND_DIR_PATH . '/routes/ajax.php';
+require_once GROWFUND_DIR_PATH . 'routes/api.php';
+require_once GROWFUND_DIR_PATH . 'routes/site.php';
+require_once GROWFUND_DIR_PATH . 'routes/ajax.php';
 
 /**
  * Register a macro to the application.

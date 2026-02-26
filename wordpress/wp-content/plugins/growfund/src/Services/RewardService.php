@@ -16,6 +16,8 @@ use Growfund\Supports\Pagination as PaginationSupport;
 use Growfund\Supports\Paginator;
 use Growfund\Supports\PostMeta;
 use Exception;
+use Growfund\Constants\RewardItem\RewardItemType;
+use Growfund\Exceptions\ValidationException;
 use WP_Post;
 use WP_Query;
 
@@ -30,20 +32,21 @@ class RewardService
     /**
      * Create new reward
      * 
-     * @param int $campaign_id
      * @param RewardDTO $dto
      * 
      * @return int
      */
-    public function create(int $campaign_id, RewardDTO $dto)
+    public function create(RewardDTO $dto)
     {
+        $this->validate_reward_items($dto);
+
         $reward_id = wp_insert_post([
             'post_type'    => PostTypeReward::NAME,
             'post_title'   => $dto->title,
             'post_content' => $dto->description ?? '',
             'post_status'  => PostTypeReward::DEFAULT_POST_STATUS,
             'post_author'  => get_current_user_id(),
-            'post_parent'  => $campaign_id,
+            'post_parent'  => (int) $dto->campaign_id,
         ], true);
 
         if (is_wp_error($reward_id)) {
@@ -72,6 +75,8 @@ class RewardService
      */
     public function update(int $reward_id, RewardDTO $dto)
     {
+        $this->validate_reward_items($dto);
+        
         $reward = wp_update_post([
             'ID' => $reward_id,
             'post_title' => $dto->title,
@@ -84,11 +89,60 @@ class RewardService
 
         if (!empty($dto->image)) {
             set_post_thumbnail($reward_id, $dto->image);
+        } else {
+            delete_post_thumbnail($reward_id);
         }
 
         $meta_input = $dto->get_meta();
 
         return PostMeta::update_many($reward_id, $meta_input);
+    }
+
+    /**
+     * Validate reward items
+     * @param RewardDTO $dto
+     * @return bool
+     * 
+     * @throws ValidationException
+     */
+    protected function validate_reward_items(RewardDTO $dto, $throwable = true) {
+		$reward_item_type = 'all';
+
+        if ($dto->reward_type !== RewardType::PHYSICAL_AND_DIGITAL_GOODS) {
+            $reward_item_type = $dto->reward_type === RewardType::DIGITAL_GOODS ? RewardItemType::DIGITAL : RewardItemType::PHYSICAL;
+        }
+
+        $campaign_reward_items = (new RewardItemService())->get_all_by_campaign((int) $dto->campaign_id, $reward_item_type);
+
+        $available_item_ids = Arr::make($campaign_reward_items)
+            ->pluck('id')
+            ->map(function ($id) { return (int) $id; })
+            ->toArray();
+
+        $errors = [];
+
+        $unavailable_items = Arr::make($dto->items ?? [])
+            ->filter(function ($item, $index) use ($available_item_ids, &$errors) {
+                $is_unavailable = !in_array((int) $item['id'], $available_item_ids, true);
+
+                if ($is_unavailable) {
+                    /* translators: %s: reward item id */
+                    $errors['items.' . $index . '.id'] = sprintf(__('Reward item with id %s is not available', 'growfund'), $item['id']);
+                }
+                
+                return $is_unavailable;
+            })
+            ->toArray();
+        
+        if (empty($unavailable_items)) {
+            return true;
+        }
+
+        if (!$throwable) {
+            return false;
+        }
+
+        throw ValidationException::with_errors($errors); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- validation exception intentionally ignored
     }
 
     /** 
@@ -231,6 +285,8 @@ class RewardService
     {
         $meta_data = PostMeta::get_all($reward->ID);
         $thumbnail_id = get_post_thumbnail_id($reward->ID);
+        $reward_type = $meta_data['reward_type'] ?? RewardType::PHYSICAL_GOODS;
+        $campaign_id = $reward->post_parent;
 
         $reward_items = [];
 
@@ -238,13 +294,14 @@ class RewardService
             $reward_item_lists = maybe_unserialize($meta_data['items']);
 
             if (is_array($reward_item_lists)) {
-                $reward_items = (new RewardItemService())->get_rewards_with_quantity($reward_item_lists);
+                $reward_items = (new RewardItemService())->get_reward_items_with_quantity($campaign_id, $reward_type, $reward_item_lists);
             }
         }
 
         $dto = new RewardDTO();
 
         $dto->id = (string) $reward->ID;
+        $dto->campaign_id = (string) $campaign_id;
         $dto->title = $reward->post_title;
         $dto->amount = (int) $meta_data['amount'];
         $dto->description = $reward->post_content;
@@ -260,7 +317,7 @@ class RewardService
         $dto->limit_end_date = !empty($meta_data['limit_end_date'])
             ? $meta_data['limit_end_date']
             : null;
-        $dto->reward_type = $meta_data['reward_type'] ?? RewardType::PHYSICAL_GOODS;
+        $dto->reward_type = $reward_type;
         $dto->estimated_delivery_date = !empty($meta_data['estimated_delivery_date'])
             ? $meta_data['estimated_delivery_date']
             : null;

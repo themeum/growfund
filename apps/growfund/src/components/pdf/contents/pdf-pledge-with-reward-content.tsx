@@ -2,6 +2,7 @@ import { Image, Text, View } from '@react-pdf/renderer';
 import { __, sprintf } from '@wordpress/i18n';
 import { format } from 'date-fns';
 
+import placeholder from '@/assets/images/placeholder.svg';
 import PdfPledgeDetailsContent from '@/components/pdf/contents/pdf-pledge-details-content';
 import { usePdf } from '@/contexts/pdf-context';
 import { type Pledge } from '@/features/pledges/schemas/pledge';
@@ -10,6 +11,7 @@ import { DATE_FORMATS } from '@/lib/date';
 const PDFPledgeWithRewardContent = ({ pledge }: { pledge: Pledge }) => {
   const { pdfReceiptTemplate, toCurrency } = usePdf();
   const secondaryTextColor = pdfReceiptTemplate?.colors?.secondary_text ?? '#636363';
+
   return (
     <>
       <View style={{ padding: 16, paddingBottom: 12, backgroundColor: '#F7F7F7', borderRadius: 6 }}>
@@ -18,7 +20,7 @@ const PDFPledgeWithRewardContent = ({ pledge }: { pledge: Pledge }) => {
           <View style={{ marginRight: 16 }}>
             <Image
               style={{ width: 72, height: 72, borderRadius: 6 }}
-              src={pledge.campaign.images?.[0].url}
+              src={pledge.campaign.images?.[0]?.url ?? placeholder}
             />
           </View>
           <View style={{ flexDirection: 'column', marginLeft: 8, width: '100%' }}>

@@ -8,8 +8,7 @@
 
         if (!modal) return;
 
-        modal.classList.add('is-active');
-        document.body.classList.add('no-scroll');
+        growfundOpenModal(modal);
       });
     });
 
@@ -22,8 +21,7 @@
 
         if (!modal) return;
 
-        modal.classList.remove('is-active');
-        document.body.classList.remove('no-scroll');
+        growfundCloseModal(modal);
       }
     });
 

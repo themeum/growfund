@@ -9,6 +9,7 @@ use Growfund\DTO\RewardItemDTO;
 use Growfund\Exceptions\ValidationException;
 use Growfund\Http\Response;
 use Growfund\Policies\RewardItemPolicy;
+use Growfund\Sanitizer;
 use Growfund\Services\RewardItemService;
 use Growfund\Validation\Validator;
 
@@ -83,10 +84,9 @@ class RewardItemController
 
         $this->policy->authorize_create($request->get_int('campaign_id'));
 
-        $id = $this->service->store($request->get_int('campaign_id'), RewardItemDTO::from_array([
-            'title' => $request->get_string('title'),
-            'image' => $request->get_int('image'),
-        ]));
+        $sanitized_data = Sanitizer::make($request->all(), RewardItemDTO::sanitization_rules())->get_sanitized_data();
+
+        $id = $this->service->store(RewardItemDTO::from_array($sanitized_data));
 
         $response = [
             'data' => ['id' => (string) $id],
@@ -111,13 +111,11 @@ class RewardItemController
 
         $this->policy->authorize_update($request->get_int('id'));
 
+        $sanitized_data = Sanitizer::make($request->all(), RewardItemDTO::sanitization_rules())->get_sanitized_data();
+
         $is_updated = $this->service->update(
             $request->get_int('id'),
-            $request->get_int('campaign_id'),
-            RewardItemDTO::from_array([
-                'title' => $request->get_string('title'),
-                'image' => $request->get_int('image'),
-            ])
+            RewardItemDTO::from_array($sanitized_data)
         );
 
         $response = [
@@ -148,5 +146,16 @@ class RewardItemController
         ];
 
         return growfund_response()->json($response);
+    }
+
+    public function get_download_link(Request $request) {
+        $reward_item_id = $request->get_int('id');
+        $pledge_uid = $request->get_string('uid');
+
+        return growfund_response()->json([
+            'data' => [
+                'download_link' => $this->service->get_downloadable_link_for_digital_goods($pledge_uid, $reward_item_id)
+            ]
+        ]);
     }
 }

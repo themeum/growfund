@@ -8,14 +8,14 @@ import { EmptyState, EmptyStateDescription } from '@/components/empty-state';
 import { Box, BoxContent } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import { Image } from '@/components/ui/image';
-import AddRewardItemDialog from '@/features/campaigns/components/dialogs/manage-reward-item-dialog';
 import { useCampaignBuilderContext } from '@/features/campaigns/contexts/campaign-builder';
 import { useCampaignReward } from '@/features/campaigns/contexts/campaign-reward';
 import { useConsentDialog } from '@/features/campaigns/contexts/consent-dialog-context';
+import { type RewardItem } from '@/features/campaigns/schemas/reward-item';
 import { useCampaignRewardsQuery } from '@/features/campaigns/services/reward';
 import { useDeleteRewardItemMutation } from '@/features/campaigns/services/reward-item';
 
-const RewardItems = () => {
+const RewardItems = ({ onEdit }: { onEdit: (item: RewardItem) => void }) => {
   const { campaignId } = useCampaignBuilderContext();
   const { rewardItems } = useCampaignReward();
   const deleteRewardItemMutation = useDeleteRewardItemMutation();
@@ -59,7 +59,9 @@ const RewardItems = () => {
                 aspectRatio="square"
               />
               <div className="growfund-grid growfund-items-between">
-                <p className="growfund-typo-small growfund-font-medium growfund-text-fg-primary">{item.title}</p>
+                <p className="growfund-typo-small growfund-font-medium growfund-text-fg-primary">
+                  {item.title}
+                </p>
                 <p className="growfund-typo-tiny growfund-text-fg-secondary">
                   {sprintf(
                     /* translators: %d: Number of rewards */
@@ -69,11 +71,17 @@ const RewardItems = () => {
                 </p>
               </div>
               <div className="growfund-flex growfund-items-center growfund-border growfund-border-border growfund-p-1 growfund-rounded-sm growfund-absolute growfund-top-[50%] growfund-right-4 growfund-translate-y-[-50%] growfund-opacity-0 group-hover/reward-item:growfund-opacity-100 growfund-transition-opacity growfund-duration-200">
-                <AddRewardItemDialog defaultValues={item}>
-                  <Button variant="ghost" size="icon" className="growfund-size-6">
-                    <Pencil2Icon />
-                  </Button>
-                </AddRewardItemDialog>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="growfund-size-6"
+                  onClick={() => {
+                    onEdit(item);
+                  }}
+                >
+                  <Pencil2Icon />
+                </Button>
+
                 <Button
                   variant="ghost"
                   size="icon"

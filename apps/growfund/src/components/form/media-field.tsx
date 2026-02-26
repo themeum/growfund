@@ -2,24 +2,27 @@ import { __ } from '@wordpress/i18n';
 import { type FieldValues, useFormContext } from 'react-hook-form';
 
 import {
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from '@/components/ui/form';
 import Media from '@/components/ui/media';
 import { cn } from '@/lib/utils';
 import { type ControllerField } from '@/types/form';
 import { isDefined } from '@/utils';
-import { MediaType } from '@/utils/media';
+import { mb2byte, MediaType } from '@/utils/media';
 
-interface MediaFieldProps<T extends FieldValues>
-  extends Omit<ControllerField<T>, 'readOnly' | 'placeholder'> {
+interface MediaFieldProps<T extends FieldValues> extends Omit<
+  ControllerField<T>,
+  'readOnly' | 'placeholder'
+> {
   uploadButtonLabel?: string;
   dropzoneLabel?: string;
   accept?: MediaType[];
+  maxSize?: number;
 }
 
 function MediaField<T extends FieldValues>({
@@ -32,6 +35,7 @@ function MediaField<T extends FieldValues>({
   uploadButtonLabel = __('Upload media', 'growfund'),
   dropzoneLabel = __('Drag and drop, or upload images', 'growfund'),
   accept = [MediaType.IMAGES],
+  maxSize = mb2byte(10),
 }: MediaFieldProps<T>) {
   const form = useFormContext<T>();
 
@@ -69,6 +73,7 @@ function MediaField<T extends FieldValues>({
                     message: error,
                   });
                 }}
+                maxSize={maxSize}
               />
             </FormControl>
             {isDefined(description) && <FormDescription>{description}</FormDescription>}

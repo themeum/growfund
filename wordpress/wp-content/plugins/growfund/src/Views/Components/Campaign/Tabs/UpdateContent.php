@@ -14,7 +14,6 @@ class UpdateContent extends View {
     /** @var CampaignPostDTO[] */
     public $updates = []; 
 
-
     /** @var string svg file path */
     public $svg_icon;
 

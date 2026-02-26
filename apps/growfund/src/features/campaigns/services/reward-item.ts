@@ -78,9 +78,33 @@ const useDeleteRewardItemMutation = () => {
   });
 };
 
+interface RewardItemDownloadResponse {
+  download_link: string;
+}
+
+const getRewardItemDownloadLink = async ({
+  uid,
+  rewardItemId,
+}: {
+  uid: string;
+  rewardItemId: string | number;
+}) => {
+  const response = await apiClient.get<RewardItemDownloadResponse>(
+    endpoints.REWARD_ITEM_DOWNLOAD(uid, rewardItemId),
+  );
+  return response.data.download_link;
+};
+
+const useRewardItemDownloadMutation = () => {
+  return useMutation({
+    mutationFn: getRewardItemDownloadLink,
+  });
+};
+
 export {
   useCreateRewardItemMutation,
   useDeleteRewardItemMutation,
   useGetRewardItemsQuery,
+  useRewardItemDownloadMutation,
   useUpdateRewardItemMutation,
 };

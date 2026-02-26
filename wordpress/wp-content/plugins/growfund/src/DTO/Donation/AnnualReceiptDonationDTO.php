@@ -9,6 +9,7 @@ use Growfund\CastAttributes\BooleanAttribute;
 use Growfund\CastAttributes\DateTimeAttribute;
 use Growfund\CastAttributes\MoneyAttribute;
 use Growfund\DTO\DTO;
+use Growfund\Payments\DTO\PaymentMethodDTO;
 
 /**
  * Data Transfer Object for a Donation record
@@ -24,6 +25,7 @@ class AnnualReceiptDonationDTO extends DTO
         'tribute_notification_recipient_address' => ArrayAttribute::class,
         'created_at' => DateTimeAttribute::class,
         'updated_at' => DateTimeAttribute::class,
+        'payment_method' => PaymentMethodDTO::class,
     ];
 
     /** @var string */
@@ -68,7 +70,7 @@ class AnnualReceiptDonationDTO extends DTO
     /** @var int|null */
     public $transaction_id;
 
-    /** @var \Growfund\DTO\Donation\PaymentMethodDTO */
+    /** @var PaymentMethodDTO */
     public $payment_method;
 
     /** @var string */

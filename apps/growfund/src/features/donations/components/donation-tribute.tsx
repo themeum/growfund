@@ -2,16 +2,8 @@ import { __, sprintf } from '@wordpress/i18n';
 import { Flower2, Mail, Mailbox, MapPin, Phone } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
-import { isDefined } from '@/utils';
-
-interface Address {
-  address?: string | null;
-  address_2?: string | null;
-  city?: string | null;
-  state?: string | null;
-  zip_code?: string | null;
-  country?: string | null;
-}
+import { type Address } from '@/schemas/address';
+import { displayAddress, isDefined } from '@/utils';
 
 interface Donation {
   tribute_type?: string | null;
@@ -36,16 +28,7 @@ const DonationTributeCard = ({ donation }: { donation: Donation }) => {
       }[donation.tribute_notification_type]
     : null;
 
-  const fullAddress = [
-    donation.tribute_notification_recipient_address?.address,
-    donation.tribute_notification_recipient_address?.address_2,
-    donation.tribute_notification_recipient_address?.city,
-    donation.tribute_notification_recipient_address?.state,
-    donation.tribute_notification_recipient_address?.zip_code,
-    donation.tribute_notification_recipient_address?.country,
-  ]
-    .filter(isDefined)
-    .join(', ');
+  const fullAddress = displayAddress(donation.tribute_notification_recipient_address);
 
   return (
     isDefined(donation.tribute_to) && (
@@ -58,7 +41,9 @@ const DonationTributeCard = ({ donation }: { donation: Donation }) => {
         </div>
 
         <div className="growfund-flex growfund-flex-col growfund-mb-2">
-          <span className="growfund-typo-tiny growfund-text-fg-secondary">{donation.tribute_type}</span>
+          <span className="growfund-typo-tiny growfund-text-fg-secondary">
+            {donation.tribute_type}
+          </span>
           <span className="growfund-font-medium growfund-text-fg-special-3 growfund-text-base">
             {sprintf('%s %s', donation.tribute_salutation, donation.tribute_to)}
           </span>
@@ -113,7 +98,9 @@ const DonationTributeCard = ({ donation }: { donation: Donation }) => {
           {fullAddress && (
             <div className="growfund-flex growfund-gap-2">
               <MapPin className="growfund-size-4 growfund-text-icon-secondary growfund-flex-shrink-0" />
-              <p className="growfund-text-fg-secondary growfund-font-medium growfund-typo-small">{fullAddress}</p>
+              <p className="growfund-text-fg-secondary growfund-font-medium growfund-typo-small">
+                {fullAddress}
+              </p>
             </div>
           )}
         </div>

@@ -21,6 +21,7 @@ class="growfund-radio-field <?php echo $radio_field->wrapper_class ? esc_attr($r
         name="<?php echo esc_attr($radio_field->name); ?>" 
         value="<?php echo esc_attr($radio_field->value); ?>" 
         <?php checked($radio_field->checked, true); ?>
+        <?php echo esc_attr($radio_field->disabled ? 'disabled' : ''); ?>
     />
     <span class="growfund-radio-field-label">
         <?php echo esc_html($radio_field->label); ?>

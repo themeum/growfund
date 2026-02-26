@@ -1,0 +1,48 @@
+.growfund-donor-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.growfund-donor-list-item-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--growfund-spacing-3);
+}
+.growfund-donor-list-name {
+  font-family: var(--growfund-font-family);
+  font-weight: var(--growfund-font-weight-medium);
+  font-size: var(--growfund-font-size-lg);
+  color: var(--growfund-text-primary);
+}
+.growfund-donor-list-info-bottom {
+  font-family: var(--growfund-font-family);
+  font-weight: var(--growfund-font-weight-medium);
+  display: flex;
+  gap: var(--growfund-spacing-2);
+  font-size: var(--growfund-font-size-md);
+  color: var(--growfund-text-muted-foreground);
+}
+.growfund-donor-list-info-top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--growfund-spacing-1);
+}
+
+.growfund-donor-list-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--growfund-radius-md);
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  background-color: var(--growfund-bg-surface);
+}
+
+.growfund-donor-list-badge-link {
+  padding: var(--growfund-spacing-1) var(--growfund-spacing-2);
+  background-color: var(--growfund-color-primary);
+  color: var(--growfund-text-accent-foreground);
+  font-size: var(--growfund-font-size-sm);
+  border-radius: var(--growfund-radius-sm);
+}

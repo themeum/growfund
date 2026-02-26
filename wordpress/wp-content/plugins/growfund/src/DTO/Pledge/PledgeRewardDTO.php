@@ -6,6 +6,7 @@ defined( 'ABSPATH' ) || exit;
 
 use Growfund\CastAttributes\MoneyAttribute;
 use Growfund\DTO\DTO;
+use Growfund\DTO\RewardItemWithQuantityDTO;
 
 /**
  * Data Transfer Object for PledgeCampaign
@@ -23,6 +24,7 @@ class PledgeRewardDTO extends DTO
 
     protected $casts = [
         'amount' => MoneyAttribute::class,
+        'items' => RewardItemWithQuantityDTO::class
     ];
 
     /** @var string */
@@ -34,7 +36,7 @@ class PledgeRewardDTO extends DTO
     /** @var string */
     public $description;
 
-    /** @var \Growfund\DTO\RewardItemDTO[] */
+    /** @var RewardItemWithQuantityDTO[] */
     public $items;
 
     /** @var float */
@@ -42,4 +44,13 @@ class PledgeRewardDTO extends DTO
 
     /** @var \Growfund\Supports\MediaAttachment */
     public $image;
+
+    /** @var value-of<\Growfund\Constants\Reward\RewardType> */
+    public $reward_type;
+
+    /** @var string|null */
+    public $estimated_delivery_date;
+
+    /** @var string|null */
+    public $local_pickup_instructions;
 }

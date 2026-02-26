@@ -36,6 +36,9 @@ class RadioField extends View {
 
     public $icon;
 
+    /** @var bool */
+    public $disabled = false;
+
 
     protected function get_template_dir() {
         return 'site/components/form';

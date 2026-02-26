@@ -24,6 +24,10 @@ class SiteRequest implements Request
         $this->attributes[$name] = $value;
     }
 
+    public function set_attributes(array $attributes) {
+        $this->attributes = $attributes;
+    }
+
     public static function instance()
     {
         return new static();

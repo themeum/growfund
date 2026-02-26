@@ -19,4 +19,9 @@ class AnnualReceiptDTO extends DTO
 
     /** @var UserDTO|null */
     public $donor;
+
+    public $casts = [
+        'donations.*' => AnnualReceiptDonationDTO::class,
+        'donor' => UserDTO::class
+    ];
 }

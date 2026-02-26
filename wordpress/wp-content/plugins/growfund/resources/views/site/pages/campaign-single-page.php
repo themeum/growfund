@@ -5,8 +5,11 @@
 
 defined( 'ABSPATH' ) || exit;
 
+use Growfund\App\Settings\CampaignSettings;
 use Growfund\Constants\Campaign\ReachingAction;
+use Growfund\Constants\Contributor\DisplayOptionOrderBy;
 use Growfund\Constants\Status\CampaignStatus;
+use Growfund\Core\AppSettings;
 use Growfund\Supports\Arr;
 use Growfund\Supports\CampaignGoal;
 use Growfund\Supports\Currency;
@@ -26,6 +29,7 @@ use Growfund\Views\Components\UI\SocialShare;
 use Growfund\Views\Components\UI\Tab;
 use Growfund\Views\Components\CheckoutFailedToaster;
 use Growfund\Views\Components\CheckoutSuccessfulToaster;
+use Growfund\Views\Components\Donors\DonorList;
 use Growfund\Views\Components\PaymentSuccessToaster;
 use Growfund\Views\Components\UI\Badge;
 
@@ -36,9 +40,9 @@ $growfund_campaign_collaborator_count = count($campaign_single_page->collaborato
 $growfund_avatars_in_view = 1 + min($growfund_campaign_collaborator_count, 2);
 $growfund_dynamic_stack_width = 51 + (($growfund_avatars_in_view - 1) * 20);
 
+$campaign_settings = new CampaignSettings();
+
 ?>
-
-
 
 <div class="growfund-campaign-single-page">
     <div class="growfund-campaign-single-page-header">
@@ -160,16 +164,38 @@ $growfund_dynamic_stack_width = 51 + (($growfund_avatars_in_view - 1) * 20);
                     ?>
             </div>
 
+            <?php if ($campaign_settings->display_contributor_list_publicly() && growfund_app()->is_donation_mode() && $campaign_single_page->campaign->number_of_contributions > 0) : ?>
+
+                <div class="growfund-campaign-single-page-right-content-donor-list-container"
+                data-campaign-id="<?php echo esc_attr($campaign_single_page->campaign->id); ?>"
+                data-sort-key="<?php echo esc_attr(growfund_settings(AppSettings::CAMPAIGNS)->display_contributor_option_order_by()); ?>"
+                data-limit="<?php echo esc_attr(growfund_settings(AppSettings::CAMPAIGNS)->display_contributor_option_limit()); ?>">
+				<?php
+				$growfund_donor_list = new DonorList();
+				$growfund_donor_list->campaign = $campaign_single_page->campaign;
+				growfund_render($growfund_donor_list);
+				?>
+                </div>
+			<?php endif; ?>
+
             <div class="growfund-campaign-single-page-right-content-info">
-                <p class="growfund-campaign-single-page-right-content-funding-type" id="growfund_single_page_notice">
-                    <span class="growfund-campaign-single-page-right-content-info-bold">
-                        <?php echo esc_html__('All or nothing.', 'growfund'); ?>
-                    </span> 
-                    <span>
-                        <?php echo esc_html__('This campaign will only be funded if it reaches its goal by', 'growfund'); ?>
-                    </span>
-                    <span data-growfund-datetime="<?php echo esc_attr($campaign_single_page->campaign->end_date); ?>"></span>
-                </p>
+                <?php if ($campaign_single_page->campaign->has_goal && !$campaign_single_page->campaign->is_ended) : ?>
+                    <p class="growfund-campaign-single-page-right-content-funding-type" id="growfund_single_page_notice">
+                        <span class="growfund-campaign-single-page-right-content-info-bold">
+                            <?php echo esc_html__('All or nothing.', 'growfund'); ?>
+                        </span> 
+                        <span>
+                            <?php
+                            echo esc_html(
+                                $campaign_single_page->campaign->reaching_action === ReachingAction::CLOSE 
+                                    ? __('This campaign will only be funded if it reaches its goal by', 'growfund') 
+                                    : __('This campaign will be ended by', 'growfund')
+                                );
+							?>
+                        </span>
+                        <span data-growfund-datetime="<?php echo esc_attr($campaign_single_page->campaign->end_date); ?>"></span>
+                    </p>
+                <?php endif; ?>
                 <div class="growfund-campaign-single-page-right-content-location-wrapper">
                     <span class="growfund-campaign-single-page-right-content-location-icon">
                         
@@ -306,12 +332,6 @@ $growfund_dynamic_stack_width = 51 + (($growfund_avatars_in_view - 1) * 20);
 
     <div class="growfund-campaign-single-page-middle-section">
         <?php
-        
-
-        
-
-      
-
 		$growfund_tab_contents = new Tab();
         $growfund_tab_contents->id = "growfund_campaign_single_page_tabs";
 		$growfund_tab_contents->tabs = $campaign_single_page->get_tab_contents();

@@ -46,7 +46,7 @@ class Option
             case AppConfigKeys::PAYMENT:
                 return static::process_payment_settings($option);
             default:
-                return empty($option) ? $default : $option;
+                return is_null($option) || $option === '' ? $default : $option;
         }
     }
 

@@ -43,14 +43,21 @@ const BasicStep = () => {
   const form = useFormContext<CampaignBuilderForm>();
 
   const topLevelCategoriesQuery = useGetTopLevelCategoriesQuery();
-  const categoryOptions = useQueryToOption(topLevelCategoriesQuery, 'id', 'name');
+  const categoryOptions = useQueryToOption(
+    topLevelCategoriesQuery,
+    'id',
+    'name',
+  );
 
   const categoryId = useWatch({ control: form.control, name: 'category' });
 
   const subCategoriesQuery = useGetSubCategoriesQuery(categoryId ?? undefined);
   const subCategoryOptions = useQueryToOption(subCategoriesQuery, 'id', 'name');
 
-  const subCategoryId = useWatch({ control: form.control, name: 'sub_category' });
+  const subCategoryId = useWatch({
+    control: form.control,
+    name: 'sub_category',
+  });
   const isFeatured = useWatch({ control: form.control, name: 'is_featured' });
   const startDate = useWatch({ control: form.control, name: 'start_date' });
 
@@ -68,15 +75,24 @@ const BasicStep = () => {
   const createCategoryMutation = useCreateCategoryMutation();
 
   useEffect(() => {
-    if (categoryId && !subCategoryOptions.find((option) => option.value === subCategoryId)) {
+    if (
+      categoryId &&
+      !subCategoryOptions.find((option) => option.value === subCategoryId)
+    ) {
       form.resetField('sub_category');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categoryId, subCategoryOptions]);
 
-  const handleCategoryCreate = async (name: string, parentId?: string | null) => {
+  const handleCategoryCreate = async (
+    name: string,
+    parentId?: string | null,
+  ) => {
     try {
-      const response = await createCategoryMutation.mutateAsync({ name, parent_id: parentId });
+      const response = await createCategoryMutation.mutateAsync({
+        name,
+        parent_id: parentId,
+      });
       const newCategoryId = (response.data as { id: string }).id;
 
       if (isDefined(parentId)) {
@@ -98,7 +114,9 @@ const BasicStep = () => {
 
   const CampaignCollaborators = registry.get('CampaignCollaborators');
   const CampaignLaunchDate = registry.get('CampaignLaunchDate');
-  const ShowCampaignCollaboratorsCheckbox = registry.get('ShowCampaignCollaboratorsCheckbox');
+  const ShowCampaignCollaboratorsCheckbox = registry.get(
+    'ShowCampaignCollaboratorsCheckbox',
+  );
 
   return (
     <Container>
@@ -134,7 +152,10 @@ const BasicStep = () => {
               control={form.control}
               name="story"
               label={__('Story', 'growfund')}
-              placeholder={__('Write down the story of your funding.', 'growfund')}
+              placeholder={__(
+                'Write down the story of your funding.',
+                'growfund',
+              )}
             />
             <GalleryField
               control={form.control}
@@ -170,7 +191,10 @@ const BasicStep = () => {
                 control={form.control}
                 name="is_featured"
                 label={__('Feature this campaign', 'growfund')}
-                description={__('Appears prominently on lists & pages.', 'growfund')}
+                description={__(
+                  'Appears prominently on lists & pages.',
+                  'growfund',
+                )}
               />
             </div>
             <ComboBoxField
@@ -192,7 +216,11 @@ const BasicStep = () => {
               onAddNewItem={(value) => handleCategoryCreate(value, categoryId)}
             />
             <div className="growfund-flex growfund-items-start growfund-gap-2">
-              <ElementWrapper fallback={<CampaignLaunchDateFallback defaultValue={startDate} />}>
+              <ElementWrapper
+                fallback={
+                  <CampaignLaunchDateFallback defaultValue={startDate} />
+                }
+              >
                 {CampaignLaunchDate && <CampaignLaunchDate />}
               </ElementWrapper>
               <DashIcon className="growfund-text-icon-primary growfund-mt-10 growfund-flex-shrink-0 " />
@@ -211,12 +239,18 @@ const BasicStep = () => {
               label={__('Location', 'growfund')}
               options={locationsAsOptions()}
             />
-            <TagsField control={form.control} name="tags" label={__('Tags', 'growfund')} />
+            <TagsField
+              control={form.control}
+              name="tags"
+              label={__('Tags', 'growfund')}
+            />
             <ElementWrapper fallback={<CollaboratorsFallback />}>
               {CampaignCollaborators && <CampaignCollaborators />}
             </ElementWrapper>
             <ElementWrapper fallback={<ShowCollaboratorsCheckboxFallback />}>
-              {ShowCampaignCollaboratorsCheckbox && <ShowCampaignCollaboratorsCheckbox />}
+              {ShowCampaignCollaboratorsCheckbox && (
+                <ShowCampaignCollaboratorsCheckbox />
+              )}
             </ElementWrapper>
           </div>
         </div>

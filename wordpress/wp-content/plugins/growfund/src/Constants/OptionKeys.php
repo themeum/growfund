@@ -70,4 +70,9 @@ class OptionKeys
      * flag to detect is migrated from crowdfunding
      */
     const IS_MIGRATED_FROM_CROWDFUNDING = 'growfund_is_migrated_from_crowdfunding';
+
+    /**
+     * Download hash key
+     */
+    const DOWNLOAD_HASH_KEY = 'growfund_download_hash_key';
 }

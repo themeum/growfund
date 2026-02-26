@@ -18,7 +18,7 @@ class ShortcodeServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $shortcodes  = require GROWFUND_DIR_PATH . '/configs/shortcodes.php';
+        $shortcodes  = require GROWFUND_DIR_PATH . 'configs/shortcodes.php';
         $this->app->tag($shortcodes, 'shortcodes');
     }
 

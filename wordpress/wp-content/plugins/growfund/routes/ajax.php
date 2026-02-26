@@ -6,6 +6,7 @@ use Growfund\AjaxRouter;
 use Growfund\Controllers\Site\CampaignPostController;
 use Growfund\Controllers\Site\CampaignController;
 use Growfund\Controllers\Site\CommentController;
+use Growfund\Controllers\Site\DonorController;
 use Growfund\Controllers\Site\RewardController;
 
 AjaxRouter::add_action('growfund_ajax_get_paginated_campaigns', [CampaignController::class, 'paginated'])->with_nonce(growfund_with_prefix('ajax_nonce'));
@@ -21,5 +22,9 @@ AjaxRouter::add_action('growfund_ajax_get_comment_by_id', [CommentController::cl
 AjaxRouter::add_action('growfund_ajax_create_comment', [CommentController::class, 'create'])->with_nonce(growfund_with_prefix('ajax_nonce'));
 // Bookmark routes
 AjaxRouter::add_action('growfund_ajax_bookmark_campaign', [CampaignController::class, 'bookmark_campaign'])
+    ->with_nonce(growfund_with_prefix('ajax_nonce'))
+    ->for_authenticated();
+
+AjaxRouter::add_action('growfund_ajax_donor_list', [DonorController::class, 'get_public_list'])
     ->with_nonce(growfund_with_prefix('ajax_nonce'))
     ->for_authenticated();

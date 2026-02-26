@@ -47,7 +47,7 @@ const UserPreviewCard = ({ user, title, onRemove, onEdit, hideHeader = false }: 
   const acronym = createAcronym(user);
 
   return (
-    <Box className="growfund-group/user-card growfund-min-h-80 growfund-h-fit growfund-relative">
+    <Box className="growfund-group/user-card growfund-min-h-60 growfund-h-fit growfund-relative">
       <BoxContent className="growfund-space-y-3">
         {!hideHeader && (
           <div className="growfund-flex growfund-items-center growfund-justify-between">
@@ -165,7 +165,7 @@ const UserPreviewCard = ({ user, title, onRemove, onEdit, hideHeader = false }: 
           </div>
         </div>
         {isDefined(user.joined_at) && (
-          <div className="growfund-flex growfund-gap-2 growfund-items-start growfund-absolute growfund-bottom-4 growfund-left-4">
+          <div className="growfund-flex growfund-gap-2 growfund-items-start growfund-bottom-4 growfund-left-4">
             <Baby className="growfund-size-4 growfund-text-icon-secondary growfund-flex-shrink-0" />
             <div className="growfund-text-fg-secondary growfund-font-medium growfund-typo-tiny">
               {sprintf(

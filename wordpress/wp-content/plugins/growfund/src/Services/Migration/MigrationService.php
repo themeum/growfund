@@ -22,8 +22,13 @@ class MigrationService
                 return growfund_app()->is_donation_mode() ? $donation_migration_service->migrate() : $pledge_migration_service->migrate();
             case 'final':
                 $response = $campaign_migration_service->change_post_type();
-                Option::set(OptionKeys::IS_MIGRATED_FROM_CROWDFUNDING, true);
 
+                $campaign_migration_service->remove_migration_data();
+                $donation_migration_service->remove_migration_data();
+                $pledge_migration_service->remove_migration_data();
+                
+                Option::set(OptionKeys::IS_MIGRATED_FROM_CROWDFUNDING, true);
+                
                 return $response;
             default:
                 return false;

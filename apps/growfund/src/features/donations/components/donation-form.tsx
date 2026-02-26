@@ -23,7 +23,7 @@ const DonationForm = () => {
   const notes = useWatch({ control: form.control, name: 'notes' });
   const amount = useWatch({ control: form.control, name: 'amount' });
   const status = useWatch({ control: form.control, name: 'status' });
-  const [campaign, setCampaign] = useState<Campaign>();
+  const [campaign, setCampaign] = useState<Campaign | null>(null);
 
   return (
     <Container className="growfund-py-10">
@@ -36,6 +36,7 @@ const DonationForm = () => {
                   campaign={campaign}
                   onRemove={() => {
                     form.setValue('campaign_id', '');
+                    setCampaign(null);
                   }}
                 />
 

@@ -62,6 +62,12 @@ class NumberField extends View {
         );
     }
 
+    protected function enqueue_scripts()
+    {
+        $script_url = GROWFUND_DIR_URL . 'resources/assets/site/scripts/components/form/number-field.js';
+        wp_enqueue_script('growfund-number-field-script', $script_url, ['growfund-core'], GROWFUND_VERSION, true);
+    }
+
     /**
      * Get SVG icon markup
      *

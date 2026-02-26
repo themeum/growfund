@@ -37,8 +37,8 @@ class CampaignArchivePage extends View {
     public function get_casts()
     {
         return [
-            'featured_campaigns.results' => CampaignDTO::class,
-            'campaigns.results' => CampaignDTO::class
+            'featured_campaigns.results.*' => CampaignDTO::class,
+            'campaigns.results.*' => CampaignDTO::class
         ];
     }
 

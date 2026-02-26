@@ -29,7 +29,8 @@ $growfund_number_field_has_value = !is_null($number_field->value) && $number_fie
         <?php endif; ?>
 
         <input 
-            type="number" 
+            type="text"
+            pattern="^\d+(\.\d+)?$"
             <?php echo $number_field->id ? 'id="' . esc_attr($number_field->id) . '"' : ''; ?>
             <?php echo $number_field->style ? ' style="' . esc_attr($number_field->style) . '"' : ''; ?>
             <?php echo $number_field->placeholder ? 'placeholder="' . esc_attr($number_field->placeholder) . '"' : ''; ?>

@@ -14,11 +14,11 @@ import { TextareaField } from '@/components/form/textarea-field';
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Form, FormLabel } from '@/components/ui/form';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -26,8 +26,8 @@ import RewardItemsSelection from '@/features/campaigns/components/dialogs/manage
 import { useCampaignBuilderContext } from '@/features/campaigns/contexts/campaign-builder';
 import { type RewardForm, RewardSchema } from '@/features/campaigns/schemas/reward';
 import {
-    useCreateRewardMutation,
-    useUpdateRewardMutation,
+  useCreateRewardMutation,
+  useUpdateRewardMutation,
 } from '@/features/campaigns/services/reward';
 import { useFormErrorHandler } from '@/hooks/use-form-error-handler';
 import { useDialogCloseMiddleware } from '@/hooks/use-wp-media';
@@ -241,25 +241,6 @@ const ManageRewardDialog = ({
                         </div>
                       )}
 
-                      <RadioField
-                        control={form.control}
-                        name="reward_type"
-                        label={__('Backers Receive', 'growfund')}
-                        options={[
-                          {
-                            label: __('Only Physical Goods', 'growfund'),
-                            value: 'physical-goods',
-                          },
-                          {
-                            label: __('Only Digital Goods', 'growfund'),
-                            value: 'digital-goods',
-                          },
-                          {
-                            label: __('Both Physical & Digital goods', 'growfund'),
-                            value: 'physical-and-digital-goods',
-                          },
-                        ]}
-                      />
                       <DatePickerField
                         control={form.control}
                         name="estimated_delivery_date"

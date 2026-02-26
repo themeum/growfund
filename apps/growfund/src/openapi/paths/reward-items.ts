@@ -45,7 +45,7 @@ export function registerRewardItemsPaths(registry: OpenAPIRegistry) {
       body: {
         content: {
           'application/json': {
-            schema: RewardItemPayloadSchema.merge(
+            schema: RewardItemPayloadSchema._def.schema.merge(
               z.object({
                 image: z.string(),
               }),
@@ -102,7 +102,7 @@ export function registerRewardItemsPaths(registry: OpenAPIRegistry) {
       body: {
         content: {
           'application/json': {
-            schema: RewardItemPayloadSchema.merge(
+            schema: RewardItemPayloadSchema._def.schema.merge(
               z.object({
                 image: z.string(),
               }),

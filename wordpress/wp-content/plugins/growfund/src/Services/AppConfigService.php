@@ -16,10 +16,19 @@ class AppConfigService
 {
     public function get_config()
     {
-        if (! is_user_logged_in()) {
-            return $this->public_config();
+        if (!growfund_user()->is_logged_in()) {
+            return $this->get_public_config();
         }
 
+        if (growfund_user()->is_admin()) {
+            return $this->get_admin_config();
+        }
+
+        return $this->get_default_config();
+    }
+
+    protected function get_admin_config()
+    {
         $keys = AppConfigKeys::all();
         $config = [];
 
@@ -36,12 +45,21 @@ class AppConfigService
             $config[AppConfigKeys::PAYMENT]['e_commerce_engine'] = Payment::get_engine();
         }
 
-        $config['growfund_current_user'] = growfund_user()->get_data();
-
         return $config;
     }
 
-    protected function public_config()
+    protected function get_default_config() {
+        return [
+            AppConfigKeys::IS_DONATION_MODE => Option::get(AppConfigKeys::IS_DONATION_MODE, '0'),
+            AppConfigKeys::CAMPAIGN => growfund_settings(AppSettings::CAMPAIGNS)->get(),
+            AppConfigKeys::GENERAL => growfund_settings(AppSettings::GENERAL)->get(),
+            AppConfigKeys::BRANDING => growfund_settings(AppSettings::BRANDING)->get(),
+            AppConfigKeys::PAYMENT => growfund_app()->make(CurrencyConfig::class)->get(),
+            AppConfigKeys::USER_PERMISSIONS => growfund_settings(AppSettings::PERMISSIONS)->get(),
+        ];
+    }
+
+    protected function get_public_config()
     {
         return [
             AppConfigKeys::IS_DONATION_MODE => Option::get(AppConfigKeys::IS_DONATION_MODE, '0'),

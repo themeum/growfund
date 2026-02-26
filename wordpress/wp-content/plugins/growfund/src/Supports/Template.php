@@ -74,7 +74,7 @@ class Template
      */
     public static function get_campaign_details_content()
     {
-        $campaign_id = get_the_ID();
+        $campaign_id = (int) get_the_ID();
 
         if (growfund_settings(AppSettings::CAMPAIGNS)->is_login_required_to_view_campaign_detail() && !growfund_user()->is_logged_in()) {
             return growfund_redirect(growfund_login_url(growfund_campaign_url($campaign_id)));

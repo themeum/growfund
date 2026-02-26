@@ -30,7 +30,6 @@ use Growfund\DTO\Pledge\PledgeDTO;
 use Growfund\DTO\Pledge\PledgePaymentDTO;
 use Growfund\DTO\Pledge\PledgeRewardDTO;
 use Growfund\DTO\RewardDTO;
-use Growfund\DTO\RewardItemDTO;
 use Growfund\Exceptions\ValidationException;
 use Growfund\Http\Response;
 use Growfund\Payments\Constants\PaymentGatewayType;
@@ -45,6 +44,11 @@ use Growfund\Supports\Money;
 use Growfund\Supports\PriceCalculator;
 use DateTime;
 use Exception;
+use Growfund\Constants\Reward\RewardType;
+use Growfund\Constants\RewardItem\AssetType;
+use Growfund\Constants\RewardItem\RewardItemType;
+use Growfund\DTO\RewardItemDTO;
+use Growfund\DTO\RewardItemWithQuantityDTO;
 use Growfund\Supports\Currency;
 
 class PledgeService
@@ -125,8 +129,28 @@ class PledgeService
 
             if (!empty($reward_info['items'])) {
                 foreach ($reward_info['items'] as $item) {
-                    $item['image'] = !empty($item['image']) ? MediaAttachment::make($item['image']) : null;
-                    $reward_items[] = RewardItemDTO::from_array($item);
+                    $reward_item = RewardItemWithQuantityDTO::from_array($item);
+
+                    $asset = null;
+
+                    if (!empty($reward_item->asset)) {
+                        $asset = is_numeric($reward_item->asset) ? (int) $reward_item->asset : (int) ($reward_item->asset['id'] ?? 0);
+                        $asset = !empty($asset) ? $asset : null;
+                    }
+
+                    $reward_item->type = $reward_item->type ?? RewardItemType::PHYSICAL;
+                    $reward_item->image = !empty($reward_item->image) ? MediaAttachment::make($reward_item->image) : null;
+                    $reward_item->asset_type = $reward_item->asset_type ?? AssetType::FILE;
+                    $reward_item->asset = $asset;
+                    $reward_item->asset_url = !empty($reward_item->asset_url) ? $reward_item->asset_url : null;
+
+                    $reward_item_service = new RewardItemService();
+
+                    $reward_item->can_download = $reward_item_service->is_item_downloadable($reward_item) && $reward_item_service->can_user_download_reward_item($reward_item, $record->status, $payment->payment_status, (int) $backer->id);
+                    
+                    $reward_items[] = $reward_item->type === RewardItemType::DIGITAL 
+                        ? $reward_item->exclude(['asset', 'asset_url']) 
+                        : $reward_item->exclude(['asset_type', 'asset', 'asset_url']);
                 }
 
                 $reward_info['items'] = $reward_items;
@@ -680,21 +704,22 @@ class PledgeService
      */
     public function create(CreatePledgeDTO $dto)
     {
+        $is_manual = $dto->is_manual === true;
+
+        if (growfund_user()->is_backer() && $is_manual) {
+            throw new Exception(esc_html__('You can not create a manual pledge', 'growfund'), (int) Response::FORBIDDEN);
+        }
+        
         $campaign_service = new CampaignService();
         $campaign = $campaign_service->get_by_id($dto->campaign_id);
 
         $this->check_campaign_constraints($campaign);
 
-        $is_manual = !empty($dto->is_manual);
-
-        if (growfund_user()->is_backer() && $is_manual) {
-            throw new Exception(esc_html__('You can not create a manual pledge', 'growfund'), (int) Response::FORBIDDEN);
-        }
-
         $reward = null;
 
+        $reward_service = new RewardService();
+
         if ($dto->pledge_option === PledgeOption::WITH_REWARDS) {
-            $reward_service = new RewardService();
             $reward = $reward_service->get_by_id($dto->reward_id);
             $this->check_reward_constraints($reward);
         } else {
@@ -708,13 +733,22 @@ class PledgeService
 			$dto->user_info = wp_json_encode($user_info->to_array());
         }
 
-        if ($dto->reward_id) {
-            $reward_dto = (new RewardService())->get_by_id($dto->reward_id);
+        if ($dto->reward_id && $dto->pledge_option === PledgeOption::WITH_REWARDS) {
+            $reward_dto = $reward_service->get_by_id($dto->reward_id);
             $reward_items = [];
 
             if (!empty($reward_dto->items)) {
                 foreach ($reward_dto->items as $key => $item) {
                     $item->image = $item->image['id'] ?? null;
+
+                    $asset = null;
+
+                    if (!empty($item->asset)) {
+                        $asset = is_numeric($item->asset) ? (int) $item->asset : (int) ($item->asset['id'] ?? 0);
+                        $asset = !empty($asset) ? $asset : null;
+                    }
+
+                    $item->asset = $asset;
                     $reward_items[$key] = $item;
                 }
             }
@@ -726,6 +760,9 @@ class PledgeService
                 'image' => $reward_dto->image['id'] ?? null,
                 'items' => $reward_items,
                 'amount' => $reward_dto->amount ?? 0,
+                'reward_type' => $reward_dto->reward_type,
+                'estimated_delivery_date' => $reward_dto->estimated_delivery_date,
+                'local_pickup_instructions' => $reward_dto->local_pickup_instructions,
             ]);
 
             $dto->reward_info = wp_json_encode($reward_info->to_array());

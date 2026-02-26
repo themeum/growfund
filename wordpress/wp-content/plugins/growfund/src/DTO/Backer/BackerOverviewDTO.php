@@ -5,6 +5,7 @@ namespace Growfund\DTO\Backer;
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\CastAttributes\MoneyAttribute;
+use Growfund\DTO\Activity\ActivityResponseDTO;
 use Growfund\DTO\DTO;
 
 class BackerOverviewDTO extends DTO
@@ -19,6 +20,8 @@ class BackerOverviewDTO extends DTO
     protected $casts = [
         'pledged_amount'    => MoneyAttribute::class,
         'backed_amount' => MoneyAttribute::class,
+        'backer_information' => BackerDTO::class,
+        'activity_logs.*' => ActivityResponseDTO::class
     ];
 
     /** @var float */
@@ -33,9 +36,9 @@ class BackerOverviewDTO extends DTO
     /** @var int */
     public $backed_campaigns;
 
-    /** @var \Growfund\DTO\Backer\BackerDTO */
+    /** @var BackerDTO */
     public $backer_information;
 
-    /** @var \Growfund\DTO\Activity\ActivityResponseDTO[] */
+    /** @var ActivityResponseDTO[] */
     public $activity_logs;
 }

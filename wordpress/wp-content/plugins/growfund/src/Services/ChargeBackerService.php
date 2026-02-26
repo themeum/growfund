@@ -35,9 +35,9 @@ class ChargeBackerService
             return;
         }
 
-        $payment_gateway = growfund_payment_gateway($payment->payment_method->name);
+        $payment_gateway = growfund_payment_gateway($payment->payment_method->name, false);
 
-        if (!$payment_gateway instanceof FuturePaymentContract) {
+        if (is_null($payment_gateway) || !$payment_gateway instanceof FuturePaymentContract) {
             return;
         }
 

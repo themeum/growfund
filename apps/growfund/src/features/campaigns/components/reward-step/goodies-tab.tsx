@@ -1,22 +1,53 @@
 import { ListBulletIcon } from '@radix-ui/react-icons';
 import { __ } from '@wordpress/i18n';
-import { PackageOpen, Plus } from 'lucide-react';
+import { File, PackageOpen, Plus, ShoppingBag } from 'lucide-react';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import ElementWrapper from '@/components/element-wrapper';
 import CampaignRewardFallback from '@/components/pro-fallbacks/campaign/campaign-reward-fallback';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ManageRewardDialog from '@/features/campaigns/components/dialogs/manage-reward-dialog/manage-reward-dialog';
 import ManageRewardItemDialog from '@/features/campaigns/components/dialogs/manage-reward-item-dialog';
 import RewardItems from '@/features/campaigns/components/reward-step/reward-items/reward-items';
 import CampaignRewards from '@/features/campaigns/components/reward-step/rewards/campaign-rewards';
 import { type CampaignForm } from '@/features/campaigns/schemas/campaign';
+import { type RewardItem } from '@/features/campaigns/schemas/reward-item';
 import { cn } from '@/lib/utils';
+
 const GoodiesTab = () => {
   const [activeTab, setActiveTab] = useState<'rewards' | 'items'>('rewards');
+  const [rewardItemType, setRewardItemType] = useState<'digital' | 'physical'>('physical');
+  const [editingItem, setEditingItem] = useState<RewardItem | undefined>(undefined);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   const form = useFormContext<CampaignForm>();
+
+  const openDialog = (type: 'digital' | 'physical', item?: RewardItem) => {
+    setRewardItemType(type);
+    setEditingItem(item);
+    setIsDialogOpen(true);
+  };
+
+  const itemOptions = [
+    {
+      label: __('Physical Product', 'growfund'),
+      value: 'physical' as const,
+      icon: ShoppingBag,
+    },
+    {
+      label: __('Digital Product', 'growfund'),
+      value: 'digital' as const,
+      icon: File,
+    },
+  ];
 
   return (
     <div className="growfund-space-y-2">
@@ -90,12 +121,41 @@ const GoodiesTab = () => {
                     </CampaignRewardFallback>
                   }
                 >
-                  <ManageRewardItemDialog>
-                    <Button variant="outline">
-                      <Plus />
-                      {__('Add Item', 'growfund')}
-                    </Button>
-                  </ManageRewardItemDialog>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline">
+                        <Plus className="growfund-text-icon-primary growfund-w-4 growfund-h-4" />
+                        {__('Add Item', 'growfund')}
+                      </Button>
+                    </DropdownMenuTrigger>
+
+                    <DropdownMenuContent align="end">
+                      {itemOptions.map((option) => {
+                        const Icon = option.icon;
+
+                        return (
+                          <DropdownMenuItem
+                            key={option.value}
+                            onSelect={() => {
+                              openDialog(option.value);
+                            }}
+                            className="growfund-flex growfund-gap-2"
+                          >
+                            <Icon />
+
+                            {option.label}
+                          </DropdownMenuItem>
+                        );
+                      })}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
+                  <ManageRewardItemDialog
+                    open={isDialogOpen}
+                    onOpenChange={setIsDialogOpen}
+                    defaultValues={editingItem}
+                    rewardItemType={rewardItemType}
+                  />
                 </ElementWrapper>
               )}
             </div>
@@ -104,7 +164,11 @@ const GoodiesTab = () => {
             <CampaignRewards />
           </TabsContent>
           <TabsContent value="items">
-            <RewardItems />
+            <RewardItems
+              onEdit={(item) => {
+                openDialog(item.type, item);
+              }}
+            />
           </TabsContent>
         </Tabs>
       </div>

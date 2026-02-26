@@ -16,6 +16,9 @@ class Modal extends View {
     public $header_icon;
 
     /** @var boolean */
+    public $show_header_icon = true;
+
+    /** @var boolean */
     public $show_footer = false;
 
     /** @var boolean */

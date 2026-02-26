@@ -67,6 +67,7 @@
   border: 1px solid var(--growfund-bg-gray-3);
   border-radius: var(--growfund-radius-xl);
   padding: calc(var(--growfund-spacing-4) * 2);
+  width: 496px;
 }
 
 .growfund-campaign-single-page-right-content-raised-header {

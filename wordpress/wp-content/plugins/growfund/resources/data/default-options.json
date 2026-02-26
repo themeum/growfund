@@ -19,6 +19,9 @@
   "growfund_campaign": {
     "is_login_required_to_view_campaign_detail": false,
     "display_contributor_list_publicly": false,
+    "display_contributor_option": "show-amount-and-name",
+    "display_contributor_option_order_by": "top-and-recent",
+    "display_contributor_option_limit": "20",
     "campaign_update_visibility": "public",
     "social_shares": null,
     "allow_comments": true,

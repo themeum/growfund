@@ -63,6 +63,7 @@ class PledgePaymentDTO extends DTO
             'total' => function () {
                 return PriceCalculator::calculate_pledge_total_amount($this->amount, $this->shipping_cost, $this->bonus_support_amount, $this->recovery_fee);
             },
+            'payment_method' => PaymentMethodDTO::class
         ];
     }
 }

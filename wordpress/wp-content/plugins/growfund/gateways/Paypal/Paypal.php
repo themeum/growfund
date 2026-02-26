@@ -18,9 +18,10 @@ use Growfund\Payments\DTO\{
     WebhookResponseDTO,
 };
 use Exception;
+use Growfund\Payments\BasePaymentGateway;
 use InvalidArgumentException;
 
-class Paypal implements PaymentGatewayContract, FuturePaymentContract
+class Paypal extends BasePaymentGateway implements PaymentGatewayContract, FuturePaymentContract
 {
     protected $client_id;
     protected $client_secret;
@@ -69,6 +70,11 @@ class Paypal implements PaymentGatewayContract, FuturePaymentContract
             : 'https://api-m.paypal.com';
 
         $this->authenticate();
+    }
+
+    public function is_configured()
+    {
+        return !empty($this->client_id) && !empty($this->client_secret) && !empty($this->access_token);
     }
 
     /**

@@ -33,9 +33,25 @@
   font-weight: var(--growfund-font-weight-medium);
   font-size: var(--growfund-font-size-lg);
   line-height: 24px;
-  cursor: pointer;
 }
 
 .growfund-payment-method-card-option-item:last-child {
   border-bottom: none;
+}
+
+.growfund-payment-method-card-option-item .growfund-radio-field {
+  cursor: pointer;
+}
+
+.growfund-payment-method-card-option-item .growfund-item-disabled {
+  cursor: not-allowed;
+}
+
+.growfund-payment-method-card-item-warning-info {
+  font-weight: var(--growfund-font-weight-medium);
+  font-size: var(--growfund-font-size-sm);
+  line-height: var(--growfund-spacing-4);
+  color: var(--growfund-text-warning);
+  margin-top: var(--growfund-spacing-2);
+  margin-left: var(--growfund-spacing-4);
 }

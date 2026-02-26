@@ -2,9 +2,6 @@
 
 namespace Growfund\Supports;
 
-use Growfund\Core\AppSettings;
-use Growfund\Payments\Constants\PaymentGatewayType;
-
 defined( 'ABSPATH' ) || exit;
 
 class Url
@@ -57,24 +54,7 @@ class Url
     protected static function filter_safe_url($redirect_url)
     {
         add_filter('wp_safe_redirect_fallback', function ($url) use ($redirect_url) {
-            if (rtrim($url, '/') !== rtrim($redirect_url)) {
-                $payments = growfund_settings(AppSettings::PAYMENT)->get('payments', []);
-
-				$is_safe_url = Arr::make($payments)
-                    ->filter(function ($item) {
-                        return $item['type'] === PaymentGatewayType::ONLINE;
-                    })->some(function ($item) use ($redirect_url) {
-                        $domain = $item['config']['domain_name'] ?? strtolower($item['config']['label'] ?? '');
-                        return !empty($domain) && strpos($redirect_url, $domain) !== false;
-                    });
-
-				// for payment gateways allowed safe redirect
-				if ($is_safe_url) {
-					return $redirect_url;
-				}
-            }
-
-            return $url;
+            return growfund_is_valid_url($redirect_url) ? $redirect_url : $url;
         }, 1, 1);
     }
 }

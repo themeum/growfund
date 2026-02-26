@@ -43,8 +43,12 @@ use Exception;
 use Growfund\Constants\Campaign\FundSelectionType;
 use Growfund\Constants\Campaign\TributeNotificationPreference;
 use Growfund\Constants\Campaign\TributeRequirement;
+use Growfund\Constants\Contributor\DisplayLimit;
+use Growfund\Constants\Contributor\DisplayOptionOrderBy;
 use Growfund\Constants\UserTypes\Donor;
 use Growfund\DTO\Donation\DonationDonorDTO;
+use Growfund\DTO\Donation\DonationDisplayDTO;
+use Growfund\DTO\Donor\DonorDisplayDTO;
 use Growfund\Supports\Payment;
 
 class DonationService
@@ -149,6 +153,7 @@ class DonationService
             $user_info['is_verified'] = !empty($user_info['id']) && growfund_user($user_info['id'])->is_verified();
             $donor_dto = DonationDonorDTO::from_array($user_info);
             $donor_dto->id = (string) $donor_dto->id;
+            $donor_dto->email = $donation->email;
             $donor_dto->phone = $donor_dto->phone;
         }
 
@@ -255,6 +260,12 @@ class DonationService
      */
     public function create(CreateDonationDTO $dto)
     {
+        $is_manual = $dto->is_manual === true;
+
+        if (growfund_user()->is_donor() && $is_manual) {
+            throw new Exception(esc_html__('You can not create a manual donation', 'growfund'), (int) Response::FORBIDDEN);
+        }
+
         $campaign_service = new CampaignService();
         $campaign = $campaign_service->get_by_id($dto->campaign_id);
 
@@ -279,6 +290,7 @@ class DonationService
         $this->check_amount_constraints((int) $dto->amount, $campaign);
         
         $dto->uid = growfund_uuid();
+        $dto->is_manual = $is_manual;
         $dto->payment_engine = growfund_payment_engine();
         $dto->is_anonymous = growfund_settings(AppSettings::PERMISSIONS)->allow_anonymous_donation() && !empty($dto->is_anonymous);
         $dto->created_at = Date::current_sql_safe();
@@ -292,6 +304,7 @@ class DonationService
         if (empty($dto->user_info)) {
             $donor_dto = (new UserService())->get_by_user_id($dto->user_id);
             $donor_dto->image = $donor_dto->image['id'] ?? null;
+            $donor_dto->email = $dto->email ?? $donor_dto->email;
             $user_info = DonationDonorDTO::from_array($donor_dto->to_array());
             $dto->user_info = wp_json_encode($user_info->to_array());
             $dto->email = $user_info->email;

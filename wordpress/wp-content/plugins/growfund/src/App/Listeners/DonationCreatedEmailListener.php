@@ -28,11 +28,14 @@ class DonationCreatedEmailListener
             ->group('growfund_new_donation_mails')
             ->schedule_email();
 
-        growfund_scheduler()->resolve(OfflineDonationInstructionMail::class)
-            ->with([
-                'donation_id' => $event->donation_id,
-            ])
-            ->group('growfund_new_offline_donation_mails')
-            ->schedule_email();
+        if ($event->donation_create_dto->is_manual) {
+            growfund_scheduler()->resolve(OfflineDonationInstructionMail::class)
+                ->with([
+                    'donation_id' => $event->donation_id,
+                ])
+                ->group('growfund_new_offline_donation_mails')
+                ->schedule_email();
+        }
+        
     }
 }

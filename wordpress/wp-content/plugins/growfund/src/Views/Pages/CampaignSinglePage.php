@@ -54,6 +54,9 @@ class CampaignSinglePage extends View {
     {
         $script_url = GROWFUND_DIR_URL . 'resources/assets/site/scripts/pages/campaign-single-page.js';
         wp_enqueue_script('growfund-campaign-single-page-script', $script_url, ['growfund-core'], GROWFUND_VERSION, true);
+
+        $script_url = GROWFUND_DIR_URL . 'resources/assets/site/scripts/components/donors/donor-list.js';
+        wp_enqueue_script('growfund-donor-list-script', $script_url, ['growfund-campaign-single-page-script'], GROWFUND_VERSION, true);
     }
 
     protected function enqueue_styles()
@@ -61,11 +64,11 @@ class CampaignSinglePage extends View {
         $main_styles_url = GROWFUND_DIR_URL . 'resources/assets/site/styles/pages/campaign-single-page.css';
 
         wp_enqueue_style(
-                'growfund-campaign-filters-styles',
-                $main_styles_url,
-                ['growfund-main-styles'],
-                GROWFUND_VERSION
-            );
+            'growfund-campaign-filters-styles',
+            $main_styles_url,
+            ['growfund-main-styles'],
+            GROWFUND_VERSION
+        );
     }
 
     protected function get_casts()

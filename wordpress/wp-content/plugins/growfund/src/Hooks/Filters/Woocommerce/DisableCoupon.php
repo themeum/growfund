@@ -25,7 +25,7 @@ class DisableCoupon extends BaseHook
     {
         $enabled = $args[0];
         
-        if (!WC()->cart) {
+        if (!Woocommerce::is_cart_loaded()) {
 			return $enabled;
 		}
 

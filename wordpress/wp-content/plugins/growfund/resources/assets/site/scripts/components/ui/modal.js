@@ -1,3 +1,16 @@
+function openModal(modal) {
+  modal.classList.add('is-active');
+  document.body.classList.add('no-scroll');
+}
+
+function closeModal(modal) {
+  modal.classList.remove('is-active');
+  document.body.classList.remove('no-scroll');
+}
+
+window.growfundOpenModal = openModal;
+window.growfundCloseModal = closeModal;
+
 document.addEventListener('click', function (event) {
   const isCloseBtn = event.target.closest('.growfund-modal-close-button-icon');
   const isCancelBtn = event.target.closest('.growfund-modal-cancel-button');
@@ -8,16 +21,6 @@ document.addEventListener('click', function (event) {
     if (modal) {
       closeModal(modal);
     }
-  }
-
-  function openModal(modal) {
-    modal.classList.add('is-active');
-    document.body.classList.add('no-scroll');
-  }
-
-  function closeModal(modal) {
-    modal.classList.remove('is-active');
-    document.body.classList.remove('no-scroll');
   }
 
   document.addEventListener('keydown', (event) => {

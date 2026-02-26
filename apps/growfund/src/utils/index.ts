@@ -17,6 +17,15 @@ export function isObject(value: unknown): value is object {
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 export const noop = () => {};
 
+export const isValidUrl = (url: string) => {
+  try {
+    const parsed = new URL(url);
+    return ['http:', 'https:'].includes(parsed.protocol);
+  } catch {
+    return false;
+  }
+};
+
 export function getObjectKeys<T>(value: T) {
   if (!isDefined(value) || !isObject(value)) {
     return [] as (keyof T)[];
@@ -134,7 +143,7 @@ export function displayAddress(address: Address | undefined | null) {
     getCountryByCode(address.country)?.name,
     address.zip_code,
   ]
-    .filter(isDefined)
+    .filter((value) => isDefined(value) && value !== '')
     .join(', ');
 }
 

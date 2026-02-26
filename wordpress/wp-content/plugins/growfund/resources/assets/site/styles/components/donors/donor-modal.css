@@ -1,0 +1,65 @@
+.growfund-donor-modal .growfund-modal-body {
+  overflow-y: unset;
+}
+
+.growfund-donor-modal-wrapper {
+  width: 420px;
+  padding: 0 var(--growfund-spacing-4) var(--growfund-spacing-4) var(--growfund-spacing-4);
+}
+.growfund-donor-modal-title {
+  font-family: var(--growfund-font-family);
+  font-weight: var(--growfund-font-weight-semibold);
+  font-size: 20px;
+  line-height: 28px;
+  color: var(--growfund-text-primary);
+}
+.growfund-modal-donor-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--growfund-spacing-5);
+}
+.growfund-donor-modal-actions button {
+  width: 83px;
+  height: 36px;
+  border-radius: var(--growfund-radius-md);
+  padding: var(--growfund-spacing-2) var(--growfund-spacing-4);
+  background-color: var(--growfund-bg-surface);
+  border: 1px solid var(--growfund-border-secondary);
+  cursor: pointer;
+}
+
+.growfund-donor-modal-actions button.selected {
+  background-color: var(--growfund-text-accent-foreground);
+  color: var(--growfund-text-light);
+}
+.growfund-donor-modal-actions {
+  display: flex;
+  gap: var(--growfund-spacing-3);
+  margin-top: var(--growfund-spacing-3);
+  padding-bottom: var(--growfund-spacing-6);
+}
+
+.growfund-donor-modal-donation-button {
+  border-radius: var(--growfund-radius-md);
+  padding: var(--growfund-spacing-2) var(--growfund-spacing-4);
+  background-color: var(--growfund-bg-fill-brand);
+  color: var(--growfund-text-light);
+  width: 100%;
+  font-size: var(--growfund-font-size-md);
+  font-family: var(--growfund-font-family);
+  font-weight: var(--growfund-font-weight-medium);
+  height: 44px;
+  border: none;
+  cursor: pointer;
+  margin-top: var(--growfund-spacing-4);
+  text-decoration: none;
+}
+
+.growfund-donor-modal-collection {
+  overflow-y: auto;
+  height: calc(60vh - 160px);
+}
+
+.growfund-donor-modal-wrapper .growfund-infinite-scroll {
+  margin: 1rem 0;
+}

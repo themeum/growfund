@@ -29,9 +29,9 @@ class PaymentController
             exit;
         }
 
-        $payment_method = growfund_payment_gateway($request->get_string('payment_method'));
+        $payment_method = growfund_payment_gateway($request->get_string('payment_method'), false);
 
-        if (!$payment_method) {
+        if (empty($payment_method)) {
             wp_die(esc_html__('Payment method not found', 'growfund'));
         }
 

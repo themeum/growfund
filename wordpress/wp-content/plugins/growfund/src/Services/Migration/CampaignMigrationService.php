@@ -2,16 +2,18 @@
 
 namespace Growfund\Services\Migration;
 
+use Growfund\Constants\HookNames;
+use Growfund\Supports\Arr;
+use Growfund\Supports\Option;
+
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Constants\AppreciationType;
 use Growfund\Constants\Campaign\GoalType;
 use Growfund\Constants\Campaign\ReachingAction;
-use Growfund\Constants\DateTimeFormats;
 use Growfund\Constants\Reward\QuantityType;
 use Growfund\Constants\Reward\RewardType;
 use Growfund\Constants\Reward\TimeLimitType;
-use Growfund\Constants\Shipping;
 use Growfund\Constants\Status\CampaignStatus;
 use Growfund\Constants\UserTypes\Fundraiser;
 use Growfund\PostTypes\Campaign;
@@ -33,19 +35,21 @@ use Growfund\DTO\Migration\MigrationResponseDTO;
 use Growfund\Services\UserService;
 use Growfund\Supports\Location;
 use Growfund\Supports\User as UserSupport;
-use WP_Query;
 use WP_User;
 
 class CampaignMigrationService
 {
-    const BATCH_SIZE = 10;
     const OFFSET_KEY = 'growfund_campaign_migration_offset';
     const TOTAL_KEY = 'growfund_campaign_migration_total';
+    public static $batch_size = 50;
 
-    private $statuses = ['publish', 'draft', 'pending', 'private', 'trash'];
+    public function __construct()
+    {
+        static::$batch_size = apply_filters(HookNames::GROWFUND_CAMPAIGN_MIGRATION_BATCH_SIZE_FILTER, static::$batch_size);
+    }
 
     /**
-     * @return array|false
+     * @return MigrationResponseDTO
      */
     public function migrate()
     {
@@ -62,11 +66,10 @@ class CampaignMigrationService
         }
 
         foreach ($campaigns as $campaign) {
-            if (!$this->migrate_campaign($campaign)) {
-                $this->set_offset($offset);
-				$response->completed = $offset;
-                
-                return $response;
+            try {
+                $this->migrate_campaign($campaign);
+            } catch (Exception $e) {
+                // @todo: implement failed campaign tracking later to keep track if needed
             }
 
             ++$offset;
@@ -114,7 +117,6 @@ class CampaignMigrationService
                 'terms.term_id'
             )
             ->where('posts.post_type', 'product')
-            ->where_in('posts.post_status', $this->statuses)
             ->where('term_taxonomy.taxonomy', 'product_type')
             ->where('terms.slug', 'crowdfunding');
     }
@@ -123,24 +125,12 @@ class CampaignMigrationService
     {
         $campaigns = [];
 
-        $args = [
-            'post_type'      => 'product',
-            'posts_per_page' => static::BATCH_SIZE,
-            'offset'         => $offset,
-            'post_status'    => $this->statuses,
-            'tax_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
-                [
-                    'taxonomy' => 'product_type',
-                    'field'    => 'slug',
-                    'terms'    => 'crowdfunding',
-                    'value' => 'crowdfunding'
-                ]
-            ],
-        ];
+        $posts = $this->get_all_campaign_query()
+            ->limit(static::$batch_size)
+            ->offset($offset)
+            ->get();
 
-        $query = new WP_Query($args);
-
-        foreach ($query->posts as $post) {
+        foreach ($posts as $post) {
             $campaign_id = $post->ID;
 
             $images = get_post_meta($campaign_id, '_product_image_gallery', true);
@@ -178,6 +168,12 @@ class CampaignMigrationService
                 }, $tags);
             }
 
+            $status = $this->get_campaign_status($post->post_status);
+
+            $start_date = get_post_meta($campaign_id, '_nf_duration_start', true);
+            $start_date = !empty($start_date) ? $start_date : $post->post_date;
+            $end_date = get_post_meta($campaign_id, '_nf_duration_end', true);
+
             $campaign = [
                 'id'                         => $campaign_id,
                 'title'                      => get_the_title($campaign_id),
@@ -189,17 +185,18 @@ class CampaignMigrationService
                 'is_featured'                => false,
                 'category'                   => $category,
                 'subcategory'                => $subcategory,
-                'start_date'                 => Date::sql_safe(get_post_meta($campaign_id, '_nf_duration_start', true)),
-                'end_date'                   => Date::sql_safe(get_post_meta($campaign_id, '_nf_duration_end', true)),
+                'start_date'                 => Date::sql_safe($start_date),
+                'end_date'                   => !empty($end_date) ? Date::sql_safe($end_date) : null,
                 'location'                   => get_post_meta($campaign_id, '_nf_location', true),
                 'tags'                       => $tags,
                 'show_collaborator_list'     => filter_var(get_post_meta($campaign_id, 'wpneo_show_contributor_table', true), FILTER_VALIDATE_BOOLEAN),
-                'status'                     => $this->get_campaign_status($post),
+                'status'                     => $status,
                 'has_goal'                   => true,
                 'goal_type'                  => GoalType::RAISED_AMOUNT,
                 'goal_amount'                => Money::prepare_for_storage(get_post_meta($campaign_id, '_nf_funding_goal', true) ?? 0),
                 'reaching_action'            => ReachingAction::CLOSE,
                 'author_id'                  => $post->post_author,
+                'is_ended'                   => $status === CampaignStatus::COMPLETED,
             ];
 
             if (growfund_app()->is_donation_mode()) {
@@ -267,16 +264,18 @@ class CampaignMigrationService
         return $campaigns;
     }
 
-    protected function get_campaign_status($post) {
-        if ($post->post_status === 'publish') {
-            return CampaignStatus::PUBLISHED;
-        }
+    protected function get_campaign_status($post_status) {
 
-        if ($post->post_status === 'trash') {
-            return CampaignStatus::TRASHED;
+        switch($post_status) {
+            case 'publish':
+                return CampaignStatus::PUBLISHED;
+            case 'pending':
+                return CampaignStatus::PENDING;
+            case 'trash':
+                return CampaignStatus::TRASHED;
+            default:
+                return CampaignStatus::DRAFT;
         }
-
-        return CampaignStatus::DRAFT;
     }
 
     protected function migrate_campaign($campaign)
@@ -312,12 +311,11 @@ class CampaignMigrationService
             }
         }
 
-        if ($campaign['description']) {
-            wp_update_post([
-                'ID' => $campaign['id'],
-                'post_content' => $campaign['description']
-            ]);
-        }
+        wp_update_post([
+            'ID' => $campaign['id'],
+            'post_content' => $campaign['description'] ?? $campaign['story'] ?? '',
+            'post_status' => Campaign::DEFAULT_POST_STATUS
+        ]);
 
         $metas = [];
 
@@ -357,98 +355,143 @@ class CampaignMigrationService
 
     protected function insert_rewards($campaign_id, $author_id, $rewards)
     {
-        foreach ($rewards as $key => $reward) {
-            $reward_id = wp_insert_post([
-                'post_type'    => Reward::NAME,
-                'post_title'   => 'Reward ' . (string) (((int) $key) + 1),
-                'post_content' => $reward['description'] ?? '',
-                'post_status'  => Reward::DEFAULT_POST_STATUS,
-                'post_author'  => $author_id ?? 0,
-                'post_parent'  => $campaign_id,
-            ], true);
+        QueryBuilder::begin_transaction();
 
-            if (is_wp_error($reward_id)) {
-                throw new Exception(esc_html($reward_id->get_error_message()));
-            }
+        try {
+            $posts = Arr::make($rewards)->map(function ($reward, $key) use ($campaign_id, $author_id) {
+                return [
+                    'post_type'    => Reward::NAME,
+                    'post_title'   => 'Reward ' . (string) (((int) $key) + 1),
+                    'post_content' => $reward['description'] ?? '',
+                    'post_excerpt' => '',
+                    'post_name'    => sanitize_title('Reward ' . (string) (((int) $key) + 1)),
+                    'post_status'  => Reward::DEFAULT_POST_STATUS,
+                    'post_author'  => $author_id ?? 0,
+                    'post_parent'  => $campaign_id,
+                    'post_date'    => current_time('mysql'),
+                    'post_date_gmt' => current_time('mysql', true),
+                    'post_modified' => current_time('mysql'),
+                    'post_modified_gmt' => current_time('mysql', true),
+                    'ping_status' => 'closed',
+                    'to_ping' => '',
+                    'pinged' => ''
+                ];
+            })->toArray();
+
+            QueryBuilder::query()->table('posts')->insert($posts);
+            
+            $first_id = QueryBuilder::get_db()->insert_id;
+
+            $this->generate_guid();
+
+            $first_item_id = $this->insert_reward_items($campaign_id, $author_id, $rewards);
 
             $metas = [];
 
-            if (!empty($reward['image'])) {
+            foreach($rewards as $key => $reward) {
+                $reward_id = $first_id + $key;
                 $metas[] = [
                     'post_id' => $reward_id,
                     'meta_key' => '_thumbnail_id', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
                     'meta_value' => $reward['image'] // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
                 ];
-            }
 
-            foreach ($reward as $meta_key => $meta_value) {
-                if (in_array($meta_key, ['description', 'image'], true)) {
-                    continue;
+                foreach ($reward as $meta_key => $meta_value) {
+                    if (in_array($meta_key, ['description', 'image'], true)) {
+                        continue;
+                    }
+
+                    $metas[] = [
+                        'post_id' => $reward_id,
+                        'meta_key' => growfund_with_prefix($meta_key), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+                        'meta_value' => maybe_serialize($meta_value) // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+                    ];
                 }
 
                 $metas[] = [
                     'post_id' => $reward_id,
-                    'meta_key' => growfund_with_prefix($meta_key), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-                    'meta_value' => maybe_serialize($meta_value) // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+                    'meta_key' => growfund_with_prefix('items'), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+                    'meta_value' => maybe_serialize([ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+                        [
+                            'id' => $first_item_id + $key,
+                            'quantity' => $reward['quantity']
+                        ]
+                    ])
                 ];
             }
 
-            $item_id = $this->insert_reward_item($campaign_id, $author_id, $reward);
-
-            $metas[] = [
-                'post_id' => $reward_id,
-                'meta_key' => growfund_with_prefix('items'), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-                'meta_value' => maybe_serialize([ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
-					[
-						'id' => $item_id,
-						'quantity' => $reward['quantity']
-					]
-				])
-            ];
-
             QueryBuilder::query()->table('postmeta')->insert($metas);
+            QueryBuilder::commit();
+        } catch(Exception $e) {
+            QueryBuilder::rollback();
+
+            throw $e;
         }
     }
 
-    protected function insert_reward_item($campaign_id, $author_id, $item)
+    protected function insert_reward_items($campaign_id, $author_id, $rewards)
     {
-        $reward_item_id = wp_insert_post([
-            'post_type'    => RewardItem::NAME,
-            'post_title'   => 'Reward Item',
-            'post_content' => $item['description'] ?? '',
-            'post_status'  => RewardItem::DEFAULT_POST_STATUS,
-            'post_author'  => $author_id ?? 0,
-            'post_parent'  => $campaign_id,
-        ], true);
+        $reward_items = Arr::make($rewards)->map(function ($item) use ($campaign_id, $author_id) {
+            return [
+                'post_type'    => RewardItem::NAME,
+                'post_title'   => 'Reward Item',
+                'post_content' => $item['description'] ?? '',
+                'post_status'  => RewardItem::DEFAULT_POST_STATUS,
+                'post_author'  => $author_id ?? 0,
+                'post_parent'  => $campaign_id,
+            ];
+        })->toArray();
 
-        if (is_wp_error($reward_item_id)) {
-            throw new Exception(esc_html($reward_item_id->get_error_message()));
-        }
+        QueryBuilder::query()->table('posts')->insert($reward_items);
+        
+        $first_id = QueryBuilder::get_db()->insert_id;
 
-        if (!empty($item['image'])) {
-            set_post_thumbnail($reward_item_id, $item['image']);
-        }
+        $this->generate_guid();
 
-        return $reward_item_id;
+        $metas = Arr::make($rewards)->map(function ($item, $key) use ($first_id) {
+            return [
+                    'post_id' => $first_id + $key,
+                    'meta_key' => '_thumbnail_id', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+                    'meta_value' => $item['image'] // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+                ];
+        })->toArray();
+
+        QueryBuilder::query()->table('postmeta')->insert($metas);
+
+        return $first_id;
     }
 
     protected function insert_campaign_updates($campaign_id, $author_id, $items)
     {
-        foreach ($items as $item) {
-            $item_id = wp_insert_post([
-                'post_type'    => CampaignPost::NAME,
-                'post_title'   => $item['title'] ?? '',
-                'post_content' => $item['details'] ?? '',
-                'post_date'    => !empty($item['date']) ? Date::sql_safe($item['date'], true) : Date::current_sql_safe(true),
-                'post_status'  => CampaignPost::DEFAULT_POST_STATUS,
-                'post_author'  => $author_id ?? 0,
-                'post_parent'  => $campaign_id,
-            ], true);
+        $now = Date::current_sql_safe(true);
 
-            if (is_wp_error($item_id)) {
-                throw new Exception(esc_html($item_id->get_error_message()));
-            }
-        }
+        $updates = Arr::make($items)->map(function ($item) use ($campaign_id, $author_id, $now) {
+            $date = !empty($item['date']) ? Date::sql_safe($item['date'], true) : $now;
+            $title = $item['title'] ?? '';
+
+            return [
+                'post_type'             => CampaignPost::NAME,
+                'post_title'            => $title,
+                'post_name'             => sanitize_title($title), // Essential for permalinks
+                'post_content'          => $item['details'] ?? '',
+                'post_excerpt'          => '', 
+                'post_date'             => get_date_from_gmt($date),
+                'post_date_gmt'         => $date,
+                'post_modified'         => get_date_from_gmt($date),
+                'post_modified_gmt'     => $date,
+                'post_status'           => CampaignPost::DEFAULT_POST_STATUS,
+                'post_author'           => $author_id ?? 0,
+                'post_parent'           => $campaign_id,
+                'ping_status'           => 'closed',
+                'to_ping'               => '',
+                'pinged'                => '',
+                'post_content_filtered' => '',
+            ];
+        });
+
+        QueryBuilder::query()->table('posts')->insert($updates->toArray());
+
+        $this->generate_guid();
     }
 
     /**
@@ -500,6 +543,15 @@ class CampaignMigrationService
         return $user_service->update($user->ID, UpdateFundraiserDTO::from_array($data));
     }
 
+    protected function generate_guid()
+    {
+        $table = QueryBuilder::prefix('posts');
+
+        QueryBuilder::raw("UPDATE {$table} SET guid = CONCAT(:home_url, '/?p=', ID)", [
+            'home_url' => get_home_url()
+        ]);
+    }
+
     protected function get_first_date_by_month_year($month, $year)
     {
         $month = ucfirst(strtolower($month));
@@ -516,23 +568,29 @@ class CampaignMigrationService
 
     protected function get_offset(int $default = 0)
     {
-        return (int) get_transient(static::OFFSET_KEY) ?? $default;
+        return (int) Option::get(static::OFFSET_KEY) ?? $default;
     }
     
     protected function set_offset(int $offset)
     {
-        set_transient(static::OFFSET_KEY, $offset, time() + 24 * 60 * 60);
+        Option::set(static::OFFSET_KEY, $offset);
     }
 
-    protected function get_total()
+    public function get_total()
     {
-        $total = (int) get_transient(static::TOTAL_KEY);
+        $total = (int) Option::get(static::TOTAL_KEY);
 
         if (!$total) {
             $total = $this->get_all_campaign_query()->count();
-            set_transient(static::TOTAL_KEY, $total, time() + 24 * 60 * 60);
+            Option::set(static::TOTAL_KEY, $total);
         }
         
         return $total;
+    }
+
+    public function remove_migration_data()
+    {
+        Option::delete(static::OFFSET_KEY);
+        Option::delete(static::TOTAL_KEY);
     }
 }

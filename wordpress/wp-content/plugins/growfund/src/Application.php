@@ -257,7 +257,7 @@ class Application extends Container
      */
     protected function register_app_defined_providers()
     {
-        $providers  = require GROWFUND_DIR_PATH . '/bootstrap/providers.php';
+        $providers  = require GROWFUND_DIR_PATH . 'bootstrap/providers.php';
 
         if (empty($providers)) {
             return;
@@ -287,7 +287,7 @@ class Application extends Container
      */
     protected function register_app_defined_aliases()
     {
-        $aliases = require GROWFUND_DIR_PATH . '/bootstrap/aliases.php';
+        $aliases = require GROWFUND_DIR_PATH . 'bootstrap/aliases.php';
 
         if (empty($aliases)) {
             return;

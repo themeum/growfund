@@ -3,8 +3,6 @@
  * @var Growfund\Views\Components\CampaignUpdate\EmptyUpdate $empty_update
  */
 
-
-
 defined('ABSPATH') || exit;
 ?>
 

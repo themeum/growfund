@@ -18,7 +18,7 @@ class UrlRule extends BaseRule
      */
     public function validate_rule()
     {
-        return filter_var($this->value, FILTER_VALIDATE_URL) !== false;
+        return growfund_is_valid_url($this->value);
     }
 
     /**

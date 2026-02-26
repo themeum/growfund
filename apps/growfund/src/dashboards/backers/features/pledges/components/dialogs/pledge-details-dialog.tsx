@@ -1,9 +1,11 @@
+import { ArrowTopRightIcon } from '@radix-ui/react-icons';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { format } from 'date-fns';
 import { DownloadIcon, HeartHandshake } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
 
+import { GiftPackIcon } from '@/app/icons';
 import PaymentStatusBadge from '@/components/payment-status-badge';
 import PDFPledgeWithRewardContent from '@/components/pdf/contents/pdf-pledge-with-reward-content';
 import PdfPledgeWithoutRewardContent from '@/components/pdf/contents/pdf-pledge-without-reward-content';
@@ -12,17 +14,19 @@ import PledgeStatusBadge from '@/components/pledge-status-badge';
 import { Box, BoxContent } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import {
-    Dialog,
-    DialogCloseButton,
-    DialogContent,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogCloseButton,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Image } from '@/components/ui/image';
 import { OptionKeys } from '@/constants/option-keys';
 import { useAppConfig } from '@/contexts/app-config';
+import { type RewardItem } from '@/features/campaigns/schemas/reward-item';
+import { useRewardItemDownloadMutation } from '@/features/campaigns/services/reward-item';
 import { type Pledge } from '@/features/pledges/schemas/pledge';
 import { type PdfReceiptTemplate } from '@/features/settings/schemas/pdf-receipt';
 import { useCurrency } from '@/hooks/use-currency';
@@ -104,6 +108,21 @@ const PledgeDetailsDialog = ({
     },
   ] as const;
 
+  const rewardItemDownloadMutation = useRewardItemDownloadMutation();
+
+  const handleDownload = (item: RewardItem) => {
+    rewardItemDownloadMutation.mutate(
+      { uid: pledge.uid, rewardItemId: item.id },
+      {
+        onSuccess: (downloadLink) => {
+          if (downloadLink) {
+            window.open(downloadLink, '_blank', 'noopener,noreferrer');
+          }
+        },
+      },
+    );
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -155,7 +174,12 @@ const PledgeDetailsDialog = ({
             {isDefined(pledge.reward) && (
               <Box className="growfund-border-border-secondary growfund-shadow-none">
                 <BoxContent className="growfund-space-y-3">
-                  <h6 className="growfund-typo-h6 growfund-text-fg-primary">{__('Reward', 'growfund')}</h6>
+                  <div className="growfund-flex growfund-items-center growfund-justify-center">
+                    <GiftPackIcon className="growfund-flex growfund-items-center" />
+                    <h6 className="growfund-typo-h6 growfund-text-fg-primary growfund-flex growfund-items-center">
+                      {__('Rewards', 'growfund')}
+                    </h6>
+                  </div>
 
                   <Box className="growfund-border-none growfund-shadow-none growfund-bg-background-surface-secondary">
                     <BoxContent className="growfund-p-3 growfund-grid growfund-grid-cols-[5.5rem_auto] growfund-gap-3">
@@ -200,20 +224,45 @@ const PledgeDetailsDialog = ({
                         .map((item, index) => {
                           return (
                             <Box key={index} className="growfund-shadow-none">
-                              <BoxContent className="growfund-p-3 growfund-grid growfund-grid-cols-[3rem_auto] growfund-gap-3">
-                                <Image
-                                  src={item.image?.url ?? null}
-                                  alt={item.title}
-                                  className="growfund-w-full"
-                                  fit="cover"
-                                  aspectRatio="square"
-                                />
-                                <div className="growfund-space-y-1">
-                                  <p className="growfund-typo-small growfund-text-fg-primary">{item.title}</p>
-                                  <p className="growfund-typo-tiny growfund-text-fg-secondary">
-                                    {/* translators: %s: reward quantity */}
-                                    {sprintf(__('Quantity: %s', 'growfund'), item.quantity)}
-                                  </p>
+                              <BoxContent className="growfund-p-3 growfund-flex growfund-justify-between growfund-items-center growfund-gap-3">
+                                <div className="growfund-flex growfund-gap-3">
+                                  <Image
+                                    src={item.image?.url ?? null}
+                                    alt={item.title}
+                                    className="growfund-w-16 growfund-h-16 growfund-object-cover"
+                                    fit="cover"
+                                    aspectRatio="square"
+                                  />
+                                  <div className="growfund-space-y-1">
+                                    <p className="growfund-typo-small growfund-text-fg-primary">
+                                      {item.title}
+                                    </p>
+                                    <p className="growfund-typo-tiny growfund-text-fg-secondary">
+                                      {/* translators: %s: reward quantity */}
+                                      {sprintf(__('Quantity: %s', 'growfund'), item.quantity)}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div>
+                                  {item.can_download && (
+                                    <Button
+                                      variant="link"
+                                      size="sm"
+                                      className="growfund-flex growfund-items-center growfund-gap-2 growfund-text-fg-emphasis"
+                                      onClick={() => {
+                                        handleDownload(item);
+                                      }}
+                                    >
+                                      {item.asset_type === 'url' ? (
+                                        <ArrowTopRightIcon />
+                                      ) : (
+                                        <DownloadIcon />
+                                      )}
+                                      {item.asset_type === 'url'
+                                        ? __('Visit', 'growfund')
+                                        : __('Download', 'growfund')}
+                                    </Button>
+                                  )}
                                 </div>
                               </BoxContent>
                             </Box>
@@ -252,7 +301,9 @@ const PledgeDetailsDialog = ({
             <Box className="growfund-border-border-secondary growfund-shadow-none growfund-mb-10">
               <BoxContent className="growfund-space-y-3">
                 <div className="growfund-flex growfund-items-center growfund-justify-between">
-                  <h6 className="growfund-typo-h6 growfund-text-fg-primary">{__('Payment', 'growfund')}</h6>
+                  <h6 className="growfund-typo-h6 growfund-text-fg-primary">
+                    {__('Payment', 'growfund')}
+                  </h6>
                   <PaymentStatusBadge status={pledge.payment.payment_status ?? 'pending'} />
                 </div>
 

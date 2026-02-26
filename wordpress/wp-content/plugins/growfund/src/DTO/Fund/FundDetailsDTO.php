@@ -4,7 +4,9 @@ namespace Growfund\DTO\Fund;
 
 defined( 'ABSPATH' ) || exit;
 
+use Growfund\DTO\Donation\DonationDTO;
 use Growfund\DTO\DTO;
+use Growfund\DTO\RevenueChartDTO;
 
 class FundDetailsDTO extends DTO
 {
@@ -24,12 +26,17 @@ class FundDetailsDTO extends DTO
     public $description;
 
     /**
-     * @var \Growfund\DTO\RevenueChartDTO[]
+     * @var RevenueChartDTO[]
      */
     public $revenue;
 
     /**
-     * @var \Growfund\DTO\Donation\DonationDTO[]
+     * @var DonationDTO[]
      */
     public $recent_donations;
+
+    public $casts = [
+        'revenue.*' => RevenueChartDTO::class,
+        'recent_donations.*' => DonationDTO::class,
+    ];
 }
