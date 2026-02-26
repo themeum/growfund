@@ -42,8 +42,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: ${{ steps.deploy.outputs.zip-path }}
-          name: 'Growfund - ${{ github.ref }}'
-          body: '**Full Changelog**: https://github.com/themeum/growfund/compare/${{ github.ref }}...${{ github.ref }}'
+          name: 'Growfund - ${{ github.ref_name }}'
+          body: '**Full Changelog**: https://github.com/themeum/growfund/compare/${{ github.ref_name }}...${{ github.ref_name }}'
           make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
