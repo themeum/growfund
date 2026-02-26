@@ -5,8 +5,8 @@
   "repository": "git@github.com:themeum/growfund.git",
   "license": "GPL-2.0-only",
   "scripts": {
-    "build": "npm-run-all -s build:apps make:pot composer:install build:gulp",
-    "build:package": "npm-run-all -s build:apps make:pot composer:install build:gulp:zip",
+    "build": "npm-run-all -s build:apps composer:install build:gulp",
+    "build:package": "npm-run-all -s build:apps composer:install build:gulp:zip",
     "build:apps": "cd ./apps && yarn install && yarn build",
     "build:gulp": "gulp",
     "build:gulp:zip": "gulp zip",
