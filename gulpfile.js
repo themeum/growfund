@@ -15,7 +15,7 @@ const config = {
 const tasks = {
   plugin: {
     src: [
-      `${config.plugin_path}/**/*.{php,js,css,json,md,txt,pot,po,mo,jpg,jpeg,png,svg,webp,ttf}`,
+      `${config.plugin_path}/**/*.{php,js,css,json,md,txt,pot,po,mo,jpg,jpeg,png,svg,webp,ttf,html,woff,woff2}`,
     ],
     dest: config.build_path,
   },
