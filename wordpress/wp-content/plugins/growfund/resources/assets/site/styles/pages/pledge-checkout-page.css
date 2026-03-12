@@ -182,7 +182,7 @@
   color: var(--growfund-text-primary);
 }
 .growfund-pledge-checkout-page-left-section-bonus-support-amount {
-  font-weight:var(--growfund-font-weight-normal) ;
+  font-weight: var(--growfund-font-weight-normal);
   font-size: var(--growfund-font-size-xl);
   line-height: 27px;
   color: var(--growfund-text-primary);
@@ -191,7 +191,7 @@
 .growfund-pledge-checkout-page-left-section-bonus-support-amount
   .growfund-number-field-main-wrapper {
   max-width: 120px;
-  width: 100%;var(--growfund-font-weight-normal)
+  width: 100%;
 }
 
 .growfund-pledge-checkout-page-left-section-bonus-support-amount .growfund-number-field-wrapper {
@@ -222,7 +222,7 @@
   color: var(--growfund-text-primary);
 }
 .growfund-pledge-checkout-page-left-section-total-amount-text {
-  font-weight:var(--growfund-font-weight-medium);
+  font-weight: var(--growfund-font-weight-medium);
   font-size: var(--growfund-font-size-2xl);
   line-height: 122%;
   color: var(--growfund-text-primary);
@@ -255,6 +255,12 @@
   line-height: 20px;
 }
 
+.growfund-pledge-checkout-page-local-pickup-instruction {
+  background-color: var(--growfund-bg-surface);
+  padding: var(--growfund-spacing-3);
+  border-radius: var(--growfund-radius-md);
+}
+
 .growfund-pledge-checkout-page-right-section-shipping-address {
   display: flex;
   flex-direction: column;
@@ -272,7 +278,7 @@
 }
 .growfund-pledge-checkout-page-right-section-pledge-button-info {
   font-weight: var(--growfund-font-weight-normal);
-  color:var(--growfund-text-muted-foreground);
+  color: var(--growfund-text-muted-foreground);
   font-size: var(--growfund-font-size-md);
   line-height: 21px;
 }

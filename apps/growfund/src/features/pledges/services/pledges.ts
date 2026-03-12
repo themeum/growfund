@@ -180,11 +180,27 @@ const useRetryFailedPaymentMutation = () => {
   });
 };
 
+const markAsReadyForPickup = ({ pledgeId }: { pledgeId: string }) => {
+  return apiClient.post(endpoints.MARK_AS_READY_FOR_PICKUP(pledgeId));
+};
+
+const useMarkAsReadyForPickupMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: markAsReadyForPickup,
+    onSuccess() {
+      void queryClient.invalidateQueries({ queryKey: ['PledgeDetails'] });
+      toast.success(__('Marked as ready for pickup.', 'growfund'));
+    },
+  });
+};
+
 export {
   useChargePledgedBackerMutation,
   useCreateNewPledgeMutation,
   useDeletePledgeMutation,
   useEmptyPledgesTrashMutation,
+  useMarkAsReadyForPickupMutation,
   usePledgeDetailsQuery,
   usePledgesBulkActionsMutation,
   usePledgesQuery,

@@ -174,6 +174,11 @@ export const emailTemplates: EmailTemplateConfig[] = [
     label: __('Pledge Paid', 'growfund'),
   },
   {
+    key: 'backer_send_local_pickup_instructions',
+    optionKey: 'growfund_backer_email_send_local_pickup_instructions',
+    label: __('Send Local Pickup Instruction', 'growfund'),
+  },
+  {
     key: 'backer_campaign_half_funded',
     optionKey: 'growfund_backer_email_campaign_half_funded',
     label: __('Campaign Half Funded', 'growfund'),
@@ -273,9 +278,8 @@ type EmailContentPayload = z.infer<typeof EmailContentFormSchema>;
 type EmailContent = z.infer<typeof EmailContentSchema>;
 
 export {
-    EmailContentFormSchema,
-    type EmailContent,
-    type EmailContentForm,
-    type EmailContentPayload
+  EmailContentFormSchema,
+  type EmailContent,
+  type EmailContentForm,
+  type EmailContentPayload,
 };
-

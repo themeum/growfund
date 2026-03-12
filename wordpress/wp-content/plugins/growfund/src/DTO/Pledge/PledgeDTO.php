@@ -47,6 +47,12 @@ class PledgeDTO extends DTO
     /** @var string */
     public $pledge_option;
 
+    /** @var \Growfund\Constants\Pledge\DeliveryOption */
+    public $delivery_option;
+
+    /** @var bool */
+    public $is_ready_for_pickup = false;
+
     /** @var string|null */
     public $notes;
 

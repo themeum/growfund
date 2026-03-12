@@ -103,6 +103,7 @@
     "is_enabled_backer_email_pledge_cancelled": true,
     "is_enabled_backer_email_reward_delivered": true,
     "is_enabled_backer_email_campaign_half_funded": false,
+    "is_enabled_backer_email_send_local_pickup_instructions": false,
     "is_enabled_donor_email_donation_receipt": true,
     "is_enabled_donor_email_donation_failed": true,
     "is_enabled_donor_email_new_donor_registration": true,

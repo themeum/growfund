@@ -43,12 +43,8 @@ use Exception;
 use Growfund\Constants\Campaign\FundSelectionType;
 use Growfund\Constants\Campaign\TributeNotificationPreference;
 use Growfund\Constants\Campaign\TributeRequirement;
-use Growfund\Constants\Contributor\DisplayLimit;
-use Growfund\Constants\Contributor\DisplayOptionOrderBy;
 use Growfund\Constants\UserTypes\Donor;
 use Growfund\DTO\Donation\DonationDonorDTO;
-use Growfund\DTO\Donation\DonationDisplayDTO;
-use Growfund\DTO\Donor\DonorDisplayDTO;
 use Growfund\Supports\Payment;
 
 class DonationService

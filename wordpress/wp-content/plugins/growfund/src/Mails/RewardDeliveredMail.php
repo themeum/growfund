@@ -60,7 +60,10 @@ class RewardDeliveredMail extends Mailer
         return parent::with(
             array_merge(
                 [
-                    'reward_delivered_card' => growfund_renderer()->get_html('mails.components.reward-delivered-card', [
+                    'reward_delivered_card' => growfund_renderer()->get_html('mails.components.reward-summary-card', [
+                        'pledge' => $pledge
+                    ]), /* @deprecated since 1.0.9: use reward_summary_card */
+                    'reward_summary_card' => growfund_renderer()->get_html('mails.components.reward-summary-card', [
                         'pledge' => $pledge
                     ]),
                     'backer_name' => sprintf('%s %s', $pledge_dto->backer->first_name ?? '', $pledge_dto->backer->last_name ?? ''),

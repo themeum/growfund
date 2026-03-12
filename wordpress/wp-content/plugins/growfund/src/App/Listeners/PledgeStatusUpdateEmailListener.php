@@ -5,7 +5,7 @@ namespace Growfund\App\Listeners;
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\App\Events\PledgeStatusUpdateEvent;
-use Growfund\Constants\AppreciationType;
+use Growfund\Constants\Campaign\AppreciationType;
 use Growfund\Constants\Mail\MailKeys;
 use Growfund\Mails\Backer\PledgePaidMail;
 use Growfund\Mails\Backer\PledgePaidWithGivingThanksMail;

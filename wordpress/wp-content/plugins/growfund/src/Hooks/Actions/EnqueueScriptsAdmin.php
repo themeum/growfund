@@ -52,13 +52,6 @@ class EnqueueScriptsAdmin extends BaseHook
             Assets::load_vite_client();
         }
 
-        wp_enqueue_style(
-            'growfund-inter-font',
-            GROWFUND_DIR_URL . 'resources/assets/css/growfund-font.css',
-            [],
-            false // phpcs:ignore
-        );
-
         $dashboard_script = GROWFUND_DIR_URL . 'resources/assets/dashboard/scripts/dashboard.js';
 
         wp_enqueue_script(
@@ -77,6 +70,13 @@ class EnqueueScriptsAdmin extends BaseHook
         // phpcs:ignore -- intentionally ignored enqueue version
         wp_enqueue_style('growfund-admin-style-extended', GROWFUND_DIR_URL . 'resources/assets/css/admin-style-extended.css');
 
+        wp_enqueue_style(
+            'growfund-rich-text-editor',
+            GROWFUND_DIR_URL . 'resources/assets/css/rich-text-editor.css',
+            ['growfund-admin-style-extended'],
+            GROWFUND_VERSION
+		);
+      
         if (!growfund_is_dev_mode()) {
             Assets::enqueue_vite_assets();
         }

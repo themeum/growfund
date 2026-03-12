@@ -59,6 +59,15 @@ const BackerEmailSwitchFields = () => {
       />
       <SwitchField
         control={form.control}
+        name="is_enabled_backer_email_send_local_pickup_instructions"
+        label={__('Send Local Pickup Instruction', 'growfund')}
+        description={__('Send instructions to backers when local pickup is available.', 'growfund')}
+        allowEdit
+        onEdit={() => navigateOnEdit('backer_send_local_pickup_instructions')}
+        allowHoverEffect
+      />
+      <SwitchField
+        control={form.control}
         name="is_enabled_backer_email_pledge_paid_with_giving_thanks"
         label={__('Pledge Paid With Giving Thanks', 'growfund')}
         description={__(

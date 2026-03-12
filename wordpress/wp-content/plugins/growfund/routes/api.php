@@ -94,6 +94,7 @@ Route::group(['middleware' => AuthMiddleware::class], function () {
     Route::patch('/campaigns/{id}/update-secondary-status', [CampaignController::class, 'update_secondary_status'])->where('id', '[0-9]+');
     Route::post('/campaigns/{campaign_id}/post-update', [CampaignPostController::class, 'create'])->where('campaign_id', '[\d]+');
     Route::post('/campaigns/{campaign_id}/charge-backers', [CampaignController::class, 'charge_backers'])->where('campaign_id', '[\d]+');
+    Route::post('/campaigns/{campaign_id}/mark-as-ready-for-pickup', [CampaignController::class, 'ready_for_pickup'])->where('campaign_id', '[\d]+');
 
     // Categories routes
     Route::get('/categories', [CategoryController::class, 'list']);
@@ -157,6 +158,7 @@ Route::group(['middleware' => AuthMiddleware::class], function () {
     Route::get('/pledges/{id}/activities', [PledgeController::class, 'activities'])->where('id', '[\d]+');
     Route::post('/pledges/{id}/charge-backer', [PledgeController::class, 'charge_backer'])->where('id', '[\d]+');
     Route::post('/pledges/{id}/retry-failed-payment', [PledgeController::class, 'retry_failed_payment'])->where('id', '[\d]+');
+    Route::post('/pledges/{id}/mark-as-ready-for-pickup', [PledgeController::class, 'ready_for_pickup'])->where('id', '[\d]+');
 
     // Donations routes
     Route::get('/donations', [DonationController::class, 'paginated']);

@@ -162,6 +162,7 @@ const BackerEmailSettingsSchema = z.object({
   is_enabled_backer_email_pledge_cancelled: z.boolean().default(true),
   is_enabled_backer_email_reward_delivered: z.boolean().default(true),
   is_enabled_backer_email_campaign_half_funded: z.boolean().default(false),
+  is_enabled_backer_email_send_local_pickup_instructions: z.boolean().default(false),
 });
 
 const DonorEmailSettingsSchema = z.object({

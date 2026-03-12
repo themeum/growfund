@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { CheckCircle, Receipt, RotateCcw, Trash2, X } from 'lucide-react';
+import { CheckCircle, Mail, Receipt, RotateCcw, Trash2, X } from 'lucide-react';
 
 import {
   type Action,
@@ -37,6 +37,22 @@ function prepareActionOptions(pledge: Pledge) {
         ) {
           return true;
         }
+        return false;
+      },
+    },
+    {
+      label: __('Send Local Pickup Instruction', 'growfund'),
+      value: 'mark-as-ready-for-pickup',
+      icon: <Mail />,
+      proceed: () => {
+        if (
+          !pledge.is_ready_for_pickup &&
+          pledge.delivery_option === 'local-pickup' &&
+          pledge.status === 'backed'
+        ) {
+          return true;
+        }
+
         return false;
       },
     },
@@ -169,6 +185,13 @@ function getActionAlerts() {
       'in-progress',
       __(
         'The payment is in progress. Once the payment is successful, the pledge will be backed automatically.',
+        'growfund',
+      ),
+    ],
+    [
+      'mark-as-ready-for-pickup',
+      __(
+        'This action will mark the reward as ready for pickup and send backer a notification. This cannot be undone.',
         'growfund',
       ),
     ],

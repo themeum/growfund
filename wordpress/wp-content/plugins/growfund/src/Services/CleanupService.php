@@ -21,6 +21,7 @@ use Growfund\Supports\Arr;
 use Growfund\Taxonomies\Category;
 use Growfund\Taxonomies\Tag;
 use Exception;
+use Growfund\Supports\Option;
 
 /**
  * CleanupService
@@ -95,8 +96,10 @@ class CleanupService
                 );
             }
 
-            $migration->down();
+            $migration->handle_down();
         }
+
+        Option::delete(OptionKeys::DATABASE_MIGRATION_TRACKER);
     }
 
     /**

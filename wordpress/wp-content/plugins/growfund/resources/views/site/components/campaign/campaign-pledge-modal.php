@@ -5,7 +5,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-use Growfund\Constants\AppreciationType;
+use Growfund\Constants\Campaign\AppreciationType;
 use Growfund\Supports\Utils;
 use Growfund\Views\Components\Campaign\CampaignRewardContent;
 use Growfund\Views\Components\Campaign\RewardPledgeButton;

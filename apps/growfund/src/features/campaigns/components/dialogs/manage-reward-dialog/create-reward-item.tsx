@@ -67,6 +67,9 @@ const CreateRewardItem = ({
 
       if (rewardType === 'physical-goods') {
         form.setValue('type', 'physical');
+        form.setValue('asset_type', undefined);
+        form.setValue('asset', undefined);
+        form.setValue('asset_url', undefined);
       }
     }
   }, [rewardType, form]);

@@ -35,6 +35,10 @@ class InsertUncategorizedInTermsTable extends BaseMigration
      */
     public function up()
     {
+        if (!taxonomy_exists(Category::NAME)) {
+            (new Category())->register();
+        }
+
         $category_service = new CampaignCategoryService();
 
         if (!empty($category_service->get_default_category_id())) {
@@ -54,9 +58,14 @@ class InsertUncategorizedInTermsTable extends BaseMigration
      */
     public function down()
     {
+        if (!taxonomy_exists(Category::NAME)) {
+            (new Category())->register();
+        }
+        
         $category_service = new CampaignCategoryService();
 
         $default_category_id = $category_service->get_default_category_id();
+
         if (!empty($default_category_id)) {
             wp_delete_term($default_category_id, Category::NAME);
         }

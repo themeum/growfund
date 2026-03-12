@@ -4,6 +4,8 @@ defined( 'ABSPATH' ) || exit;
 
 use Growfund\Application;
 use Growfund\Constants\AppConfigKeys;
+use Growfund\Constants\OptionKeys;
+use Growfund\Supports\Option;
 use Growfund\Supports\Utils;
 
 if (!defined('ABSPATH')) {
@@ -48,6 +50,15 @@ Application::macro('is_onboarding_completed', function () {
  */
 Application::macro('is_migration_available_from_crowdfunding', function () {
     return Utils::is_migration_available_from_crowdfunding();
+});
+
+/**
+ * Register a macro to get the installed database version.
+ * 
+ * @return string
+ */
+Application::macro('installed_db_version', function () {
+    return Option::get(OptionKeys::INSTALLED_DB_VERSION, '0.0.0');
 });
 
 $growfund_app = Application::configure();

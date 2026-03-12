@@ -101,19 +101,23 @@
     totalAmountElement.textContent = growfundToCurrency(totalAmount.toFixed(2));
   }
 
-  function calculateShippingCost(shippingCountry) {
-    const checkoutShippingSection = document.getElementById('checkout_shipping_section');
+  function calculateShippingCost(shippingCountry, deliveryOption = 'home-delivery') {
+    let finalCost = 0;
 
-    const shippingCostsJson = checkoutShippingSection.getAttribute('data-shipping-costs');
-    const shippingCosts = JSON.parse(shippingCostsJson);
+    if (deliveryOption === 'home-delivery') {
+      const checkoutShippingSection = document.getElementById('checkout_shipping_section');
 
-    let shippingCost = shippingCosts.find((shipping) => shipping.location === shippingCountry);
+      const shippingCostsJson = checkoutShippingSection.getAttribute('data-shipping-costs');
+      const shippingCosts = JSON.parse(shippingCostsJson);
 
-    if (!shippingCost) {
-      shippingCost = shippingCosts.find((shipping) => shipping.location === 'rest-of-the-world');
+      let shippingCost = shippingCosts.find((shipping) => shipping.location === shippingCountry);
+
+      if (!shippingCost) {
+        shippingCost = shippingCosts.find((shipping) => shipping.location === 'rest-of-the-world');
+      }
+
+      finalCost = shippingCost ? Number(shippingCost.cost) : 0;
     }
-
-    const finalCost = shippingCost ? Number(shippingCost.cost) : 0;
 
     const shippingAmountElement = document.getElementById('checkout_shipping_amount');
     if (shippingAmountElement) {
@@ -136,13 +140,31 @@
       });
     }
 
+    document
+      .getElementById('delivery_option')
+      ?.addEventListener('growfund:select-change', function (event) {
+        const { value: deliveryOption } = event.detail;
+        if (deliveryOption === 'local-pickup') {
+          document.getElementById('local_pickup_instructions')?.classList.remove('growfund-hidden');
+          document.getElementById('shipping_address_section')?.classList.add('growfund-hidden');
+          calculateShippingCost(null, deliveryOption);
+        } else {
+          document.getElementById('local_pickup_instructions')?.classList.add('growfund-hidden');
+          document.getElementById('shipping_address_section')?.classList.remove('growfund-hidden');
+          calculateShippingCost(
+            shippingField.country?.getAttribute('data-selected-value'),
+            deliveryOption,
+          );
+        }
+      });
+
     const { shippingField, sameAsShippingField, billingField } = getAllAddressFields();
 
     shippingField.country?.addEventListener('growfund:select-change', function (event) {
-      const { value } = event.detail;
-      makeStateDropdownItems(shippingField.state, value);
+      const { value: country } = event.detail;
+      makeStateDropdownItems(shippingField.state, country);
       setBillingAddressSameAsShipping();
-      calculateShippingCost(value);
+      calculateShippingCost(country);
     });
 
     shippingField.state?.addEventListener('growfund:select-change', function () {

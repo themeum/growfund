@@ -7,6 +7,8 @@ defined( 'ABSPATH' ) || exit;
 use Exception;
 use Growfund\Constants\HookNames;
 use Growfund\Constants\OptionKeys;
+use Growfund\Constants\Status\DonationStatus;
+use Growfund\Constants\Status\PledgeStatus;
 use Growfund\Payments\Constants\PaymentGatewayType;
 use Growfund\Payments\DTO\PaymentMethodDTO;
 use Growfund\Services\DonationService;
@@ -94,8 +96,8 @@ class Woocommerce
         if (!empty(static::$product_id) && function_exists('wc_get_product')) {
             $product = wc_get_product(static::$product_id);
 
-            if (empty($product)) {
-                static::$product_id = null;
+            if (empty($product) || $product->get_slug() !== static::get_growfund_product_slug()) {
+                static::$product_id = 0;
                 Option::delete(OptionKeys::WC_PRODUCT_ID);
             }
         }
@@ -109,6 +111,14 @@ class Woocommerce
     }
 
     /**
+     * @return \WC_Product|false|null
+     */
+    public static function get_product_by_slug()
+    {
+        return wc_get_product(get_page_by_path(static::get_growfund_product_slug(), OBJECT, 'product')->ID);
+    }
+
+    /**
      * @return int
      * @throws Exception
      */
@@ -118,21 +128,26 @@ class Woocommerce
             return false;
         }
 
-        $product = new WC_Product_Simple();
+        $product = static::get_product_by_slug();
 
-        $product->set_slug(static::get_growfund_product_slug());
-        $product->set_name(__('Growfund (internal)', 'growfund'));
-        $product->set_status('publish');
-        $product->set_price(0);
-		$product->set_sale_price(0);
-		$product->set_regular_price(0);
-		$product->set_virtual(true);
-        $product->set_manage_stock(false);
-        $product->set_stock_status('instock');
-		$product->set_catalog_visibility('hidden');
-        $product->set_sold_individually(true);
+        if (!$product) {
+            $product = new WC_Product_Simple();
 
-        static::$product_id = $product->save();
+            $product->set_slug(static::get_growfund_product_slug());
+            $product->set_name(__('Growfund (internal)', 'growfund'));
+            $product->set_status('publish');
+            $product->set_price(0);
+            $product->set_sale_price(0);
+            $product->set_regular_price(0);
+            $product->set_virtual(true);
+            $product->set_manage_stock(false);
+            $product->set_stock_status('instock');
+            $product->set_catalog_visibility('hidden');
+            $product->set_sold_individually(true);
+            $product->save();
+        }
+
+        static::$product_id = $product->get_id();
 
         if (static::$product_id) {
             Option::update(OptionKeys::WC_PRODUCT_ID, static::$product_id);
@@ -193,18 +208,36 @@ class Woocommerce
             $contribution_id = static::get_contribution_id_from_cart();
 
             if (!empty($contribution_id)) {
-                if (growfund_app()->is_donation_mode()) {
-                    $donation_service = new DonationService();
-                    $donation_service->delete($contribution_id);
-                } else {
-                    $pledge_service = new PledgeService();
-                    $pledge_service->delete($contribution_id);
-                }
+                static::remove_pending_contribution_from_cart((int) $contribution_id);
             }
         }
 
         if (static::is_cart_loaded()) {
 			WC()->cart->empty_cart();
+        }
+    }
+
+    public static function remove_pending_contribution_from_cart(int $contribution_id) {
+		if (!static::is_active() || !static::is_cart_loaded()) {
+            return;
+        }
+
+        if (growfund_app()->is_donation_mode()) {
+            $donation_service = new DonationService();
+            $donation = $donation_service->get_by_id($contribution_id);
+
+            if ($donation->status === DonationStatus::PENDING) {
+                $donation_service->delete($contribution_id);
+            }
+
+            return;
+		}
+
+        $pledge_service = new PledgeService();
+        $pledge = $pledge_service->get_by_id($contribution_id);
+
+        if ($pledge->status === PledgeStatus::PENDING) {
+            $pledge_service->delete($contribution_id);
         }
     }
 

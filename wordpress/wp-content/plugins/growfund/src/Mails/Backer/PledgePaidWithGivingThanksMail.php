@@ -4,10 +4,10 @@ namespace Growfund\Mails\Backer;
 
 defined( 'ABSPATH' ) || exit;
 
-use Growfund\Constants\AppreciationType;
+use Growfund\Constants\Campaign\AppreciationType;
 use Growfund\Constants\DateTimeFormats;
 use Growfund\Constants\Mail\MailKeys;
-use Growfund\Constants\PledgeOption;
+use Growfund\Constants\Pledge\PledgeOption;
 use Growfund\Mailer;
 use Growfund\Services\PledgeService;
 use Growfund\Services\CampaignService;

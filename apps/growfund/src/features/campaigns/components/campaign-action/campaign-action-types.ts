@@ -8,7 +8,8 @@ type Action =
   | 'visible'
   | 'hide'
   | 'delete'
-  | 'separator';
+  | 'separator'
+  | 'mark-as-ready-for-pickup';
 type MessageKey =
   | 'published'
   | 'funded'

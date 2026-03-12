@@ -5,9 +5,10 @@
 
 defined( 'ABSPATH' ) || exit;
 
-use Growfund\Constants\AppreciationType;
+use Growfund\Constants\Campaign\AppreciationType;
 use Growfund\Constants\PaymentEngine;
-use Growfund\Constants\PledgeOption;
+use Growfund\Constants\Pledge\DeliveryOption;
+use Growfund\Constants\Pledge\PledgeOption;
 use Growfund\Constants\Reward\RewardType;
 use Growfund\Core\AppSettings;
 use Growfund\Sanitizer;
@@ -197,7 +198,42 @@ $growfund_input_amount = growfund_input_get('amount', 0, Sanitizer::FLOAT);
         <div class="growfund-pledge-checkout-page-right-section">
             <div class="growfund-pledge-checkout-page-right-section-shipping-payment-wrapper">
                 <?php if ($growfund_has_physical_goods) : ?>
+                    <?php if ($pledge_checkout_page->reward->allow_local_pickup) : ?>
                     <div class="growfund-pledge-checkout-page-right-section-shipping-address-wrapper">
+                        <span class="growfund-pledge-checkout-page-right-section-shipping-title"><?php esc_html_e('Delivery Option', 'growfund'); ?></span>
+                        <div class="growfund-pledge-checkout-page-right-section-shipping-address">
+                            <?php
+                            $growfund_select_field = new SelectDropdown();
+                            $growfund_select_field->name          = 'delivery_option';
+                            $growfund_select_field->id            = 'delivery_option';
+                            $growfund_select_field->classname     = 'growfund-pledge-checkout-page-right-section-shipping-country';
+                            $growfund_select_field->placeholder   = __('Select option', 'growfund');
+                            $growfund_select_field->default_value = DeliveryOption::HOME_DELIVERY;
+                            $growfund_select_field->allow_clear   = false;
+                            $growfund_select_field->is_filterable       = false;
+                            $growfund_select_field->options       = [
+                                [
+                                    'label' => __('Home Delivery', 'growfund'),
+                                    'value' => DeliveryOption::HOME_DELIVERY
+                                ],
+                                [
+                                    'label' => __('Local Pickup', 'growfund'),
+                                    'value' => DeliveryOption::LOCAL_PICKUP
+                                ],
+                            ];
+                            $growfund_select_field->error_msg = growfund_flash_get_message('checkout_form_errors')['delivery_option'][0] ?? '';
+
+                            growfund_render($growfund_select_field);
+                            ?>
+                            <div id="local_pickup_instructions" class="growfund-pledge-checkout-page-local-pickup-instruction growfund-rich-text-content growfund-hidden">
+                                <?php growfund_echo_safe_html($pledge_checkout_page->reward->local_pickup_instructions); ?>
+                            </div>
+                        </div>
+                    </div>
+                    <?php else : ?>
+                        <input type="hidden" id="delivery_option" name="delivery_option" value="<?php echo esc_attr(DeliveryOption::HOME_DELIVERY); ?>" />
+                    <?php endif; ?>
+                    <div class="growfund-pledge-checkout-page-right-section-shipping-address-wrapper" id="shipping_address_section">
                         <span class="growfund-pledge-checkout-page-right-section-shipping-title"><?php esc_html_e('Shipping Address', 'growfund'); ?></span>
                         <div class="growfund-pledge-checkout-page-right-section-shipping-address">
                             <?php
@@ -271,17 +307,18 @@ $growfund_input_amount = growfund_input_get('amount', 0, Sanitizer::FLOAT);
                             growfund_render($growfund_zip_code);
                             ?>
                         </div>
-                    </div>
-                    <?php 
-                    $growfund_same_as_shipping_checkbox = new CheckboxField();
-                    $growfund_same_as_shipping_checkbox->name = 'is_billing_address_same';
-                    $growfund_same_as_shipping_checkbox->checked = $growfund_is_billing_address_same;
-                    $growfund_same_as_shipping_checkbox->label = __('Same as shipping address', 'growfund');
-                    $growfund_same_as_shipping_checkbox->id = 'is_billing_address_same';
-                    $growfund_same_as_shipping_checkbox->error_msg = growfund_flash_get_message('checkout_form_errors')['is_billing_address_same'][0] ?? '';
+                        <?php 
+                        $growfund_same_as_shipping_checkbox = new CheckboxField();
+                        $growfund_same_as_shipping_checkbox->name = 'is_billing_address_same';
+                        $growfund_same_as_shipping_checkbox->checked = $growfund_is_billing_address_same;
+                        $growfund_same_as_shipping_checkbox->label = __('Same as shipping address', 'growfund');
+                        $growfund_same_as_shipping_checkbox->id = 'is_billing_address_same';
+                        $growfund_same_as_shipping_checkbox->style = 'margin-top: 16px;';
+                        $growfund_same_as_shipping_checkbox->error_msg = growfund_flash_get_message('checkout_form_errors')['is_billing_address_same'][0] ?? '';
 
-                    growfund_render($growfund_same_as_shipping_checkbox);
-					?>
+                        growfund_render($growfund_same_as_shipping_checkbox);
+                        ?>
+                    </div>
                 <?php endif; ?>
                 <div id="checkout_billing_address_section" class="growfund-pledge-checkout-page-right-section-shipping-address-wrapper <?php echo $growfund_has_physical_goods && $growfund_is_billing_address_same ? esc_attr('growfund-hidden') : ''; ?>">
                     <span class="growfund-pledge-checkout-page-right-section-shipping-title"><?php esc_html_e('Billing Address', 'growfund'); ?></span>

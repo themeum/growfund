@@ -275,11 +275,11 @@
   "growfund_admin_email_reward_delivered": {
     "subject": "Rewards has been delivered successfully",
     "heading": "Rewards has been delivered successfully",
-    "message": "<p>Hi {admin_name},</p><br/><p>This email is to inform you that the reward has been shipped and delivered to {backer_name} for the campaign {campaign_title}!</p><br/><p>{reward_delivered_card}</p><br/><p>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</p>",
+    "message": "<p>Hi {admin_name},</p><br/><p>This email is to inform you that the reward has been shipped and delivered to {backer_name} for the campaign {campaign_title}!</p><br/><p>{reward_summary_card}</p><br/><p>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</p>",
     "shortcodes": [
       {
-        "label": "Reward Delivered Card",
-        "value": "{reward_delivered_card}"
+        "label": "Reward Summary Card",
+        "value": "{reward_summary_card}"
       },
       {
         "label": "Admin Name",
@@ -1073,11 +1073,11 @@
   "growfund_fundraiser_email_reward_delivered": {
     "subject": "Rewards Delivered",
     "heading": "Rewards has been delivered successfully",
-    "message": "<p>Hi there,</p><br/><p>This email is to inform you that the reward has been shipped and delivered to {backer_name} for the campaign {campaign_title}!</p><br/><p>{reward_delivered_card}</p><br/><p>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</p>",
+    "message": "<p>Hi there,</p><br/><p>This email is to inform you that the reward has been shipped and delivered to {backer_name} for the campaign {campaign_title}!</p><br/><p>{reward_summary_card}</p><br/><p>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</p>",
     "shortcodes": [
       {
-        "label": "Reward Delivered Card",
-        "value": "{reward_delivered_card}"
+        "label": "Reward Summary Card",
+        "value": "{reward_summary_card}"
       },
       {
         "label": "Fundraiser Name",
@@ -1737,6 +1737,61 @@
       }
     ]
   },
+  "growfund_backer_email_send_local_pickup_instructions": {
+    "subject": "Your reward is ready for pickup!",
+    "heading": "Your reward is ready for pickup!",
+    "message": "<p>Dear <strong>{backer_name}</strong>!</p><br /><p>Great news! Your reward is now available for collection.</p><br /><p>{local_pickup_instructions}</p><br /><p><strong>Reward Summary</strong></p>{reward_summary_card}<br /><p>If you have any questions about your donation, please contact us at <span style=\"color: #0000ff;\">{support_email}</span>.</p>",
+    "shortcodes": [
+      {
+        "label": "Reward Summary Card",
+        "value": "{reward_summary_card}"
+      },
+      {
+        "label": "Local Pickup_Instructions",
+        "value": "{local_pickup_instructions}"
+      },
+      {
+        "label": "Campaign Title",
+        "value": "{campaign_title}"
+      },
+      {
+        "label": "Campaign Url",
+        "value": "{campaign_url}"
+      },
+      {
+        "label": "Backer Name",
+        "value": "{backer_name}"
+      },
+      {
+        "label": "Pledge Amount",
+        "value": "{pledge_amount}"
+      },
+      {
+        "label": "Payment Method",
+        "value": "{payment_method}"
+      },
+      {
+        "label": "Reward Title",
+        "value": "{reward_title}"
+      },
+      {
+        "label": "Estimated Delivery",
+        "value": "{estimated_delivery}"
+      },
+      {
+        "label": "Pledge ID",
+        "value": "{pledge_id}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
   "growfund_backer_email_new_backer_registration": {
     "subject": "Welcome to {organization_name}",
     "heading": "Welcome to {organization_name}",
@@ -2048,11 +2103,11 @@
   "growfund_backer_email_reward_delivered": {
     "subject": "Rewards has been delivered",
     "heading": "Rewards has been delivered",
-    "message": "<p>Dear <strong>{backer_name}</strong>!</p><br/><p> We're confirming that your reward from the campaign “{campaign_title}” has been shipped and successfully delivered to you. Thank you for backing the campaign and being a part of something special!</p><br/><p>{reward_delivered_card}</p><br/><p>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</p>",
+    "message": "<p>Dear <strong>{backer_name}</strong>!</p><br/><p> We're confirming that your reward from the campaign “{campaign_title}” has been shipped and successfully delivered to you. Thank you for backing the campaign and being a part of something special!</p><br/><p>{reward_summary_card}</p><br/><p>If you have any questions about your donation, please contact us at <span style=\"color: #0055ff;\">{support_email}</span>.</p>",
     "shortcodes": [
       {
-        "label": "Reward Delivered Card",
-        "value": "{reward_delivered_card}"
+        "label": "Reward Summary Card",
+        "value": "{reward_summary_card}"
       },
       {
         "label": "Backer Name",

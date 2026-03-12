@@ -9,6 +9,7 @@ import { type Backer } from '@/features/backers/schemas/backer';
 import PaymentCard from '@/features/pledges/components/payment-card';
 import PledgeAction from '@/features/pledges/components/pledge-action/pledge-action';
 import PledgeRewardPreview from '@/features/pledges/components/rewards/pledge-reward-preview';
+import ShippingMethodCard from '@/features/pledges/components/shipping-method-card';
 import PledgeTimeline from '@/features/pledges/components/timeline/pledge-timeline';
 import { type Pledge, type PledgeStatus } from '@/features/pledges/schemas/pledge';
 import { isDefined } from '@/utils';
@@ -49,9 +50,12 @@ const PledgeDetails = ({ pledge }: PledgeDetailsProps) => {
         <div className="growfund-space-y-4">
           <PledgeAction pledge={pledge} />
           <UserPreviewCard user={pledge.backer as Backer} title={__('Backer', 'growfund')} />
+          {isDefined(pledge.reward) && <ShippingMethodCard reward={pledge.reward} deliveryOption={pledge.delivery_option} />}
           <Box>
             <BoxContent>
-              <h6 className="growfund-typo-h6 growfund-text-fg-primary">{__('Notes', 'growfund')}</h6>
+              <h6 className="growfund-typo-h6 growfund-text-fg-primary">
+                {__('Notes', 'growfund')}
+              </h6>
 
               <div className="growfund-typo-small growfund-text-fg-secondary growfund-mt-3">
                 {pledge.notes ?? __('No notes', 'growfund')}

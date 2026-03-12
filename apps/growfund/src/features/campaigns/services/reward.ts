@@ -35,6 +35,7 @@ const useCreateRewardMutation = () => {
     onSuccess: () => {
       toast.success(__('Reward created successfully', 'growfund'));
       void queryClient.invalidateQueries({ queryKey: ['CampaignRewards'] });
+      void queryClient.invalidateQueries({ queryKey: ['CampaignDetails'] });
     },
     onError: (error) => {
       toast.error(error.message);
@@ -57,6 +58,7 @@ const useUpdateRewardMutation = () => {
     onSuccess: () => {
       toast.success(__('Reward updated successfully', 'growfund'));
       void queryClient.invalidateQueries({ queryKey: ['CampaignRewards'] });
+      void queryClient.invalidateQueries({ queryKey: ['CampaignDetails'] });
     },
     onError: (error) => {
       toast.error(error.message);
@@ -74,6 +76,7 @@ const useDeleteCampaignRewardMutation = () => {
     mutationFn: deleteReward,
     onSuccess() {
       void queryClient.invalidateQueries({ queryKey: ['CampaignRewards'] });
+      void queryClient.invalidateQueries({ queryKey: ['CampaignDetails'] });
       toast.success(__('Reward is deleted from the campaign.', 'growfund'));
     },
     onError(error) {

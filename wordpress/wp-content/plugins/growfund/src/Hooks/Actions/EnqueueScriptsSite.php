@@ -68,12 +68,7 @@ class EnqueueScriptsSite extends BaseHook
 
         wp_enqueue_style('growfund-main-styles', $main_styles_url, [], GROWFUND_VERSION);
 
-        $font_url = GROWFUND_DIR_URL . 'resources/assets/css/growfund-font.css';
-
-        wp_enqueue_style('growfund-inter-font', $font_url, [], GROWFUND_VERSION);
-        wp_style_add_data('growfund-inter-font', 'preload', 'style');
-
-        $rich_text_editor_styles_url = GROWFUND_DIR_URL . 'resources/assets/css/rich-text-editor.css';
+        $rich_text_editor_styles_url = GROWFUND_RESOURCE_PATH . 'assets/site/styles/rich-text-editor.css';
 
         if (growfund_is_valid_file($rich_text_editor_styles_url)) {
             wp_enqueue_style(

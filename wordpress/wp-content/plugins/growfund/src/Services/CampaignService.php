@@ -7,7 +7,7 @@ defined( 'ABSPATH' ) || exit;
 use Growfund\App\Events\CampaignEndedEvent;
 use Growfund\App\Events\CampaignStatusUpdateEvent;
 use Growfund\App\Events\CampaignUpdateEvent;
-use Growfund\Constants\AppreciationType;
+use Growfund\Constants\Campaign\AppreciationType;
 use Growfund\Constants\Campaign\ReachingAction;
 use Growfund\Constants\Tables;
 use Growfund\Constants\DateTimeFormats;
@@ -1040,9 +1040,11 @@ class CampaignService
         $tags = Terms::get_term_ids($campaign->ID, Tag::NAME);
         $metadata = PostMeta::get_all($campaign->ID);
         $collaborators = $this->get_collaborators_by_id($campaign->ID);
+        $status = $metadata['status'] ?? CampaignStatus::DRAFT;
 
         $decline_reasons = PostMeta::get($campaign->ID, 'decline_reasons', false) ?? null;
         $last_decline_reason = null;
+
         if (!empty($decline_reasons) && is_array($decline_reasons) && count($decline_reasons) > 0) {
             $last_decline_reason = $decline_reasons[count($decline_reasons) - 1]['message'] ?? null;
         }
@@ -1075,7 +1077,7 @@ class CampaignService
         $dto->collaborators = $collaborators ?? null;
         $dto->show_collaborator_list = isset($metadata['show_collaborator_list']) ? filter_var($metadata['show_collaborator_list'], FILTER_VALIDATE_BOOLEAN) : false;
 
-        $dto->status = $metadata['status'] ?? 'draft';
+        $dto->status = $status;
         $dto->is_interactive = $this->is_campaign_interactive($campaign->ID);
         $dto->is_launched = !empty($dto->start_date)
             ? Date::is_date_in_past_or_present($dto->start_date)
@@ -1131,25 +1133,36 @@ class CampaignService
                 ? maybe_unserialize($metadata['suggested_options'])
                 : [];
         } else {
-            $rewards = [];
             $reward_posts = get_posts([
                 'post_type' => Reward::NAME,
                 'post_parent' => $campaign->ID,
                 'numberposts' => -1,
                 'post_status' => 'any',
-            ]) ?? [];
+            ]);
 
             if (!empty($reward_posts)) {
-                $rewards = Arr::make($reward_posts)->pluck('ID')->map(function ($id) {
-                    return (string) $id;
+                $dto->is_ready_for_pickup = isset($metadata['is_ready_for_pickup']) 
+                    ? filter_var($metadata['is_ready_for_pickup'], FILTER_VALIDATE_BOOLEAN) 
+                    : false;
+                
+                $allow_local_pickup = false;
+
+                $rewards = Arr::make($reward_posts)->map(function ($reward) use (&$allow_local_pickup, $status) {
+                    if (!$allow_local_pickup && $status === CampaignStatus::FUNDED) {
+                        $allow_local_pickup = PostMeta::get($reward->ID, 'allow_local_pickup');
+                        $allow_local_pickup = filter_var($allow_local_pickup, FILTER_VALIDATE_BOOLEAN);
+                    }
+                    return (string) $reward->ID;
                 })->toArray();
+
+                $dto->rewards = $rewards;
+                $dto->allow_local_pickup = $allow_local_pickup;
             }
 
             $dto->fund_raised = $this->pledge_service->get_total_pledges_amount_for_campaign($campaign->ID);
             $dto->number_of_contributors = $this->pledge_service->get_total_backers_count_for_campaign($campaign->ID);
             $dto->number_of_contributions = $this->pledge_service->get_total_number_of_pledges_for_campaign($campaign->ID, true);
-            $dto->appreciation_type = $metadata['appreciation_type'] ?? 'goodies';
-            $dto->rewards = $rewards;
+            $dto->appreciation_type = $metadata['appreciation_type'] ?? AppreciationType::GOODIES;
             $dto->giving_thanks = $metadata['giving_thanks'] ?? null;
 
             $dto->allow_pledge_without_reward = isset($metadata['allow_pledge_without_reward'])
@@ -1623,6 +1636,26 @@ class CampaignService
         }
 
         growfund_event(new CampaignEndedEvent($campaign_id));
+
+        return $is_updated;
+    }
+
+    /**
+     * Mark a campaign as ready for pickup.
+     * 
+     * @param int $campaign_id
+     * @return bool
+     */
+    public function mark_campaign_as_ready_for_pickup(int $campaign_id)
+    {
+        $is_updated = PostMeta::update($campaign_id, 'is_ready_for_pickup', true);
+
+        if (!$is_updated) {
+            return false;
+        }
+
+        $pledge_service = new PledgeService();
+        $pledge_service->marked_all_as_ready_for_pickup($campaign_id);
 
         return $is_updated;
     }

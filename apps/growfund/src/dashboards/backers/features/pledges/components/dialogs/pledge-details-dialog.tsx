@@ -297,6 +297,19 @@ const PledgeDetailsDialog = ({
                 </BoxContent>
               </Box>
             )}
+            <Box>
+              <BoxContent>
+                <h6 className="growfund-typo-h6 growfund-text-fg-primary">
+                  {__('Local Pickup', 'growfund')}
+                </h6>
+                <div
+                  className="growfund-mt-3 growfund-bg-background-surface-secondary growfund-rounded-sm growfund-p-4 growfund-typo-small growfund-text-fg-secondary growfund-rich-text-content"
+                  dangerouslySetInnerHTML={{
+                    __html: pledge.reward?.local_pickup_instructions ?? '',
+                  }}
+                />
+              </BoxContent>
+            </Box>
 
             <Box className="growfund-border-border-secondary growfund-shadow-none growfund-mb-10">
               <BoxContent className="growfund-space-y-3">

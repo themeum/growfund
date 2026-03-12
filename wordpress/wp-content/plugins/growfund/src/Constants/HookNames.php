@@ -98,4 +98,5 @@ class HookNames
     const GROWFUND_CAMPAIGN_MIGRATION_BATCH_SIZE_FILTER = 'growfund/campaign_migration/batch_size';
     const GROWFUND_DONATION_MIGRATION_BATCH_SIZE_FILTER = 'growfund/donation_migration/batch_size';
     const GROWFUND_PLEDGE_MIGRATION_BATCH_SIZE_FILTER = 'growfund/pledge_migration/batch_size';
+    const GROWFUND_CURRENT_USER_FILTER = 'growfund/current_user';
 }

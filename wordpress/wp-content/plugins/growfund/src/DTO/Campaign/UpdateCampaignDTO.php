@@ -4,7 +4,7 @@ namespace Growfund\DTO\Campaign;
 
 defined( 'ABSPATH' ) || exit;
 
-use Growfund\Constants\AppreciationType;
+use Growfund\Constants\Campaign\AppreciationType;
 use Growfund\Constants\Campaign\FundSelectionType;
 use Growfund\Constants\Campaign\GoalType;
 use Growfund\Constants\Campaign\ReachingAction;

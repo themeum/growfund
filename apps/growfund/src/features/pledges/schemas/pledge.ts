@@ -60,6 +60,8 @@ const BaseSchema = z.object({
   status: PledgeStatusSchema.default('pending'),
   pledge_option: PledgeOptionSchema.nullish(),
   notes: z.string().nullish(),
+  delivery_option: z.enum(['home-delivery', 'local-pickup']).default('home-delivery'),
+  is_ready_for_pickup: z.boolean().default(false),
   is_manual: z.boolean().default(false),
   created_at: z.string(),
   updated_at: z.string().nullish(),
