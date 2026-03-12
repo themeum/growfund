@@ -7,29 +7,30 @@ import { Box, BoxContent } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import { FormLabel } from '@/components/ui/form';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectSeparator,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 import { RouteConfig } from '@/config/route-config';
 import { useConsentDialog } from '@/features/campaigns/contexts/consent-dialog-context';
 import { PledgeActionBadge } from '@/features/pledges/components/pledge-action/pledge-action-badge';
 import {
-    getActionAlerts,
-    getActionHeaderText,
-    prepareActionOptions,
-    prepareMessageKey,
+  getActionAlerts,
+  getActionHeaderText,
+  prepareActionOptions,
+  prepareMessageKey,
 } from '@/features/pledges/components/pledge-action/pledge-action-services';
 import { type Action } from '@/features/pledges/components/pledge-action/pledge-action-types';
 import { type Pledge } from '@/features/pledges/schemas/pledge';
 import {
-    useChargePledgedBackerMutation,
-    useDeletePledgeMutation,
-    useRetryFailedPaymentMutation,
-    useUpdatePledgeStatusMutation,
+  useChargePledgedBackerMutation,
+  useDeletePledgeMutation,
+  useMarkAsReadyForPickupMutation,
+  useRetryFailedPaymentMutation,
+  useUpdatePledgeStatusMutation,
 } from '@/features/pledges/services/pledges';
 import { cn } from '@/lib/utils';
 import { isDefined } from '@/utils';
@@ -44,6 +45,7 @@ const PledgeAction = ({ pledge }: { pledge: Pledge }) => {
   const chargePledgedBackerMutation = useChargePledgedBackerMutation();
   const retryFailedPaymentMutation = useRetryFailedPaymentMutation();
   const deletePledgeMutation = useDeletePledgeMutation();
+  const markAsReadyForPickupMutation = useMarkAsReadyForPickupMutation();
 
   const actionAlerts = getActionAlerts();
   const options = prepareActionOptions(pledge);
@@ -157,6 +159,31 @@ const PledgeAction = ({ pledge }: { pledge: Pledge }) => {
           },
         });
         break;
+      case 'mark-as-ready-for-pickup':
+        openDialog({
+          title: __('Send Local Pickup Instruction', 'growfund'),
+          content: (
+            <div className="growfund-space-y-3">
+              <p>
+                {__(
+                  'Are you sure you want to send local pickup instruction for this pledge?',
+                  'growfund',
+                )}
+              </p>
+              <Alert variant="warning">{actionAlerts.get('mark-as-ready-for-pickup')}</Alert>
+            </div>
+          ),
+          confirmText: __('Send', 'growfund'),
+          declineText: __('Cancel', 'growfund'),
+          confirmButtonVariant: 'primary',
+          onConfirm: async (closeDialog) => {
+            await markAsReadyForPickupMutation.mutateAsync({
+              pledgeId: pledge.id,
+            });
+            closeDialog();
+          },
+        });
+        break;
     }
 
     setPledgeAction(null);
@@ -170,6 +197,13 @@ const PledgeAction = ({ pledge }: { pledge: Pledge }) => {
             <PledgeActionBadge variant={headerText?.variant} />
             <p className="growfund-typo-tiny growfund-text-fg-secondary">{headerText?.label}</p>
           </div>
+          {pledge.status === 'backed' &&
+            pledge.delivery_option === 'local-pickup' &&
+            pledge.is_ready_for_pickup && (
+              <p className="growfund-typo-tiny growfund-text-fg-secondary">
+                {__('Ready for pickup', 'growfund')}
+              </p>
+            )}
         </div>
         {pledge.status !== 'in-progress' && (
           <div className="growfund-space-y-2">
@@ -194,10 +228,13 @@ const PledgeAction = ({ pledge }: { pledge: Pledge }) => {
                       value={option.value}
                       className={cn(
                         '[&>span]:growfund-flex [&>span]:growfund-items-center [&_svg]:growfund-size-4 [&_svg]:growfund-text-icon-primary',
-                        option.is_critical && 'growfund-text-fg-critical [&_svg]:growfund-text-icon-critical',
+                        option.is_critical &&
+                          'growfund-text-fg-critical [&_svg]:growfund-text-icon-critical',
                       )}
                     >
-                      <span className="growfund-mr-2 growfund-text-icon-primary">{option.icon}</span>
+                      <span className="growfund-mr-2 growfund-text-icon-primary">
+                        {option.icon}
+                      </span>
                       {option.label}
                     </SelectItem>
                   );
@@ -210,7 +247,11 @@ const PledgeAction = ({ pledge }: { pledge: Pledge }) => {
         {actionAlert && <Alert>{actionAlert}</Alert>}
 
         {pledge.status !== 'in-progress' && (
-          <Button className="growfund-w-full growfund-mt-4" disabled={!pledgeAction} onClick={handleAction}>
+          <Button
+            className="growfund-w-full growfund-mt-4"
+            disabled={!pledgeAction}
+            onClick={handleAction}
+          >
             {__('Apply', 'growfund')}
           </Button>
         )}

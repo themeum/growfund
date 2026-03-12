@@ -51,6 +51,9 @@ class PledgeRewardDTO extends DTO
     /** @var string|null */
     public $estimated_delivery_date;
 
+    /** @var bool */
+    public $allow_local_pickup;
+
     /** @var string|null */
     public $local_pickup_instructions;
 }

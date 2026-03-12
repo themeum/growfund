@@ -24,6 +24,7 @@ use Growfund\Supports\Date;
  * @method void authorize_empty_trash(int|null $user_id = null)
  * @method void authorize_update_status(int $campaign_id, string $status, int|null $user_id = null)
  * @method void authorize_admin_only(int|null $user_id = null)
+ * @method void authorize_mark_as_ready_for_pickup(int $campaign_id, int|null $user_id = null)
  */
 class CampaignPolicy extends BasePolicy
 {
@@ -236,5 +237,23 @@ class CampaignPolicy extends BasePolicy
         }
 
         return false;
+    }
+
+    public function mark_as_ready_for_pickup(int $campaign_id, ?int $user_id = null)
+    {
+        $campaign = $this->campaign_service->get_by_id($campaign_id);
+        $user = growfund_user($user_id);
+
+        if (!$user->can(CampaignCapabilities::EDIT, $campaign_id)) {
+            throw new AuthorizationException(esc_html__('You do not have permission for this action', 'growfund'));
+        }
+
+        if (!$user->is_admin() || !$user->is_fundraiser()) {
+            throw new AuthorizationException(esc_html__('You do not have permission for this action', 'growfund'));
+        }
+
+        if ($campaign->status !== CampaignStatus::FUNDED || !$campaign->allow_local_pickup) {
+            throw new AuthorizationException(esc_html__('You do not have permission for this action', 'growfund'));
+        }
     }
 }

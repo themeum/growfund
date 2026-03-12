@@ -5,7 +5,7 @@ Tags: crowdfunding, donation, fundraising, charity, rewards
 Requires at least: 5.9
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.8
+Stable tag: 1.0.9
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -282,30 +282,6 @@ Connect directly with fellow fundraisers, share your experiences, and get real-t
 Here's the source code link of Growfund: 
 [https://github.com/themeum/growfund](https://github.com/themeum/growfund)
 
-= Build Steps =
-
-* Clone the repository 
-   git clone git@github.com:themeum/growfund.git
-   cd growfund
-   
-* Start Docker Environment
-   docker-compose up --build -d
-
-* Install PHP Dependencies
-   cd wordpress/wp-content/plugins/growfund
-   composer install
-
-* Install Node Dependencies
-   cd ../../../../apps
-   yarn install
-
-* Run 
-   yarn dev
-
-* Build
-   yarn build
-
-
 == Installation Process ==
 
 *    Go to **Plugins > Add New** 
@@ -375,6 +351,12 @@ order details (campaign_id, amount, currency, and transaction ID) to PayPal's AP
 
 
 == Changelog ==
+
+= 1.0.9 - Mar 12, 2026 =
+* Added local shipping support for physical products in reward mode
+* Updated campaign details page for full responsiveness
+* Fixed reward item form
+* Fixed woocommerce cart issue for growfund product.
 
 = 1.0.8 - Feb 26, 2026 =
 * Added support for digital products in reward mode

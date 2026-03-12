@@ -11,7 +11,9 @@ use Growfund\App\Events\DonationStatusUpdateEvent;
 use Growfund\App\Events\GoalReachedEvent;
 use Growfund\App\Events\PledgeCreatedEvent;
 use Growfund\App\Events\PledgeStatusUpdateEvent;
+use Growfund\App\Events\SendLocalPickupInstructionEvent;
 use Growfund\App\Listeners\CampaignEndedEmailListener;
+use Growfund\App\Listeners\SendLocalPickupInstructionEmailListener;
 use Growfund\App\Listeners\CreateActivityListener;
 use Growfund\App\Listeners\DonationCreatedEmailListener;
 use Growfund\App\Listeners\DonationStatusUpdateEmailListener;
@@ -51,5 +53,8 @@ return [
     PledgeStatusUpdateEvent::class => [
         CreateActivityListener::class,
         PledgeStatusUpdateEmailListener::class,
-    ]
+    ],
+    SendLocalPickupInstructionEvent::class => [
+        SendLocalPickupInstructionEmailListener::class
+    ],
 ];

@@ -4,7 +4,7 @@ namespace Growfund\Controllers\API;
 
 defined( 'ABSPATH' ) || exit;
 
-use Growfund\Constants\AppreciationType;
+use Growfund\Constants\Campaign\AppreciationType;
 use Growfund\Constants\Status\CampaignSecondaryStatus;
 use Growfund\Constants\Status\CampaignStatus;
 use Growfund\Contracts\Request;
@@ -388,6 +388,18 @@ class CampaignController
         return growfund_response()->json([
             'data' => $is_charged,
             'message' => __('Backers charged successfully', 'growfund'),
+        ]);
+    }
+
+    public function ready_for_pickup(Request $request)
+    {
+        $this->policy->authorize_mark_as_ready_for_pickup($request->get_int('campaign_id'));
+
+        $is_ready = $this->service->mark_campaign_as_ready_for_pickup($request->get_int('campaign_id'));
+
+        return growfund_response()->json([
+            'data' => $is_ready,
+            'message' => __('Marked all pledges as ready for pickup successfully', 'growfund'),
         ]);
     }
 }

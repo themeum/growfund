@@ -8,14 +8,14 @@ use Growfund\App\Events\CampaignHalfMilestoneReachedEvent;
 use Growfund\App\Events\GoalReachedEvent;
 use Growfund\App\Events\PledgeCreatedEvent;
 use Growfund\App\Events\PledgeStatusUpdateEvent;
-use Growfund\Constants\AppreciationType;
+use Growfund\Constants\Campaign\AppreciationType;
 use Growfund\Constants\Campaign\ReachingAction;
 use Growfund\Constants\DateTimeFormats;
 use Growfund\Constants\Status\PledgeStatus;
 use Growfund\Constants\Tables;
 use Growfund\DTO\Pledge\CreatePledgeDTO;
 use Growfund\Constants\MetaKeys\Campaign as MetaKeysCampaign;
-use Growfund\Constants\PledgeOption;
+use Growfund\Constants\Pledge\PledgeOption;
 use Growfund\Constants\Reward\QuantityType;
 use Growfund\Constants\Reward\TimeLimitType;
 use Growfund\Constants\Status\CampaignStatus;
@@ -44,12 +44,14 @@ use Growfund\Supports\Money;
 use Growfund\Supports\PriceCalculator;
 use DateTime;
 use Exception;
+use Growfund\App\Events\SendLocalPickupInstructionEvent;
+use Growfund\Constants\Pledge\DeliveryOption;
 use Growfund\Constants\Reward\RewardType;
 use Growfund\Constants\RewardItem\AssetType;
 use Growfund\Constants\RewardItem\RewardItemType;
-use Growfund\DTO\RewardItemDTO;
 use Growfund\DTO\RewardItemWithQuantityDTO;
 use Growfund\Supports\Currency;
+use GrowfundPro\Schedules\CampaignSendLocalPickupInstructionSchedule;
 
 class PledgeService
 {
@@ -128,6 +130,8 @@ class PledgeService
             $reward_items = [];
 
             if (!empty($reward_info['items'])) {
+                $reward_item_service = new RewardItemService();
+
                 foreach ($reward_info['items'] as $item) {
                     $reward_item = RewardItemWithQuantityDTO::from_array($item);
 
@@ -143,10 +147,13 @@ class PledgeService
                     $reward_item->asset_type = $reward_item->asset_type ?? AssetType::FILE;
                     $reward_item->asset = $asset;
                     $reward_item->asset_url = !empty($reward_item->asset_url) ? $reward_item->asset_url : null;
-
-                    $reward_item_service = new RewardItemService();
-
-                    $reward_item->can_download = $reward_item_service->is_item_downloadable($reward_item) && $reward_item_service->can_user_download_reward_item($reward_item, $record->status, $payment->payment_status, (int) $backer->id);
+                    $reward_item->can_download = $reward_item_service->is_item_downloadable($reward_item) 
+                        && $reward_item_service->can_user_download_reward_item(
+                            $reward_item, 
+                            $record->status, 
+                            $payment->payment_status, 
+                            (int) $backer->id
+                        );
                     
                     $reward_items[] = $reward_item->type === RewardItemType::DIGITAL 
                         ? $reward_item->exclude(['asset', 'asset_url']) 
@@ -164,6 +171,8 @@ class PledgeService
             'uid' => $record->uid,
             'status' => $record->status,
             'is_manual' => (bool) $record->is_manual,
+            'delivery_option' => $record->delivery_option,
+            'is_ready_for_pickup' => (bool) $record->is_ready_for_pickup,
             'pledge_option' => $record->pledge_option,
             'notes' => $record->notes,
             'created_at' => $record->created_at,
@@ -760,8 +769,9 @@ class PledgeService
                 'image' => $reward_dto->image['id'] ?? null,
                 'items' => $reward_items,
                 'amount' => $reward_dto->amount ?? 0,
-                'reward_type' => $reward_dto->reward_type,
+                'reward_type' => $reward_dto->reward_type ?? RewardType::PHYSICAL_GOODS,
                 'estimated_delivery_date' => $reward_dto->estimated_delivery_date,
+                'allow_local_pickup' => $reward_dto->allow_local_pickup,
                 'local_pickup_instructions' => $reward_dto->local_pickup_instructions,
             ]);
 
@@ -772,13 +782,15 @@ class PledgeService
         $bonus_support_amount = PriceCalculator::calculate_pledge_bonus_amount($dto);
 
         $user_info = growfund_is_valid_json($dto->user_info) ? json_decode($dto->user_info, true) : [];
-        $shipping_cost = PriceCalculator::calculate_shipping_cost($user_info['shipping_address'] ?? [], $reward);
+        $delivery_option = $dto->delivery_option ?? DeliveryOption::HOME_DELIVERY;
+        $shipping_cost = PriceCalculator::calculate_shipping_cost($user_info['shipping_address'] ?? [], $reward, $delivery_option);
 
         $dto->uid = growfund_uuid();
         $dto->is_manual = $is_manual;
         $dto->amount = $amount;
         $dto->bonus_support_amount = $bonus_support_amount;
         $dto->shipping_cost = $shipping_cost;
+        $dto->delivery_option = $delivery_option;
         $dto->created_at = $dto->created_at ?? Date::current_sql_safe();
         $dto->created_by = growfund_user()->get_id();
         $dto->updated_at = $dto->updated_at ?? Date::current_sql_safe();
@@ -966,7 +978,6 @@ class PledgeService
 
     /**
      * Check reward constraints for pledge
-     * @param int $campaign_id
      * @param RewardDTO $reward_dto
      * @param bool $throwable
      * @return bool
@@ -1531,6 +1542,68 @@ class PledgeService
         $this->update_status($pledge_id, PledgeStatus::IN_PROGRESS);
 
         return true;
+    }
+
+    /**
+     * Mark a pledge as ready for pickup.
+     * 
+     * @param int $pledge_id
+     * 
+     * @return bool
+     */
+    public function marked_as_ready_for_pickup(int $pledge_id)
+    {
+        $is_updated = QueryBuilder::query()
+            ->table(Tables::PLEDGES)
+            ->where('ID', $pledge_id)
+            ->update([
+                'is_ready_for_pickup' => 1,
+                'updated_at' => Date::current_sql_safe(),
+                'updated_by' => growfund_user()->get_id()
+            ]);
+        
+        if (!empty($is_updated)) {
+            growfund_event(new SendLocalPickupInstructionEvent((int) $pledge_id));
+        }
+
+        return !empty($is_updated);
+    }
+
+    /**
+     * Mark all pledges of a campaign as ready for pickup.
+     * 
+     * @param int $campaign_id
+     * 
+     * @return bool
+     */
+    public function marked_all_as_ready_for_pickup(int $campaign_id)
+    {
+        $pledges = QueryBuilder::query()
+            ->table(Tables::PLEDGES)
+            ->select(['ID', 'campaign_id', 'user_id'])
+            ->where('campaign_id', $campaign_id)
+            ->where('status', PledgeStatus::BACKED)
+            ->where('delivery_option', DeliveryOption::LOCAL_PICKUP)
+            ->where('is_ready_for_pickup', 0)
+            ->get();
+
+        $ids = array_column($pledges, 'ID');
+
+        $is_updated = QueryBuilder::query()
+            ->where_in('ID', $ids)
+            ->update([
+                'is_ready_for_pickup' => 1,
+                'updated_at' => Date::current_sql_safe(),
+                'updated_by' => growfund_user()->get_id()
+            ]);
+
+        if (!empty($is_updated)) {
+            foreach ($pledges as $pledge) {
+                growfund_event(new SendLocalPickupInstructionEvent((int) $pledge->ID));
+            }
+        }
+
+        return !empty($is_updated);
     }
 
     /**

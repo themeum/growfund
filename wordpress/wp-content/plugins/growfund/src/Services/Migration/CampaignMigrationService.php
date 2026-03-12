@@ -8,7 +8,7 @@ use Growfund\Supports\Option;
 
 defined( 'ABSPATH' ) || exit;
 
-use Growfund\Constants\AppreciationType;
+use Growfund\Constants\Campaign\AppreciationType;
 use Growfund\Constants\Campaign\GoalType;
 use Growfund\Constants\Campaign\ReachingAction;
 use Growfund\Constants\Reward\QuantityType;
@@ -266,7 +266,7 @@ class CampaignMigrationService
 
     protected function get_campaign_status($post_status) {
 
-        switch($post_status) {
+        switch ($post_status) {
             case 'publish':
                 return CampaignStatus::PUBLISHED;
             case 'pending':
@@ -388,7 +388,7 @@ class CampaignMigrationService
 
             $metas = [];
 
-            foreach($rewards as $key => $reward) {
+            foreach ($rewards as $key => $reward) {
                 $reward_id = $first_id + $key;
                 $metas[] = [
                     'post_id' => $reward_id,
@@ -422,7 +422,7 @@ class CampaignMigrationService
 
             QueryBuilder::query()->table('postmeta')->insert($metas);
             QueryBuilder::commit();
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             QueryBuilder::rollback();
 
             throw $e;
@@ -450,10 +450,10 @@ class CampaignMigrationService
 
         $metas = Arr::make($rewards)->map(function ($item, $key) use ($first_id) {
             return [
-                    'post_id' => $first_id + $key,
-                    'meta_key' => '_thumbnail_id', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				'post_id' => $first_id + $key,
+				'meta_key' => '_thumbnail_id', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
                     'meta_value' => $item['image'] // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
-                ];
+			];
         })->toArray();
 
         QueryBuilder::query()->table('postmeta')->insert($metas);

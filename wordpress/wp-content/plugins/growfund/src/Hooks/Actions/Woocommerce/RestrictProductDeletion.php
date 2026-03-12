@@ -27,7 +27,11 @@ class RestrictProductDeletion extends BaseHook
     {
         $product_id = $args[0];
 
-        if (Woocommerce::is_active() && Woocommerce::is_growfund_product((int) $product_id)) {
+        if (
+            Woocommerce::is_active() 
+            && Woocommerce::get_growfund_product_id() > 0 
+            && Woocommerce::is_growfund_product((int) $product_id)
+        ) {
             wp_die(esc_html__('This product cannot be deleted as it is required by Growfund.', 'growfund'));
         }
 

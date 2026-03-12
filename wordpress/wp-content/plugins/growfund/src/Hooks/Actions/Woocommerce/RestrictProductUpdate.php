@@ -25,7 +25,7 @@ class RestrictProductUpdate extends BaseHook
     {
         $product = $args[0];
 
-        if (Woocommerce::is_growfund_product($product)) {
+        if (Woocommerce::get_growfund_product_id() > 0 && Woocommerce::is_growfund_product($product)) {
             wp_die(esc_html__('This product cannot be updated as it is required by Growfund.', 'growfund'));
         }
     }

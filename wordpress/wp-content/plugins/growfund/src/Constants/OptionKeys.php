@@ -75,4 +75,15 @@ class OptionKeys
      * Download hash key
      */
     const DOWNLOAD_HASH_KEY = 'growfund_download_hash_key';
+
+
+    /**
+     * Track db migration
+     */
+    const DATABASE_MIGRATION_TRACKER = 'growfund_database_migration_tracker';
+
+    /**
+     * Installed db version
+     */
+    const INSTALLED_DB_VERSION = 'growfund_installed_db_version';
 }

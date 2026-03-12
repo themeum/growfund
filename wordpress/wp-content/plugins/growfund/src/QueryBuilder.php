@@ -1253,10 +1253,24 @@ class QueryBuilder
                     $direction = 'ASC';
                 }
 
-                $order_by = sanitize_sql_orderby("$column $direction");
+                $column_part = explode('.', $column);
 
-                if ($order_by) {
-                    $order_by_clause[] = $order_by;
+                if (count($column_part) > 1) {
+                    $column = $column_part[1];
+                    $order_by = sanitize_sql_orderby("$column $direction");
+                    
+                    if ($order_by) {
+                        $order_by_clause[] = $column_part[0] . '.' . $order_by;
+                    }
+                }
+
+                if (count($column_part) === 1) {
+                    $column = $column_part[0];
+                    $order_by = sanitize_sql_orderby("$column $direction");
+
+                    if ($order_by) {
+                        $order_by_clause[] =  $order_by;
+                    }
                 }
             }
 

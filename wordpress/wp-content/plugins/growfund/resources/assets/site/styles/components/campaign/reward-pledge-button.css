@@ -12,7 +12,7 @@
   background-color: var(--growfund-bg-fill-brand);
   color: var(--growfund-text-light);
   border-radius: var(--growfund-radius-md);
-  padding: var(--growfund-spacing-3) 0;
+  padding: var(--growfund-spacing-3) var(--growfund-spacing-1);
 }
 
 .growfund-reward-pledge-button:hover {

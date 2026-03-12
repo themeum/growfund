@@ -4,7 +4,7 @@ namespace Growfund\Views\Pages;
 
 defined( 'ABSPATH' ) || exit;
 
-use Growfund\Constants\AppreciationType;
+use Growfund\Constants\Campaign\AppreciationType;
 use Growfund\Constants\Comment\CampaignUpdateVisibility;
 use Growfund\Constants\Comment\CommentVisibility;
 use Growfund\Core\AppSettings;

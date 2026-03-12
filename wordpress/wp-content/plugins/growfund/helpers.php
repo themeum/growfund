@@ -3,7 +3,6 @@
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Application;
-use Growfund\Constants\HookNames;
 use Growfund\Contracts\Capability;
 use Growfund\Core\AppSettings;
 use Growfund\Core\Dispatcher;
@@ -603,9 +602,7 @@ if (!function_exists('growfund_payment_gateway')) {
 
         try {
             return growfund_app()->make($name);
-        } catch (Exception) {
-            return null;
-        } catch (Throwable) {
+        } catch (Throwable $_) {
             return null;
         }
     }
@@ -1283,5 +1280,37 @@ if (!function_exists('growfund_is_valid_url')) {
 		}
 
 		return true;
+    }
+}
+
+if (!function_exists('growfund_file_put_contents')) {
+    /**
+     * Write content to a file.
+     * 
+     * @param string $filename The path to the file.
+     * @param string $content The content to write to the file.
+     * @param string $mode The mode to open the file in. Defaults to 'write'. options: 'write', 'append', 'prepend'
+     * @return bool
+     */
+    function growfund_file_put_contents(string $filename, string $content, string $mode = 'write') {
+        if (!function_exists('WP_Filesystem')) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+        }
+
+        WP_Filesystem();
+
+        global $wp_filesystem;
+
+		if (!$wp_filesystem) {
+			return false;
+		}
+
+        if ($mode === 'append') {
+            $content = $wp_filesystem->get_contents($filename) . $content;
+        } elseif ($mode === 'prepend') {
+            $content = $content . $wp_filesystem->get_contents($filename);
+        }
+
+        return $wp_filesystem->put_contents($filename, $content, FS_CHMOD_FILE);
     }
 }

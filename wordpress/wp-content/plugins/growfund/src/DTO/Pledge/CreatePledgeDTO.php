@@ -7,7 +7,8 @@ defined( 'ABSPATH' ) || exit;
 use Growfund\CastAttributes\DateTimeAttribute;
 use Growfund\CastAttributes\MoneyAttribute;
 use Growfund\Constants\PaymentEngine;
-use Growfund\Constants\PledgeOption;
+use Growfund\Constants\Pledge\DeliveryOption;
+use Growfund\Constants\Pledge\PledgeOption;
 use Growfund\Constants\Reward\RewardType;
 use Growfund\Constants\Status\PledgeStatus;
 use Growfund\Core\AppSettings;
@@ -84,6 +85,9 @@ class CreatePledgeDTO extends DTO
     /** @var PaymentMethodDTO|null */
     public $payment_method;
 
+    /** @var \Growfund\Constants\Pledge\DeliveryOption */
+    public $delivery_option;
+
     /** @var PledgeRewardDTO */
     public $reward_info;
 
@@ -119,6 +123,7 @@ class CreatePledgeDTO extends DTO
             'status'                     => 'required|string|in:' . implode(',', PledgeStatus::get_constant_values()),
             'pledge_option'              => 'required|string|in:' . implode(',', PledgeOption::get_constant_values()),
             'reward_id'                  => 'required_if:pledge_option,' . PledgeOption::WITH_REWARDS . '|post_exists:post_type=' . Reward::NAME,
+            'delivery_option'            => static::get_delivery_option_rules(),
             'amount'                     => 'required_if:pledge_option,' . PledgeOption::WITHOUT_REWARDS . '|float|min:0',
             'bonus_support_amount'       => 'float|min:0',
             'notes'                      => 'string',
@@ -161,6 +166,7 @@ class CreatePledgeDTO extends DTO
             'status'                     => Sanitizer::TEXT,
             'pledge_option'              => Sanitizer::TEXT,
             'reward_id'                  => Sanitizer::INT,
+            'delivery_option'            => Sanitizer::TEXT,
             'amount'                     => Sanitizer::MONEY,
             'bonus_support_amount'       => Sanitizer::MONEY,
             'notes'                      => Sanitizer::TEXTAREA,
@@ -180,6 +186,7 @@ class CreatePledgeDTO extends DTO
             'campaign_id'                => Sanitizer::INT,
             'pledge_option'              => Sanitizer::TEXT,
             'reward_id'                  => Sanitizer::INT,
+            'delivery_option'            => Sanitizer::TEXT,
             'amount'                     => Sanitizer::MONEY,
             'bonus_support_amount'       => Sanitizer::MONEY,
             'notes'                      => Sanitizer::TEXTAREA,
@@ -213,6 +220,7 @@ class CreatePledgeDTO extends DTO
             'campaign_id'                => 'required|post_exists:post_type=' . Campaign::NAME,
             'pledge_option'              => 'required|string|in:' . implode(',', PledgeOption::get_constant_values()),
             'reward_id'                  => 'required_if:pledge_option,' . PledgeOption::WITH_REWARDS . '|post_exists:post_type=' . Reward::NAME,
+            'delivery_option'            => static::get_delivery_option_rules(),
             'amount'                     => [
                 'required_if:pledge_option,' . PledgeOption::WITHOUT_REWARDS,
                 'float',
@@ -256,21 +264,22 @@ class CreatePledgeDTO extends DTO
             'shipping_address' => [
                 'array',
                 function($value, $key, $data) {
-                    if (empty($value)) {
-                        if ($data['pledge_option'] === PledgeOption::WITH_REWARDS) {
-                            if (PostMeta::get($data['reward_id'], 'reward_type') !== RewardType::DIGITAL_GOODS) {
-                                return __('The shipping address is required.', 'growfund');
-                            }
-                            
-                        }
+                    if (
+                        empty($value)
+                        && $data['pledge_option'] === PledgeOption::WITH_REWARDS 
+                        && PostMeta::get($data['reward_id'], 'reward_type') !== RewardType::DIGITAL_GOODS
+                        && $data['delivery_option'] !== DeliveryOption::LOCAL_PICKUP
+                    ) {
+                        return __('The shipping address is required.', 'growfund'); 
                     }
+
                     return true;
                 }
             ],
             'shipping_address.address' => [
                 'string',
                 function($value, $key, $data) {
-                    if (empty($value) && !empty($data['shipping_address'])) {
+                    if (empty($value) && !empty($data['shipping_address']) && $data['delivery_option'] !== DeliveryOption::LOCAL_PICKUP) {
                         return __('The shipping address is required.', 'growfund');
                     }
 
@@ -281,7 +290,7 @@ class CreatePledgeDTO extends DTO
             'shipping_address.city' => [
                 'string',
                 function($value, $key, $data) {
-                    if (empty($value) && !empty($data['shipping_address'])) {
+                    if (empty($value) && !empty($data['shipping_address']) && $data['delivery_option'] !== DeliveryOption::LOCAL_PICKUP) {
                         return __('The shipping city is required.', 'growfund');
                     }
 
@@ -292,7 +301,7 @@ class CreatePledgeDTO extends DTO
             'shipping_address.zip_code' => [
                 'string',
                 function($value, $key, $data) {
-                    if (empty($value) && !empty($data['shipping_address'])) {
+                    if (empty($value) && !empty($data['shipping_address']) && $data['delivery_option'] !== DeliveryOption::LOCAL_PICKUP) {
                         return __('The shipping country is required.', 'growfund');
                     }
 
@@ -302,7 +311,7 @@ class CreatePledgeDTO extends DTO
             'shipping_address.country' => [
                 'string',
                 function($value, $key, $data) {
-                    if (empty($value) && !empty($data['shipping_address'])) {
+                    if (empty($value) && !empty($data['shipping_address']) && $data['delivery_option'] !== DeliveryOption::LOCAL_PICKUP) {
                         /* translators: %s: field name */
                         return sprintf(__('The %s is required.', 'growfund'), str_replace('.', ' ', $key));
                     }
@@ -313,6 +322,10 @@ class CreatePledgeDTO extends DTO
             'billing_address' => [
                 'array',
                 function ($value, $key, $data) {
+                    if ($data['delivery_option'] === DeliveryOption::LOCAL_PICKUP && empty($value)) {
+                        return __('The billing address is required.', 'growfund');
+                    }
+
                     if (empty($data['is_billing_address_same'] ?? false) && empty($value)) {
 						return __('The bulling address is required.', 'growfund');
                     }
@@ -323,6 +336,10 @@ class CreatePledgeDTO extends DTO
             'billing_address.address'  => [
                 'string',
                 function ($value, $key, $data) {
+                    if ($data['delivery_option'] === DeliveryOption::LOCAL_PICKUP && empty($value)) {
+                        return __('The billing address is required.', 'growfund');
+                    }
+
                     if (empty($data['is_billing_address_same'] ?? false) && empty($value)) {
                         return __('The billing address is required.', 'growfund');
                     }
@@ -334,6 +351,10 @@ class CreatePledgeDTO extends DTO
             'billing_address.city' => [
                 'string',
                 function ($value, $key, $data) {
+                    if ($data['delivery_option'] === DeliveryOption::LOCAL_PICKUP && empty($value)) {
+                        return __('The billing city is required.', 'growfund');
+                    }
+
                     if (empty($data['is_billing_address_same'] ?? false) && empty($value)) {
                         return __('The billing city is required.', 'growfund');
                     }
@@ -345,6 +366,10 @@ class CreatePledgeDTO extends DTO
             'billing_address.zip_code'  => [
                 'string',
                 function ($value, $key, $data) {
+                    if ($data['delivery_option'] === DeliveryOption::LOCAL_PICKUP && empty($value)) {
+                        return __('The billing zip/postal code is required.', 'growfund');
+                    }
+
                     if (empty($data['is_billing_address_same'] ?? false) && empty($value)) {
                         return __('The billing zip/postal code is required.', 'growfund');
                     }
@@ -355,6 +380,10 @@ class CreatePledgeDTO extends DTO
             'billing_address.country'  => [
                 'string',
                 function ($value, $key, $data) {
+                    if ($data['delivery_option'] === DeliveryOption::LOCAL_PICKUP && empty($value)) {
+                        return __('The billing country is required.', 'growfund');
+                    }
+                    
                     if (empty($data['is_billing_address_same'] ?? false) && empty($value)) {
                         return __('The billing country is required.', 'growfund');
                     }
@@ -364,5 +393,39 @@ class CreatePledgeDTO extends DTO
             ],
             'is_billing_address_same' => 'boolean',
         ];
+    }
+
+    /**
+     * Get delivery option rules.
+     *
+     * @return array
+     */
+    protected static function get_delivery_option_rules(): array
+    {
+        return [
+			'string',
+			function($value, $key, $data) {
+				if (
+					$data['pledge_option'] === PledgeOption::WITH_REWARDS 
+					&& PostMeta::get($data['reward_id'], 'reward_type') !== RewardType::DIGITAL_GOODS
+				) {
+					if (empty($value)) {
+						return __('The delivery option is required.', 'growfund');
+					}
+
+					if (!in_array($value, DeliveryOption::get_constant_values(), true)) {
+						return __('The delivery option is not valid.', 'growfund');
+					}
+
+					$allow_local_pickup = filter_var(PostMeta::get($data['reward_id'], 'allow_local_pickup') ?? false, FILTER_VALIDATE_BOOLEAN);
+
+					if ($value === DeliveryOption::LOCAL_PICKUP && !$allow_local_pickup) {
+						return __('The reward does not allow local pickup.', 'growfund');
+					}
+				}
+                    
+				return true;
+			}
+		];
     }
 }

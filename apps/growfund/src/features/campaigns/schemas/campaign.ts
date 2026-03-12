@@ -124,6 +124,8 @@ const CampaignRewardsSchema = z.object({
   allow_pledge_without_reward: z.boolean().default(false),
   min_pledge_amount: z.number().nullish(),
   max_pledge_amount: z.number().nullish(),
+  allow_local_pickup: z.boolean().default(false),
+  is_ready_for_pickup: z.boolean().default(false),
 });
 
 const DonationBaseSchema = z.object({

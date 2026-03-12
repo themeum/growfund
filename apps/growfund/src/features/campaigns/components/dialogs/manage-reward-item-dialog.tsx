@@ -64,18 +64,30 @@ const ManageRewardItemDialog = ({
 
   useEffect(() => {
     if (!open) return;
-    if (isEditMode) {
+
+    if (isDefined(defaultValues)) {
       form.reset({
         ...defaultValues,
       });
-    } else {
-      form.reset({
-        ...getDefaults(RewardItemBaseSchema),
-        type: rewardItemType,
-        asset_type: 'file',
-      });
+
+      return;
     }
-  }, [open, isEditMode, defaultValues, rewardItemType, form]);
+
+    form.reset({
+      ...getDefaults(RewardItemBaseSchema),
+      type: rewardItemType,
+    });
+
+    if (rewardItemType === 'digital') {
+      form.setValue('asset_type', 'file');
+    }
+
+    if (rewardItemType === 'physical') {
+      form.setValue('asset_type', undefined);
+      form.setValue('asset', undefined);
+      form.setValue('asset_url', undefined);
+    }
+  }, [open, defaultValues, rewardItemType, form]);
 
   useEffect(() => {
     if (assetType === 'url') {
@@ -83,7 +95,7 @@ const ManageRewardItemDialog = ({
     }
 
     if (assetType === 'file') {
-      form.setValue('asset_url', '');
+      form.setValue('asset_url', undefined);
     }
   }, [assetType, form]);
 

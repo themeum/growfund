@@ -60,6 +60,7 @@ class MailKeys
     const BACKER_PLEDGE_CANCELLED                  = 'backer_email_pledge_cancelled';
     const BACKER_REWARD_DELIVERED                  = 'backer_email_reward_delivered';
     const BACKER_CAMPAIGN_HALF_FUNDED              = 'backer_email_campaign_half_funded';
+    const BACKER_SEND_LOCAL_PICKUP_INSTRUCTIONS    = 'backer_email_send_local_pickup_instructions';
 
     const EMAIL_VERIFICATION                       = 'email_verification';
 }

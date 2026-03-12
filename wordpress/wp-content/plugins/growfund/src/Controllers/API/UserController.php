@@ -2,6 +2,8 @@
 
 namespace Growfund\Controllers\API;
 
+use Growfund\Constants\HookNames;
+
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Constants\UserDeleteType;
@@ -111,7 +113,7 @@ class UserController
      */
     public function get_current_user()
     {
-        $user = $this->service->get_current_user();
+        $user = apply_filters(HookNames::GROWFUND_CURRENT_USER_FILTER, $this->service->get_current_user()->to_array());
 
         return growfund_response()->json([
             'data' => $user,

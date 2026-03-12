@@ -6,7 +6,10 @@
 defined( 'ABSPATH' ) || exit;
 ?>
 
-<label class="growfund-checkbox-field">
+<label 
+    class="growfund-checkbox-field"
+    <?php echo $checkbox_field->style ? ' style="' . esc_attr($checkbox_field->style) . '"' : ''; ?>
+>
     <input 
         type="checkbox" 
         name="<?php echo esc_attr($checkbox_field->name); ?>" 
@@ -14,7 +17,6 @@ defined( 'ABSPATH' ) || exit;
         <?php echo esc_attr(checked($checkbox_field->checked)); ?>
         class="growfund-checkbox-input<?php echo esc_attr($checkbox_field->classname ? ' ' . $checkbox_field->classname : ''); ?>"
         <?php echo $checkbox_field->id ? 'id="' . esc_attr($checkbox_field->id) . '"' : ''; ?>
-        <?php echo $checkbox_field->style ? ' style="' . esc_attr($checkbox_field->style) . '"' : ''; ?>
     />
 
     <?php if ( ! empty( $checkbox_field->label ) ) : ?>

@@ -142,9 +142,7 @@ class Payment
 
         try {
             return $payment_gateway->is_configured() ?? false;
-        } catch (Exception) {
-            return false;
-        } catch (Throwable) {
+        } catch (Throwable $_) {
             return false;
         }
     }

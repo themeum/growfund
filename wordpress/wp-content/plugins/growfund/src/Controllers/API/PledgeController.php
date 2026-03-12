@@ -352,6 +352,19 @@ class PledgeController
         ]);
     }
 
+    public function ready_for_pickup(Request $request)
+    {
+        $this->policy->authorize_mark_as_ready_for_pickup($request->get_int('id'));
+
+        $pledge_id = $request->get_int('id');
+        $is_ready = $this->service->marked_as_ready_for_pickup($pledge_id);
+
+        return growfund_response()->json([
+            'data' => $is_ready,
+            'message' => $is_ready ? __('Reward is marked as ready for pickup', 'growfund') : __('Failed to mark as ready for pickup', 'growfund'),
+        ]);
+    }
+
     public function get_receipt(Request $request)
     {
         $uid = $request->get_string('uid');

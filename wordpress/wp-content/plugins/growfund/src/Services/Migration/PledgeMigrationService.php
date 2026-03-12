@@ -8,7 +8,7 @@ defined( 'ABSPATH' ) || exit;
 
 use Growfund\Constants\DateTimeFormats;
 use Growfund\Constants\PaymentEngine;
-use Growfund\Constants\PledgeOption;
+use Growfund\Constants\Pledge\PledgeOption;
 use Growfund\Constants\Tables;
 use Growfund\Constants\UserTypes\Backer;
 use Growfund\Constants\WC;
@@ -22,6 +22,7 @@ use Growfund\Supports\Money;
 use Growfund\Supports\WoocommerceToNative;
 use Exception;
 use Growfund\Constants\HookNames;
+use Growfund\Constants\Reward\RewardType;
 use Growfund\DTO\Backer\CreateBackerDTO;
 use Growfund\DTO\Migration\MigrationResponseDTO;
 use Growfund\Sanitizer;
@@ -188,8 +189,9 @@ class PledgeMigrationService
                     'image' => $reward_dto->image['id'] ?? null,
                     'items' => $reward_items,
                     'amount' => $reward_dto->amount ?? 0,
-                    'reward_type' => $reward_dto->reward_type,
+                    'reward_type' => $reward_dto->reward_type ?? RewardType::PHYSICAL_GOODS,
 					'estimated_delivery_date' => $reward_dto->estimated_delivery_date,
+                    'allow_local_pickup' => $reward_dto->allow_local_pickup,
 					'local_pickup_instructions' => $reward_dto->local_pickup_instructions,
                 ]);
 

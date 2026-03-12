@@ -13,6 +13,7 @@ use Growfund\Hooks\Actions\EnqueueScriptDashboard;
 use Growfund\Hooks\Actions\EnqueueScriptsAdmin;
 use Growfund\Hooks\Actions\EnqueueScriptsSite;
 use Growfund\Hooks\Actions\FlushRewriteRules;
+use Growfund\Hooks\Actions\ManageDatabaseMigrations;
 use Growfund\Hooks\Actions\ManageOnboarding;
 use Growfund\Hooks\Actions\NewUserRegistered;
 use Growfund\Hooks\Actions\RegisterAdminMenu;
@@ -62,6 +63,7 @@ use Growfund\Hooks\Scheduler\StopRecurringScheduler;
 return [
     'actions' => [
         ManageOnboarding::class,
+        ManageDatabaseMigrations::class,
         EnqueueScriptsAdmin::class,
         EnqueueScriptDashboard::class,
         EnqueueBrandingStyles::class,

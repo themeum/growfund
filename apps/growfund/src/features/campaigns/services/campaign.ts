@@ -255,6 +255,24 @@ const useChargeBackersMutation = () => {
   });
 };
 
+const markedAllPledgesAsReadyForPickup = (id: string) => {
+  return apiClient.post(endpoints.CAMPAIGN_MARK_AS_READY_FOR_PICKUP(id));
+};
+
+const useMarkedAllPledgesAsReadyForPickupMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: markedAllPledgesAsReadyForPickup,
+    onSuccess() {
+      toast.success(__('Ready for pickup mail sent successfully.', 'growfund'));
+      void queryClient.invalidateQueries({ queryKey: ['Campaigns'] });
+    },
+    onError(error) {
+      toast.error(error.message);
+    },
+  });
+};
+
 export {
   useApproveCampaignMutation,
   useCampaignBulkActionsMutation,
@@ -265,6 +283,7 @@ export {
   useDeclineCampaignMutation,
   useDeleteCampaignMutation,
   useEmptyCampaignsTrashMutation,
+  useMarkedAllPledgesAsReadyForPickupMutation,
   useUpdateCampaignMutation,
   useUpdateCampaignSecondaryStatusMutation,
   useUpdateCampaignStatusMutation,

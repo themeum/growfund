@@ -15,6 +15,7 @@ import PaymentMethodCard from '@/features/pledges/components/payment-method-card
 import PledgeNotesCard from '@/features/pledges/components/pledge-notes-card';
 import PledgeForGivingThanks from '@/features/pledges/components/rewards/pledge-for-giving-thanks';
 import AddPledgeRewardLayout from '@/features/pledges/components/rewards/reward-selector';
+import ShippingMethodCard from '@/features/pledges/components/shipping-method-card';
 import { PledgePaymentSchema } from '@/features/pledges/schemas/pledge';
 import { type PledgeForm as PledgeFormType } from '@/features/pledges/schemas/pledge-form';
 import { getDefaults } from '@/lib/zod';
@@ -31,6 +32,10 @@ const PledgeForm = () => {
   const amount = useWatch({ control: form.control, name: 'amount' });
   const bonusAmount = useWatch({ control: form.control, name: 'bonus_support_amount' });
   const notes = useWatch({ control: form.control, name: 'notes' });
+  const deliveryOption = useWatch({
+    control: form.control,
+    name: 'delivery_option',
+  });
 
   const pledgeAmount = useMemo(() => {
     if (!isDefined(pledgeOption)) {
@@ -119,6 +124,10 @@ const PledgeForm = () => {
         <div className="growfund-space-y-4">
           <PaymentMethodCard form={form} />
           <BackerSelectionCard selectedBacker={backer} setBacker={setBacker} />
+          {(reward?.reward_type === 'physical-goods' ||
+            reward?.reward_type === 'physical-and-digital-goods') && (
+            <ShippingMethodCard form={form} reward={reward} deliveryOption={deliveryOption} />
+          )}
           <PledgeNotesCard
             value={notes ?? null}
             onChange={(value) => {

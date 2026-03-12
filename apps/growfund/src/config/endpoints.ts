@@ -63,6 +63,7 @@ const endpoints = {
   CAMPAIGN_UPDATE_SECONDARY_STATUS: (id: string) => `/campaigns/${id}/update-secondary-status`,
   CHARGE_BACKERS: (id: string) => `/campaigns/${id}/charge-backers`,
   CAMPAIGN_DUPLICATE: (id: string) => `/campaigns/${id}/copy`,
+  CAMPAIGN_MARK_AS_READY_FOR_PICKUP: (id: string) => `/campaigns/${id}/mark-as-ready-for-pickup`,
 
   // Backers endpoints
   BACKERS: '/backers',
@@ -82,6 +83,7 @@ const endpoints = {
   EMPTY_PLEDGES_TRASH: '/pledges/empty-trash',
   CHARGE_BACKER: (pledgeId: string) => `/pledges/${pledgeId}/charge-backer`,
   RETRY_FAILED_PAYMENT: (pledgeId: string) => `/pledges/${pledgeId}/retry-failed-payment`,
+  MARK_AS_READY_FOR_PICKUP: (pledgeId: string) => `/pledges/${pledgeId}/mark-as-ready-for-pickup`,
   REWARD_ITEM_DOWNLOAD: (uid: string, id: string | number) =>
     `/pledges/${uid}/reward-items/${id}/download`,
 

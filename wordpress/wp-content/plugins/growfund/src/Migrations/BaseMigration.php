@@ -4,7 +4,9 @@ namespace Growfund\Migrations;
 
 defined( 'ABSPATH' ) || exit;
 
+use Growfund\Constants\OptionKeys;
 use Growfund\Contracts\Migration;
+use Growfund\Supports\Option;
 
 /**
  * Class BaseMigration
@@ -17,6 +19,11 @@ use Growfund\Contracts\Migration;
 abstract class BaseMigration implements Migration
 {
     protected $table_name;
+
+    /**
+     * The plugin version number at which the migration becomes available. 
+     */
+    protected $is_available_at = '0.0.1';
 
     /**
      * Create a new instance of the migration class.
@@ -103,5 +110,60 @@ abstract class BaseMigration implements Migration
         $table_name = $wpdb->prefix . $this->table_name;
 
         return $table_name;
+    }
+
+    protected function is_available_for_current_version() {
+        return version_compare(growfund_app()->installed_db_version(), $this->is_available_at, '<') ;
+    }
+
+    abstract public function up();
+
+    abstract public function down();
+
+    public function handle_up() {
+        if (!$this->is_available_for_current_version() && $this->is_already_migrated()) {
+            return;
+        }
+
+        $this->up();
+        $this->mark_as_migrated();
+    }
+
+    public function handle_down() {
+        if (!$this->is_already_migrated()) {
+            return;
+        }
+        
+        $this->down();
+
+        $migrations = $this->get_completed_migrations();
+        $migrations = array_diff($migrations, [static::class]);
+        $this->set_completed_migrations($migrations);
+    }
+
+    /**
+     * Check if the migration has already been run.
+     */
+    protected function is_already_migrated()
+    {
+        return in_array(static::class, $this->get_completed_migrations(), true);
+    }
+
+    protected function mark_as_migrated()
+    {
+        $migrations = $this->get_completed_migrations();
+        $migrations[] = static::class;
+
+        $this->set_completed_migrations($migrations);
+    }
+
+	protected function get_completed_migrations() {
+        $migrations = Option::get(OptionKeys::DATABASE_MIGRATION_TRACKER, []);
+
+        return $migrations;
+    }
+
+    protected function set_completed_migrations(array $migrations) {
+        Option::update(OptionKeys::DATABASE_MIGRATION_TRACKER, $migrations);
     }
 }

@@ -119,6 +119,12 @@ class CampaignDTO extends DTO
     /** @var array|null */
     public $rewards;
 
+    /** @var bool */
+    public $allow_local_pickup = false;
+
+    /** @var bool */
+    public $is_ready_for_pickup = false;
+
     /** @var bool|null */
     public $allow_pledge_without_reward;
 

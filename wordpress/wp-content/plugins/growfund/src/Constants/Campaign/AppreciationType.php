@@ -1,6 +1,6 @@
 <?php
 
-namespace Growfund\Constants;
+namespace Growfund\Constants\Campaign;
 
 defined( 'ABSPATH' ) || exit;
 

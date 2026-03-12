@@ -7,8 +7,6 @@ defined( 'ABSPATH' ) || exit;
 use Growfund\Constants\HookNames;
 use Growfund\Constants\HookTypes;
 use Growfund\Hooks\BaseHook;
-use Growfund\Services\DonationService;
-use Growfund\Services\PledgeService;
 use Growfund\Supports\Woocommerce;
 
 class RemoveCartItem extends BaseHook
@@ -50,14 +48,6 @@ class RemoveCartItem extends BaseHook
             return;
         }
 
-        if (growfund_app()->is_donation_mode()) {
-            $donation_service = new DonationService();
-            $donation_service->delete($contribution_id);
-
-            return;
-        } 
-
-        $pledge_service = new PledgeService();
-        $pledge_service->delete($contribution_id);
+        Woocommerce::remove_pending_contribution_from_cart((int) $contribution_id);
     }
 }

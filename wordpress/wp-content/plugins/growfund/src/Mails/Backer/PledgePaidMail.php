@@ -6,7 +6,7 @@ defined( 'ABSPATH' ) || exit;
 
 use Growfund\Constants\DateTimeFormats;
 use Growfund\Constants\Mail\MailKeys;
-use Growfund\Constants\PledgeOption;
+use Growfund\Constants\Pledge\PledgeOption;
 use Growfund\Constants\Status\PledgeStatus;
 use Growfund\Mailer;
 use Growfund\Services\CampaignService;

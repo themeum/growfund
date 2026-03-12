@@ -7,6 +7,7 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import { CheckboxField } from '@/components/form/checkbox-field';
 import { DatePickerField } from '@/components/form/date-picker-field';
+import { EditorField } from '@/components/form/editor-field';
 import { MediaField } from '@/components/form/media-field';
 import { RadioField } from '@/components/form/radio-field';
 import { TextField } from '@/components/form/text-field';
@@ -261,7 +262,7 @@ const ManageRewardDialog = ({
                         />
 
                         {allowLocalPickup && (
-                          <TextareaField
+                          <EditorField
                             control={form.control}
                             name="local_pickup_instructions"
                             label={__('Local Pickup Instructions', 'growfund')}
@@ -269,6 +270,7 @@ const ManageRewardDialog = ({
                               'Specific locations or instructions for local pickup',
                               'growfund',
                             )}
+                            className="growfund-modal-richtext-container"
                           />
                         )}
                       </Box>

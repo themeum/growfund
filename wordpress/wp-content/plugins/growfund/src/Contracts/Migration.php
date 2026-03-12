@@ -22,7 +22,7 @@ interface Migration
      *
      * @return void
      */
-    public function up();
+    public function handle_up();
 
     /**
      * Reverse the migration.
@@ -31,5 +31,5 @@ interface Migration
      *
      * @return void
      */
-    public function down();
+    public function handle_down();
 }

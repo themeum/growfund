@@ -5,6 +5,7 @@ namespace Growfund\Policies;
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Capabilities\PledgeCapabilities;
+use Growfund\Constants\Pledge\DeliveryOption;
 use Growfund\Constants\Status\PledgeStatus;
 use Growfund\Exceptions\AuthorizationException;
 use Growfund\Exceptions\InvalidValidationRuleException;
@@ -20,6 +21,7 @@ use Growfund\Services\PledgeService;
  * @method void authorize_delete(int $pledge_id, int|null $user_id = null)
  * @method void authorize_empty_trash(int|null $user_id = null)
  * @method void authorize_bulk_actions(int[] $pledge_ids, int|null $user_id = null)
+ * @method void authorize_mark_as_ready_for_pickup(int $pledge_id, int|null $user_id = null)
  */
 class PledgePolicy extends BasePolicy
 {
@@ -95,6 +97,25 @@ class PledgePolicy extends BasePolicy
     {
         foreach ($pledge_ids as $pledge_id) {
             $this->authorize_delete($pledge_id, $user_id = null);
+        }
+    }
+
+    public function mark_as_ready_for_pickup(int $pledge_id, $user_id = null)
+    {
+        $user = growfund_user($user_id);
+
+        if (!$user->can(PledgeCapabilities::EDIT, $pledge_id)) {
+            throw new AuthorizationException(esc_html__('You do not have permission for this action', 'growfund'));
+        }
+
+        $pledge = $this->pledge_service->get_by_id($pledge_id);
+
+        if (
+            $pledge->status !== PledgeStatus::BACKED 
+            || $pledge->delivery_option !== DeliveryOption::LOCAL_PICKUP 
+            || empty($pledge->reward)
+        ) {
+            throw new InvalidValidationRuleException(esc_html__('Cannot mark as ready for pickup', 'growfund'));
         }
     }
 }

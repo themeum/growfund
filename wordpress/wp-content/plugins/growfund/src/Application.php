@@ -15,7 +15,9 @@ use Growfund\Providers\HookServiceProvider;
 use Growfund\Providers\PaymentServiceProvider;
 use Growfund\Traits\Macroable;
 use Exception;
+use Growfund\Constants\OptionKeys;
 use Growfund\Core\AssetHandler;
+use Growfund\Supports\Option;
 use InvalidArgumentException;
 
 /**
@@ -26,6 +28,7 @@ use InvalidArgumentException;
  * @method bool is_woocommerce_installed()
  * @method bool is_onboarding_completed()
  * @method bool is_migration_available_from_crowdfunding()
+ * @method string installed_db_version()
  */
 class Application extends Container
 {
@@ -308,6 +311,8 @@ class Application extends Container
      */
     public static function handle_activation()
     {
+        require_once GROWFUND_DIR_PATH . 'bootstrap/app.php';
+
         $instance = static::get_instance();
         $instance->activate_growfund();
     }
@@ -320,6 +325,8 @@ class Application extends Container
      */
     public static function handle_deactivation()
     {
+        require_once GROWFUND_DIR_PATH . 'bootstrap/app.php';
+        
         $instance = static::get_instance();
         $instance->deactivate_growfund();
     }
@@ -332,6 +339,8 @@ class Application extends Container
      */
     public static function handle_uninstall()
     {
+        require_once GROWFUND_DIR_PATH . 'bootstrap/app.php';
+        
         static::uninstall_growfund();
     }
 
@@ -410,8 +419,10 @@ class Application extends Container
                 );
             }
 
-            $migration->up();
+            $migration->handle_up();
         }
+
+        Option::update(OptionKeys::INSTALLED_DB_VERSION, GROWFUND_VERSION);
     }
 
     /**

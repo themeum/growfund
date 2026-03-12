@@ -8,30 +8,31 @@ import { Box, BoxContent } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import { FormLabel } from '@/components/ui/form';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectSeparator,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 import { RouteConfig } from '@/config/route-config';
 import { useAppConfig } from '@/contexts/app-config';
 import { ActionBadge } from '@/features/campaigns/components/campaign-action/action-badge';
 import {
-    getActionAlerts,
-    getActionHeaderText,
-    prepareActionOptions,
-    prepareMessageKey,
+  getActionAlerts,
+  getActionHeaderText,
+  prepareActionOptions,
+  prepareMessageKey,
 } from '@/features/campaigns/components/campaign-action/campaign-action-services';
 import { type Action } from '@/features/campaigns/components/campaign-action/campaign-action-types';
 import { useCampaign } from '@/features/campaigns/contexts/campaign-context';
 import { useConsentDialog } from '@/features/campaigns/contexts/consent-dialog-context';
 import {
-    useChargeBackersMutation,
-    useDeleteCampaignMutation,
-    useUpdateCampaignSecondaryStatusMutation,
-    useUpdateCampaignStatusMutation,
+  useChargeBackersMutation,
+  useDeleteCampaignMutation,
+  useMarkedAllPledgesAsReadyForPickupMutation,
+  useUpdateCampaignSecondaryStatusMutation,
+  useUpdateCampaignStatusMutation,
 } from '@/features/campaigns/services/campaign';
 import { useRouteParams } from '@/hooks/use-route-params';
 import { cn } from '@/lib/utils';
@@ -46,6 +47,7 @@ const CampaignAction = () => {
   const chargeBackerMutation = useChargeBackersMutation();
   const updateStatusMutation = useUpdateCampaignStatusMutation();
   const deleteCampaignMutation = useDeleteCampaignMutation();
+  const markAsReadyForPickupMutation = useMarkedAllPledgesAsReadyForPickupMutation();
   const { openDialog } = useConsentDialog();
   const navigate = useNavigate();
 
@@ -170,6 +172,24 @@ const CampaignAction = () => {
           },
         });
         break;
+      case 'mark-as-ready-for-pickup':
+        openDialog({
+          title: __('Send Local Pickup Instruction', 'growfund'),
+          content: (
+            <div className="growfund-space-y-3">
+              <p>{__('Are you sure you want to send local pickup instruction?', 'growfund')}</p>
+              <Alert variant="warning">{actionAlerts.get('mark-as-ready-for-pickup')}</Alert>
+            </div>
+          ),
+          confirmButtonVariant: 'primary',
+          confirmText: __('Send', 'growfund'),
+          declineText: __('Cancel', 'growfund'),
+          onConfirm: async (closeDialog) => {
+            await markAsReadyForPickupMutation.mutateAsync(campaignId);
+            closeDialog();
+          },
+        });
+        break;
     }
     setCampaignAction(null);
   };
@@ -249,7 +269,8 @@ const CampaignAction = () => {
                     value={option.value}
                     className={cn(
                       '[&>span]:growfund-flex [&>span]:growfund-items-center [&_svg]:growfund-size-4 [&_svg]:growfund-text-icon-primary',
-                      option.is_critical && 'growfund-text-fg-critical [&_svg]:growfund-text-icon-critical',
+                      option.is_critical &&
+                        'growfund-text-fg-critical [&_svg]:growfund-text-icon-critical',
                     )}
                   >
                     <span className="growfund-mr-2 growfund-text-icon-primary">{option.icon}</span>
@@ -263,7 +284,11 @@ const CampaignAction = () => {
 
         {actionAlert && <Alert>{actionAlert}</Alert>}
 
-        <Button className="growfund-w-full" disabled={!campaignAction} onClick={handleCampaignAction}>
+        <Button
+          className="growfund-w-full"
+          disabled={!campaignAction}
+          onClick={handleCampaignAction}
+        >
           {__('Update', 'growfund')}
         </Button>
       </BoxContent>

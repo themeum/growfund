@@ -4,9 +4,8 @@ namespace Growfund\Supports;
 
 defined( 'ABSPATH' ) || exit;
 
-use Growfund\Constants\MetaKeys\Backer;
-use Growfund\Constants\PledgeOption;
-use Growfund\Constants\Shipping;
+use Growfund\Constants\Pledge\DeliveryOption;
+use Growfund\Constants\Pledge\PledgeOption;
 use Growfund\DTO\Pledge\CreatePledgeDTO;
 use Growfund\DTO\RewardDTO;
 
@@ -56,12 +55,22 @@ class PriceCalculator
      * 
      * @param array $backer_shipping_address
      * @param RewardDTO $reward_dto
+     * @param DeliveryOption $delivery_option
      * 
      * @return int|float
      */
-    public static function calculate_shipping_cost($backer_shipping_address, $reward_dto = null)
+    public static function calculate_shipping_cost($backer_shipping_address, $reward_dto = null, $delivery_option = DeliveryOption::HOME_DELIVERY)
     {
-        if (empty($reward_dto->shipping_costs) || empty($backer_shipping_address) || empty($backer_shipping_address['country'])) {
+        if (
+            empty($reward_dto)
+            || empty($reward_dto->shipping_costs) 
+            || empty($backer_shipping_address) 
+            || empty($backer_shipping_address['country'])
+        ) {
+            return 0;
+        }
+
+        if ($reward_dto->allow_local_pickup && $delivery_option === DeliveryOption::LOCAL_PICKUP) {
             return 0;
         }
 

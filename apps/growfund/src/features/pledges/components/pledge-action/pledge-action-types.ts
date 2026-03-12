@@ -6,6 +6,7 @@ type Action =
   | 'separator'
   | 'in-progress'
   | 'mark-as-backed'
+  | 'mark-as-ready-for-pickup'
   | 'retry';
 
 type MessageKey =

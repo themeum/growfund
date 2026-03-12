@@ -341,6 +341,10 @@ class CampaignCategoryService
             ]
         ]);
 
+        if (!$default_term || is_wp_error($default_term)) {
+            return 0;
+        }
+
         return $default_term[0] ?? 0;
     }
 

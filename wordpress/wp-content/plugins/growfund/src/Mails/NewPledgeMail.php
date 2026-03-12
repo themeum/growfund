@@ -5,7 +5,7 @@ namespace Growfund\Mails;
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Constants\DateTimeFormats;
-use Growfund\Constants\PledgeOption;
+use Growfund\Constants\Pledge\PledgeOption;
 use Growfund\Mailer;
 use Growfund\Services\PledgeService;
 use Growfund\Supports\Arr;

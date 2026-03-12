@@ -65,7 +65,9 @@
 }
 
 .toplevel_page_growfund .wp-core-ui ul.attachments li.selected.details {
-  box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 6px hsl(var(--growfund-green-4));
+  box-shadow:
+    inset 0 0 0 2px #fff,
+    inset 0 0 0 6px hsl(var(--growfund-green-4));
 }
 
 .toplevel_page_growfund .wp-core-ui .attachment .thumbnail::after {
@@ -74,7 +76,9 @@
 
 .toplevel_page_growfund .wp-core-ui ul.attachments li.selected.details .check {
   background-color: hsl(var(--growfund-green-4));
-  box-shadow: 0 0 0 1px #fff, 0 0 0 2px hsl(var(--growfund-green-4));
+  box-shadow:
+    0 0 0 1px #fff,
+    0 0 0 2px hsl(var(--growfund-green-4));
 }
 
 .toplevel_page_growfund .media-router {
@@ -166,7 +170,6 @@
 }
 
 @keyframes growfund_loading_text_fade {
-
   0%,
   100% {
     opacity: 0.4;

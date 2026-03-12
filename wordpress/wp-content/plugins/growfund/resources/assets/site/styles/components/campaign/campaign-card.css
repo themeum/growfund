@@ -26,12 +26,6 @@
   border: 1px solid var(--growfund-border-border);
 }
 
-.growfund-campaign-card:hover {
-  z-index: 10;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
 .growfund-campaign-card-image {
   position: relative;
   height: auto;
@@ -181,16 +175,6 @@
   text-overflow: ellipsis;
 }
 
-.growfund-campaign-card:hover .growfund-campaign-card-description {
-  z-index: 20;
-  max-height: 400px;
-  opacity: 1;
-}
-.growfund-campaign-card:hover {
-  border: none;
-  box-shadow: var(--growfund-box-shadow-6);
-}
-
 .growfund-campaign-card-goal-progres {
   margin-top: var(--growfund-spacing-5);
 }
@@ -228,4 +212,19 @@
   .growfund-campaign-bookmark-icon
   path {
   stroke: var(--growfund-bg-surface);
+}
+
+@media (min-width: 767px) and (hover: hover) {
+  .growfund-campaign-card:hover {
+    z-index: 10;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border: none;
+    box-shadow: var(--growfund-box-shadow-6);
+  }
+  .growfund-campaign-card:hover .growfund-campaign-card-description {
+    z-index: 20;
+    max-height: 400px;
+    opacity: 1;
+  }
 }

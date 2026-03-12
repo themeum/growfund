@@ -5,6 +5,7 @@ import {
   CircleDollarSign,
   Eye,
   EyeOff,
+  Mail,
   Pause,
   Play,
   Receipt,
@@ -17,6 +18,7 @@ import {
   type MessageKey,
 } from '@/features/campaigns/components/campaign-action/campaign-action-types';
 import { type Campaign } from '@/features/campaigns/schemas/campaign';
+import { isDefined } from '@/utils';
 
 function prepareActionOptions(campaign: Campaign, isDonationMode: boolean) {
   return [
@@ -80,6 +82,23 @@ function prepareActionOptions(campaign: Campaign, isDonationMode: boolean) {
           return false;
         }
         return true;
+      },
+    },
+    {
+      label: __('Send Local Pickup Instruction', 'growfund'),
+      value: 'mark-as-ready-for-pickup',
+      icon: <Mail />,
+      proceed: () => {
+        if (campaign.is_paused || campaign.status !== 'funded') {
+          return false;
+        }
+
+        return (
+          isDefined(campaign.rewards) &&
+          campaign.rewards.length > 0 &&
+          campaign.allow_local_pickup &&
+          !campaign.is_ready_for_pickup
+        );
       },
     },
     {
@@ -320,6 +339,13 @@ function getActionAlerts(isDonationMode: boolean) {
       'delete',
       __(
         'This action will permanently remove the campaign and all associated data. This cannot be undone.',
+        'growfund',
+      ),
+    ],
+    [
+      'mark-as-ready-for-pickup',
+      __(
+        'This action will mark the campaign as ready for pickup and send mail to the backers. This cannot be undone.',
         'growfund',
       ),
     ],

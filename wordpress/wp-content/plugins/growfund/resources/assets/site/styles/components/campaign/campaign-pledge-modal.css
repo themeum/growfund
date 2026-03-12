@@ -100,16 +100,19 @@
   height: 100%;
 }
 
-@media (max-width: 1024px) {
-  .growfund-campaign-pledge-modal-reward-card {
-    display: flex;
-    flex-direction: column;
+@media (min-width: 769px) and (max-width: 1024px) {
+  .growfund-campaign-pledge-modal {
+    max-width: 700px;
+    min-width: 650px;
+    padding: var(--growfund-spacing-3);
+    border-radius: var(--growfund-radius-lg);
   }
 }
 
-@media (max-width: 768px) {
+@media (min-width: 577px) and (max-width: 768px) {
   .growfund-campaign-pledge-modal {
     max-width: 700px;
+    min-width: 650px;
     padding: var(--growfund-spacing-3);
     border-radius: var(--growfund-radius-lg);
   }
@@ -119,18 +122,37 @@
   .growfund-campaign-pledge-modal-form {
     max-width: 700px;
   }
-}
+  .growfund-campaign-pledge-modal-reward-card {
+    max-width: 700px;
+  }
 
-@media (max-width: 480px) {
+  .growfund-campaign-pledge-modal-reward-card-image img {
+    max-width: 700px;
+  }
+}
+@media (max-width: 576px) {
   .growfund-campaign-pledge-modal {
-    max-width: 400px;
+    max-width: 314px;
+    min-width: auto;
     padding: var(--growfund-spacing-2);
     border-radius: var(--growfund-radius-md);
   }
+
   .growfund-campaign-pledge-modal-rewards-collection {
     max-width: 400px;
   }
+
   .growfund-campaign-pledge-modal-form {
+    max-width: 400px;
+  }
+
+  .growfund-campaign-pledge-modal-reward-card {
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .growfund-campaign-pledge-modal-reward-card-image img {
     max-width: 400px;
   }
 }

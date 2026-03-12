@@ -6,19 +6,18 @@ defined( 'ABSPATH' ) || exit;
 
 use Growfund\Constants\DateTimeFormats;
 use Growfund\Constants\Mail\MailKeys;
+use Growfund\Constants\Pledge\DeliveryOption;
 use Growfund\Constants\Pledge\PledgeOption;
 use Growfund\Mailer;
 use Growfund\Services\PledgeService;
 use Growfund\Services\CampaignService;
-use Growfund\Supports\Arr;
 use Growfund\Supports\CampaignGoal;
 use Growfund\Supports\Date;
-use Growfund\Supports\PostMeta;
 use InvalidArgumentException;
 
-class OfflinePledgeRequestMail extends Mailer
+class SendLocalPickupInstructionMail extends Mailer
 {
-    protected $content_key = MailKeys::BACKER_OFFLINE_PLEDGE_REQUEST;
+    protected $content_key = MailKeys::BACKER_SEND_LOCAL_PICKUP_INSTRUCTIONS;
 
     public function with($data)
     {
@@ -30,7 +29,11 @@ class OfflinePledgeRequestMail extends Mailer
         $campaign_dto = (new CampaignService())->get_by_id($pledge_dto->campaign->id)->get_values();
         $payment = $pledge_dto->payment->get_values();
 
-        if (empty($pledge_dto->backer->email)) {
+        if (
+            empty($pledge_dto->backer->email)
+            || $pledge_dto->pledge_option === PledgeOption::WITHOUT_REWARDS 
+            || $pledge_dto->delivery_option !== DeliveryOption::LOCAL_PICKUP
+        ) {
             $this->ignore_mail();
         }
 
@@ -38,17 +41,13 @@ class OfflinePledgeRequestMail extends Mailer
         $this->to($pledge_dto->backer->email);
 
         $pledge = [
-            'campaign_title' => $campaign_dto->title,
-            'campaign_url' => growfund_campaign_url(get_post_field('post_name', $campaign_dto->id)),
+            'campaign_title' => $pledge_dto->campaign->title,
+            'campaign_url' => growfund_campaign_url(get_post_field('post_name', $pledge_dto->campaign->id)),
             'reward_title' => $pledge_dto->reward->title,
             'pledge_amount' => $payment->total,
             'payment_method' => $payment->payment_method->label ?? '',
-            'shipping_destination' => Arr::make($pledge_dto->backer->shipping_address ?? [])->filter(function ($value) {
-                return !empty($value);
-            })->join(', '),
-            'estimated_delivery' => Date::format(PostMeta::get($pledge_dto->reward->id, 'estimated_delivery_date'), DateTimeFormats::HUMAN_READABLE_DATE),
+            'reward_delivered_date' => '',
             'pledge_id' => $pledge_dto->id,
-            'payment_instructions' => $payment->payment_method->instruction,
         ];
 
         $campaign = [
@@ -64,26 +63,21 @@ class OfflinePledgeRequestMail extends Mailer
             'backer_count' => $campaign_dto->number_of_contributors,
         ];
 
-
         return parent::with([
-            'pledge_summary_card' => growfund_renderer()->get_html(
-                $pledge_dto->pledge_option === PledgeOption::WITH_REWARDS
-                    ? 'mails.components.pledge-summary-card'
-                    : 'mails.components.pledge-summary-without-reward-card',
-                [
-                    'pledge' => $pledge
-                ]
-            ),
+            'reward_summary_card' => growfund_renderer()->get_html('mails.components.reward-summary-card', [
+                'pledge' => $pledge
+            ]),
+            'local_pickup_instructions' => growfund_renderer()
+                ->get_html('mails.components.backer.local-pickup-instructions', [
+                    'local_pickup_instructions' => $pledge_dto->reward->local_pickup_instructions
+                ]),
             'campaign_title' => $campaign['campaign_title'],
             'campaign_url' => $campaign['campaign_url'],
-            'campaign_creator' => $campaign['campaign_creator'],
-            'backer_count' => $campaign['backer_count'],
             'backer_name' => sprintf('%s %s', $pledge_dto->backer->first_name, $pledge_dto->backer->last_name),
             'pledge_amount' => $pledge['pledge_amount'],
             'payment_method' => $pledge['payment_method'],
             'reward_title' => $pledge['reward_title'],
-            'shipping_destination' => $pledge['shipping_destination'],
-            'estimated_delivery' => $pledge['estimated_delivery'],
+            'estimated_delivery' => Date::format($pledge_dto->reward->estimated_delivery_date, DateTimeFormats::HUMAN_READABLE_DATE),
             'pledge_id' => $pledge['pledge_id'],
         ]);
     }

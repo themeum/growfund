@@ -1,83 +1,94 @@
 .growfund-rich-text-content {
-  color: hsl(var(--growfund-gray-15));
-  font-size: 1rem;
+  color: var(--growfund-text-primary);
+  font-size: var(--growfund-font-size-lg);
   line-height: 1.25;
   font-family: var(--growfund-font-family);
 }
+.growfund-rich-text-content p {
+  display: block;
+  margin-block-start: var(--growfund-spacing-4);
+  margin-block-end: var(--growfund-spacing-4);
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  unicode-bidi: isolate;
+}
 
 .growfund-rich-text-content h1 {
-  font-size: 36px;
-  font-weight: 600;
+  font-size: calc(var(--growfund-font-size-5xl) + 4px);
+  font-weight: var(--growfund-font-weight-semibold);
   color: inherit;
   line-height: 1.3;
   margin-block: 1.2em 0.8em;
 }
 
 .growfund-rich-text-content h2 {
-  font-size: 30px;
-  font-weight: 600;
+  font-size: calc(var(--growfund-font-size-4xl) + 2px);
+  font-weight: var(--growfund-font-weight-semibold);
   color: inherit;
   line-height: 1.3;
   margin-block: 1.2em 0.8em;
 }
 
 .growfund-rich-text-content h3 {
-  font-size: 24px;
-  font-weight: 600;
+  font-size: var(--growfund-font-size-3xl);
+  font-weight: var(--growfund-font-weight-semibold);
   color: inherit;
   line-height: 1.3;
   margin-block: 1.2em 0.8em;
 }
 
 .growfund-rich-text-content h4 {
-  font-size: 20px;
-  font-weight: 600;
+  font-size: var(--growfund-font-size-2xl);
+  font-weight: var(--growfund-font-weight-semibold);
   color: inherit;
   line-height: 1.4;
-  margin-block: 1em 0.6em;
+  margin-block: var(--growfund-spacing-4) 0.6em;
 }
 
 .growfund-rich-text-content h5 {
-  font-size: 18px;
-  font-weight: 600;
+  font-size: var(--growfund-font-size-xl);
+  font-weight: var(--growfund-font-weight-semibold);
   color: inherit;
   line-height: 1.4;
-  margin-block: 1em 0.6em;
+  margin-block: var(--growfund-spacing-4) 0.6em;
 }
 
 .growfund-rich-text-content h6 {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: var(--growfund-font-size-lg);
+  font-weight: var(--growfund-font-weight-semibold);
   color: inherit;
   line-height: 1.4;
-  margin-block: 1em 0.6em;
+  margin-block: var(--growfund-spacing-4) 0.6em;
 }
 
 .growfund-rich-text-content ul {
   list-style-type: disc;
   margin-block: 0.5rem;
+  padding-left: 20px;
 }
 
 .growfund-rich-text-content ol {
   list-style-type: decimal;
-  padding-left: calc(var(--growfund-spacing) * 2);
+  padding-left: var(--growfund-spacing-8);
   margin-block: 0.5rem;
+  display: block;
+  margin-block-start: var(--growfund-spacing-4);
+  margin-block-end: var(--growfund-spacing-4);
+  padding-inline-start: 40px;
+  unicode-bidi: isolate;
 }
 
 .growfund-rich-text-content li {
   list-style-type: inherit;
   display: list-item;
-  margin-block: 0.5rem;
   color: inherit;
-  line-height: 1.75;
 }
 
 .growfund-rich-text-content ul ul,
 .growfund-rich-text-content ul ol,
 .growfund-rich-text-content ol ul,
 .growfund-rich-text-content ol ol {
-  margin-block: 0.5rem;
-  padding-left: calc(var(--growfund-spacing) * 3 / 2);
+  padding-left: var(--growfund-spacing-6);
 }
 
 .growfund-rich-text-content ul ul {
@@ -91,7 +102,7 @@
 .growfund-rich-text-content a {
   color: inherit;
   text-decoration: underline;
-  font-weight: 500;
+  font-weight: var(--growfund-font-weight-medium);
   transition: color 0.2s ease;
 }
 
@@ -102,7 +113,7 @@
 
 .growfund-rich-text-content strong,
 .growfund-rich-text-content b {
-  font-weight: 700;
+  font-weight: var(--growfund-font-weight-bold);
   color: inherit;
 }
 
@@ -122,26 +133,26 @@
 }
 
 .growfund-rich-text-content mark {
-  background-color: hsl(var(--growfund-yellow-1));
+  background-color: var(--growfund-yellow-1);
   color: inherit;
-  padding: 0.125em 0.25em;
-  border-radius: var(--growfund-radius);
+  padding: calc(var(--growfund-spacing-1) / 2) var(--growfund-spacing-1);
+  border-radius: var(--growfund-radius-2);
 }
 
 .growfund-rich-text-content blockquote {
-  border-left: 4px solid hsl(var(--growfund-green-4));
-  padding-left: calc(var(--growfund-spacing) * 2);
+  border-left: 4px solid var(--growfund-green-4);
+  padding-left: var(--growfund-spacing-6);
   margin-block: 1.5em;
   margin-inline: 0;
   color: inherit;
   font-style: italic;
-  background-color: hsl(hsl(var(--growfund-gray-3)));
-  padding: var(--growfund-spacing) calc(var(--growfund-spacing) * 2);
-  border-radius: var(--growfund-radius);
+  background-color: var(--growfund-gray-3);
+  padding: var(--growfund-spacing-4) var(--growfund-spacing-6);
+  border-radius: var(--growfund-radius-4);
 }
 
 .growfund-rich-text-content blockquote p {
-  margin-block: 0.5em;
+  margin-block: var(--growfund-spacing-2);
 }
 
 .growfund-rich-text-content blockquote p:first-child {
@@ -154,20 +165,20 @@
 
 .growfund-rich-text-content code {
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-  font-size: 0.9em;
-  background-color: hsl(var(--growfund-gray-5));
+  font-size: var(--growfund-font-size-md);
+  background-color: var(--growfund-gray-5);
   color: inherit;
   padding: 0.2em 0.4em;
-  border-radius: var(--growfund-radius);
-  border: 1px solid hsl(hsl(var(--growfund-gray-8)));
+  border-radius: var(--growfund-radius-md);
+  border: 1px solid var(--growfund-gray-8);
 }
 
 .growfund-rich-text-content pre {
-  background-color: hsl(var(--growfund-gray-7));
-  border: 1px solid hsl(var(--growfund-gray-9));
-  border-radius: var(--growfund-radius);
-  padding: var(--growfund-spacing);
-  margin-block: 1.5em;
+  background-color: var(--growfund-gray-7);
+  border: 1px solid var(--growfund-gray-9);
+  border-radius: var(--growfund-radius-md);
+  padding: var(--growfund-spacing-4);
+  margin-block: var(--growfund-spacing-6);
   overflow-x: auto;
   line-height: 1.5;
 }
@@ -177,33 +188,33 @@
   border: none;
   padding: 0;
   color: inherit;
-  font-size: 12px;
+  font-size: var(--growfund-font-size-md);
 }
 
 .growfund-rich-text-content img {
   max-width: 100%;
   height: auto;
-  border-radius: var(--growfund-radius);
-  margin-block: 1.5em;
+  border-radius: var(--growfund-radius-md);
+  margin-block: var(--growfund-spacing-6);
   display: block;
 }
 
 .growfund-rich-text-content figure {
-  margin-block: 1.5em;
+  margin-block: var(--growfund-spacing-6);
   margin-inline: 0;
 }
 
 .growfund-rich-text-content figcaption {
-  font-size: 12px;
+  font-size: var(--growfund-font-size-md);
   color: inherit;
   text-align: center;
-  margin-top: calc(var(--growfund-spacing) * 2);
+  margin-top: var(--growfund-spacing-2);
   font-style: italic;
 }
 
 .growfund-rich-text-content hr {
   border: none;
-  border-top: 2px solid hsl(var(--growfund-gray-8));
+  border-top: 2px solid var(--growfund-gray-8);
   margin-block: 2em;
 }
 
@@ -211,27 +222,27 @@
   width: 100%;
   border-collapse: collapse;
   margin-block: 1.5em;
-  background-color: hsl(var(--growfund-gray-1));
-  border: 1px solid hsl(var(--growfund-gray-9));
-  border-radius: calc(var(--growfund-radius) * 2);
+  background-color: var(--growfund-gray-1);
+  border: 1px solid var(--growfund-gray-9);
+  border-radius: var(--growfund-radius-md);
   overflow: hidden;
 }
 
 .growfund-rich-text-content thead {
-  background-color: hsl(var(--growfund-gray-6));
+  background-color: var(--growfund-gray-6);
 }
 
 .growfund-rich-text-content th {
-  padding: calc(var(--growfund-spacing) * 3) calc(var(--growfund-spacing) * 4);
+  padding: var(--growfund-spacing-3) var(--growfund-spacing-4);
   text-align: left;
-  font-weight: 600;
+  font-weight: var(--growfund-font-weight-semibold);
   color: inherit;
-  border-bottom: 2px solid hsl(var(--growfund-gray-9));
+  border-bottom: 2px solid var(--growfund-gray-9);
 }
 
 .growfund-rich-text-content td {
-  padding: calc(var(--growfund-spacing) * 3) calc(var(--growfund-spacing) * 4);
-  border-bottom: 1px solid hsl(var(--growfund-gray-8));
+  padding: var(--growfund-spacing-3) var(--growfund-spacing-4);
+  border-bottom: 1px solid var(--growfund-gray-8);
   color: inherit;
 }
 
@@ -240,27 +251,27 @@
 }
 
 .growfund-rich-text-content tbody tr:hover {
-  background-color: hsl(var(--growfund-gray-3));
+  background-color: var(--growfund-gray-3);
 }
 
 .growfund-rich-text-content kbd {
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-  font-size: 0.9em;
-  background-color: hsl(var(--growfund-gray-7));
+  font-size: var(--growfund-font-size-md);
+  background-color: var(--growfund-gray-7);
   color: inherit;
-  padding: 0.2em 0.5em;
-  border-radius: calc(var(--growfund-radius) * 2);
-  border: 1px solid hsl(var(--growfund-gray-10));
-  box-shadow: 0 2px 0 hsl(var(--growfund-gray-9));
+  padding: 0.2em var(--growfund-spacing-2);
+  border-radius: var(--growfund-radius-md);
+  border: 1px solid var(--growfund-gray-10);
+  box-shadow: 0 2px 0 var(--growfund-gray-9);
 }
 
 .growfund-rich-text-content sup {
-  font-size: 0.75em;
+  font-size: var(--growfund-font-size-sm);
   vertical-align: super;
 }
 
 .growfund-rich-text-content sub {
-  font-size: 0.75em;
+  font-size: var(--growfund-font-size-sm);
   vertical-align: sub;
 }
 
@@ -270,53 +281,53 @@
 }
 
 .growfund-rich-text-content small {
-  font-size: 0.875em;
+  font-size: var(--growfund-font-size-md);
   color: inherit;
 }
 
 @media (max-width: 767px) {
   .growfund-rich-text-content h1 {
-    font-size: 28px;
+    font-size: calc(var(--growfund-font-size-4xl) + 2px);
   }
 
   .growfund-rich-text-content h2 {
-    font-size: 24px;
+    font-size: var(--growfund-font-size-3xl);
   }
 
   .growfund-rich-text-content h3 {
-    font-size: 18px;
+    font-size: var(--growfund-font-size-2xl);
   }
 
   .growfund-rich-text-content h4 {
-    font-size: 14px;
+    font-size: var(--growfund-font-size-xl);
   }
 
   .growfund-rich-text-content h5,
   .growfund-rich-text-content h6 {
-    font-size: 12px;
+    font-size: var(--growfund-font-size-lg);
   }
 
   .growfund-rich-text-content ul,
   .growfund-rich-text-content ol {
-    padding-left: calc(var(--growfund-spacing) * 6);
+    padding-left: var(--growfund-spacing-6);
   }
 
   .growfund-rich-text-content blockquote {
-    padding: 12px 16px;
-    margin-block: 1em;
+    padding: var(--growfund-spacing-3) var(--growfund-spacing-4);
+    margin-block: var(--growfund-spacing-4);
   }
 
   .growfund-rich-text-content pre {
-    padding: 12px;
-    font-size: 10px;
+    padding: var(--growfund-spacing-3);
+    font-size: var(--growfund-font-size-sm);
   }
 
   .growfund-rich-text-content table {
-    font-size: 12px;
+    font-size: var(--growfund-font-size-md);
   }
 
   .growfund-rich-text-content th,
   .growfund-rich-text-content td {
-    padding: 8px 12px;
+    padding: var(--growfund-spacing-2) var(--growfund-spacing-3);
   }
 }
