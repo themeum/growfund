@@ -35,6 +35,7 @@ class HookNames
     const PLUGIN_ROW_META = 'plugin_row_meta';
     const REST_REQUEST_AFTER_CALLBACKS = 'rest_request_after_callbacks';
     const WP_LOADED = 'wp_loaded';
+    const APPLY_ONBOARDING_FROM_CROWDFUNDING  = 'growfund_apply_onboarding_from_wp_crowdfunding';
     
     // Woocommerce hooks
     const WC_PRODUCT_GET_NAME = 'woocommerce_product_get_name';
@@ -99,4 +100,6 @@ class HookNames
     const GROWFUND_DONATION_MIGRATION_BATCH_SIZE_FILTER = 'growfund/donation_migration/batch_size';
     const GROWFUND_PLEDGE_MIGRATION_BATCH_SIZE_FILTER = 'growfund/pledge_migration/batch_size';
     const GROWFUND_CURRENT_USER_FILTER = 'growfund/current_user';
+
+    const WP_CROWDFUNDING_DEACTIVATE = 'wp_crowdfunding_deactivate';
 }

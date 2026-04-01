@@ -121,7 +121,7 @@ abstract class BaseMigration implements Migration
     abstract public function down();
 
     public function handle_up() {
-        if (!$this->is_available_for_current_version() && $this->is_already_migrated()) {
+        if (!$this->is_available_for_current_version() || $this->is_already_migrated()) {
             return;
         }
 

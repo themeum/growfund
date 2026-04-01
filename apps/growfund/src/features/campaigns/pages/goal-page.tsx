@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import ElementWrapper from '@/components/element-wrapper';
@@ -20,6 +20,7 @@ import {
   type CampaignGoalType,
 } from '@/features/campaigns/schemas/campaign';
 import { registry } from '@/lib/registry';
+import { isDefined } from '@/utils';
 
 const getGoalTypeOptions = (isDonationMode: boolean) => {
   return [
@@ -78,12 +79,19 @@ const GoalStep = () => {
   const { isDonationMode } = useAppConfig();
   const form = useFormContext<CampaignBuilderForm>();
   const hasCampaignGoal = useWatch({ control: form.control, name: 'has_goal' });
+  const reachingAction = useWatch({ control: form.control, name: 'reaching_action' });
   const goalType = useWatch({ control: form.control, name: 'goal_type' });
 
   const goalAmountField = useMemo(() => {
     const goalAmountInputInfo = getGoalAmountInputInfo(isDonationMode);
     return goalType ? goalAmountInputInfo.get(goalType) : null;
   }, [goalType, isDonationMode]);
+
+  useEffect(() => {
+    if (hasCampaignGoal && !isDefined(reachingAction)) {
+      form.setValue('reaching_action', 'close');
+    }
+  }, [form, hasCampaignGoal, reachingAction]);
 
   const CampaignGoalReachingAction = registry.get('CampaignGoalReachingAction');
   const CampaignAllowCustomDonation = registry.get('CampaignAllowCustomDonation');

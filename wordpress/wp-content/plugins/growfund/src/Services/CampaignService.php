@@ -1094,7 +1094,7 @@ class CampaignService
 
         $dto->goal_type = $metadata['goal_type'] ?? null;
         $dto->goal_amount = $metadata['goal_amount'] ?? null;
-        $dto->reaching_action = $metadata['reaching_action'] ?? null;
+        $dto->reaching_action = $dto->has_goal ? $metadata['reaching_action'] ?? ReachingAction::CLOSE : null;
 
         $dto->confirmation_title = $metadata['confirmation_title'] ?? null;
         $dto->confirmation_description = $metadata['confirmation_description'] ?? null;
@@ -1144,19 +1144,17 @@ class CampaignService
                 $dto->is_ready_for_pickup = isset($metadata['is_ready_for_pickup']) 
                     ? filter_var($metadata['is_ready_for_pickup'], FILTER_VALIDATE_BOOLEAN) 
                     : false;
-                
-                $allow_local_pickup = false;
 
-                $rewards = Arr::make($reward_posts)->map(function ($reward) use (&$allow_local_pickup, $status) {
-                    if (!$allow_local_pickup && $status === CampaignStatus::FUNDED) {
+                $dto->rewards = Arr::make($reward_posts)->map(function ($reward) {
+                    return (string) $reward->ID;
+				})->toArray();
+
+                $dto->allow_local_pickup = $status === CampaignStatus::FUNDED 
+                    && Arr::make($reward_posts)->some(function ($reward) {
                         $allow_local_pickup = PostMeta::get($reward->ID, 'allow_local_pickup');
                         $allow_local_pickup = filter_var($allow_local_pickup, FILTER_VALIDATE_BOOLEAN);
-                    }
-                    return (string) $reward->ID;
-                })->toArray();
-
-                $dto->rewards = $rewards;
-                $dto->allow_local_pickup = $allow_local_pickup;
+                        return $allow_local_pickup;
+                    });
             }
 
             $dto->fund_raised = $this->pledge_service->get_total_pledges_amount_for_campaign($campaign->ID);

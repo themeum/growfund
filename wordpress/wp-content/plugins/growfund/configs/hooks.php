@@ -6,7 +6,7 @@ use Growfund\Hooks\Filters\ApiPermissionError;
 use Growfund\Hooks\Actions\AuthRedirect;
 use Growfund\Hooks\Actions\BackerCapabilities;
 use Growfund\Hooks\Actions\ClearFlashMessage;
-use Growfund\Hooks\Actions\CreateDefaultPages;
+use Growfund\Hooks\Actions\OnboardingCompleted;
 use Growfund\Hooks\Actions\DonorCapabilities;
 use Growfund\Hooks\Actions\EnqueueBrandingStyles;
 use Growfund\Hooks\Actions\EnqueueScriptDashboard;
@@ -16,6 +16,7 @@ use Growfund\Hooks\Actions\FlushRewriteRules;
 use Growfund\Hooks\Actions\ManageDatabaseMigrations;
 use Growfund\Hooks\Actions\ManageOnboarding;
 use Growfund\Hooks\Actions\NewUserRegistered;
+use Growfund\Hooks\Actions\ApplyOnboardingFromCrowdfunding;
 use Growfund\Hooks\Actions\RegisterAdminMenu;
 use Growfund\Hooks\Actions\RegisterAjaxRouter;
 use Growfund\Hooks\Actions\RegisterCampaignBlocks;
@@ -84,7 +85,8 @@ return [
         ShowAdminNotice::class,
         RegisterCampaignBlocks::class,
         RegisterAjaxRouter::class,
-        CreateDefaultPages::class,
+        OnboardingCompleted::class,
+        ApplyOnboardingFromCrowdfunding::class,
 
         // woocommerce
         RestrictProductDeletion::class,

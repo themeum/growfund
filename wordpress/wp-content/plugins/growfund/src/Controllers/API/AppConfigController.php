@@ -135,12 +135,6 @@ class AppConfigController
             AppConfigKeys::IS_DONATION_MODE => $dto->campaign_mode === 'donation' ? 1 : 0,
         ]);
         
-        $this->service->save_paypal_config();
-        Option::store_default_email_templates();
-        Option::store_default_pdf_templates();
-        $this->service->save_salutation();
-        
-
         if ($is_successful) {
             Option::update(
                 AppConfigKeys::IS_ONBOARDING_COMPLETED,

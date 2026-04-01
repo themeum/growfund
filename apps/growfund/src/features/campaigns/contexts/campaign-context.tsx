@@ -1,9 +1,17 @@
-import { createContext, type PropsWithChildren, use } from 'react';
+import {
+  createContext,
+  type Dispatch,
+  type PropsWithChildren,
+  type SetStateAction,
+  use,
+  useState,
+} from 'react';
 
 import { type Campaign } from '@/features/campaigns/schemas/campaign';
 
 interface CampaignContextType {
   campaign: Campaign;
+  updateCampaign: Dispatch<SetStateAction<Campaign>>;
 }
 
 const CampaignContext = createContext<CampaignContextType | null>(null);
@@ -18,8 +26,13 @@ const useCampaign = () => {
   return context;
 };
 
-const CampaignProvider = ({ children, campaign }: PropsWithChildren<CampaignContextType>) => {
-  return <CampaignContext value={{ campaign }}>{children}</CampaignContext>;
+const CampaignProvider = ({ children, campaign }: PropsWithChildren<{ campaign: Campaign }>) => {
+  const [campaignState, setCampaignState] = useState<Campaign>(campaign);
+  return (
+    <CampaignContext value={{ campaign: campaignState, updateCampaign: setCampaignState }}>
+      {children}
+    </CampaignContext>
+  );
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
