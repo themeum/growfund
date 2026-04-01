@@ -4,6 +4,7 @@ namespace Growfund\Services\Migration;
 
 defined( 'ABSPATH' ) || exit;
 
+use Growfund\Constants\HookNames;
 use Growfund\Constants\OptionKeys;
 use Growfund\Supports\Option;
 
@@ -28,6 +29,8 @@ class MigrationService
                 $pledge_migration_service->remove_migration_data();
                 
                 Option::set(OptionKeys::IS_MIGRATED_FROM_CROWDFUNDING, true);
+
+                do_action(HookNames::WP_CROWDFUNDING_DEACTIVATE, true, 'growfund');
                 
                 return $response;
             default:

@@ -8,34 +8,32 @@ import { TextField } from '@/components/form/text-field';
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from '@/components/ui/table';
 import { ShippingRestOfTheWorld } from '@/config/price-calculator';
-import { useCampaignBuilderContext } from '@/features/campaigns/contexts/campaign-builder';
+import { useCampaignReward } from '@/features/campaigns/contexts/campaign-reward';
 import { type RewardForm } from '@/features/campaigns/schemas/reward';
-import { useCampaignRewardsQuery } from '@/features/campaigns/services/reward';
 import { useCurrency } from '@/hooks/use-currency';
 import { cn } from '@/lib/utils';
 import { countriesAsOptions } from '@/utils/countries';
 
 const ShippingCosts = () => {
-  const { campaignId } = useCampaignBuilderContext();
   const form = useFormContext<RewardForm>();
-  const rewardsQuery = useCampaignRewardsQuery(campaignId);
+  const { rewards } = useCampaignReward();
   const shippingCosts = useWatch({ control: form.control, name: 'shipping_costs' }) ?? [];
 
   const firstRewardShippingCost = useMemo(() => {
-    if (!rewardsQuery.data || rewardsQuery.data.length === 0) {
+    if (rewards.length === 0) {
       return null;
     }
 
-    return rewardsQuery.data[0].shipping_costs;
-  }, [rewardsQuery.data]);
+    return rewards[0].shipping_costs;
+  }, [rewards]);
 
   useEffect(() => {
     if (shippingCosts.length === 0 && firstRewardShippingCost) {
@@ -64,7 +62,8 @@ const ShippingCosts = () => {
     <div className="growfund-space-y-2">
       <Box
         className={cn(
-          !!shippingErrors && 'growfund-border-border-critical growfund-bg-background-fill-critical-secondary',
+          !!shippingErrors &&
+            'growfund-border-border-critical growfund-bg-background-fill-critical-secondary',
         )}
       >
         <Table wrapperClassname="growfund-overflow-visible">
@@ -146,8 +145,8 @@ const ShippingCosts = () => {
           </Button>
         </div>
       </Box>
-      {!!shippingErrors && (
-        <p className="growfund-typo-small growfund-text-fg-critical">{shippingErrors.message?.[0]}</p>
+      {!!shippingErrors && shippingErrors.message?.[0] && (
+        <p className="growfund-typo-small growfund-text-fg-critical">{shippingErrors.message[0]}</p>
       )}
     </div>
   );

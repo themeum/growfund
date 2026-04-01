@@ -12,30 +12,27 @@ import { useCampaignBuilderContext } from '@/features/campaigns/contexts/campaig
 import { useCampaignReward } from '@/features/campaigns/contexts/campaign-reward';
 import { useConsentDialog } from '@/features/campaigns/contexts/consent-dialog-context';
 import { type RewardItem } from '@/features/campaigns/schemas/reward-item';
-import { useCampaignRewardsQuery } from '@/features/campaigns/services/reward';
 import { useDeleteRewardItemMutation } from '@/features/campaigns/services/reward-item';
 
 const RewardItems = ({ onEdit }: { onEdit: (item: RewardItem) => void }) => {
   const { campaignId } = useCampaignBuilderContext();
-  const { rewardItems } = useCampaignReward();
+  const { rewards, rewardItems } = useCampaignReward();
   const deleteRewardItemMutation = useDeleteRewardItemMutation();
   const { openDialog } = useConsentDialog();
-  const rewardsQuery = useCampaignRewardsQuery(campaignId);
 
   const counts = useMemo(() => {
     return rewardItems.reduce<Record<string, number>>((result, current) => {
-      result[current.id] ||=
-        rewardsQuery.data?.reduce((sum, curr) => {
-          if (curr.items.find((item) => item.id === current.id)) {
-            return sum + 1;
-          }
+      result[current.id] ||= rewards.reduce((sum, curr) => {
+        if (curr.items.find((item) => item.id === current.id)) {
+          return sum + 1;
+        }
 
-          return sum;
-        }, 0) ?? 0;
+        return sum;
+      }, 0);
 
       return result;
     }, {});
-  }, [rewardItems, rewardsQuery.data]);
+  }, [rewardItems, rewards]);
 
   if (rewardItems.length === 0) {
     return (

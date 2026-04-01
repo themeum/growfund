@@ -38,7 +38,7 @@
   background: #fff;
   height: 112px;
   padding: 0 !important;
-  padding-right: 48px !important;
+  border: none !important;
 }
 
 .growfund-admin-migration-banner__image {
@@ -58,6 +58,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  width: 380px;
 }
 
 .growfund-admin-migration-banner__title {
@@ -78,7 +79,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
-  min-width: 160px;
+  min-width: 190px;
 }
 
 .growfund-admin-migration-banner__button {
@@ -94,6 +95,7 @@
   color: #fff;
   padding: 0.5rem 1rem;
   transition: background 0.2s ease-in-out;
+  min-width: 114px;
 }
 
 .growfund-admin-migration-banner__button:hover {

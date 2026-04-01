@@ -1,9 +1,10 @@
-import { createContext, type PropsWithChildren, use, useMemo } from 'react';
+import { createContext, type PropsWithChildren, use, useEffect, useMemo } from 'react';
 
 import { Box, BoxContent } from '@/components/ui/box';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useCampaignBuilderContext } from '@/features/campaigns/contexts/campaign-builder';
+import { useCampaign } from '@/features/campaigns/contexts/campaign-context';
 import { type Reward } from '@/features/campaigns/schemas/reward';
 import { type RewardItem } from '@/features/campaigns/schemas/reward-item';
 import { useCampaignRewardsQuery } from '@/features/campaigns/services/reward';
@@ -29,6 +30,7 @@ const useCampaignReward = () => {
 
 const CampaignRewardProvider = ({ children }: PropsWithChildren) => {
   const { campaignId } = useCampaignBuilderContext();
+  const { updateCampaign } = useCampaign();
 
   const campaignRewardsQuery = useCampaignRewardsQuery(campaignId);
   const getRewardItemsQuery = useGetRewardItemsQuery({ campaign_id: campaignId ?? null });
@@ -47,6 +49,17 @@ const CampaignRewardProvider = ({ children }: PropsWithChildren) => {
 
     return getRewardItemsQuery.data;
   }, [getRewardItemsQuery.data]);
+
+  useEffect(() => {
+    if (rewards.length > 0) {
+      updateCampaign((prev) => {
+        return {
+          ...prev,
+          allow_local_pickup: rewards.some((reward) => reward.allow_local_pickup),
+        };
+      });
+    }
+  }, [rewards, updateCampaign]);
 
   return (
     <CampaignRewardContext value={{ rewards, rewardItems }}>

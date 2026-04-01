@@ -100,6 +100,7 @@ class CleanupService
         }
 
         Option::delete(OptionKeys::DATABASE_MIGRATION_TRACKER);
+        Option::delete(OptionKeys::INSTALLED_DB_VERSION);
     }
 
     /**

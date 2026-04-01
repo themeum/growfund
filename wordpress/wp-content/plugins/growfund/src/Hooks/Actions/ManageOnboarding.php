@@ -25,6 +25,10 @@ class ManageOnboarding extends BaseHook
 
     public function handle(...$args)
     {
+        if (growfund_input_get('referer') === 'wp-crowdfunding') {
+            return;
+        }
+
         if (get_transient(TransientKeys::GROWFUND_GROWFUND_ACTIVATED)) {
             delete_transient(TransientKeys::GROWFUND_GROWFUND_ACTIVATED);
 

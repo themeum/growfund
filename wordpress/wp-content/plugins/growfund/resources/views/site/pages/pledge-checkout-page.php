@@ -210,7 +210,7 @@ $growfund_input_amount = growfund_input_get('amount', 0, Sanitizer::FLOAT);
                             $growfund_select_field->placeholder   = __('Select option', 'growfund');
                             $growfund_select_field->default_value = DeliveryOption::HOME_DELIVERY;
                             $growfund_select_field->allow_clear   = false;
-                            $growfund_select_field->is_filterable       = false;
+                            $growfund_select_field->is_filterable = false;
                             $growfund_select_field->options       = [
                                 [
                                     'label' => __('Home Delivery', 'growfund'),
