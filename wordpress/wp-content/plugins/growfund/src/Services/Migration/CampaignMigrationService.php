@@ -68,7 +68,7 @@ class CampaignMigrationService
         foreach ($campaigns as $campaign) {
             try {
                 $this->migrate_campaign($campaign);
-            } catch (Exception $e) {
+            } catch (Exception $e) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
                 // @todo: implement failed campaign tracking later to keep track if needed
             }
 
@@ -171,7 +171,7 @@ class CampaignMigrationService
             $status = $this->get_campaign_status($post->post_status);
 
             $start_date = get_post_meta($campaign_id, '_nf_duration_start', true);
-            $start_date = !empty($start_date) ? $start_date : $post->post_date;
+            $start_date = !empty($start_date) && strtotime($start_date) ? $start_date : $post->post_date;
             $end_date = get_post_meta($campaign_id, '_nf_duration_end', true);
 
             $campaign = [
@@ -186,7 +186,7 @@ class CampaignMigrationService
                 'category'                   => $category,
                 'subcategory'                => $subcategory,
                 'start_date'                 => Date::sql_safe($start_date),
-                'end_date'                   => !empty($end_date) ? Date::sql_safe($end_date) : null,
+                'end_date'                   => !empty($end_date) && strtotime($end_date) ? Date::sql_safe($end_date) : null,
                 'location'                   => get_post_meta($campaign_id, '_nf_location', true),
                 'tags'                       => $tags,
                 'show_collaborator_list'     => filter_var(get_post_meta($campaign_id, 'wpneo_show_contributor_table', true), FILTER_VALIDATE_BOOLEAN),
@@ -215,18 +215,23 @@ class CampaignMigrationService
 					}
 				}
 
-                $campaign['allow_custom_donation'] = false;
+                $min_donation_amount = Money::prepare_for_storage(get_post_meta($campaign_id, 'wpneo_funding_minimum_price', true));
+                $max_donation_amount = Money::prepare_for_storage(get_post_meta($campaign_id, 'wpneo_funding_maximum_price', true));
+
+                $campaign['allow_custom_donation'] = !empty($min_donation_amount) && !empty($max_donation_amount);
                 $campaign['suggested_option_type'] = SuggestedOptionType::AMOUNT_ONLY;
-                $campaign['min_donation_amount'] = Money::prepare_for_storage(get_post_meta($campaign_id, 'wpneo_funding_minimum_price', true));
-                $campaign['max_donation_amount'] = Money::prepare_for_storage(get_post_meta($campaign_id, 'wpneo_funding_maximum_price', true));
+                $campaign['min_donation_amount'] = $min_donation_amount;
+                $campaign['max_donation_amount'] = $max_donation_amount;
                 $campaign['has_tribute'] = false;
                 
             } else {
+                $min_pledge_amount = Money::prepare_for_storage(get_post_meta($campaign_id, 'wpneo_funding_minimum_price', true));
+                $max_pledge_amount = Money::prepare_for_storage(get_post_meta($campaign_id, 'wpneo_funding_maximum_price', true));
                 // Pledge mode specific fields
                 $campaign['appreciation_type'] = AppreciationType::GOODIES;
-                $campaign['allow_pledge_without_reward'] = true;
-                $campaign['min_pledge_amount'] = Money::prepare_for_storage(get_post_meta($campaign_id, 'wpneo_funding_minimum_price', true));
-                $campaign['max_pledge_amount'] = Money::prepare_for_storage(get_post_meta($campaign_id, 'wpneo_funding_maximum_price', true));
+                $campaign['allow_pledge_without_reward'] = !empty($min_pledge_amount) && !empty($max_pledge_amount);
+                $campaign['min_pledge_amount'] = $min_pledge_amount;
+                $campaign['max_pledge_amount'] = $max_pledge_amount;
 
                 // Fetch rewards
                 $reward_items = get_post_meta($campaign_id, 'wpneo_reward', true);

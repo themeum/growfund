@@ -61,6 +61,19 @@ Application::macro('installed_db_version', function () {
     return Option::get(OptionKeys::INSTALLED_DB_VERSION, '0.0.0');
 });
 
+/**
+ * Register a macro to get if the pro plugin is activated.
+ * 
+ * @return string
+ */
+Application::macro('has_growfund_pro', function () {
+    if (!function_exists('is_plugin_active')) {
+        include_once ABSPATH . 'wp-admin/includes/plugin.php';
+    }
+
+    return is_plugin_active('growfund-pro/growfund-pro.php');
+});
+
 $growfund_app = Application::configure();
 $growfund_app->boot();
 

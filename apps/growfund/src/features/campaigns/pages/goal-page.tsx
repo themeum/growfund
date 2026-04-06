@@ -3,11 +3,11 @@ import { useEffect, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import ElementWrapper from '@/components/element-wrapper';
+import { CheckboxField } from '@/components/form/checkbox-field';
 import { SelectField } from '@/components/form/select-field';
 import { SwitchField } from '@/components/form/switch-field';
 import { TextField } from '@/components/form/text-field';
 import { Container } from '@/components/layouts/container';
-import CampaignAllowCustomDonationFallback from '@/components/pro-fallbacks/campaign/campaign-allow-custom-donation-fallback';
 import CampaignGoalReachingActionFallback from '@/components/pro-fallbacks/campaign/campaign-goal-reaching-action-fallbacks';
 import { Box, BoxContent } from '@/components/ui/box';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -81,6 +81,10 @@ const GoalStep = () => {
   const hasCampaignGoal = useWatch({ control: form.control, name: 'has_goal' });
   const reachingAction = useWatch({ control: form.control, name: 'reaching_action' });
   const goalType = useWatch({ control: form.control, name: 'goal_type' });
+  const allowCustomDonation = useWatch({
+    control: form.control,
+    name: 'allow_custom_donation',
+  });
 
   const goalAmountField = useMemo(() => {
     const goalAmountInputInfo = getGoalAmountInputInfo(isDonationMode);
@@ -94,7 +98,6 @@ const GoalStep = () => {
   }, [form, hasCampaignGoal, reachingAction]);
 
   const CampaignGoalReachingAction = registry.get('CampaignGoalReachingAction');
-  const CampaignAllowCustomDonation = registry.get('CampaignAllowCustomDonation');
 
   return (
     <Container size="xs" className="growfund-grid growfund-gap-4">
@@ -146,9 +149,30 @@ const GoalStep = () => {
             <Box className="growfund-shadow-none">
               <BoxContent className="growfund-space-y-4">
                 <DonationPresets />
-                <ElementWrapper fallback={<CampaignAllowCustomDonationFallback />}>
-                  {CampaignAllowCustomDonation && <CampaignAllowCustomDonation />}
-                </ElementWrapper>
+                <CheckboxField
+                  control={form.control}
+                  name="allow_custom_donation"
+                  label={__('Allow custom donation amount', 'growfund')}
+                />
+
+                {allowCustomDonation && (
+                  <div className="growfund-flex growfund-gap-4 growfund-items-start growfund-w-full">
+                    <TextField
+                      control={form.control}
+                      type="number"
+                      name="min_donation_amount"
+                      label={__('Min Amount', 'growfund')}
+                      placeholder={__('Enter a min amount', 'growfund')}
+                    />
+                    <TextField
+                      control={form.control}
+                      type="number"
+                      name="max_donation_amount"
+                      label={__('Max Amount', 'growfund')}
+                      placeholder={__('Enter a max amount', 'growfund')}
+                    />
+                  </div>
+                )}
               </BoxContent>
             </Box>
           )}

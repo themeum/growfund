@@ -222,14 +222,16 @@ class UpdateCampaignDTO extends DTO
                 ],
                 'reaching_action' => [
                     function ($value, $key, $data) {
-                        if ($data['status'] === CampaignStatus::PUBLISHED && $data['has_goal'] === true && empty($value)) {
-                            /* translators: %s: field name */
-                            return sprintf(__('The %s field is required.', 'growfund'), str_replace(['_', '.'], ' ', $key));
-                        }
-
-                        if (!empty($value) && $value !== ReachingAction::CLOSE) {
-                            /* translators: 1: field name 2: reaching action */
-                            return sprintf(__('The %1$s field must be %2$s.', 'growfund'), str_replace(['_', '.'], ' ', $key), ReachingAction::CLOSE);
+                        if ($data['has_goal'] === true) {
+                            if ($data['status'] === CampaignStatus::PUBLISHED && empty($value)) {
+                                /* translators: %s: field name */
+                                return sprintf(__('The %s field is required.', 'growfund'), str_replace(['_', '.'], ' ', $key));
+                            }
+    
+                            if (!empty($value) && $value !== ReachingAction::CLOSE) {
+                                /* translators: 1: field name 2: reaching action */
+                                return sprintf(__('The %1$s field must be %2$s.', 'growfund'), str_replace(['_', '.'], ' ', $key), ReachingAction::CLOSE);
+                            }
                         }
 
                         return true;
@@ -245,7 +247,7 @@ class UpdateCampaignDTO extends DTO
                         'suggested_options' => 'required_if:status,published|array',
                         'suggested_options.*.amount' => 'required|number|min:1',
                         'suggested_options.*.is_default' => 'boolean',
-                        'allow_custom_donation' => 'prohibited',
+                        'allow_custom_donation' => 'boolean',
                         'min_donation_amount' => [
                             function ($value, $key, $data) {
                                 if ($data['status'] === CampaignStatus::PUBLISHED && $data['allow_custom_donation'] === true && empty($value)) {
@@ -408,7 +410,7 @@ class UpdateCampaignDTO extends DTO
                         'array',
                     ],
                     'rewards.*' => 'required|integer',
-                    'allow_pledge_without_reward' => 'prohibited',
+                    'allow_pledge_without_reward' => 'boolean',
                     'min_pledge_amount' => [
                         function ($value, $key, $data) {
                             if ($data['status'] === CampaignStatus::PUBLISHED && $data['allow_pledge_without_reward'] === true && empty($value)) {

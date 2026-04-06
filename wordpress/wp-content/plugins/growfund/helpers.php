@@ -1244,22 +1244,6 @@ if (!function_exists('growfund_input_server')) {
     }
 }
 
-if (!function_exists('growfund_has_growfund_pro')) {
-    /**
-     * Check if the pro version is activated.
-     *
-     * @return bool
-     */
-    function growfund_has_growfund_pro()
-    {
-        if (!function_exists('is_plugin_active')) {
-            include_once ABSPATH . 'wp-admin/includes/plugin.php';
-        }
-
-        return is_plugin_active('growfund-pro/growfund-pro.php');
-    }
-}
-
 
 if (!function_exists('growfund_error_log')) {
     function growfund_error_log(string $message) {

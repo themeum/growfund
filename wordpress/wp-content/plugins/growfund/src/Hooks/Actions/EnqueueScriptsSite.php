@@ -6,10 +6,9 @@ defined( 'ABSPATH' ) || exit;
 
 use Growfund\Constants\HookNames;
 use Growfund\Constants\HookTypes;
-use Growfund\Core\AppSettings;
+use Growfund\Core\CurrencyConfig;
 use Growfund\Hooks\BaseHook;
 use Growfund\Supports\Utils;
-use Growfund\Supports\Woocommerce;
 
 class EnqueueScriptsSite extends BaseHook
 {
@@ -54,14 +53,8 @@ class EnqueueScriptsSite extends BaseHook
             'forget_password_url' => esc_url(growfund_forget_password_url()),
             'checkout_url' => esc_url(Utils::get_checkout_url()),
             'is_dev_mode' => growfund_is_dev_mode(),
-            'has_growfund_pro' => growfund_has_growfund_pro(),
-            'currency_info' => [
-                'currency' => growfund_settings(AppSettings::PAYMENT)->get_currency(),
-				'currency_position' => growfund_settings(AppSettings::PAYMENT)->get_currency_position(),
-				'decimal_places' => growfund_settings(AppSettings::PAYMENT)->get_decimal_places(),
-				'decimal_separator' => growfund_settings(AppSettings::PAYMENT)->get_decimal_separator(),
-				'thousand_separator' => growfund_settings(AppSettings::PAYMENT)->get_thousand_separator(),
-            ]
+            'has_growfund_pro' => growfund_app()->has_growfund_pro(),
+            'currency_info' => growfund_app()->make(CurrencyConfig::class)->get()
         ]);
 
         $main_styles_url = GROWFUND_DIR_URL . 'resources/assets/site/styles/common.css';

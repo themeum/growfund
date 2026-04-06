@@ -5,7 +5,7 @@ Tags: crowdfunding, donation, fundraising, charity, rewards
 Requires at least: 5.9
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.10
+Stable tag: 1.0.11
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -351,6 +351,11 @@ order details (campaign_id, amount, currency, and transaction ID) to PayPal's AP
 
 
 == Changelog ==
+
+= 1.0.11 - April 6, 2026 =
+* Removed Pro restriction on “Allow custom donation amount” in the campaign builder (donation mode)
+* Removed Pro restriction on “Allow pledging without rewards” in the campaign builder (reward mode)
+* Resolved campaign start date and end date migration issue from WP Crowdfunding
 
 = 1.0.10 - April 1, 2026 =
 * Added direct migration from WP Crowdfunding

@@ -97,7 +97,7 @@ const UserPreviewCard = ({ user, title, onRemove, onEdit, hideHeader = false }: 
                 {Number(user.id) > 0 && (
                   <div className="growfund-typo-tiny growfund-text-fg-subdued">
                     {/* translator: %s: user ID */}
-                    {sprintf(__('ID #%s', 'growfund-pro'), user.id)}
+                    {sprintf(__('ID #%s', 'growfund'), user.id)}
                   </div>
                 )}
               </div>
