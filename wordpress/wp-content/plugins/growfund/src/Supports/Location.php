@@ -179,6 +179,10 @@ class Location
 
         $country = static::get_country_by_code($location[0], $include_rest_of_the_world);
 
+        if (empty($country)) {
+            return '';
+        }
+
         $state = '';
 
         foreach ($country['states'] as $state_data) {
