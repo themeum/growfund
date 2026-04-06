@@ -935,7 +935,10 @@ class CampaignService
             ]);
         }
 
-        if ($status === CampaignStatus::FUNDED && PostMeta::get($id, 'reaching_action') === ReachingAction::CLOSE) {
+        $has_goal = filter_var(PostMeta::get($id, 'has_goal') ?? false, FILTER_VALIDATE_BOOLEAN);
+        $reaching_action = $this->get_reaching_action($has_goal, PostMeta::get($id, 'reaching_action'));
+
+        if ($status === CampaignStatus::FUNDED && $reaching_action === ReachingAction::CLOSE) {
             $this->mark_campaign_as_ended($id);
         }
 
@@ -1094,7 +1097,7 @@ class CampaignService
 
         $dto->goal_type = $metadata['goal_type'] ?? null;
         $dto->goal_amount = $metadata['goal_amount'] ?? null;
-        $dto->reaching_action = $dto->has_goal ? $metadata['reaching_action'] ?? ReachingAction::CLOSE : null;
+        $dto->reaching_action = $this->get_reaching_action($dto->has_goal, $metadata['reaching_action'] ?? null);
 
         $dto->confirmation_title = $metadata['confirmation_title'] ?? null;
         $dto->confirmation_description = $metadata['confirmation_description'] ?? null;
@@ -1259,35 +1262,11 @@ class CampaignService
     }
 
     /**
-     * Gets the IDs of campaigns associated with a given fundraiser ID.
-     * 
-     * @param int $fundraiser_id The ID of the fundraiser to retrieve campaigns for.
-     * @return int[] An array of IDs of campaigns associated with the fundraiser.
+     * @deprecated since 1.0.11
      */
-    public function get_campaign_ids_by_fundraiser($fundraiser_id)
-    {
-        $records = QueryBuilder::query()->table(WP::POSTS_TABLE . ' as campaigns')
-            ->select(['campaigns.ID as campaign_id'])
-            ->join_raw(
-                WP::POST_META_TABLE . ' as campaign_status_meta',
-                'INNER',
-                sprintf("campaigns.ID = campaign_status_meta.post_id AND campaign_status_meta.meta_key = '%s'", growfund_with_prefix('status'))
-            )
-            ->left_join(Tables::CAMPAIGN_COLLABORATORS . ' as collaborators', 'campaigns.ID', 'collaborators.campaign_id')
-            ->where('campaign_status_meta.meta_value', '!=', CampaignStatus::TRASHED)
-            ->where_raw(
-                "(campaigns.post_author = :author_id OR collaborators.collaborator_id = :collaborator_id)",
-                [
-                    'author_id' => $fundraiser_id,
-                    'collaborator_id' => $fundraiser_id
-                ]
-            )
-            ->get();
-
-        $ids = Arr::make($records ?? [])->pluck('campaign_id')->map(fn ($id) => (int) $id)->toArray();
-
-        return $ids;
-    }
+	public function get_campaign_ids_by_fundraiser($fundraiser_id) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
+		return [];
+	}
 
     /**
      * Gets the IDs of campaigns associated with a given user ID that are in the trash.
@@ -1656,5 +1635,18 @@ class CampaignService
         $pledge_service->marked_all_as_ready_for_pickup($campaign_id);
 
         return $is_updated;
+    }
+
+    protected function get_reaching_action(bool $has_goal, ?string $meta_reaching_action)
+    {
+        if (!$has_goal) {
+            return null;
+        }
+
+        if (!growfund_app()->has_growfund_pro()) {
+            return ReachingAction::CLOSE;
+        }
+
+        return $meta_reaching_action ?? ReachingAction::CLOSE;
     }
 }

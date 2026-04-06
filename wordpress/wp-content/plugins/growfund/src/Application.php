@@ -29,6 +29,7 @@ use InvalidArgumentException;
  * @method bool is_onboarding_completed()
  * @method bool is_migration_available_from_crowdfunding()
  * @method string installed_db_version()
+ * @method bool has_growfund_pro()
  */
 class Application extends Container
 {

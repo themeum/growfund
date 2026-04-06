@@ -39,7 +39,7 @@ class Assets
             );
         }
 
-        if (growfund_has_growfund_pro()) {
+        if (growfund_app()->has_growfund_pro()) {
             return;
         }
 
@@ -141,7 +141,7 @@ class Assets
             'mode' => GROWFUND_ENV_MODE,
             'assets_url' => static::get_assets_url(),
             'as_guest' => Utils::is_public_route(),
-            'has_growfund_pro' => growfund_has_growfund_pro(),
+            'has_growfund_pro' => growfund_app()->has_growfund_pro(),
             /** @deprecated since 1.0.2 */
             'features' => [], // @todo: deprecated since 1.0.2 -- keep this for backward compatibility, will be removed in version 1.1.0
             'is_migration_available_from_crowdfunding' => growfund_app()->is_migration_available_from_crowdfunding(),
