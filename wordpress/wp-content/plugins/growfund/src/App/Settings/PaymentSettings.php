@@ -47,10 +47,7 @@ class PaymentSettings extends AppSettings
             return [];
         }
 
-        $online_gateways = wp_json_file_decode(GROWFUND_PRO_DIR_PATH . 'resources/data/payment-gateways-manifest.json', ['associative' => true]);
-        $online_gateways = Arr::make($online_gateways);
-
-        return array_map(function ($gateway) use ($online_gateways){
+        return array_map(function ($gateway){
             if ($gateway['type'] === PaymentGatewayType::ONLINE) {
 
                 if ($gateway['name'] === 'growfund-gateway-paypal') {
