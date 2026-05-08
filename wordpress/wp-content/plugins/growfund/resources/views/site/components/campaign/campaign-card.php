@@ -17,7 +17,7 @@ if (empty($campaign_card->campaign)) {
 
 $growfund_campaign_goal_percentage = CampaignGoal::goal_achieved_percentage($campaign_card->campaign);
 $growfund_campaign_goal_info = CampaignGoal::get_goal_info_for_display($campaign_card->campaign);
-$growfund_campaign_author_avatar = !empty($campaign_card->campaign->author_id) ? User::get_avatar_image($campaign_card->campaign->author_id) : null;
+$growfund_campaign_author_avatar = $campaign_card->campaign->author->image ?? null;
 
 
 $growfund_campaign_image = $campaign_card->campaign->images[0]['url'] ?? null;
@@ -60,7 +60,7 @@ $growfund_campaign_url = growfund_campaign_url($campaign_card->campaign->slug ??
                 <?php 
                     $growfund_avatar = new Avatar();
 
-                    $growfund_avatar->avatar_name = $campaign_card->campaign->created_by ?? ''; 
+                    $growfund_avatar->avatar_name = $campaign_card->campaign->author->display_name ?? ''; 
                     $growfund_avatar->use_acronym = true; 
                     $growfund_avatar->src = $growfund_campaign_author_avatar['url'] ?? '';
                     $growfund_avatar->classname = 'growfund-campaign-card-creator-avatar';
@@ -68,7 +68,7 @@ $growfund_campaign_url = growfund_campaign_url($campaign_card->campaign->slug ??
                     growfund_render($growfund_avatar);
                 ?>
 
-                <span class="growfund-campaign-card-creator-name"><?php echo esc_html($campaign_card->campaign->created_by ?? ''); ?></span>
+                <span class="growfund-campaign-card-creator-name"><?php echo esc_html($campaign_card->campaign->author->display_name ?? ''); ?></span>
                 <?php if (!empty($campaign_card->campaign->end_date)) : ?>
                     <span class="growfund-campaign-card-time-left">
                         <?php echo esc_html(Date::human_readable_time_diff($campaign_card->campaign->end_date)); ?>

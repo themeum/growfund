@@ -134,7 +134,6 @@
 
       const menu = dropdown.querySelector('.growfund-select-dropdown-menu');
       const optionsWrapper = dropdown.querySelector('.growfund-select-dropdown-menu-options');
-
       if (!menu || !optionsWrapper) return;
 
       const searchInput = document.createElement('input');
@@ -146,6 +145,8 @@
 
       function filterItems(query) {
         const q = query.toLowerCase().trim();
+
+        const optionsWrapper = dropdown.querySelector('.growfund-select-dropdown-menu-options');
 
         optionsWrapper.querySelectorAll('.growfund-select-dropdown-item').forEach((item) => {
           const text = item.textContent.toLowerCase();

@@ -366,7 +366,7 @@ class Route
                         return (new $middleware())->handle($request, $next);
                     };
                 },
-                function ($request) {
+                function ($request) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
                     return true;
                 }
             );

@@ -113,6 +113,22 @@ class Arr implements ArrayAccess, IteratorAggregate
     }
 
     /**
+     * Merge the items into the array.
+     * 
+     * @param array $items The items to merge
+     * 
+     * @since 1.1.0
+     * 
+     * @return self
+     */
+    public function merge(array $items = [])
+    {
+        $this->items = array_merge($this->items, $items);
+
+        return $this;
+    }
+
+    /**
      * Add a new item at the end of the array
      *
      * @param mixed $value The value to add
@@ -241,6 +257,25 @@ class Arr implements ArrayAccess, IteratorAggregate
             $callable($value, $index);
         }
     }
+
+    /**
+     * Iterate over each chunk of the array.
+     *
+     * @param int $chunk_size The chunk size
+     * @param callable $callable The callable function
+     *
+     * @return void
+     *
+     * @since 1.0.0
+     */
+    public function chunk(int $chunk_size, callable $callable)
+    {
+        $chunks = array_chunk($this->items, $chunk_size);
+
+        foreach ($chunks as $chunk_index => $chunk) {
+            $callable(static::make($chunk), $chunk_index);
+        }
+    } 
 
     /**
      * Filter the array by a callable function.
@@ -418,27 +453,56 @@ class Arr implements ArrayAccess, IteratorAggregate
     }
 
     /**
+     * Unique the array
+     *
+     * @return self The unique array
+     *
+     * @since 1.1.0
+     */
+    public function unique() 
+    {
+        $this->items = array_unique($this->items);
+
+        return $this;
+    }
+
+    /**
+     * Sort the array
+     *
+     * @return self The sorted array
+     *
+     * @since 1.1.0
+     */
+    public function values()
+    {
+        $this->items = array_values($this->items);
+
+        return $this;
+    }
+
+    /**
      * Group the array by a key
      *
      * @param string $key The key to group by
      *
-     * @return array The grouped array
+     * @return self The grouped array
      *
      * @since 1.0.0
      */
     public function groupBy(string $key)
     {
         $grouped = $this->reduce(function ($carry, $item) use ($key) {
-            if (!isset($carry[$item[$key]])) {
-                $carry[$item[$key]] = [];
+            $item_key = is_array($item) ? $item[$key] : $item->{$key};
+            if (!isset($carry[$item_key])) {
+                $carry[$item_key] = [];
             }
 
-            $carry[$item[$key]][] = $item;
+            $carry[$item_key][] = $item;
 
             return $carry;
         }, [])->toArray();
 
-        return array_values($grouped);
+        return new static($grouped);
     }
 
     /**

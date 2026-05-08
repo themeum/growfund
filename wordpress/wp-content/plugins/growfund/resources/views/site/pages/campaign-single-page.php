@@ -216,22 +216,24 @@ $campaign_settings = new CampaignSettings();
             <div class="growfund-campaign-single-page-right-content-creator-list-container">
                 <div class="growfund-campaign-single-page-right-content-creator-list-collapsed">
                     <div class="growfund-campaign-single-page-right-content-creator-list-image-stack" style="width: <?php echo esc_attr($growfund_dynamic_stack_width); ?>px;">
-                        <div
-                            class="growfund-campaign-single-page-right-content-creator-list-stack-item"
-                            style=" z-index:<?php echo esc_attr($growfund_campaign_collaborator_count); ?>;"
-                        >
-                                <?php
-                                $growfund_avatar = new Avatar();
-                            
-                                $growfund_avatar->avatar_name = $campaign_single_page->author->display_name; 
-                                $growfund_avatar->use_acronym = true; 
-                                $growfund_avatar->src = $campaign_single_page->author->image['url'] ?? '';
-                                $growfund_avatar->classname = 'growfund-single-page-creator-avatar';
+                        <?php if (!empty($campaign_single_page->fundraiser)) : ?>
+                            <div
+                                class="growfund-campaign-single-page-right-content-creator-list-stack-item"
+                                style=" z-index:<?php echo esc_attr($growfund_campaign_collaborator_count); ?>;"
+                            >
+                                    <?php
+                                    $growfund_avatar = new Avatar();
+                                
+                                    $growfund_avatar->avatar_name = $campaign_single_page->fundraiser->display_name ?? ''; 
+                                    $growfund_avatar->use_acronym = true; 
+                                    $growfund_avatar->src = $campaign_single_page->fundraiser->image['url'] ?? '';
+                                    $growfund_avatar->classname = 'growfund-single-page-creator-avatar';
 
-                                growfund_render($growfund_avatar);
-                                ?>
-                        
-                        </div>
+                                    growfund_render($growfund_avatar);
+                                    ?>
+                            
+                            </div>
+                        <?php endif; ?>
                         <?php foreach (array_slice($campaign_single_page->collaborators, 0, 2) as $growfund_index => $growfund_collaborator) : ?>
                             <div
                                 class="growfund-campaign-single-page-right-content-creator-list-stack-item"
@@ -260,21 +262,21 @@ $campaign_settings = new CampaignSettings();
                                     printf(
                                     /* translators: 1: creator name, 2: collaborator display name, 3: number of extra collaborators */
                                     esc_html__('%1$s, %2$s & +%3$d more', 'growfund'),
-                                    esc_html($campaign_single_page->author->display_name), 
-                                    esc_html($campaign_single_page->collaborators[0]->display_name), 
+                                    esc_html($campaign_single_page->author->display_name ?? ''), 
+                                    esc_html($campaign_single_page->collaborators[0]->display_name ?? ''), 
                                     esc_html($growfund_campaign_collaborator_count - 1)
 									);
                                 } else {
                                     printf(
                                     /* translators: 1: creator name, 2: number of extra collaborators */
                                     esc_html__('%1$s & +%2$d more', 'growfund'),
-                                    esc_html($campaign_single_page->author->display_name), 
+                                    esc_html($campaign_single_page->author->display_name ?? ''), 
                                     esc_html($growfund_campaign_collaborator_count)
                                     );
                                 }
 								
                             } else {
-                                echo esc_html($campaign_single_page->author->display_name);
+                                echo esc_html($campaign_single_page->author->display_name ?? '');
                             }
                                 
 							?>
@@ -295,14 +297,14 @@ $campaign_settings = new CampaignSettings();
                 <div class="growfund-campaign-single-page-right-content-creator-list">
                     <div class="growfund-campaign-single-page-right-content-creator-list-expanded">
                         <?php  
-                        $growfund_creator = new CampaignCreatorCard();
-                        $growfund_creator->display_name = $campaign_single_page->author->display_name;
-                        $growfund_creator->avatar_class = 'growfund-single-page-creator-avatar';
-                        $growfund_creator->avatar_src = $campaign_single_page->author->image['url'] ?? '';
-                        $growfund_creator->total_campaign_created = $campaign_single_page->author->total_campaign_created;
-                        $growfund_creator->total_number_of_contributions = $campaign_single_page->author->total_number_of_contributions;
-
-                        growfund_render($growfund_creator);
+                        if (!empty($campaign_single_page->fundraiser)) {
+                            $growfund_creator = new CampaignCreatorCard();
+                            $growfund_creator->display_name = $campaign_single_page->fundraiser->display_name ?? '';
+                            $growfund_creator->avatar_class = 'growfund-single-page-creator-avatar';
+                            $growfund_creator->avatar_src = $campaign_single_page->fundraiser->image['url'] ?? '';
+    
+                            growfund_render($growfund_creator);
+                        }
 
                         if ($growfund_campaign_collaborator_count > 0) {
                             foreach ($campaign_single_page->collaborators as $growfund_collaborator) {
@@ -310,9 +312,7 @@ $campaign_settings = new CampaignSettings();
 								$growfund_creator->display_name = $growfund_collaborator->display_name;
 								$growfund_creator->avatar_class = 'growfund-single-page-creator-avatar';
 								$growfund_creator->avatar_src = $growfund_collaborator->image['url'] ?? '';
-								$growfund_creator->total_campaign_created = $growfund_collaborator->total_campaign_created;
-								$growfund_creator->total_number_of_contributions = $growfund_collaborator->total_number_of_contributions;
-
+                                
 								growfund_render($growfund_creator);
                             }
                             

@@ -1,6 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { z } from 'zod';
 
+import { UserBasicSchema } from '@/dashboards/shared/schemas/user';
 import { GallerySchema, VideoSchema } from '@/schemas/media';
 
 const AmountSchema = z.object({
@@ -93,10 +94,8 @@ const BaseSchema = z.object({
 });
 
 const SharedCommonFieldsSchema = z.object({
-  created_at: z.string().datetime().nullish(),
-  updated_at: z.string().datetime().nullish(),
-  created_by: z.string().nullish(),
-  updated_by: z.string().nullish(),
+  author: UserBasicSchema.nullish(),
+  fundraiser: UserBasicSchema.nullish(),
 });
 
 const CampaignCommonFieldsSchema = z.object({
@@ -207,7 +206,11 @@ const DonationResponseSchema = DonationSchema.omit({
 
 const CampaignFormSchema = BaseSchema.merge(CampaignRewardsSchema);
 const DonationFormSchema = BaseSchema.merge(DonationBaseSchema);
-const CampaignBuilderFormSchema = CampaignFormSchema.merge(DonationFormSchema);
+const CampaignBuilderFormSchema = CampaignFormSchema.merge(DonationFormSchema).merge(
+  z.object({
+    fundraiser_id: z.string().nullish(),
+  }),
+);
 
 type CampaignForm = z.infer<typeof CampaignFormSchema>;
 type DonationForm = z.infer<typeof DonationFormSchema>;

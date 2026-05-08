@@ -7,6 +7,7 @@ defined( 'ABSPATH' ) || exit;
 use Growfund\Contracts\Request as RequestContract;
 use Growfund\Sanitizer;
 use Growfund\Supports\Arr;
+use Growfund\Supports\FileHandler;
 use WP_REST_Request;
 
 /**
@@ -87,12 +88,44 @@ class Request implements RequestContract
     {
         $instance = new static();
 
-        $instance->attributes = array_merge($instance->attributes, $request->get_params(), $request->get_file_params());
+        $files = FileHandler::format_files_form_request($request->get_file_params());
+
+        $attributes = array_merge_recursive(
+            $instance->attributes, 
+            $request->get_params(), 
+            $files
+        );
+
+        $content_type = $request->get_content_type() ? $request->get_content_type()['value'] : null;
+
+        if ($content_type === 'multipart/form-data') {
+            $attributes = static::prepare_form_data_attributes($attributes);
+        }
+
+        $instance->attributes = $attributes;
         $instance->method = $request->get_method();
         $instance->route = $request->get_route();
         $instance->headers = $request->get_headers();
 
         return $instance;
+    }
+
+    protected static function prepare_form_data_attributes(array $attributes) {
+        foreach ($attributes as $key => $value) {
+            if ($value === '') {
+                $attributes[$key] = null;
+            }
+
+            if (is_array($value)) {
+                $attributes[$key] = static::prepare_form_data_attributes($value);
+            }
+
+            if (is_object($value)) {
+                $attributes[$key] = static::prepare_form_data_attributes((array) $value);
+            }
+        }
+
+        return $attributes;
     }
 
     /**
@@ -188,7 +221,7 @@ class Request implements RequestContract
 
 
     /**
-     * Alias for the `only()` method.
+     * `input()` method.
      *
      * @since 1.0.0
      *
@@ -210,6 +243,11 @@ class Request implements RequestContract
     public function only(array $keys)
     {
         $keys = Arr::isAssociative($keys) ? array_keys($keys) : $keys;
+        $keys = Arr::make($keys)->map(function ($value) {
+            $key_part = explode('.', $value);
+
+            return $key_part[0];
+        })->unique()->toArray();
         
         return array_intersect_key($this->all(), array_flip($keys));
     }
@@ -296,7 +334,7 @@ class Request implements RequestContract
     }
 
     /**
-     * Get a text with sanitization applied.
+     * Get a text with textarea sanitization applied.
      *
      * @since 1.0.0
      *
@@ -306,7 +344,7 @@ class Request implements RequestContract
      */
     public function get_text(string $key, $default = null)
     {
-        return $this->get_string($key, $default);
+        return $this->get($key, Sanitizer::TEXTAREA, $default);
     }
 
     /**
@@ -320,7 +358,7 @@ class Request implements RequestContract
      */
     public function get_html(string $key, $default = null)
     {
-        return $this->get($key, Sanitizer::TEXTAREA, $default);
+        return $this->get($key, Sanitizer::RICH_TEXT, $default);
     }
 
     /**
@@ -377,6 +415,21 @@ class Request implements RequestContract
     public function get_title(string $key, $default = null)
     {
         return $this->get($key, Sanitizer::TITLE, $default);
+    }
+
+    /**
+     * Get a file.
+     *
+     * @since 1.1.0
+     *
+     * @param string $key     The key to retrieve.
+     * @return file|null
+     */
+    public function get_file(string $key)
+    {
+        // @todo: need to improve input file for wildcard keys with '.' and '*' . $attributes merge with $request->get_file_params(). so that its not working properly.
+
+        return $this->get($key, Sanitizer::FILE);
     }
 
     /**

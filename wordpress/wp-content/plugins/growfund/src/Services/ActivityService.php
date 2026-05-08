@@ -42,17 +42,31 @@ class ActivityService
 
         if (!empty($dto->user_id)) {
             if ($activity_cause === Activities::FUNDRAISER) {
-                $campaign_collaborators_table = QueryBuilder::query()
-                    ->table(Tables::CAMPAIGN_COLLABORATORS)->get_table_name();
+                $campaign_collaborators_table = QueryBuilder::prefix(Tables::CAMPAIGN_COLLABORATORS);
+                $campaigns_meta_table = WP::POST_META_TABLE;
 
-                $query->where_raw(sprintf(
-                    "(campaigns.post_author = %s OR EXISTS ( SELECT 1 FROM `%s` AS collaborators WHERE collaborators.campaign_id = activities.campaign_id AND collaborators.collaborator_id = %s))",
-                    $dto->user_id,
-                    $campaign_collaborators_table,
-                    $dto->user_id
-                ));
+                $query
+                    ->join_raw(
+                        $campaigns_meta_table . ' as campaign_fundraiser_meta', 
+                        'LEFT', 
+                        sprintf(
+                            "campaigns.ID = campaign_fundraiser_meta.post_id AND campaign_fundraiser_meta.meta_key = '%s'",
+                            growfund_with_prefix(Campaign::FUNDRAISER_ID)
+                        )
+                    )
+                    ->where_raw(sprintf(
+                        "(campaigns.post_author = :post_author OR campaign_fundraiser_meta.meta_value = :fundraiser_id OR EXISTS ( SELECT 1 FROM `%s` AS collaborators WHERE collaborators.campaign_id = activities.campaign_id AND collaborators.collaborator_id = :collaborator_id))",
+                        $campaign_collaborators_table,
+                    ), [
+                        'post_author' => $dto->user_id,
+                        'fundraiser_id' => (string) $dto->user_id,
+                        'collaborator_id' => $dto->user_id
+                    ]);
             } else {
-                $query->where_raw(sprintf("(activities.created_by = %s OR activities.user_id = %s)", $dto->user_id, $dto->user_id));
+                $query->where_raw("(activities.created_by = :created_by OR activities.user_id = :user_id)", [
+                    'created_by' => $dto->user_id,
+                    'user_id' => $dto->user_id
+                ]);
             }
         }
 

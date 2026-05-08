@@ -20,8 +20,6 @@ class AddEmailColumnInDonationTable extends BaseMigration
      * @var string
      */
     protected $table_name = Tables::DONATIONS;
-
-    protected $is_available_at = '1.0.2';
     
     /**
      * Run the migration.

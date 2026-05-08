@@ -49,7 +49,7 @@ const SecuritySettingsPage = React.lazy(
 const UserPermissionsSettingsPage = React.lazy(
   () => import('@/features/settings/pages/user-permissions-settings-page'),
 );
-const ManualPagesGenerationSettingspage = React.lazy(
+const ManualPagesGenerationSettingsPage = React.lazy(
   () => import('@/features/settings/pages/manual-pages-generation-page'),
 );
 
@@ -131,6 +131,9 @@ const FundraiserDetailsCampaigns = React.lazy(
   () => import('@/pages/fundraisers/fundraiser-details-campaigns'),
 );
 
+//Withdrawal Requests Page
+const WithdrawalRequestPage = React.lazy(() => import('@/pages/withdrawals-page'));
+
 // user
 const UserHomePage = React.lazy(() => import('@/dashboards/shared/pages/user-home-page'));
 const UserDonationsPage = React.lazy(() => import('@/dashboards/shared/pages/user-donations-page'));
@@ -142,6 +145,7 @@ const UserAccountSettingsPage = React.lazy(
 const UserNotificationsPage = React.lazy(
   () => import('@/dashboards/shared/pages/settings/user-notifications-page'),
 );
+
 const UserBookmarkPage = React.lazy(() => import('@/dashboards/shared/pages/user-bookmarks-page'));
 const UserAnnualReceiptPage = React.lazy(
   () => import('@/dashboards/shared/pages/user-annual-receipt-page'),
@@ -160,10 +164,12 @@ const PledgeReceiptPage = React.lazy(() => import('@/public/pages/pledge-receipt
 const FundPage = loadComponentLazily('FundPage');
 const LicenseSettingsPage = loadComponentLazily('LicenseSettingsPage');
 const FundraiserBookmarkPage = loadComponentLazily('FundraiserBookmarkPage');
+const FundraiserWalletPage = loadComponentLazily('FundraiserWalletPage');
 const FundraiserProfilePage = loadComponentLazily('FundraiserProfilePage');
 const FundraiserMyDonationsPage = loadComponentLazily('FundraiserMyDonationsPage');
 const FundraiserAnnualReceiptsPage = loadComponentLazily('FundraiserAnnualReceiptsPage');
 const FundraiserMyPledgesPage = loadComponentLazily('FundraiserMyPledgesPage');
+const PayoutSettingPage = loadComponentLazily('UserPayoutSettingPage');
 
 const allRoutes = [
   {
@@ -176,12 +182,12 @@ const allRoutes = [
     path: RouteConfig.Home.template,
     Component: RootLayout,
     ErrorBoundary: ErrorBoundary,
-    roles: ['administrator', 'growfund_fundraiser'],
+    roles: ['administrator', 'growfund_fundraiser', 'growfund_collaborator'],
     children: [
       {
         path: RouteConfig.Home.template,
         Component: HomePage,
-        roles: ['administrator', 'growfund_fundraiser'],
+        roles: ['administrator', 'growfund_fundraiser', 'growfund_collaborator'],
         mode: 'all',
       },
       {
@@ -193,13 +199,13 @@ const allRoutes = [
       {
         path: RouteConfig.Campaigns.template,
         Component: CampaignsPage,
-        roles: ['administrator', 'growfund_fundraiser'],
+        roles: ['administrator', 'growfund_fundraiser', 'growfund_collaborator'],
         mode: 'all',
       },
       {
         path: RouteConfig.CampaignDetails.template,
         Component: CampaignDetailsPage,
-        roles: ['administrator', 'growfund_fundraiser'],
+        roles: ['administrator', 'growfund_fundraiser', 'growfund_collaborator'],
         mode: 'all',
       },
       {
@@ -215,31 +221,31 @@ const allRoutes = [
           {
             path: RouteConfig.CampaignStepBasic.template,
             Component: BasicStep,
-            roles: ['administrator', 'growfund_fundraiser'],
+            roles: ['administrator', 'growfund_fundraiser', 'growfund_collaborator'],
             mode: 'all',
           },
           {
             path: RouteConfig.CampaignStepGoal.template,
             Component: GoalStep,
-            roles: ['administrator', 'growfund_fundraiser'],
+            roles: ['administrator', 'growfund_fundraiser', 'growfund_collaborator'],
             mode: 'all',
           },
           {
             path: RouteConfig.CampaignStepRewards.template,
             Component: RewardsStep,
-            roles: ['administrator', 'growfund_fundraiser'],
+            roles: ['administrator', 'growfund_fundraiser', 'growfund_collaborator'],
             mode: 'reward',
           },
           {
             path: RouteConfig.CampaignStepSettings.template,
             Component: SettingsStep,
-            roles: ['administrator', 'growfund_fundraiser'],
+            roles: ['administrator', 'growfund_fundraiser', 'growfund_collaborator'],
             mode: 'all',
           },
           {
             path: RouteConfig.CampaignStepAdditional.template,
             Component: AdditionalPage,
-            roles: ['administrator', 'growfund_fundraiser'],
+            roles: ['administrator', 'growfund_fundraiser', 'growfund_collaborator'],
             mode: 'all',
           },
         ],
@@ -247,25 +253,25 @@ const allRoutes = [
       {
         path: RouteConfig.Pledges.template,
         Component: PledgesPage,
-        roles: ['administrator', 'growfund_fundraiser'],
+        roles: ['administrator', 'growfund_fundraiser', 'growfund_collaborator'],
         mode: 'reward',
       },
       {
         path: RouteConfig.CreatePledge.template,
         Component: CreatePledgePage,
-        roles: ['administrator', 'growfund_fundraiser'],
+        roles: ['administrator', 'growfund_fundraiser', 'growfund_collaborator'],
         mode: 'reward',
       },
       {
         path: RouteConfig.EditPledge.template,
         Component: PledgeDetailsPage,
-        roles: ['administrator', 'growfund_fundraiser'],
+        roles: ['administrator', 'growfund_fundraiser', 'growfund_collaborator'],
         mode: 'reward',
       },
       {
         path: RouteConfig.Backers.template,
         Component: BackersListingPage,
-        roles: ['administrator', 'growfund_fundraiser'],
+        roles: ['administrator', 'growfund_fundraiser', 'growfund_collaborator'],
         mode: 'reward',
       },
       {
@@ -280,13 +286,13 @@ const allRoutes = [
           {
             path: RouteConfig.BackerOverview.template,
             Component: BackerDetailsOverviewPage,
-            roles: ['administrator', 'growfund_fundraiser'],
+            roles: ['administrator', 'growfund_fundraiser', 'growfund_collaborator'],
             mode: 'reward',
           },
           {
             path: RouteConfig.BackerPledges.template,
             Component: BackerDetailsPledgesPage,
-            roles: ['administrator', 'growfund_fundraiser'],
+            roles: ['administrator', 'growfund_fundraiser', 'growfund_collaborator'],
             mode: 'reward',
           },
         ],
@@ -294,7 +300,7 @@ const allRoutes = [
       {
         path: RouteConfig.Donors.template,
         Component: DonorsListingPage,
-        roles: ['administrator', 'growfund_fundraiser'],
+        roles: ['administrator', 'growfund_fundraiser', 'growfund_collaborator'],
         mode: 'donation',
       },
       {
@@ -309,13 +315,13 @@ const allRoutes = [
           {
             path: RouteConfig.DonorOverview.template,
             Component: DonorDetailsOverviewPage,
-            roles: ['administrator', 'growfund_fundraiser'],
+            roles: ['administrator', 'growfund_fundraiser', 'growfund_collaborator'],
             mode: 'donation',
           },
           {
             path: RouteConfig.DonorDonations.template,
             Component: DonorDetailsDonationsPage,
-            roles: ['administrator', 'growfund_fundraiser'],
+            roles: ['administrator', 'growfund_fundraiser', 'growfund_collaborator'],
             mode: 'donation',
           },
         ],
@@ -352,25 +358,25 @@ const allRoutes = [
       {
         path: RouteConfig.Donations.template,
         Component: DonationsPage,
-        roles: ['administrator', 'growfund_fundraiser'],
+        roles: ['administrator', 'growfund_fundraiser', 'growfund_collaborator'],
         mode: 'donation',
       },
       {
         path: RouteConfig.CreateDonation.template,
         Component: CreateDonationPage,
-        roles: ['administrator'],
+        roles: ['administrator', 'growfund_fundraiser', 'growfund_collaborator'],
         mode: 'donation',
       },
       {
         path: RouteConfig.EditDonation.template,
         Component: EditDonationPage,
-        roles: ['administrator'],
+        roles: ['administrator', 'growfund_fundraiser', 'growfund_collaborator'],
         mode: 'donation',
       },
       {
         path: RouteConfig.Analytics.template,
         Component: AnalyticsPage,
-        roles: ['administrator', 'growfund_fundraiser'],
+        roles: ['administrator', 'growfund_fundraiser', 'growfund_collaborator'],
         mode: 'all',
       },
       {
@@ -388,6 +394,12 @@ const allRoutes = [
       {
         path: RouteConfig.Themes.template,
         Component: ThemesPage,
+        roles: ['administrator'],
+        mode: 'all',
+      },
+      {
+        path: RouteConfig.WithdrawalRequest.template,
+        Component: WithdrawalRequestPage,
         roles: ['administrator'],
         mode: 'all',
       },
@@ -466,7 +478,7 @@ const allRoutes = [
           },
           {
             path: RouteConfig.PagesSettings.template,
-            Component: ManualPagesGenerationSettingspage,
+            Component: ManualPagesGenerationSettingsPage,
             roles: ['administrator'],
             mode: 'all',
           },
@@ -531,6 +543,13 @@ const allRoutes = [
       {
         path: RouteConfig.FundraiserBookmarks.template,
         Component: FundraiserBookmarkPage,
+        roles: ['growfund_fundraiser', 'growfund_collaborator'],
+        mode: 'all',
+        ignore: !growfundConfig.has_growfund_pro,
+      },
+      {
+        path: RouteConfig.FundraiserWallet.template,
+        Component: FundraiserWalletPage,
         roles: ['growfund_fundraiser'],
         mode: 'all',
         ignore: !growfundConfig.has_growfund_pro,
@@ -538,53 +557,60 @@ const allRoutes = [
       {
         path: RouteConfig.FundraiserProfile.template,
         Component: FundraiserProfilePage,
-        roles: ['growfund_fundraiser'],
+        roles: ['growfund_fundraiser', 'growfund_collaborator'],
         mode: 'all',
         ignore: !growfundConfig.has_growfund_pro,
       },
       {
         path: RouteConfig.FundraiserMyDonations.template,
         Component: FundraiserMyDonationsPage,
-        roles: ['growfund_fundraiser'],
+        roles: ['growfund_fundraiser', 'growfund_collaborator'],
         mode: 'donation',
         ignore: !growfundConfig.has_growfund_pro,
       },
       {
         path: RouteConfig.FundraiserAnnualReceipts.template,
         Component: FundraiserAnnualReceiptsPage,
-        roles: ['growfund_fundraiser'],
+        roles: ['growfund_fundraiser', 'growfund_collaborator'],
         mode: 'donation',
         ignore: !growfundConfig.has_growfund_pro,
       },
       {
         path: RouteConfig.FundraiserMyPledges.template,
         Component: FundraiserMyPledgesPage,
-        roles: ['growfund_fundraiser'],
+        roles: ['growfund_fundraiser', 'growfund_collaborator'],
         mode: 'reward',
         ignore: !growfundConfig.has_growfund_pro,
       },
       {
         path: RouteConfig.FundraiserSettings.template,
         Component: UserSettingsLayout,
-        roles: ['growfund_fundraiser'],
+        roles: ['growfund_fundraiser', 'growfund_collaborator'],
         mode: 'all',
         children: [
           {
             index: true,
             element: <Navigate to={RouteConfig.FundraiserAccount.buildLink()} replace />,
-            roles: ['growfund_fundraiser'],
+            roles: ['growfund_fundraiser', 'growfund_collaborator'],
             mode: 'all',
           },
           {
             path: RouteConfig.FundraiserAccount.template,
             Component: UserAccountSettingsPage,
+            roles: ['growfund_fundraiser', 'growfund_collaborator'],
+            mode: 'all',
+          },
+          {
+            path: RouteConfig.FundraiserPayouts.template,
+            Component: PayoutSettingPage,
             roles: ['growfund_fundraiser'],
             mode: 'all',
+            ignore: !growfundConfig.has_growfund_pro,
           },
           {
             path: RouteConfig.FundraiserNotifications.template,
             Component: UserNotificationsPage,
-            roles: ['growfund_fundraiser'],
+            roles: ['growfund_fundraiser', 'growfund_collaborator'],
             mode: 'all',
           },
         ],

@@ -3688,11 +3688,11 @@
                               "type": "boolean",
                               "default": false
                             },
-                            "enable_admin_commission": {
+                            "enable_platform_fee": {
                               "type": "boolean",
                               "default": false
                             },
-                            "admin_commission_type": {
+                            "platform_fee_type": {
                               "type": "string",
                               "enum": [
                                 "percent",
@@ -3700,7 +3700,7 @@
                               ],
                               "default": "percent"
                             },
-                            "admin_commission_value": {
+                            "platform_fee": {
                               "type": "number",
                               "nullable": true
                             },

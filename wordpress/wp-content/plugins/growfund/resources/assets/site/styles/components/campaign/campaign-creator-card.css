@@ -27,9 +27,3 @@
   margin-bottom: 6px;
   color: var(--growfund-bg-inverse);
 }
-
-.growfund-campaign-creator-card-stats {
-  font-size: var(--growfund-font-size-md);
-  color: var(--growfund-text-subdued);
-  line-height: 1.3;
-}

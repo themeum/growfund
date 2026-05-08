@@ -57,8 +57,8 @@ class CleanupService
             $this->cleanup_growfund_posts();
             $this->cleanup_growfund_taxonomies();
             $this->cleanup_growfund_users();
-            $this->cleanup_growfund_options();
             $this->undo_migrations();
+            $this->cleanup_growfund_options();
 
             QueryBuilder::commit();
             return true;
@@ -100,7 +100,6 @@ class CleanupService
         }
 
         Option::delete(OptionKeys::DATABASE_MIGRATION_TRACKER);
-        Option::delete(OptionKeys::INSTALLED_DB_VERSION);
     }
 
     /**
@@ -335,7 +334,9 @@ class CleanupService
         $payment_options = QueryBuilder::query()
             ->table(WP::OPTIONS_TABLE)
             ->select(['option_name'])
-            ->where_raw(sprintf("option_name LIKE '%s'", OptionKeys::PAYMENT_GATEWAY_CONFIG_PREFIX . '%'))
+            ->where_raw("option_name LIKE :option_key", [
+                'option_key' => OptionKeys::PAYMENT_GATEWAY_CONFIG_PREFIX . '%',
+            ])
             ->get();
 
         $payment_options = !empty($payment_options) ? wp_list_pluck($payment_options, 'option_name') : [];

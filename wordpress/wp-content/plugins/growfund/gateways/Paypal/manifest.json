@@ -11,7 +11,7 @@
     "domain_name": "paypal",
     "logo": "logo.png"
   },
-  "is_installed": false,
+  "is_installed": true,
   "is_enabled": false,
   "fields": [
     {

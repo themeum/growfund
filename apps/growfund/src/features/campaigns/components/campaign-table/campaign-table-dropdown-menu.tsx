@@ -24,6 +24,7 @@ import {
   useCampaignBulkActionsMutation,
   useDeleteCampaignMutation,
 } from '@/features/campaigns/services/campaign';
+import { hasCampaignSuperAccess } from '@/features/campaigns/utils/utils';
 import { AppConfigKeys } from '@/features/settings/context/settings-context';
 import useCurrentUser from '@/hooks/use-current-user';
 import { registry } from '@/lib/registry';
@@ -50,13 +51,17 @@ const CampaignTableDropdownMenu = forwardRef<HTMLDivElement, CampaignTableDropdo
     ref,
   ) => {
     const { appConfig } = useAppConfig();
-    const { isFundraiser } = useCurrentUser();
+    const { isFundraiser, currentUser } = useCurrentUser();
     const navigate = useNavigate();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
     const deleteCampaignMutation = useDeleteCampaignMutation();
     const campaignBulkActionsMutation = useCampaignBulkActionsMutation();
+
+    const hasSuperAccess = useMemo(() => {
+      return hasCampaignSuperAccess(row.original, currentUser);
+    }, [row, currentUser]);
 
     const canDeletePermanently = useMemo(() => {
       return isFundraiser
@@ -71,7 +76,7 @@ const CampaignTableDropdownMenu = forwardRef<HTMLDivElement, CampaignTableDropdo
       id: row.original.id,
       title: row.original.title,
       image: row.original.images?.[0]?.url ?? null,
-      created_by: row.original.created_by,
+      author: row.original.author,
     };
 
     return (
@@ -113,76 +118,83 @@ const CampaignTableDropdownMenu = forwardRef<HTMLDivElement, CampaignTableDropdo
                 <CampaignTableDropdownMenuItemFallback label={__('Make a copy', 'growfund')} />
               }
             >
-              {CampaignTableDropdownMakeCopyItem && (
+              {hasSuperAccess && CampaignTableDropdownMakeCopyItem && (
                 <CampaignsDropdownOptionsProvider
                   campaign={campaign}
                   setIsDropdownOpen={setIsDropdownOpen}
                 >
-                  {' '}
                   <CampaignTableDropdownMakeCopyItem />
                 </CampaignsDropdownOptionsProvider>
               )}
             </ElementWrapper>
-            {isTrashCampaigns ? (
+            {hasSuperAccess && (
               <>
-                <DropdownMenuItem onClick={onRestore}>{__('Restore', 'growfund')}</DropdownMenuItem>
-                {canDeletePermanently && (
+                {isTrashCampaigns ? (
+                  <>
+                    <DropdownMenuItem onClick={onRestore}>
+                      {__('Restore', 'growfund')}
+                    </DropdownMenuItem>
+                    {canDeletePermanently && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          className="growfund-text-fg-critical hover:!growfund-text-fg-critical"
+                          onClick={onDeletePermanently}
+                        >
+                          {__('Delete permanently', 'growfund')}
+                        </DropdownMenuItem>
+                      </>
+                    )}
+                  </>
+                ) : (
                   <>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       className="growfund-text-fg-critical hover:!growfund-text-fg-critical"
-                      onClick={onDeletePermanently}
+                      onClick={onMoveToTrash}
                     >
-                      {__('Delete permanently', 'growfund')}
+                      {__('Move to trash', 'growfund')}
                     </DropdownMenuItem>
                   </>
                 )}
               </>
-            ) : (
-              <>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  className="growfund-text-fg-critical hover:!growfund-text-fg-critical"
-                  onClick={onMoveToTrash}
-                >
-                  {__('Move to trash', 'growfund')}
-                </DropdownMenuItem>
-              </>
             )}
           </DropdownMenuContent>
         </DropdownMenu>
-        <BulkDeleteDialog
-          type="campaign"
-          title={__('Move to trash', 'growfund')}
-          description={__(
-            'Are you sure you want to move this campaign to trash? You can restore it anytime from the trash.',
-            'growfund',
-          )}
-          open={openDeleteDialog}
-          setOpen={setOpenDeleteDialog}
-          data={[
-            {
-              id: row.original.id,
-              name: row.original.title,
-              image: row.original.images?.[0]?.url ?? null,
-            },
-          ]}
-          onDelete={(closeDialog) => {
-            campaignBulkActionsMutation.mutate(
+        {hasSuperAccess && (
+          <BulkDeleteDialog
+            type="campaign"
+            title={__('Move to trash', 'growfund')}
+            description={__(
+              'Are you sure you want to move this campaign to trash? You can restore it anytime from the trash.',
+              'growfund',
+            )}
+            open={openDeleteDialog}
+            setOpen={setOpenDeleteDialog}
+            data={[
               {
-                ids: [row.original.id],
-                action: 'trash',
+                id: row.original.id,
+                name: row.original.title,
+                image: row.original.images?.[0]?.url ?? null,
               },
-              {
-                onSuccess() {
-                  closeDialog();
-                  toast.success(__('Campaigns moved to trash successfully.', 'growfund'));
+            ]}
+            onDelete={(closeDialog) => {
+              campaignBulkActionsMutation.mutate(
+                {
+                  ids: [row.original.id],
+                  action: 'trash',
                 },
-              },
-            );
-          }}
-          loading={deleteCampaignMutation.isPending}
-        />
+                {
+                  onSuccess() {
+                    closeDialog();
+                    toast.success(__('Campaigns moved to trash successfully.', 'growfund'));
+                  },
+                },
+              );
+            }}
+            loading={deleteCampaignMutation.isPending}
+          />
+        )}
       </div>
     );
   },

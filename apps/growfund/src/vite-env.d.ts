@@ -12,7 +12,7 @@ declare global {
       rest_url_base: string;
       ajax_url: string;
       rest_nonce: string;
-      ajax_nonce: string;
+      site_nonce: string;
       user_role: string;
       is_onboarding_completed: number;
       is_woocommerce_installed: number;

@@ -19,6 +19,10 @@ class RequiredIfExists extends BaseRule
     public function validate_rule()
     {
         if (array_key_exists($this->rule_value, $this->data) && !empty($this->data[$this->rule_value])) {
+            if ($this->is_rule_applied('file')) {
+                return !empty($this->value);
+            }
+
             return !is_null($this->value) && $this->value !== '';
         }
 

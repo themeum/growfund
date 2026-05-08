@@ -9,6 +9,7 @@ import { useCurrentUserQuery } from '@/services/user';
 export enum FormKeys {
   Account = 'growfund_user_account_settings',
   Notifications = 'growfund_user_notifications_settings',
+  Payout = 'growfund_user_payout_settings',
 }
 
 interface UserSettingsContextType<T extends FieldValues = FieldValues> {

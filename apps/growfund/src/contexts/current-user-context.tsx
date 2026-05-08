@@ -13,6 +13,7 @@ import { User as CurrentUser, type UserRole } from '@/utils/user';
 interface CurrentUserContextType {
   currentUser: User;
   isFundraiser: boolean;
+  isCollaborator: boolean;
   isAdmin: boolean;
   isDonor: boolean;
   isBacker: boolean;
@@ -47,6 +48,7 @@ const CurrentUserProvider = ({ children }: React.PropsWithChildren) => {
           value={{
             currentUser: data,
             isFundraiser: CurrentUser.isFundraiser(),
+            isCollaborator: CurrentUser.isCollaborator(),
             isAdmin: CurrentUser.isAdmin(),
             isDonor: CurrentUser.isDonor(),
             isBacker: CurrentUser.isBacker(),

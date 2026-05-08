@@ -77,6 +77,7 @@ const useUpdateCampaignMutation = () => {
       void queryClient.invalidateQueries({ queryKey: ['CampaignDetails'] });
       void queryClient.invalidateQueries({ queryKey: ['Campaigns'] });
       void queryClient.invalidateQueries({ queryKey: ['CampaignRewards'] });
+      void queryClient.invalidateQueries({ queryKey: ['CampaignCollaborators'] });
     },
     onError(error) {
       toast.error(error.message);

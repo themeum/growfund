@@ -206,12 +206,6 @@ class BackerService extends UserService
      */
     protected function format_data($backer)
     {
-        $is_billing_address_same = boolval(UserMeta::get($backer->ID, 'is_billing_address_same') ?? false);
-        $billing_address = UserMeta::get($backer->ID, 'billing_address');
-        $billing_address = !empty($billing_address) ? maybe_unserialize($billing_address) : null;
-        $shipping_address = UserMeta::get($backer->ID, 'shipping_address');
-        $shipping_address = !empty($shipping_address) ? maybe_unserialize($shipping_address) : null;
-
         return BackerDTO::from_array([
             'id'                      => (string) $backer->ID,
             'first_name'              => $backer->first_name ?? '',
@@ -225,9 +219,9 @@ class BackerService extends UserService
             'latest_pledge_date'      => $this->pledge_service->get_latest_pledge_date($backer->ID),
             'joined_at'               => $backer->user_registered,
             'created_by'              => UserSupport::get_created_by($backer->ID),
-            'shipping_address'        => $shipping_address,
-            'billing_address'         => $is_billing_address_same ? $shipping_address : $billing_address,
-            'is_billing_address_same' => $is_billing_address_same,
+            'shipping_address'        => UserSupport::get_shipping_address($backer->ID),
+            'billing_address'         => UserSupport::get_billing_address($backer->ID),
+            'is_billing_address_same' => UserSupport::is_billing_address_same($backer->ID),
             'is_verified'             => UserSupport::is_verified($backer),
             'is_fundraiser'           => UserSupport::is_fundraiser($backer),
         ]);
@@ -243,7 +237,7 @@ class BackerService extends UserService
     {
         $user = growfund_user($id);
 
-        if (!$user->is_backer() || (growfund_user()->is_fundraiser() && ! $this->is_user_accessible_for_fundraiser($id))) {
+        if (!$user->is_backer() || !$this->is_user_accessible_for_fundraiser($id)) {
             throw new Exception(esc_html__('Backer not found', 'growfund'), (int) Response::NOT_FOUND);
         }
 

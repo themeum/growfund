@@ -4,6 +4,8 @@ namespace Growfund\Middlewares\API;
 
 defined( 'ABSPATH' ) || exit;
 
+use Growfund\Constants\UserTypes\Collaborator;
+use Growfund\Constants\UserTypes\Fundraiser;
 use Growfund\Contracts\Middleware;
 use Growfund\Contracts\Request;
 use Growfund\Exceptions\AuthorizationException;
@@ -28,7 +30,14 @@ class AdminOrFundraiserMiddleware implements Middleware
      */
     public function handle(Request $request, callable $next)
     {
-        if (is_user_logged_in() && (growfund_user()->is_admin() || growfund_user()->is_fundraiser())) {
+        if (
+            growfund_user()->is_logged_in() 
+            && (
+                growfund_user()->is_admin() 
+                || growfund_user()->has_active_role(Fundraiser::ROLE) 
+                || growfund_user()->has_active_role(Collaborator::ROLE)
+            )
+        ) {
             return $next($request);
         }
 

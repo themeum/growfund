@@ -21,6 +21,7 @@ class MailKeys
     const ADMIN_NEW_DONATION                       = 'admin_email_new_donation';
     const ADMIN_NEW_OFFLINE_DONATION               = 'admin_email_new_offline_donation';
     const ADMIN_CAMPAIGN_ENDED                     = 'admin_email_campaign_ended';
+    const ADMIN_WITHDRAWAL_REQUEST_RECEIVED        = 'admin_email_withdrawal_request_received';
 
     const FUNDRAISER_NEW_USER_REGISTRATION         = 'fundraiser_email_new_user_registration';
     const FUNDRAISER_ACCOUNT_APPROVED              = 'fundraiser_email_account_approved';
@@ -39,6 +40,8 @@ class MailKeys
     const FUNDRAISER_NEW_OFFLINE_DONATION          = 'fundraiser_email_new_offline_donation';
     const FUNDRAISER_DONATION_AMOUNT_CHARGED       = 'fundraiser_email_donation_amount_charged';
     const FUNDRAISER_DONATION_CANCELLED            = 'fundraiser_email_donation_cancelled';
+    const FUNDRAISER_WITHDRAWAL_REQUEST_ACCEPTED   = 'fundraiser_email_withdrawal_request_accepted';
+    const FUNDRAISER_WITHDRAWAL_REQUEST_REJECTED   = 'fundraiser_email_withdrawal_request_rejected';
 
     const DONOR_DONATION_RECEIPT                   = 'donor_email_donation_receipt';
     const DONOR_DONATION_FAILED                    = 'donor_email_donation_failed';

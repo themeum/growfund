@@ -113,7 +113,10 @@ class UserController
      */
     public function get_current_user()
     {
-        $user = apply_filters(HookNames::GROWFUND_CURRENT_USER_FILTER, $this->service->get_current_user()->to_array());
+        $user = apply_filters(
+            HookNames::GROWFUND_CURRENT_USER_FILTER, 
+            $this->service->get_current_user()->get_values()->to_array()
+        );
 
         return growfund_response()->json([
             'data' => $user,

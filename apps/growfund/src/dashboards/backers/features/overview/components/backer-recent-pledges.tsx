@@ -63,7 +63,9 @@ const BackerRecentPledges = () => {
       return (
         <div className="growfund-space-y-4">
           <div className="growfund-flex growfund-items-center growfund-justify-between">
-            <h5 className="growfund-typo-h5 growfund-text-fg-primary">{__('Recent Pledges', 'growfund')}</h5>
+            <h5 className="growfund-typo-h5 growfund-text-fg-primary">
+              {__('Recent Pledges', 'growfund')}
+            </h5>
             <Button
               variant="outline"
               onClick={() => {

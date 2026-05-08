@@ -6,6 +6,7 @@ defined( 'ABSPATH' ) || exit;
 
 use Growfund\CastAttributes\DateTimeAttribute;
 use Growfund\CastAttributes\StringAttribute;
+use Growfund\DTO\AddressDTO;
 use Growfund\DTO\DTO;
 
 class UserDTO extends DTO
@@ -14,6 +15,8 @@ class UserDTO extends DTO
         'id' => StringAttribute::class,
         'joined_at' => DateTimeAttribute::class,
         'last_contribution_at' => DateTimeAttribute::class,
+        'shipping_address' => AddressDTO::class,
+        'billing_address' => AddressDTO::class,
     ];
 
     /** @var string */
@@ -43,10 +46,10 @@ class UserDTO extends DTO
     /** @var string */
     public $active_role;
 
-    /** @var object|null */
+    /** @var AddressDTO|null */
     public $shipping_address;
 
-    /** @var object|null */
+    /** @var AddressDTO|null */
     public $billing_address;
 
     /** @var bool */

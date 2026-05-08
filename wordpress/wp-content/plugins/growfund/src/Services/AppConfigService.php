@@ -6,6 +6,7 @@ defined( 'ABSPATH' ) || exit;
 
 use Exception;
 use Growfund\Constants\AppConfigKeys;
+use Growfund\Constants\HookNames;
 use Growfund\Constants\OptionKeys;
 use Growfund\Core\AppSettings;
 use Growfund\Core\CurrencyConfig;
@@ -37,12 +38,24 @@ class AppConfigService
         }
 
         if (isset($config[AppConfigKeys::PAYMENT])) {
-            $config[AppConfigKeys::PAYMENT] = array_merge(
+            $new_payment_data = array_merge(
                 $config[AppConfigKeys::PAYMENT],
+                [
+                    'enable_platform_fee' => false,
+                    'enable_guest_checkout' => false,
+                    'minimum_balance_to_request_withdrawal' => null,
+                    'fundraiser_withdrawal_options' => null,
+                ],
                 growfund_app()->make(CurrencyConfig::class)->get()
             );
 
-            $config[AppConfigKeys::PAYMENT]['e_commerce_engine'] = Payment::get_engine();
+            $new_payment_data['e_commerce_engine'] = Payment::get_engine();
+
+            $config[AppConfigKeys::PAYMENT] = apply_filters(
+                HookNames::GROWFUND_APP_PAYMENT_CONFIG_FILTER, 
+                $new_payment_data, 
+                $config[AppConfigKeys::PAYMENT]
+            ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
         }
 
         return $config;
@@ -54,7 +67,13 @@ class AppConfigService
             AppConfigKeys::CAMPAIGN => growfund_settings(AppSettings::CAMPAIGNS)->get(),
             AppConfigKeys::GENERAL => growfund_settings(AppSettings::GENERAL)->get(),
             AppConfigKeys::BRANDING => growfund_settings(AppSettings::BRANDING)->get(),
-            AppConfigKeys::PAYMENT => growfund_app()->make(CurrencyConfig::class)->get(),
+            AppConfigKeys::PAYMENT => !growfund_user()->is_fundraiser() 
+                ? growfund_app()->make(CurrencyConfig::class)->get() 
+                : apply_filters(
+                    HookNames::GROWFUND_APP_PAYMENT_CONFIG_FILTER, 
+                    growfund_app()->make(CurrencyConfig::class)->get(), 
+                    growfund_settings(AppSettings::PAYMENT)->get()
+                ), // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
             AppConfigKeys::USER_PERMISSIONS => growfund_settings(AppSettings::PERMISSIONS)->get(),
         ];
     }

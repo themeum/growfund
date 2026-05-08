@@ -4,11 +4,11 @@ import React from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
 } from '@/components/ui/dialog';
 import { User } from '@/utils/user';
 
@@ -39,13 +39,15 @@ const DeclineReasonDisplayDialog = ({
                   )}
             </p>
           </div>
-
           {reason && (
             <div
               className="growfund-bg-background-fill-caution-secondary growfund-rounded-sm growfund-p-4 growfund-border-l-4 growfund-border-l-border-warning growfund-typo-small growfund-text-fg-primary"
-              dangerouslySetInnerHTML={{ __html: reason }}
-            />
+              style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+            >
+              {reason}
+            </div>
           )}
+
           <div>
             <DialogClose asChild>
               <Button variant="secondary" size="lg" className="growfund-w-full">

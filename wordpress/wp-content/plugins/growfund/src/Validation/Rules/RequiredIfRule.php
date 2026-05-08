@@ -26,6 +26,10 @@ class RequiredIfRule extends BaseRule
         }, $values);
 
         if (array_key_exists($field, $this->data) && in_array($this->data[$field], $values, true)) {
+            if ($this->is_rule_applied('file')) {
+                return !empty($this->value);
+            }
+            
             if (is_array($this->value) && empty($this->value)) {
                 return false;
             }

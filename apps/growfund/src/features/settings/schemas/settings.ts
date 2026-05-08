@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { Role } from '@/constants/role';
 import { AppConfigKeys } from '@/features/settings/context/settings-context';
 import { PaymentSchema } from '@/features/settings/features/payments/schemas/payment';
+import { FundraiserPayoutSettingsSchema } from '@/features/settings/schemas/payout-setting';
 import { AddressSchema } from '@/schemas/address';
 import { MediaSchema } from '@/schemas/media';
 import { isDefined } from '@/utils';
@@ -88,26 +89,40 @@ const UserPermissionsSettingsSchema = z.object({
 const PaymentSettingsSchema = z.object({
   payments: z.array(PaymentSchema).nullish(),
   e_commerce_engine: z.enum(['native', 'woo-commerce']).default('native'),
-  checkout_page: z.string().nullish(),
   payment_gateway: z.enum(['stripe', 'paypal']).default('stripe'),
   currency: z.string().nullish(),
   currency_position: z.enum(['before', 'after']).default('before'),
   decimal_separator: z.enum(['.', ',', '\u00A0']).default('.'),
   thousand_separator: z.enum(['.', ',', '\u00A0']).default(','),
   decimal_places: z.number().default(2),
-  allow_test_mode: z.boolean().default(false),
-  enable_admin_commission: z.boolean().default(false),
-  admin_commission_type: z.enum(['percent', 'flat']).default('percent'),
-  admin_commission_value: z.number().nullish(),
-  enable_guest_checkout: z.boolean().default(false),
-  enable_wallet: z.boolean().default(false),
-  put_limit_on_revenue_withdrawal: z.boolean().default(true),
+  enable_platform_fee: z.boolean().default(false),
+  platform_fee_type: z.enum(['percent', 'flat']).default('percent'),
+  platform_fee: z.number().nullish(),
   minimum_balance_to_request_withdrawal: z.number().nullish(),
-  revenue_withdrawal_type: z
-    .enum(['anytime', 'after-certain-goal-reached', 'after-completion'])
-    .default('anytime'),
-  goal_percentage: z.number().nullish(),
-  enable_wallet_deposit_for_contributors: z.boolean().default(false),
+  fundraiser_withdrawal_options: z
+    .object({
+      is_active_paypal: z.boolean().default(false),
+      is_active_bank_transfer: z.boolean().default(true),
+      is_active_others: z.boolean().default(false),
+    })
+    .nullish(),
+  enable_guest_checkout: z.boolean().default(false),
+});
+
+const PaymentSettingsFormSchema = PaymentSettingsSchema.superRefine((data, ctx) => {
+  if (isDefined(data.fundraiser_withdrawal_options)) {
+    if (
+      !data.fundraiser_withdrawal_options.is_active_bank_transfer &&
+      !data.fundraiser_withdrawal_options.is_active_paypal &&
+      !data.fundraiser_withdrawal_options.is_active_others
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: __('Please select at least one withdrawal option', 'growfund'),
+        path: ['fundraiser_withdrawal_options'],
+      });
+    }
+  }
 });
 
 const PDFReceiptSettingsSchema = z.object({
@@ -128,6 +143,7 @@ const AdminEmailSettingsSchema = z.object({
   is_enabled_admin_email_contribution_cancellation_notification: z.boolean().default(true),
   is_enabled_admin_email_campaign_ended: z.boolean().default(true),
   is_enabled_admin_email_reward_delivered: z.boolean().default(true),
+  is_enabled_admin_email_withdrawal_request_received: z.boolean().default(true),
 });
 
 const FundraiserEmailSettingsSchema = z.object({
@@ -148,6 +164,8 @@ const FundraiserEmailSettingsSchema = z.object({
   is_enabled_fundraiser_email_new_offline_pledge: z.boolean().default(true),
   is_enabled_fundraiser_email_new_offline_donation: z.boolean().default(true),
   is_enabled_fundraiser_email_reward_delivered: z.boolean().default(true),
+  is_enabled_fundraiser_email_withdrawal_request_accepted: z.boolean().default(true),
+  is_enabled_fundraiser_email_withdrawal_request_rejected: z.boolean().default(true),
 });
 
 const BackerEmailSettingsSchema = z.object({
@@ -317,6 +335,7 @@ const UserSchema = z.object({
   joined_at: z.coerce.date(),
   last_contribution_at: z.coerce.date().nullish(),
   total_number_of_contributions: z.number().default(0),
+  payout_method: FundraiserPayoutSettingsSchema.nullish(),
 });
 
 const AppConfigSchema = z.object({
@@ -337,7 +356,7 @@ const AppConfigSchema = z.object({
 type GeneralSettingsForm = z.infer<typeof GeneralSettingsSchema>;
 type CampaignSettingsForm = z.infer<typeof CampaignSettingsSchema>;
 type UserPermissionsSettingsForm = z.infer<typeof UserPermissionsSettingsSchema>;
-type PaymentSettingsForm = z.infer<typeof PaymentSettingsSchema>;
+type PaymentSettingsForm = z.infer<typeof PaymentSettingsFormSchema>;
 type PDFReceiptSettingsForm = z.infer<typeof PDFReceiptSettingsSchema>;
 type EmailSettingsForm = z.infer<typeof EmailSettingsSchema>;
 type SecuritySettingsForm = z.infer<typeof SecuritySettingsSchema>;
@@ -363,6 +382,7 @@ export {
   LicenseSettingsSchema,
   MailServerSchema,
   PageSettingsSchema,
+  PaymentSettingsFormSchema,
   PaymentSettingsSchema,
   PDFReceiptSettingsSchema,
   SecuritySettingsSchema,

@@ -3,6 +3,7 @@
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Hooks\Filters\ApiPermissionError;
+use Growfund\Hooks\Filters\UserRowActions;
 use Growfund\Hooks\Actions\AuthRedirect;
 use Growfund\Hooks\Actions\BackerCapabilities;
 use Growfund\Hooks\Actions\ClearFlashMessage;
@@ -13,10 +14,15 @@ use Growfund\Hooks\Actions\EnqueueScriptDashboard;
 use Growfund\Hooks\Actions\EnqueueScriptsAdmin;
 use Growfund\Hooks\Actions\EnqueueScriptsSite;
 use Growfund\Hooks\Actions\FlushRewriteRules;
-use Growfund\Hooks\Actions\ManageDatabaseMigrations;
 use Growfund\Hooks\Actions\ManageOnboarding;
 use Growfund\Hooks\Actions\NewUserRegistered;
 use Growfund\Hooks\Actions\ApplyOnboardingFromCrowdfunding;
+use Growfund\Hooks\Actions\CustomUserRowAction;
+use Growfund\Hooks\Actions\EditProfileAdminView;
+use Growfund\Hooks\Actions\EditUserAdminView;
+use Growfund\Hooks\Actions\NewUserForm;
+use Growfund\Hooks\Actions\NewUserSave;
+use Growfund\Hooks\Actions\PluginUpdateAction;
 use Growfund\Hooks\Actions\RegisterAdminMenu;
 use Growfund\Hooks\Actions\RegisterAjaxRouter;
 use Growfund\Hooks\Actions\RegisterCampaignBlocks;
@@ -27,10 +33,13 @@ use Growfund\Hooks\Actions\RemoveDuplicateSubmenu;
 use Growfund\Hooks\Actions\SMTPConfig;
 use Growfund\Hooks\Actions\VerifyEmail;
 use Growfund\Hooks\Actions\RestrictUserFromLogin;
+use Growfund\Hooks\Actions\RolesInit;
 use Growfund\Hooks\Actions\ShowAdminNotice;
+use Growfund\Hooks\Actions\UpdateUserByAdmin;
 use Growfund\Hooks\Actions\Woocommerce\AddToCartValidation;
 use Growfund\Hooks\Actions\Woocommerce\BeforeCalculateTotal;
 use Growfund\Hooks\Actions\Woocommerce\CreateOrderLineItem;
+use Growfund\Hooks\Actions\Woocommerce\HideProductPermalinkEdit;
 use Growfund\Hooks\Filters\AjaxMedia;
 use Growfund\Hooks\Filters\FilterThemeStyles;
 use Growfund\Hooks\Filters\HideRolesFromWPUserPage;
@@ -49,7 +58,7 @@ use Growfund\Hooks\Filters\BodyClass;
 use Growfund\Hooks\Filters\HideAdminBar;
 use Growfund\Hooks\Filters\LoginRedirect;
 use Growfund\Hooks\Filters\RegisterCustomBlockTemplates;
-use Growfund\Hooks\Filters\Woocommerce\AttachmentUploadAccess;
+use Growfund\Hooks\Filters\Woocommerce\AllowAdminAccess;
 use Growfund\Hooks\Filters\Woocommerce\BlockCustomCheckoutFields;
 use Growfund\Hooks\Filters\Woocommerce\ClassicCustomCheckoutFields;
 use Growfund\Hooks\Filters\Woocommerce\CustomSuccessPage;
@@ -64,7 +73,7 @@ use Growfund\Hooks\Scheduler\StopRecurringScheduler;
 return [
     'actions' => [
         ManageOnboarding::class,
-        ManageDatabaseMigrations::class,
+        PluginUpdateAction::class,
         EnqueueScriptsAdmin::class,
         EnqueueScriptDashboard::class,
         EnqueueBrandingStyles::class,
@@ -87,10 +96,18 @@ return [
         RegisterAjaxRouter::class,
         OnboardingCompleted::class,
         ApplyOnboardingFromCrowdfunding::class,
+        EditUserAdminView::class,
+        UpdateUserByAdmin::class,
+        EditProfileAdminView::class,
+        NewUserForm::class,
+        NewUserSave::class,
+        CustomUserRowAction::class,
+        RolesInit::class,
 
         // woocommerce
         RestrictProductDeletion::class,
         RestrictProductUpdate::class,
+        HideProductPermalinkEdit::class,
         BeforeCalculateTotal::class,
         NewOrder::class,
         NewOrderStoreAPI::class,
@@ -113,12 +130,13 @@ return [
         HideAdminBar::class,
         BodyClass::class,
         ApiPermissionError::class,
+        UserRowActions::class,
 
         // woocommerce
         CheckoutItemName::class,
         ClassicCustomCheckoutFields::class,
         CustomSuccessPage::class,
-        AttachmentUploadAccess::class,
+        AllowAdminAccess::class,
         RemoveGrowfundProductQuantityField::class,
         RemoveTaxFromGrowfundProduct::class,
         DisableCoupon::class,

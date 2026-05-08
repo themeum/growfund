@@ -13,7 +13,7 @@ class Admin
     /**
      * Admin user type name
      */
-    const NAME = 'growfund_admin';
+    const NAME = 'Administrator';
 
     /**
      * Admin user role

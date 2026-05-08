@@ -21,6 +21,8 @@ use Growfund\Supports\MediaAttachment;
 use Growfund\Supports\Money;
 use Growfund\Supports\Utils;
 use DateTime;
+use Growfund\Constants\UserTypes\Collaborator;
+use Growfund\Constants\UserTypes\Fundraiser;
 use Growfund\DTO\Donation\DonationDonorDTO;
 
 class DonationAnalyticService
@@ -106,8 +108,13 @@ class DonationAnalyticService
                 "SUM(amount) AS total_contributions",
             ]);
 
-        if (growfund_user()->is_fundraiser()) {
-            $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
+        if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_fundraiser();
+            $query->where_in('campaign_id', $campaign_ids);
+        }
+
+        if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_collaborator();
             $query->where_in('campaign_id', $campaign_ids);
         }
 
@@ -149,8 +156,17 @@ class DonationAnalyticService
 
         $fundraiser_where = '';
 
-        if (growfund_user()->is_fundraiser()) {
-            $campaign_ids = implode(',', array_map('intval', growfund_get_all_campaign_ids_by_fundraiser()));
+        if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+            $campaign_ids = implode(',', array_map('intval', growfund_campaign_ids_by_fundraiser()));
+
+            if (!empty($campaign_ids)) {
+                $fundraiser_where = "AND d.campaign_id IN ($campaign_ids)";
+            }
+        }
+
+        if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+            $campaign_ids = implode(',', array_map('intval', growfund_campaign_ids_by_collaborator()));
+
             if (!empty($campaign_ids)) {
                 $fundraiser_where = "AND d.campaign_id IN ($campaign_ids)";
             }
@@ -258,8 +274,13 @@ class DonationAnalyticService
 
             ])->where('donations.status', '=', DonationStatus::COMPLETED);
 
-        if (growfund_user()->is_fundraiser()) {
-            $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
+        if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_fundraiser();
+            $query->where_in('donations.campaign_id', $campaign_ids);
+        }
+
+        if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_collaborator();
             $query->where_in('donations.campaign_id', $campaign_ids);
         }
 
@@ -312,8 +333,13 @@ class DonationAnalyticService
                 'donations.user_info',
             ])->where('status', '=', DonationStatus::COMPLETED);
 
-        if (growfund_user()->is_fundraiser()) {
-            $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
+        if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_fundraiser();
+            $query->where_in('donations.campaign_id', $campaign_ids);
+        }
+
+        if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_collaborator();
             $query->where_in('donations.campaign_id', $campaign_ids);
         }
 
@@ -357,9 +383,14 @@ class DonationAnalyticService
                 'SUM(processing_fee) as total_processing_fee'
             ]);
 
-        if (growfund_user()->is_fundraiser()) {
-            $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
-            $query->where_in('campaign_id', $campaign_ids);
+        if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_fundraiser();
+            $query->where_in('donations.campaign_id', $campaign_ids);
+        }
+
+        if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_collaborator();
+            $query->where_in('donations.campaign_id', $campaign_ids);
         }
 
         if (!empty($campaign_id)) {
@@ -399,8 +430,13 @@ class DonationAnalyticService
                 'funds.title as fund_title'
             ])->where('donations.status', '=', DonationStatus::COMPLETED);
 
-        if (growfund_user()->is_fundraiser()) {
-            $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
+        if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_fundraiser();
+            $query->where_in('donations.campaign_id', $campaign_ids);
+        }
+
+        if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_collaborator();
             $query->where_in('donations.campaign_id', $campaign_ids);
         }
 

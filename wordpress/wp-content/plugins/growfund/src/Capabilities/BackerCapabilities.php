@@ -5,6 +5,7 @@ namespace Growfund\Capabilities;
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Constants\UserTypes\Backer;
+use Growfund\Constants\UserTypes\Collaborator;
 use Growfund\Constants\UserTypes\Fundraiser;
 use Growfund\Contracts\Capability;
 use Growfund\Supports\UserMeta;
@@ -33,6 +34,7 @@ class BackerCapabilities implements Capability
 
         switch ($role) {
             case Fundraiser::ROLE:
+			case Collaborator::ROLE:
                 return $this->fundraiser_capabilities();
             case Backer::ROLE:
                 return $this->backer_capabilities();

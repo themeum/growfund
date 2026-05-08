@@ -42,7 +42,7 @@ const CampaignAction = () => {
   const { id: campaignId } = useRouteParams(RouteConfig.CampaignBuilder);
   const [campaignAction, setCampaignAction] = useState<Action | null>(null);
   const { isDonationMode } = useAppConfig();
-  const { campaign } = useCampaign();
+  const { campaign, updateCampaign } = useCampaign();
   const updateSecondaryStatusMutation = useUpdateCampaignSecondaryStatusMutation();
   const chargeBackerMutation = useChargeBackersMutation();
   const updateStatusMutation = useUpdateCampaignStatusMutation();
@@ -125,10 +125,19 @@ const CampaignAction = () => {
           confirmText: __('Mark as Funded', 'growfund'),
           declineText: __('Cancel', 'growfund'),
           onConfirm: async (closeDialog) => {
-            await updateStatusMutation.mutateAsync({
-              id: campaign.id,
-              status: campaignAction,
-            });
+            await updateStatusMutation.mutateAsync(
+              {
+                id: campaign.id,
+                status: campaignAction,
+              },
+              {
+                onSuccess: () => {
+                  updateCampaign((prev) => {
+                    return { ...prev, status: campaignAction };
+                  });
+                },
+              },
+            );
             closeDialog();
           },
         });
@@ -145,10 +154,19 @@ const CampaignAction = () => {
           confirmText: __('Mark as Completed', 'growfund'),
           declineText: __('Cancel', 'growfund'),
           onConfirm: async (closeDialog) => {
-            await updateStatusMutation.mutateAsync({
-              id: campaign.id,
-              status: campaignAction,
-            });
+            await updateStatusMutation.mutateAsync(
+              {
+                id: campaign.id,
+                status: campaignAction,
+              },
+              {
+                onSuccess: () => {
+                  updateCampaign((prev) => {
+                    return { ...prev, status: campaignAction };
+                  });
+                },
+              },
+            );
             closeDialog();
           },
         });

@@ -19,7 +19,7 @@ jQuery(function ($) {
 
       $.post(growfund.ajax_url, {
         action: 'growfund_update_wc_session',
-        _wpnonce: growfund.ajax_nonce,
+        _wpnonce: growfund.site_nonce,
         bonus_support_amount: bonusAmount,
       }).done(function () {
         $('body').trigger('update_checkout');
@@ -35,7 +35,7 @@ jQuery(function ($) {
 
       $.post(growfund.ajax_url, {
         action: 'growfund_update_wc_session',
-        _wpnonce: growfund.ajax_nonce,
+        _wpnonce: growfund.site_nonce,
         contribution_amount: donationAmount,
       }).done(function () {
         $('body').trigger('update_checkout');

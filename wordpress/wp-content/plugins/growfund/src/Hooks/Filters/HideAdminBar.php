@@ -26,6 +26,17 @@ class HideAdminBar extends BaseHook
             return false;
         }
 
+        // @todo: will uncomment when we set a menu to go to the dashboard for growfund user
+
+        // if (
+        //     growfund_user()->is_fundraiser() 
+        //     || growfund_user()->is_collaborator() 
+        //     || growfund_user()->is_backer() 
+        //     || growfund_user()->is_donor()
+        // ) {
+        //     return false;
+        // }
+
         return $args[0];
     }
 }

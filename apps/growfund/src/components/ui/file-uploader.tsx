@@ -1,5 +1,5 @@
 import { __, sprintf } from '@wordpress/i18n';
-import { File, UploadCloud, X } from 'lucide-react';
+import { File, Paperclip, UploadCloud, X } from 'lucide-react';
 import { useCallback, useMemo } from 'react';
 import { type FileRejection, useDropzone } from 'react-dropzone';
 
@@ -29,6 +29,7 @@ interface FileUploaderProps {
   dropzoneLabel: string;
   className?: string;
   accept?: MediaType[];
+  isInline: boolean;
 }
 
 export function FileUploader({
@@ -41,6 +42,7 @@ export function FileUploader({
   dropzoneLabel,
   className,
   accept,
+  isInline = false,
 }: FileUploaderProps) {
   const { mutateAsync: uploadMedia, isPending } = useMediaUploadMutation();
   const { openMediaModal } = useWordpressMedia();
@@ -144,9 +146,10 @@ export function FileUploader({
 
   return (
     <div
+      {...getRootProps()}
       className={cn(
-        'growfund-border growfund-rounded-md growfund-text-center growfund-cursor-pointer growfund-transition-colors',
-        'growfund-flex growfund-flex-col growfund-items-center growfund-justify-center growfund-gap-2 growfund-bg-background-surface-secondary',
+        'growfund-border growfund-rounded-md growfund-transition-colors growfund-cursor-pointer growfund-bg-background-surface-secondary growfund-overflow-hidden',
+        !isInline ? 'growfund-bg-background-surface-secondary' : 'growfund-bg-background-surface',
         isDragActive && 'growfund-border-primary growfund-border-dashed growfund-bg-muted/50',
         isDragReject &&
           'growfund-border-border-critical growfund-bg-background-fill-critical-secondary/60',
@@ -154,44 +157,63 @@ export function FileUploader({
         className,
       )}
     >
-      {isDefined(value) ? (
-        singleFilePreview(value)
-      ) : (
-        <div
-          {...getRootProps()}
-          className="growfund-flex growfund-flex-col growfund-items-center growfund-justify-center growfund-py-10 growfund-gap-2 growfund-text-center growfund-rounded-md growfund-min-h-[4.5rem]"
-        >
-          {isPending ? (
-            <LoadingSpinner />
-          ) : (
-            <>
-              <Button
-                type="button"
-                variant="outline"
-                className="growfund-text-fg-primary growfund-typo-sm growfund-font-medium growfund-border-none"
-                disabled={disabled}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  openMediaModal({
-                    title: __('Select File', 'growfund'),
-                    types: ['application/zip', 'application/pdf'],
-                    onSelect: (attachments) => {
-                      if (attachments.length) {
-                        onChange(attachments[0]);
-                      }
-                    },
-                  });
-                }}
-              >
-                <UploadCloud className="growfund-h-4 growfund-w-4 mr-2" />
-                {uploadButtonLabel}
-              </Button>
-              <p className="growfund-typo-sm growfund-text-fg-secondary">
-                {isDragActive ? __('Drop files here', 'growfund') : dropzoneLabel}
-              </p>
-            </>
-          )}
+      {isPending ? (
+        <div className="growfund-w-full growfund-flex growfund-justify-center growfund-py-4">
+          <LoadingSpinner />
         </div>
+      ) : isDefined(value) ? (
+        singleFilePreview(value)
+      ) : !isInline ? (
+        <div className="growfund-flex growfund-flex-col growfund-items-center growfund-justify-center growfund-py-10 growfund-gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            className="growfund-text-fg-primary growfund-border-none growfund-bg-white"
+            disabled={disabled}
+            onClick={(e) => {
+              e.stopPropagation();
+              openMediaModal({
+                title: __('Select File', 'growfund'),
+                types: ['application/zip', 'application/pdf'],
+                onSelect: (attachments) => {
+                  if (attachments.length) {
+                    onChange(attachments[0]);
+                  }
+                },
+              });
+            }}
+          >
+            <UploadCloud className="growfund-h-4 growfund-w-4 mr-2" />
+            {uploadButtonLabel}
+          </Button>
+          <p className="growfund-typo-sm growfund-text-fg-secondary">
+            {isDragActive ? __('Drop files here', 'growfund') : dropzoneLabel}
+          </p>
+        </div>
+      ) : (
+        <Button
+          type="button"
+          variant="ghost"
+          className="growfund-flex growfund-items-center growfund-rounded-md growfund-justify-between growfund-w-full growfund-h-full growfund-text-fg-primary growfund-border-none"
+          disabled={disabled}
+          onClick={(e) => {
+            e.stopPropagation();
+            openMediaModal({
+              title: __('Select File', 'growfund'),
+              types: ['application/zip', 'application/pdf'],
+              onSelect: (attachments) => {
+                if (attachments.length) {
+                  onChange(attachments[0]);
+                }
+              },
+            });
+          }}
+        >
+          <span className="growfund-typo-sm growfund-text-fg-emphasis growfund-font-regular">
+            {isDragActive ? __('Drop file here', 'growfund') : __('Select file', 'growfund')}
+          </span>
+          <Paperclip className="growfund-size-4 growfund-text-icon-primary" />
+        </Button>
       )}
     </div>
   );

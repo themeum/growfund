@@ -27,7 +27,12 @@ $growfund_author_avatar  = !empty($update_detail->update->created_by_image['url'
         $growfund_updates_button->icon_position = "left";
         growfund_render($growfund_updates_button);
         ?>
-        <span class="growfund-update-detail-update-no">UPDATE #<?php echo esc_html($update_detail->update->id); ?></span>
+        <span class="growfund-update-detail-update-no">
+            <?php 
+            /* translators: %s: Update id */
+            printf(esc_html__('Update #%s', 'growfund'), esc_html($update_detail->update->id));  
+            ?>
+        </span>
     </div>
 
     <div class="growfund-update-detail-title-wrapper">
@@ -91,7 +96,7 @@ $growfund_author_avatar  = !empty($update_detail->update->created_by_image['url'
 
     <?php if (!is_user_logged_in()) : ?>
     <div class="growfund-update-detail-login">
-        Only backers can post comments. <span class="growfund-update-detail-login-text">Login</span>
+        <?php esc_html_e('Only backers can post comments.', 'growfund'); ?> <span class="growfund-update-detail-login-text"><?php esc_html_e('Login', 'growfund'); ?></span>
     </div>
     <?php endif; ?>
 

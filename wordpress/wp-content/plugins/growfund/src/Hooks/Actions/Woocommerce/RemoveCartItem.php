@@ -4,6 +4,7 @@ namespace Growfund\Hooks\Actions\Woocommerce;
 
 defined( 'ABSPATH' ) || exit;
 
+use Exception;
 use Growfund\Constants\HookNames;
 use Growfund\Constants\HookTypes;
 use Growfund\Hooks\BaseHook;
@@ -48,6 +49,10 @@ class RemoveCartItem extends BaseHook
             return;
         }
 
-        Woocommerce::remove_pending_contribution_from_cart((int) $contribution_id);
+        try {
+            Woocommerce::remove_pending_contribution_from_cart((int) $contribution_id);
+        } catch (Exception $e) {
+            return;
+        }
     }
 }

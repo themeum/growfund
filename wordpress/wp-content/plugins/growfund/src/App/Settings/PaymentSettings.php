@@ -5,10 +5,13 @@ namespace Growfund\App\Settings;
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Constants\AppConfigKeys;
+use Growfund\Constants\FeeType;
 use Growfund\Constants\HookNames;
 use Growfund\Constants\PaymentEngine;
 use Growfund\Core\AppSettings;
+use Growfund\Payments\Constants\PaymentGatewayType;
 use Growfund\Payments\DTO\PaymentGatewayDTO;
+use Growfund\Supports\Arr;
 use Growfund\Supports\Option;
 
 class PaymentSettings extends AppSettings
@@ -44,7 +47,18 @@ class PaymentSettings extends AppSettings
             return [];
         }
 
-        return array_map(function ($gateway) {
+        return array_map(function ($gateway){
+            if ($gateway['type'] === PaymentGatewayType::ONLINE) {
+
+                if ($gateway['name'] === 'growfund-gateway-paypal') {
+                    $gateway['is_installed'] = true;
+                    return PaymentGatewayDTO::from_array($gateway);
+                }
+
+                $gateway['is_installed'] = growfund_is_plugin_activated(sprintf('%s/%s.php', $gateway['name'], $gateway['name']));
+
+                return PaymentGatewayDTO::from_array($gateway);
+            }
             return PaymentGatewayDTO::from_array($gateway);
         }, $gateways);
     }
@@ -75,21 +89,6 @@ class PaymentSettings extends AppSettings
         return $this->get('e_commerce_engine', PaymentEngine::NATIVE);
     }
 
-    /**
-     * Returns the ID of the checkout page.
-     *
-     * @return int|null
-     * @since 1.0.0
-     */
-    public function get_checkout_page_id()
-    {
-        if (isset($this->settings['checkout_page'])) {
-            return (int) $this->settings['checkout_page'];
-        }
-
-        return null;
-    }
-
     public function get_currency()
     {
         return $this->get('currency');
@@ -113,5 +112,25 @@ class PaymentSettings extends AppSettings
     public function get_thousand_separator()
     {
         return $this->get('thousand_separator');
+    }
+
+    public function get_minimum_balance_to_request_withdrawal()
+    {
+        return $this->get('minimum_balance_to_request_withdrawal');
+    }
+
+	public function is_enabled_platform_fee()
+    {
+        return (bool) $this->get('enable_platform_fee', false);
+    }
+
+    public function get_platform_fee()
+    {
+        return (int) $this->get('platform_fee', 0);
+    }
+
+    public function get_platform_fee_type()
+    {
+        return $this->get('platform_fee_type', FeeType::PERCENTAGE);
     }
 }

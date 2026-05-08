@@ -32,12 +32,14 @@ import {
   useRetryFailedPaymentMutation,
   useUpdatePledgeStatusMutation,
 } from '@/features/pledges/services/pledges';
+import useCurrentUser from '@/hooks/use-current-user';
 import { cn } from '@/lib/utils';
 import { isDefined } from '@/utils';
 
 const PledgeAction = ({ pledge }: { pledge: Pledge }) => {
   const [pledgeAction, setPledgeAction] = useState<Action | null>(null);
   const navigate = useNavigate();
+  const { isAdmin } = useCurrentUser();
 
   const { openDialog } = useConsentDialog();
 
@@ -48,7 +50,7 @@ const PledgeAction = ({ pledge }: { pledge: Pledge }) => {
   const markAsReadyForPickupMutation = useMarkAsReadyForPickupMutation();
 
   const actionAlerts = getActionAlerts();
-  const options = prepareActionOptions(pledge);
+  const options = prepareActionOptions({ pledge, isAdmin });
   const key = prepareMessageKey(pledge);
 
   useEffect(() => {

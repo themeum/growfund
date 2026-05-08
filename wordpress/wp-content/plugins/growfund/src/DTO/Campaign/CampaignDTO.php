@@ -7,7 +7,9 @@ defined( 'ABSPATH' ) || exit;
 use Growfund\CastAttributes\BooleanAttribute;
 use Growfund\CastAttributes\DateTimeAttribute;
 use Growfund\CastAttributes\MoneyAttribute;
+use Growfund\CastAttributes\StringAttribute;
 use Growfund\DTO\DTO;
+use Growfund\DTO\User\UserInfoDTO;
 use Growfund\Supports\Arr;
 use Growfund\Supports\CampaignGoal;
 use Growfund\Supports\Money;
@@ -68,7 +70,7 @@ class CampaignDTO extends DTO
     /** @var array|null */
     public $tags;
 
-    /** @var array|null */
+    /** @var int[]|null */
     public $collaborators;
 
     /** @var bool|null */
@@ -152,11 +154,11 @@ class CampaignDTO extends DTO
     /** @var string|null */
     public $last_decline_reason;
 
-    /** @var int|string|null */
-    public $author_id;
+    /** @var UserInfoDTO|null */
+    public $author;
 
-    /** @var string|null */
-    public $created_by;
+    /** @var UserInfoDTO|null */
+    public $fundraiser;
 
     /** @var bool*/
     public $is_interactive;
@@ -263,6 +265,9 @@ class CampaignDTO extends DTO
             'has_tribute' => BooleanAttribute::class,
             'giving_thanks.*.pledge_from' => MoneyAttribute::class,
             'giving_thanks.*.pledge_to' => MoneyAttribute::class,
+            'author' => UserInfoDTO::class,
+            'fundraiser' => UserInfoDTO::class,
+            'collaborators.*' => StringAttribute::class,
         ];
     }
 }

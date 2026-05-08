@@ -17,13 +17,19 @@ import { TextField } from '@/components/form/text-field';
 import { TextareaField } from '@/components/form/textarea-field';
 import VideoField from '@/components/form/video-field';
 import { Container } from '@/components/layouts/container';
+import CampaignFundraiserFallback from '@/components/pro-fallbacks/campaign/campaign-fundraiser-fallback';
 import CampaignLaunchDateFallback from '@/components/pro-fallbacks/campaign/campaign-launch-date-fallback';
 import CollaboratorsFallback from '@/components/pro-fallbacks/campaign/collaborators-fallback';
 import ShowCollaboratorsCheckboxFallback from '@/components/pro-fallbacks/campaign/show-collaborators-checkbox-fallback';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 import { useAppConfig } from '@/contexts/app-config';
 import CampaignAction from '@/features/campaigns/components/campaign-action/campaign-action';
 import StepNavigation from '@/features/campaigns/components/step-navigation';
+import { useCampaign } from '@/features/campaigns/contexts/campaign-context';
 import { type CampaignBuilderForm } from '@/features/campaigns/schemas/campaign';
+import { hasCampaignSuperAccess } from '@/features/campaigns/utils/utils';
 import {
   useCreateCategoryMutation,
   useGetSubCategoriesQuery,
@@ -39,8 +45,10 @@ import { MediaType } from '@/utils/media';
 
 const BasicStep = () => {
   const { appConfig } = useAppConfig();
-  const { isAdmin } = useCurrentUser();
+  const { isAdmin, currentUser } = useCurrentUser();
   const form = useFormContext<CampaignBuilderForm>();
+
+  const { campaign } = useCampaign();
 
   const topLevelCategoriesQuery = useGetTopLevelCategoriesQuery();
   const categoryOptions = useQueryToOption(topLevelCategoriesQuery, 'id', 'name');
@@ -102,6 +110,7 @@ const BasicStep = () => {
     }
   };
 
+  const CampaignFundraiser = registry.get('CampaignFundraiser');
   const CampaignCollaborators = registry.get('CampaignCollaborators');
   const CampaignLaunchDate = registry.get('CampaignLaunchDate');
   const ShowCampaignCollaboratorsCheckbox = registry.get('ShowCampaignCollaboratorsCheckbox');
@@ -156,7 +165,7 @@ const BasicStep = () => {
           </div>
         </div>
         <div className="growfund-space-y-4">
-          <CampaignAction />
+          {hasCampaignSuperAccess(campaign, currentUser) && <CampaignAction />}
           <div className="growfund-bg-background-surface growfund-p-4 growfund-rounded-md growfund-shadow-sm growfund-space-y-4 growfund-h-fit">
             <VideoField
               control={form.control}
@@ -218,12 +227,46 @@ const BasicStep = () => {
               options={locationsAsOptions()}
             />
             <TagsField control={form.control} name="tags" label={__('Tags', 'growfund')} />
+            <ElementWrapper
+              fallback={<CampaignFundraiserFallback fundraiser={campaign.fundraiser} />}
+            >
+              {CampaignFundraiser && <CampaignFundraiser />}
+            </ElementWrapper>
             <ElementWrapper fallback={<CollaboratorsFallback />}>
               {CampaignCollaborators && <CampaignCollaborators />}
             </ElementWrapper>
             <ElementWrapper fallback={<ShowCollaboratorsCheckboxFallback />}>
               {ShowCampaignCollaboratorsCheckbox && <ShowCampaignCollaboratorsCheckbox />}
             </ElementWrapper>
+
+            {isDefined(campaign.author) && (
+              <>
+                <Separator />
+                <div className="growfund-group hover:growfund-bg-background-surface-secondary growfund-rounded-md growfund-flex growfund-justify-between growfund-items-center growfund-p-2">
+                  <div className="growfund-flex growfund-gap-3 growfund-items-center">
+                    <Avatar>
+                      <AvatarImage src={campaign.author.image?.url ?? undefined} />
+                      <AvatarFallback>
+                        {campaign.author.display_name.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+
+                    <div className="growfund-typo-tiny growfund-flex growfund-flex-col growfund-gap-1">
+                      <div className="growfund-text-fg-primary growfund-font-medium growfund-max-w-96 growfund-flex growfund-items-center growfund-gap-2">
+                        {campaign.author.display_name}
+                        <Badge variant="special">Author</Badge>
+                      </div>
+                      <div
+                        className="growfund-text-fg-secondary growfund-max-w-96 growfund-truncate"
+                        title={campaign.author.email}
+                      >
+                        {campaign.author.email}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

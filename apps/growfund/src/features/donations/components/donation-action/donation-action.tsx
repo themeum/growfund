@@ -7,34 +7,36 @@ import { Box, BoxContent } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import { FormLabel } from '@/components/ui/form';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectSeparator,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 import { RouteConfig } from '@/config/route-config';
 import { useConsentDialog } from '@/features/campaigns/contexts/consent-dialog-context';
 import { DonationActionBadge } from '@/features/donations/components/donation-action/donation-action-badge';
 import {
-    getActionAlerts,
-    getActionHeaderText,
-    prepareActionOptions,
-    prepareMessageKey,
+  getActionAlerts,
+  getActionHeaderText,
+  prepareActionOptions,
+  prepareMessageKey,
 } from '@/features/donations/components/donation-action/donation-action-services';
 import { type Donation } from '@/features/donations/schemas/donation';
 import {
-    useDeleteDonationMutation,
-    useUpdateDonationStatusMutation,
+  useDeleteDonationMutation,
+  useUpdateDonationStatusMutation,
 } from '@/features/donations/services/donations';
 import { type Action } from '@/features/pledges/components/pledge-action/pledge-action-types';
+import useCurrentUser from '@/hooks/use-current-user';
 import { cn } from '@/lib/utils';
 import { isDefined } from '@/utils';
 
 const DonationAction = ({ donation }: { donation: Donation }) => {
   const [donationAction, setDonationAction] = useState<Action | null>(null);
   const navigate = useNavigate();
+  const { isAdmin } = useCurrentUser();
 
   const { openDialog } = useConsentDialog();
 
@@ -42,7 +44,7 @@ const DonationAction = ({ donation }: { donation: Donation }) => {
   const deleteDonationMutation = useDeleteDonationMutation();
 
   const actionAlerts = getActionAlerts();
-  const options = prepareActionOptions(donation);
+  const options = prepareActionOptions({ donation, isAdmin });
   const key = prepareMessageKey(donation);
 
   const actionAlert = donationAction ? actionAlerts.get(donationAction) : null;
@@ -150,7 +152,8 @@ const DonationAction = ({ donation }: { donation: Donation }) => {
                     value={option.value}
                     className={cn(
                       '[&>span]:growfund-flex [&>span]:growfund-items-center [&_svg]:growfund-size-4 [&_svg]:growfund-text-icon-primary',
-                      option.is_critical && 'growfund-text-fg-critical [&_svg]:growfund-text-icon-critical',
+                      option.is_critical &&
+                        'growfund-text-fg-critical [&_svg]:growfund-text-icon-critical',
                     )}
                   >
                     <span className="growfund-mr-2 growfund-text-icon-primary">{option.icon}</span>
@@ -164,7 +167,11 @@ const DonationAction = ({ donation }: { donation: Donation }) => {
 
         {actionAlert && <Alert>{actionAlert}</Alert>}
 
-        <Button className="growfund-w-full growfund-mt-4" disabled={!donationAction} onClick={handleAction}>
+        <Button
+          className="growfund-w-full growfund-mt-4"
+          disabled={!donationAction}
+          onClick={handleAction}
+        >
           {__('Apply', 'growfund')}
         </Button>
       </BoxContent>

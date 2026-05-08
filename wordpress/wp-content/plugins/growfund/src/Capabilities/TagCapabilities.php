@@ -4,6 +4,7 @@ namespace Growfund\Capabilities;
 
 defined( 'ABSPATH' ) || exit;
 
+use Growfund\Constants\UserTypes\Collaborator;
 use Growfund\Constants\UserTypes\Fundraiser;
 use Growfund\Contracts\Capability;
 use Growfund\Traits\HasConstants;
@@ -25,6 +26,7 @@ class TagCapabilities implements Capability
     {
         switch ($role) {
             case Fundraiser::ROLE:
+            case Collaborator::ROLE:
                 return $this->fundraiser_capabilities();
             default:
                 return static::get_constant_values();

@@ -6,6 +6,7 @@ defined( 'ABSPATH' ) || exit;
 
 use Growfund\CastAttributes\DateTimeAttribute;
 use Growfund\CastAttributes\MoneyAttribute;
+use Growfund\DTO\AddressDTO;
 use Growfund\DTO\DTO;
 
 /**
@@ -19,6 +20,7 @@ class DonorDTO extends DTO
         'total_contributions' => MoneyAttribute::class,
         'joined_at' => DateTimeAttribute::class,
         'latest_donation_date' => DateTimeAttribute::class,
+        'billing_address' => AddressDTO::class,
     ];
 
     /** @var int */
@@ -42,7 +44,7 @@ class DonorDTO extends DTO
     /** @var \Growfund\Supports\MediaAttachment */
     public $image;
 
-    /** @var array */
+    /** @var AddressDTO|null */
     public $billing_address;
 
     /** @var string */

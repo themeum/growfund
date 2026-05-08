@@ -42,7 +42,9 @@ use Growfund\Constants\Campaign\FundSelectionType;
 use Growfund\Constants\Campaign\SuggestedOptionType;
 use Growfund\Constants\Campaign\TributeNotificationPreference;
 use Growfund\Constants\HookNames;
-use Growfund\DTO\Fundraiser\CollaboratorDTO;
+use Growfund\Constants\UserTypes\Collaborator;
+use Growfund\Constants\UserTypes\Fundraiser;
+use Growfund\DTO\User\UserInfoDTO;
 use Growfund\Supports\MetaQueryFilter;
 use WP_Post;
 use WP_Query;
@@ -96,7 +98,10 @@ class CampaignService
             'per_page' => $limit,
             'current_page' => $page,
             'has_more' => $page < $query->max_num_pages,
-            'overall' => PaginationSupport::get_overall_post_count(Campaign::NAME, ['post__in' => $query_args['post__in'] ?? []]),
+            'overall' => PaginationSupport::get_overall_post_count(
+                Campaign::NAME, 
+                !empty($filters_dto->post_ids) ? ['post__in' => $filters_dto->post_ids] : []
+            ),
         ]);
     }
 
@@ -350,13 +355,22 @@ class CampaignService
     public function filter_out_campaigns_by_author(CampaignFiltersDTO $filters_dto)
     {
         return function ($where) use ($filters_dto) {
-            if (empty($filters_dto->author_id)) {
+            if (empty($filters_dto->fundraiser_id) && empty($filters_dto->collaborator_id)) {
                 return $where;
             }
 
             $post_table = QueryBuilder::prefix(WP::POSTS_TABLE);
-            $campaign_ids = $this->get_campaign_ids_by_collaborator($filters_dto->author_id);
 
+            $campaign_ids = [];
+
+            if (!empty($filters_dto->collaborator_id)) {
+                $campaign_ids = $this->get_campaign_ids_by_collaborator($filters_dto->collaborator_id);
+            }
+
+            if (!empty($filters_dto->fundraiser_id)) {
+                $campaign_ids = $this->get_campaign_ids_by_fundraiser($filters_dto->fundraiser_id);
+            }
+            
             if (!empty($filters_dto->post_ids)) {
                 $campaign_ids = array_unique(array_merge($campaign_ids, $filters_dto->post_ids));
             }
@@ -367,13 +381,13 @@ class CampaignService
                 })->join(',');
                 $where .= QueryBuilder::get_db()->prepare(
                     " AND ({$post_table}.ID IN ($placeholders) OR {$post_table}.post_author = %d) ",
-                    array_merge($campaign_ids, [$filters_dto->author_id])
+                    array_merge($campaign_ids, [$filters_dto->fundraiser_id])
                 );
 
                 return $where;
             }
 
-            $where .= " AND {$post_table}.post_author = $filters_dto->author_id";
+            $where .= " AND {$post_table}.post_author = $filters_dto->fundraiser_id";
 
             return $where;
         };
@@ -428,6 +442,8 @@ class CampaignService
 
         $query = $this->get_query($filters_dto);
 
+        $results = [];
+
         if ($query->have_posts()) {
             foreach ($query->posts as $campaign) {
                 $results[] = $this->prepare_campaign_dto($campaign);
@@ -444,7 +460,7 @@ class CampaignService
     /**
      * Get campaigns by user id.
      *
-     * @param CampaignFiltersDTO $filters_dto The filters to apply to the query.
+     * @param int $id The id of the user.
      * @return int The number of campaigns.
      */
     public function get_count_by_user_id(int $id)
@@ -497,7 +513,7 @@ class CampaignService
             'post_type'    => Campaign::NAME,
             'post_title'   => 'Untitled',
             'post_status'  => Campaign::DEFAULT_POST_STATUS,
-            'post_author'  => get_current_user_id(),
+            'post_author'  => growfund_user()->get_id(),
             'comment_status' => 'open'
         ], true);
 
@@ -507,6 +523,7 @@ class CampaignService
         }
 
         PostMeta::add($post_id, 'status', CampaignStatus::DRAFT);
+        PostMeta::add($post_id, 'fundraiser_id', growfund_user()->get_id());
         PostMeta::add($post_id, 'start_date', Date::current_sql_safe());
 
         return $post_id;
@@ -516,7 +533,7 @@ class CampaignService
      * Update an existing campaign post with associated metadata.
      *
      * @param int $id
-     * @param UpdateCampaignDTO $data
+     * @param UpdateCampaignDTO $dto
      * @return bool 
      * @throws Exception
      */
@@ -546,6 +563,10 @@ class CampaignService
 
         $dto = $this->clear_unused_data_based_on_appreciation_type($dto);
 
+        if (empty($dto->fundraiser_id)) {
+            $dto->fundraiser_id = $campaign->author->id;
+        }
+
         PostMeta::update_many($campaign_id, $dto->get_meta(['collaborators', 'start_date']));
 
         $this->continue_campaign_when_reaching_action_is_changed($campaign, $dto);
@@ -563,12 +584,18 @@ class CampaignService
         wp_set_object_terms($campaign_id, $categories, Category::NAME);
         wp_set_object_terms($campaign_id, $dto->tags, Tag::NAME, false);
 
+        if (empty($campaign_id)) {
+            return false;
+        }
+
         do_action(HookNames::GROWFUND_CAMPAIGN_AFTER_SAVE_ACTION, $campaign_id, $dto); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
 
         growfund_event(new CampaignUpdateEvent($campaign, $dto));
         growfund_event(new CampaignStatusUpdateEvent($campaign, $dto->status));
 
-        return !empty($campaign_id);
+        $this->take_snapshot($campaign_id);
+
+        return true;
     }
 
     protected function continue_campaign_when_reaching_action_is_changed(CampaignDTO $campaign, UpdateCampaignDTO $dto){
@@ -950,6 +977,7 @@ class CampaignService
 
         if (!empty($is_updated)) {
             growfund_event(new CampaignStatusUpdateEvent($campaign_dto, $status));
+            $this->take_snapshot($id);
         }
 
         return $is_updated;
@@ -985,7 +1013,7 @@ class CampaignService
         $end_date = new DateTime($end_date);
 
         if (growfund_app()->is_donation_mode()) {
-            $donation_analytic_service = new DonationAnalyticService($this->donation_service);
+            $donation_analytic_service = new DonationAnalyticService();
 
             $data['metrics'] = $donation_analytic_service->get_metrics($start_date, $end_date, $id);
             $data['revenue_chart_data'] = $donation_analytic_service->get_revenue_chart_data($start_date, $end_date, $id);
@@ -1042,7 +1070,7 @@ class CampaignService
 
         $tags = Terms::get_term_ids($campaign->ID, Tag::NAME);
         $metadata = PostMeta::get_all($campaign->ID);
-        $collaborators = $this->get_collaborators_by_id($campaign->ID);
+        $collaborator_ids = $this->get_collaborator_ids_by_campaign_id($campaign->ID);
         $status = $metadata['status'] ?? CampaignStatus::DRAFT;
 
         $decline_reasons = PostMeta::get($campaign->ID, 'decline_reasons', false) ?? null;
@@ -1058,8 +1086,9 @@ class CampaignService
         $dto->title = $campaign->post_title;
         $dto->slug = $campaign->post_name;
         $dto->description = $campaign->post_content;
-        $dto->author_id = $campaign->post_author;
-        $dto->created_by = get_the_author_meta('display_name', $campaign->post_author);
+        $dto->author = $this->get_campaign_author($campaign->post_author);
+        $fundraiser_id = $metadata['fundraiser_id'] ?? null;
+        $dto->fundraiser = !empty($fundraiser_id) ? $this->get_campaign_fundraiser($fundraiser_id) : $dto->author;
 
         $dto->story = $metadata['story'] ?? null;
         $dto->images = MediaAttachment::make_many($metadata['images'] ?? []);
@@ -1077,7 +1106,7 @@ class CampaignService
         $dto->location = $metadata['location'] ?? null;
         $dto->tags = array_map('strval', $tags);
 
-        $dto->collaborators = $collaborators ?? null;
+        $dto->collaborators = $collaborator_ids ?? null;
         $dto->show_collaborator_list = isset($metadata['show_collaborator_list']) ? filter_var($metadata['show_collaborator_list'], FILTER_VALIDATE_BOOLEAN) : false;
 
         $dto->status = $status;
@@ -1213,125 +1242,121 @@ class CampaignService
      * Gets the IDs of collaborators associated with a given campaign ID.
      *
      * @param int $id The ID of the campaign to retrieve collaborators for.
-     * @return array An array of IDs of collaborators associated with the campaign.
+     * @return int[] An array of IDs of collaborators associated with the campaign.
      */
-    public function get_collaborators_by_id($id)
+    public function get_collaborator_ids_by_campaign_id($id)
     {
-        $records = QueryBuilder::query()->table(Tables::CAMPAIGN_COLLABORATORS)->select(['collaborator_id'])->where('campaign_id', $id)->get();
-        $ids = wp_list_pluck($records, 'collaborator_id');
+        $records = QueryBuilder::query()->table(Tables::CAMPAIGN_COLLABORATORS)
+            ->select(['collaborator_id'])
+            ->where('campaign_id', $id)
+            ->get();
+        $ids = Arr::make($records ?? [])->pluck('collaborator_id')->map(fn ($id) => (int) $id)->toArray();
 
-        return $ids;
+        return array_values(array_unique($ids));
     }
 
     /**
      * Gets the detail of collaborators associated with a given campaign ID.
      *
-     * @param int $id The ID of the campaign to retrieve collaborators for.
-     * @return array An array of collaborator dto
+     * @param int $campaign_id The ID of the campaign to retrieve collaborators for.
+     * @return UserInfoDTO[]
      */
-    public function get_collaborator_list_by_id($id)
+    public function get_collaborator_list_by_id($campaign_id)
     {
-        $collaborator_ids = $this->get_collaborators_by_id($id);
-
-        return apply_filters(HookNames::GROWFUND_COLLABORATOR_LIST_FILTER, [], $collaborator_ids); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
+        return apply_filters(HookNames::GROWFUND_COLLABORATOR_LIST_FILTER, [], (int) $campaign_id); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
     }
 
     /**
      * @param int|null $author_id
-     * @return CollaboratorDTO
+     * @return UserInfoDTO|null
      */
     public function get_campaign_author($author_id) {
         if (empty($author_id)) {
             return null;
         }
-        
-        $author = get_user($author_id);
 
-        if (!$author) {
-            return null;
-        }
-        return (new UserService())->prepare_collaborator_dto($author);
-    }
-
-    public function get_campaign_ids_by_collaborator($user_id)
-    {
-        $records = QueryBuilder::query()->table(Tables::CAMPAIGN_COLLABORATORS)->select(['campaign_id'])->where('collaborator_id', $user_id)->get();
-        $ids = wp_list_pluck($records, 'campaign_id');
-
-        return $ids;
+        return growfund_user($author_id)->get_data();
     }
 
     /**
-     * @deprecated since 1.0.11
+     * @param int|null $fundraiser_id
+     * @return UserInfoDTO|null
      */
-	public function get_campaign_ids_by_fundraiser($fundraiser_id) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
-		return [];
+    public function get_campaign_fundraiser($fundraiser_id) {
+        if (empty($fundraiser_id)) {
+            return null;
+        }
+
+        return growfund_user($fundraiser_id)->get_data();
+    }
+
+    /**
+     * Gets the IDs of campaigns associated with a given collaborator ID.
+     * 
+     * @param int $collaborator_id The ID of the collaborator to retrieve campaigns for.
+     * @return int[] An array of IDs of campaigns associated with the collaborator.
+     */
+    public function get_campaign_ids_by_collaborator($collaborator_id)
+    {
+        return apply_filters(HookNames::GROWFUND_COLLABORATOR_CAMPAIGN_IDS_FILTER, [], (int) $collaborator_id); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
+    }
+
+    /**
+     * Gets the IDs of campaigns associated with a given fundraiser ID.
+     * 
+     * @param int $fundraiser_id The ID of the fundraiser to retrieve campaigns for.
+     * @return int[] An array of IDs of campaigns associated with the fundraiser.
+     */
+	public function get_campaign_ids_by_fundraiser($fundraiser_id) {
+        $query = QueryBuilder::query()->table(WP::POSTS_TABLE . ' as campaigns')
+            ->select(['campaigns.ID as campaign_id'])
+            ->join_raw(
+                WP::POST_META_TABLE . ' as campaign_status_meta',
+                'INNER',
+                sprintf("campaigns.ID = campaign_status_meta.post_id AND campaign_status_meta.meta_key = '%s'", growfund_with_prefix('status'))
+            )
+            ->join_raw(
+                WP::POST_META_TABLE . ' as campaign_fundraiser_meta',
+                'LEFT',
+                sprintf("campaigns.ID = campaign_fundraiser_meta.post_id AND campaign_fundraiser_meta.meta_key = '%s'", growfund_with_prefix('fundraiser_id'))
+            )
+            ->where('campaign_status_meta.meta_value', '!=', CampaignStatus::TRASHED)
+            ->where_raw(
+                "(campaigns.post_author = :author_id OR campaign_fundraiser_meta.meta_value = :fundraiser_id)",
+                [
+                    'author_id' => $fundraiser_id,
+                    'fundraiser_id' => $fundraiser_id,
+                ]
+            )
+            ->get();
+
+        $query = apply_filters(HookNames::GROWFUND_FUNDRAISER_CAMPAIGN_IDS_QUERY_FILTER, $query, (int) $fundraiser_id); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
+
+        $records = $query->get();
+
+        $ids = Arr::make($records ?? [])->pluck('campaign_id')->map(fn ($id) => (int) $id)->toArray();
+
+        return array_values(array_unique($ids));
 	}
 
     /**
-     * Gets the IDs of campaigns associated with a given user ID that are in the trash.
-     *
-     * @param int $user_id The ID of the user to retrieve trashed campaigns for. If null is passed, campaigns for all users will be retrieved.
-     * @return array An array of IDs of campaigns associated with the user and in the trash. If no campaigns are found, an empty array is returned.
+     * @deprecated since 1.1.0
+     * 
+     * @return array
      */
-    public function get_trashed_campaign_ids_by_user($user_id = null)
+    public function get_trashed_campaign_ids_by_user($user_id = null) // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
     {
-        $query_args = [
-            'post_type' => Campaign::NAME,
-            'post_status' => [PostStatus::TRASH],
-            'fields' => 'ids',
-            'posts_per_page' => -1,
-        ];
-
-        $ids = [];
-
-        if ($user_id) {
-            $query_args['author'] = $user_id;
-            $ids = $this->get_campaign_ids_by_collaborator($user_id) ?? [];
-        }
-
-        $query = new WP_Query($query_args);
-
-        if (is_wp_error($query)) {
-            throw new Exception(esc_html($query->get_error_message()));
-        }
-
-        $ids =  array_merge($ids, $query->posts);
-
-        return count($ids) > 0 ? array_unique($ids) : [];
+        return [];
     }
 
     /**
-     * Gets the IDs of campaigns associated with a given user ID.
-     *
-     * @param int $user_id The ID of the user to retrieve all campaigns for. If null is passed, campaigns for all users will be retrieved.
-     * @return array An array of IDs of campaigns associated with the user. If no campaigns are found, an empty array is returned.
+     * @deprecated since 1.1.0
+     * 
+     * @return array
      */
-    public function get_all_campaign_ids_by_user($user_id = null)
+    public function get_all_campaign_ids_by_user($user_id = null) // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
     {
-        $query_args = [
-            'post_type' => Campaign::NAME,
-            'post_status' => 'any',
-            'fields' => 'ids',
-            'posts_per_page' => -1,
-        ];
-
-        $ids = [];
-
-        if ($user_id) {
-            $query_args['author'] = $user_id;
-            $ids = $this->get_campaign_ids_by_collaborator($user_id) ?? [];
-        }
-
-        $query = new WP_Query($query_args);
-
-        if (is_wp_error($query)) {
-            throw new Exception(esc_html($query->get_error_message()));
-        }
-
-        $ids =  array_merge($ids, $query->posts);
-
-        return count($ids) > 0 ? array_unique($ids) : [];
+        return [];
     }
 
     /**
@@ -1343,7 +1368,7 @@ class CampaignService
      */
     public function is_collaborator($user_id, $campaign_id)
     {
-        $collaborators = $this->get_collaborators_by_id($campaign_id);
+        $collaborators = $this->get_collaborator_ids_by_campaign_id($campaign_id);
 
         return in_array((int) $user_id, $collaborators, true);
     }
@@ -1357,6 +1382,22 @@ class CampaignService
     public function get_author_id($campaign_id)
     {
         return (int) get_post_field('post_author', $campaign_id) ?? 0;
+    }
+
+    /**
+     * Get the campaign fundraiser id associated with a given campaign ID.
+     * @param int $campaign_id The ID of the campaign to retrieve the fundraiser ID for.
+     * @return int The ID of the fundraiser associated with the campaign.
+     */
+    public function get_fundraiser_id($campaign_id) 
+    {
+        $fundraiser_id = PostMeta::get($campaign_id, 'fundraiser_id');
+
+        if (empty($fundraiser_id)) {
+            return $this->get_author_id($campaign_id);
+        }
+
+        return (int) $fundraiser_id;
     }
 
     /**
@@ -1380,11 +1421,15 @@ class CampaignService
                 sprintf("campaigns.ID = campaign_status_meta.post_id AND campaign_status_meta.meta_key = '%s'", growfund_with_prefix('status'))
             )->where_in('campaign_status_meta.meta_value', [CampaignStatus::COMPLETED, CampaignStatus::FUNDED]);
 
-        if (growfund_user()->is_fundraiser()) {
-            $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
+        if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_fundraiser();
             $query->where_in('campaigns.ID', $campaign_ids);
         }
 
+        if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_collaborator();
+            $query->where_in('campaigns.ID', $campaign_ids);
+        }
 
         if ($start_date !== null) {
             $query->where_date('campaigns.post_date', '>=', $start_date->format(DateTimeFormats::DB_DATE));
@@ -1416,13 +1461,25 @@ class CampaignService
                 WP::POST_META_TABLE . ' as campaign_status_meta',
                 'INNER',
                 sprintf("campaigns.ID = campaign_status_meta.post_id AND campaign_status_meta.meta_key = '%s'", growfund_with_prefix('status'))
-            )->where_in('campaign_status_meta.meta_value', [CampaignStatus::COMPLETED, CampaignStatus::FUNDED])
+            )
+            ->join_raw(
+                WP::POST_META_TABLE . ' as campaign_fundraiser_meta', 
+                'LEFT', 
+                sprintf(
+                    "campaigns.ID = campaign_fundraiser_meta.post_id AND campaign_fundraiser_meta.meta_key = '%s'",
+                    growfund_with_prefix('fundraiser_id')
+                )
+            )
+            ->where_in('campaign_status_meta.meta_value', [CampaignStatus::COMPLETED, CampaignStatus::FUNDED])
             ->where_raw(sprintf(
-                "(campaigns.post_author = %s OR EXISTS ( SELECT 1 FROM `%s` AS collaborators WHERE collaborators.campaign_id = campaigns.ID AND collaborators.collaborator_id = %s))",
-                $fundraiser_id,
+                "(campaigns.post_author = :post_author OR campaign_fundraiser_meta.meta_value = :fundraiser_id OR EXISTS ( SELECT 1 FROM `%s` AS collaborators WHERE collaborators.campaign_id = campaigns.ID AND collaborators.collaborator_id = :collaborator_id))",
                 $campaign_collaborators_table,
-                $fundraiser_id
-            ))->count();
+            ), [
+                'post_author' => $fundraiser_id,
+                'fundraiser_id' => (string) $fundraiser_id,
+                'collaborator_id' => $fundraiser_id
+            ])
+            ->count();
 
         return $count ? (int) $count : 0;
     }
@@ -1487,8 +1544,13 @@ class CampaignService
                 sprintf("campaigns.ID = campaign_end_date_meta.post_id AND campaign_end_date_meta.meta_key = '%s'", growfund_with_prefix('end_date'))
             )->where_in('campaign_status_meta.meta_value', [CampaignStatus::PUBLISHED,  CampaignStatus::CANCELLED]);
 
-        if (growfund_user()->is_fundraiser()) {
-            $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
+        if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_fundraiser();
+            $query->where_in('campaigns.ID', $campaign_ids);
+        }
+
+        if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_collaborator();
             $query->where_in('campaigns.ID', $campaign_ids);
         }
 
@@ -1500,11 +1562,9 @@ class CampaignService
             $query->where_date('campaigns.post_date', '<=', $end_date->format(DateTimeFormats::DB_DATE));
         }
 
-        $count = $query->where_raw(sprintf(
-            "(( campaign_end_date_meta.meta_value IS NOT NULL AND DATE(campaign_end_date_meta.meta_value) < DATE(now()) ) 
-            OR campaign_status_meta.meta_value = '%s')",
-            CampaignStatus::CANCELLED
-        ))->count();
+        $count = $query->where_raw("(( campaign_end_date_meta.meta_value IS NOT NULL AND DATE(campaign_end_date_meta.meta_value) < DATE(now()) ) OR campaign_status_meta.meta_value = :status_cancelled)", [
+            'status_cancelled' => CampaignStatus::CANCELLED
+        ])->count();
 
         return $count ? (int) $count : 0;
     }
@@ -1513,7 +1573,7 @@ class CampaignService
      * Get failed campaigns count for fundraiser.
      * The campaign is failed if the campaign is published and end date is defined and goal doesn't met or marked as cancelled.
      * 
-     * @param int fundraiser_id
+     * @param int $fundraiser_id
      * 
      * @return int
      */
@@ -1526,21 +1586,32 @@ class CampaignService
                 WP::POST_META_TABLE . ' as campaign_status_meta',
                 'INNER',
                 sprintf("campaigns.ID = campaign_status_meta.post_id AND campaign_status_meta.meta_key = '%s'", growfund_with_prefix('status'))
-            )->join_raw(
+            )
+            ->join_raw(
                 WP::POST_META_TABLE . ' as campaign_end_date_meta',
                 'INNER',
                 sprintf("campaigns.ID = campaign_end_date_meta.post_id AND campaign_end_date_meta.meta_key = '%s'", growfund_with_prefix('end_date'))
-            )->where_in('campaign_status_meta.meta_value', [CampaignStatus::PUBLISHED,  CampaignStatus::CANCELLED])
-            ->where_raw(sprintf(
-                "(( campaign_end_date_meta.meta_value IS NOT NULL AND DATE(campaign_end_date_meta.meta_value) < DATE(now()) ) 
-                OR campaign_status_meta.meta_value = '%s')",
-                CampaignStatus::CANCELLED
-            ))->where_raw(sprintf(
-                "(campaigns.post_author = %s OR EXISTS ( SELECT 1 FROM `%s` AS collaborators WHERE collaborators.campaign_id = campaigns.ID AND collaborators.collaborator_id = %s))",
-                $fundraiser_id,
+            )
+            ->join_raw(
+                WP::POST_META_TABLE . ' as campaign_fundraiser_meta', 
+                'LEFT', 
+                sprintf(
+                    "campaigns.ID = campaign_fundraiser_meta.post_id AND campaign_fundraiser_meta.meta_key = '%s'",
+                    growfund_with_prefix('fundraiser_id')
+                )
+            )
+            ->where_in('campaign_status_meta.meta_value', [CampaignStatus::PUBLISHED,  CampaignStatus::CANCELLED])
+            ->where_raw("(( campaign_end_date_meta.meta_value IS NOT NULL AND DATE(campaign_end_date_meta.meta_value) < DATE(now()) ) OR campaign_status_meta.meta_value = :status_cancelled)", [
+                'status_cancelled' => CampaignStatus::CANCELLED
+            ])->where_raw(sprintf(
+                "(campaigns.post_author = :post_author OR campaign_fundraiser_meta.meta_value = :fundraiser_id OR EXISTS ( SELECT 1 FROM `%s` AS collaborators WHERE collaborators.campaign_id = campaigns.ID AND collaborators.collaborator_id = :collaborator_id))",
                 $campaign_collaborators_table,
-                $fundraiser_id
-            ))->count();
+            ), [
+                'post_author' => $fundraiser_id,
+                'fundraiser_id' => (string) $fundraiser_id,
+                'collaborator_id' => $fundraiser_id
+            ])
+            ->count();
 
         return $count ? (int) $count : 0;
     }
@@ -1648,5 +1719,47 @@ class CampaignService
         }
 
         return $meta_reaching_action ?? ReachingAction::CLOSE;
+    }
+
+    protected function take_snapshot(int $campaign_id)
+    {
+        $campaign = $this->get_by_id($campaign_id);
+
+        $snapshot = QueryBuilder::query()
+            ->table(Tables::CAMPAIGN_SNAPSHOTS)
+            ->where('campaign_id', $campaign_id)
+            ->first();
+
+        if (!empty($snapshot)) {
+            return QueryBuilder::query()
+                ->table(Tables::CAMPAIGN_SNAPSHOTS)
+                ->where('campaign_id', $campaign_id)
+                ->update([
+                    'snapshot' => maybe_serialize($campaign->to_array()),
+                    'updated_at' => Date::current_sql_safe(),
+                ]);
+        }
+
+        return QueryBuilder::query()
+            ->table(Tables::CAMPAIGN_SNAPSHOTS)
+            ->create([
+                'campaign_id' => $campaign_id,
+                'snapshot' => maybe_serialize($campaign->to_array()),
+                'updated_at' => Date::current_sql_safe(),
+            ]);
+    }
+
+    public function get_snapshot(int $campaign_id)
+    {
+        $result = QueryBuilder::query()
+            ->table(Tables::CAMPAIGN_SNAPSHOTS)
+            ->where('campaign_id', $campaign_id)
+            ->first();
+
+        if (empty($result)) {
+            return null;
+        }
+
+        return maybe_unserialize($result->snapshot ?? '');
     }
 }

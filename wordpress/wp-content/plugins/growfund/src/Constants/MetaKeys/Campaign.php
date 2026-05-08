@@ -42,6 +42,7 @@ class Campaign implements Constant
     const ALLOW_PLEDGE_WITHOUT_REWARD = 'allow_pledge_without_reward';
     const MIN_PLEDGE_AMOUNT = 'min_pledge_amount';
     const MAX_PLEDGE_AMOUNT = 'max_pledge_amount';
+    const FUNDRAISER_ID = 'fundraiser_id';
 
     /**
      * Get all campaign meta keys

@@ -35,4 +35,29 @@ class Tables
      * Table name for storing the bookmarked campaigns by backers/donors
      */
     const BOOKMARKS = 'growfund_bookmarks';
+
+    /**
+     * Table name for storing the withdrawal requests by fundraisers
+     */
+    const WITHDRAWAL_REQUESTS = 'growfund_withdrawal_requests';
+
+    /**
+     * Table name for storing the withdrawal to specific campaign
+     */
+    const WITHDRAWAL_ITEMS = 'growfund_withdrawal_items';
+
+    /**
+     * Table name for storing the wallet information of fundraisers
+     */
+    const WALLETS = 'growfund_wallets';
+
+    /**
+     * Table name for storing the wallet transaction history
+     */
+    const WALLET_TRANSACTIONS = 'growfund_wallet_transactions';
+
+    /**
+     * Table name for storing campaign snapshots
+     */
+    const CAMPAIGN_SNAPSHOTS = 'growfund_campaign_snapshots';
 }

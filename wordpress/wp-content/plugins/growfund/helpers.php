@@ -3,6 +3,11 @@
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Application;
+use Growfund\Constants\UserTypes\Admin;
+use Growfund\Constants\UserTypes\Backer;
+use Growfund\Constants\UserTypes\Collaborator;
+use Growfund\Constants\UserTypes\Donor;
+use Growfund\Constants\UserTypes\Fundraiser;
 use Growfund\Contracts\Capability;
 use Growfund\Core\AppSettings;
 use Growfund\Core\Dispatcher;
@@ -137,7 +142,18 @@ if (!function_exists('growfund_settings')) {
      *
      * @template T of 'general'|'pages'|'campaigns'|'notifications'|'payment'|'permissions'|'receipts'|'security'|'advanced'|'branding'
      * @param T $key
-     * @return (T is 'branding' ? \Growfund\App\Settings\BrandingSettings : (T is 'campaigns' ? \Growfund\App\Settings\CampaignSettings : (T is 'notifications' ? \Growfund\App\Settings\EmailAndNotificationSettings : (T is 'pages' ? \Growfund\App\Settings\PageSettings : (T is 'payment' ? \Growfund\App\Settings\PaymentSettings : (T is 'permissions' ? \Growfund\App\Settings\PermissionSettings : (T is 'receipts' ? \Growfund\App\Settings\ReceiptSettings : (T is 'security' ? \Growfund\App\Settings\SecuritySettings : (T is 'advanced' ? \Growfund\App\Settings\AdvancedSettings : \Growfund\App\Settings\GeneralSettings)))))))))
+     * @return (
+     *   T is 'general' ? \Growfund\App\Settings\GeneralSettings :
+     *   (T is 'branding' ? \Growfund\App\Settings\BrandingSettings :
+     *   (T is 'campaigns' ? \Growfund\App\Settings\CampaignSettings :
+     *   (T is 'notifications' ? \Growfund\App\Settings\EmailAndNotificationSettings :
+     *   (T is 'pages' ? \Growfund\App\Settings\PageSettings :
+     *   (T is 'payment' ? \Growfund\App\Settings\PaymentSettings :
+     *   (T is 'permissions' ? \Growfund\App\Settings\PermissionSettings :
+     *   (T is 'receipts' ? \Growfund\App\Settings\ReceiptSettings :
+     *   (T is 'security' ? \Growfund\App\Settings\SecuritySettings :
+     *   (T is 'advanced' ? \Growfund\App\Settings\AdvancedSettings : never)))))))))
+     * )
      */
     function growfund_settings($key)
     {        
@@ -455,13 +471,6 @@ if (!function_exists('growfund_wc_product_id')) {
     }
 }
 
-if (!function_exists('growfund_wc_product_slug')) {
-    function growfund_wc_product_slug()
-    {
-        return Woocommerce::get_growfund_product_slug();
-    }
-}
-
 /**
  * Make a scheduler instance.
  * 
@@ -643,20 +652,34 @@ if (!function_exists('growfund_donation_receipt_download_url')) {
     }
 }
 
-if (!function_exists('growfund_get_all_campaign_ids_by_fundraiser')) {
-    function growfund_get_all_campaign_ids_by_fundraiser()
+if (!function_exists('growfund_campaign_ids_by_fundraiser')) {
+    function growfund_campaign_ids_by_fundraiser()
     {
         return growfund_app()->make('fundraiser_campaign_ids');
     }
 }
 
+if (!function_exists('growfund_campaign_ids_by_collaborator')) {
+    function growfund_campaign_ids_by_collaborator()
+    {
+        return growfund_app()->make('collaborator_campaign_ids');
+    }
+}
+
+
 if (!function_exists('growfund_backer_dashboard_url')) {
     /**
      * Get the backer dashboard URL
+     * 
+     * @param string $hash
      * @return string
      */
-    function growfund_backer_dashboard_url()
+    function growfund_backer_dashboard_url(string $hash = '')
     {
+        if (!empty($hash)) {
+            return site_url("/dashboard/backer/#/" . ltrim(ltrim(trim($hash), '#'), '/'));
+        }
+
         return site_url("/dashboard/backer");
     }
 }
@@ -664,10 +687,16 @@ if (!function_exists('growfund_backer_dashboard_url')) {
 if (!function_exists('growfund_donor_dashboard_url')) {
     /**
      * Get the donor dashboard URL
+     * 
+     * @param string $hash
      * @return string
      */
-    function growfund_donor_dashboard_url()
+    function growfund_donor_dashboard_url(string $hash = '')
     {
+        if (!empty($hash)) {
+            return site_url("/dashboard/donor/#/" . ltrim(ltrim(trim($hash), '#'), '/'));
+        }
+
         return site_url("/dashboard/donor");
     }
 }
@@ -675,10 +704,16 @@ if (!function_exists('growfund_donor_dashboard_url')) {
 if (!function_exists('growfund_fundraiser_dashboard_url')) {
     /**
      * Get the fundraiser dashboard URL
+     * 
+     * @param string $hash
      * @return string
      */
-    function growfund_fundraiser_dashboard_url()
+    function growfund_fundraiser_dashboard_url(string $hash = '')
     {
+        if (!empty($hash)) {
+            return site_url("/dashboard/fundraiser/#/" . ltrim(ltrim(trim($hash), '#'), '/'));
+        }
+
         return site_url("/dashboard/fundraiser");
     }
 }
@@ -692,19 +727,22 @@ if (!function_exists('growfund_user_dashboard_url')) {
      */
     function growfund_user_dashboard_url($user_id = null)
     {
-        if (growfund_user($user_id)->is_admin()) {
+        if (growfund_user($user_id)->has_active_role(Admin::ROLE)) {
             return admin_url('admin.php?page=growfund');
         }
 
-        if (growfund_user($user_id)->is_fundraiser()) {
+        if (
+            growfund_user($user_id)->has_active_role(Fundraiser::ROLE) 
+            || growfund_user($user_id)->has_active_role(Collaborator::ROLE)
+        ) {
             return growfund_fundraiser_dashboard_url();
         }
 
-        if (growfund_user($user_id)->is_backer()) {
+        if (growfund_user($user_id)->has_active_role(Backer::ROLE)) {
             return growfund_backer_dashboard_url();
         }
 
-        if (growfund_user($user_id)->is_donor()) {
+        if (growfund_user($user_id)->has_active_role(Donor::ROLE)) {
             return growfund_donor_dashboard_url();
         }
 
@@ -870,6 +908,7 @@ if (!function_exists('growfund_remote_request_base_url')) {
      */
     function growfund_remote_request_base_url()
     {
+        // @todo: need to fix this when working on the remote request when apply
         return growfund_is_dev_mode()
             ? getenv('GROWFUND_REMOTE_REQUEST_BASE_URL')
             : 'https://growfund.com/api';
@@ -1296,5 +1335,19 @@ if (!function_exists('growfund_file_put_contents')) {
         }
 
         return $wp_filesystem->put_contents($filename, $content, FS_CHMOD_FILE);
+    }
+}
+
+if (!function_exists('growfund_is_plugin_activated')) {
+    /**
+     * Check if the plugin is activated.
+     *
+     * @param string $plugin_file
+     * @return boolean
+     */
+    function growfund_is_plugin_activated(string $plugin_file) {
+        $plugin_path = WP_PLUGIN_DIR . '/' . $plugin_file;
+        
+        return file_exists($plugin_path) && is_plugin_active($plugin_file);
     }
 }

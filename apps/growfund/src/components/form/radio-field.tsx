@@ -1,23 +1,30 @@
 import { type FieldValues } from 'react-hook-form';
 
 import {
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from '@/components/ui/form';
 import { ProBadge } from '@/components/ui/pro-badge';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { cn } from '@/lib/utils';
-import { type Option } from '@/types';
 import { type ControllerField } from '@/types/form';
 import { isDefined } from '@/utils';
 
-interface RadioFieldProps<T extends FieldValues>
-  extends Omit<ControllerField<T>, 'readOnly' | 'placeholder'> {
-  options: Option<string>[];
+interface RadioOption {
+  label: string;
+  value: string;
+  icon?: React.ReactNode;
+}
+
+interface RadioFieldProps<T extends FieldValues> extends Omit<
+  ControllerField<T>,
+  'readOnly' | 'placeholder'
+> {
+  options: RadioOption[];
   featureOptions?: string[];
 }
 
@@ -38,13 +45,25 @@ function RadioField<T extends FieldValues>({
       name={name}
       render={({ field, fieldState }) => {
         return (
-          <FormItem className={cn('growfund-w-full', inline && 'growfund-flex growfund-flex-col growfund-gap-1')}>
+          <FormItem
+            className={cn(
+              'growfund-w-full',
+              inline && 'growfund-flex growfund-flex-col growfund-gap-1',
+            )}
+          >
             <div className="growfund-space-y-1">
-              {isDefined(label) && <FormLabel className="growfund-flex-shrink-0">{label}</FormLabel>}
+              {isDefined(label) && (
+                <FormLabel className="growfund-flex-shrink-0">{label}</FormLabel>
+              )}
               {isDefined(description) && <FormDescription>{description}</FormDescription>}
               <FormMessage />
             </div>
-            <FormControl className={cn('growfund-mt-2', inline && 'growfund-flex growfund-items-center growfund-gap-4')}>
+            <FormControl
+              className={cn(
+                'growfund-mt-2',
+                inline && 'growfund-flex growfund-items-center growfund-gap-4',
+              )}
+            >
               <RadioGroup
                 onValueChange={field.onChange}
                 value={field.value ?? ''}
@@ -53,7 +72,10 @@ function RadioField<T extends FieldValues>({
               >
                 {options.map((option, index) => {
                   return (
-                    <FormItem key={index} className="growfund-flex growfund-items-center growfund-space-x-2">
+                    <FormItem
+                      key={index}
+                      className="growfund-flex growfund-items-center growfund-space-x-2"
+                    >
                       <FormControl>
                         <RadioGroupItem
                           value={option.value}
@@ -61,6 +83,7 @@ function RadioField<T extends FieldValues>({
                         />
                       </FormControl>
                       <FormLabel className={cn(fieldState.error && 'growfund-text-fg-critical')}>
+                        {option.icon && option.icon}
                         {option.label}
                       </FormLabel>
                     </FormItem>
@@ -69,7 +92,10 @@ function RadioField<T extends FieldValues>({
                 {isDefined(featureOptions) &&
                   featureOptions.map((label, index) => {
                     return (
-                      <div key={index} className="growfund-flex growfund-items-center growfund-space-x-2">
+                      <div
+                        key={index}
+                        className="growfund-flex growfund-items-center growfund-space-x-2"
+                      >
                         <RadioGroupItem disabled value="" checked={false} />
                         <span className="growfund-text-fg-subdued growfund-typo-small growfund-font-medium growfund-min-h-4 growfund-flex growfund-items-center growfund-gap-1">
                           {label} <ProBadge />

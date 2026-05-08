@@ -163,7 +163,7 @@ const PledgeDetailsDialog = ({
                   <div className="growfund-typo-tiny growfund-text-fg-secondary growfund-flex growfund-items-center growfund-gap-1">
                     {__('by', 'growfund')}
                     <span className="growfund-text-fg-brand growfund-capitalize">
-                      {pledge.campaign.created_by}
+                      {pledge.campaign.author?.display_name ?? emptyCell(2)}
                     </span>
                   </div>
                 </div>

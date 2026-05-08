@@ -189,6 +189,26 @@ class QueryBuilder
         return $result;
     }
 
+    /**
+     * Run a raw SQL query (Must contain only named placeholders).
+     *
+     * @param string $sql
+     * @param array $bindings
+     * @return string
+     */
+    public static function raw_prepare(string $sql, array $bindings = [])
+    {
+        if (empty($sql)) {
+            throw new QueryException(esc_html__('Raw SQL query cannot be empty', 'growfund'));
+        }
+
+        $instance = new static();
+
+        $prepared_sql = $instance->prepare($sql, $bindings);
+
+        return $prepared_sql;
+    } 
+
 
     /**
      * Set the table for the query.
@@ -210,7 +230,31 @@ class QueryBuilder
      */
     public function get_table_name()
     {
+        if (empty($this->table)) {
+            throw new QueryException(esc_html__('Table name is not set yet.', 'growfund'));
+        }
+
         return $this->table;
+    }
+
+
+    /**
+     * Get the table alias for the query.
+     * @return string
+     * @since 1.1.0
+     */
+    public function get_table_alias() {
+        $table = $this->get_table_name();
+        $parts = preg_split('/\s+(?:as\s+)?/i', trim($table), 2);
+        $parts = array_values(array_filter($parts, 'trim'));
+        $table_name = $parts[0];
+        $alias = $parts[1] ?? '';
+
+        if (!empty($alias)) {
+            return $alias;
+        }
+
+        return $table_name;
     }
 
     /**
@@ -251,7 +295,7 @@ class QueryBuilder
     public function join(string $table, string $first, string $second, string $type = 'INNER')
     {
         $table = $this->db->prefix . $table;
-        $this->join_clauses[] = strtoupper($type) . ' JOIN ' . $table . ' ON ' . $first . ' = ' . $second;
+        $this->join_clauses[] = [$type, $table, $first . ' = ' . $second ];
 
         return $this;
     }
@@ -262,13 +306,19 @@ class QueryBuilder
      * @param string $table Table name
      * @param string $type Join type (INNER, LEFT, RIGHT, CROSS)
      * @param string $raw_condition Raw SQL condition
+     * @param array $bindings Bindings
      *
      * @return $this
+     * 
      */
-    public function join_raw(string $table, string $type, string $raw_condition)
+    public function join_raw(string $table, string $type, string $raw_condition, array $bindings = [])
     {
         $table = $this->db->prefix . $table;
-        $this->join_clauses[] = strtoupper($type) . ' JOIN ' . $table . ' ON ' . $raw_condition;
+        $this->join_clauses[] = [
+            strtoupper(trim(str_replace('JOIN', '', $type))), 
+            $table,
+			$this->prepare($raw_condition, $bindings)
+        ];
 
         return $this;
     }
@@ -341,9 +391,41 @@ class QueryBuilder
      */
     public function where_raw(string $raw, array $bindings = [])
     {
+        if (empty($raw)) {
+            throw new QueryException(esc_html__('Raw SQL query cannot be empty', 'growfund'));
+        }
+
         $this->where_clauses[] = $this->prepare($raw, $bindings);
 
         return $this;
+    }
+
+    /**
+     * Add a WHERE NULL condition.
+     * 
+     * @param string $column
+     * 
+     * @return self
+     * 
+     * @since 1.1.0
+     */
+    public function where_null(string $column)
+    {
+        return $this->where($column, 'IS', null);
+    }
+
+    /**
+     * Add a WHERE NOT NULL condition.
+     * 
+     * @param string $column
+     * 
+     * @return self
+     * 
+     * @since 1.1.0
+     */
+    public function where_not_null(string $column)
+    {
+        return $this->where($column, 'IS NOT', null);
     }
 
     /**
@@ -481,8 +563,6 @@ class QueryBuilder
         return $this;
     }
 
-
-
     /**
      * Add ORDER BY clause.
      *
@@ -585,6 +665,80 @@ class QueryBuilder
     public function all()
     {
         return $this->get();
+    }
+
+    /**
+     * Process results in chunks.
+     *
+     * @param int $chunk_size Number of records per chunk
+     * @param callable $callback function(array $results, int $page): bool|void
+     *      Return false to stop further processing
+     * @param string $order_by
+     * @param string $id_column
+     *
+     * @return void
+     * @throws QueryException
+     * 
+     * @since 1.1.0
+     */
+    public function chunk_by_id(int $chunk_size, callable $callback, $order_by = 'ASC', $id_column = 'ID')
+    {
+        if ($chunk_size < 1) {
+            throw new Exception(esc_html__('Chunk size must be greater than 0', 'growfund'));
+        }
+
+        $order_by = strtolower($order_by) === 'desc' ? 'DESC' : 'ASC';
+        $last_id = $order_by === 'DESC' ? null : 0;
+        $current_items_count = 0;
+
+        do {
+            $query = clone $this;
+
+            $table_alias = $this->get_table_alias();
+            
+            if ($last_id !== null) {
+                $operator = $order_by === 'DESC' ? '<' : '>';
+                $query->where($table_alias . '.' . $id_column, $operator, $last_id);
+            }
+
+            $results = $query->order_by( $table_alias . '.' . $id_column, $order_by)
+                ->limit($chunk_size)
+                ->get();
+
+            if (empty($results)) {
+                break;
+            }
+
+            $first_key = array_key_first($results);
+
+            if (is_null($first_key)) {
+                break;
+            }
+
+            if (!isset($results[$first_key]->{$id_column})) {
+                throw new QueryException(
+                    /* translators: %s: column name */
+                    sprintf(esc_html__('Column "%s" is not found in the query', 'growfund'), esc_html($id_column))
+                );
+            }
+
+            $continue = $callback($results, $last_id);
+
+            if ($continue === false) {
+                break;
+            }
+
+            $last_key = array_key_last($results);
+
+            if (is_null($last_key)) {
+                break;
+            }
+
+            $last_id = $results[$last_key]->{$id_column};
+
+            $current_items_count = count($results);
+
+        } while ($current_items_count === $chunk_size);
     }
 
     /**
@@ -988,6 +1142,9 @@ class QueryBuilder
             foreach ($data_item as $key => $value) {
                 if (is_null($value)) {
                     $placeholders[] = 'NULL'; // No placeholder
+                } elseif (preg_match('/^\s*\(?\s*SELECT\b/i', $value)) {
+                    $value = '(' . trim(ltrim(rtrim($value, ')'), '(')) . ')'; // Sub query when inserting
+                    $placeholders[] = $value;
                 } else {
                     $placeholders[] = $this->get_placeholder_by_value($value);
                     $bindings[] = $value;
@@ -1045,6 +1202,22 @@ class QueryBuilder
         return $result;
     }
 
+    protected function table_identifier($table) {
+        $identifier = '%i';
+        $parts = preg_split('/\s+(?:as\s+)?/i', trim($table), 2);
+        $parts = array_values(array_filter($parts, 'trim'));
+        $table_name = $parts[0];
+        $alias = $parts[1] ?? '';
+
+        $this->add_binding($table_name);
+        
+        if (empty($alias)) {
+            return $identifier;
+        }
+
+        return $identifier . ' as ' . $alias;
+    }
+
 
     /**
      * Protect an identifier (column or table name) by wrapping it in backticks.
@@ -1084,6 +1257,34 @@ class QueryBuilder
     }
 
     /**
+     * Prepare JOIN clause.
+     * 
+     * @param array $join_clauses
+     * 
+     * @return string
+     */
+    protected function prepare_join_clause(array $join_clauses = [])
+    {   
+        if (!empty($join_clauses)) {
+            return implode(
+                ' ', 
+                array_map(
+                    function ($clause){
+                        $type = strtoupper(trim($clause[0]));
+                        $table = $this->table_identifier($clause[1]);
+                        $condition = $clause[2];
+
+                        return $type . ' JOIN ' . $table . ' ON ' . $condition;
+                    }, 
+                    $join_clauses
+                )
+            );
+        }
+
+        return '';
+    }
+
+    /**
      * Build SQL query string.
      *
      * @param string $type
@@ -1092,24 +1293,24 @@ class QueryBuilder
     public function build_query(string $type = 'select')
     {
         if (empty($this->table)) {
-            throw new Exception(esc_html__('Table name is required', 'growfund'));
+            throw new QueryException(esc_html__('Table name is required', 'growfund'));
         }
 
         switch ($type) {
             case 'select':
-                $this->query = 'SELECT ' . implode(', ', $this->select_clauses) . ' FROM ' . $this->table;
+                $this->query = 'SELECT ' . implode(', ', $this->select_clauses) . ' FROM ' . $this->table_identifier($this->table);
 
                 if (!empty($this->join_clauses)) {
-                    $this->query .= ' ' . implode(' ', $this->join_clauses);
+                    $this->query .= ' ' . $this->prepare_join_clause($this->join_clauses);
                 }
 
                 break;
 
             case 'update':
-                $this->query = 'UPDATE ' . $this->table;
+                $this->query = 'UPDATE ' . $this->table_identifier($this->table);
 
                 if (!empty($this->join_clauses)) {
-                    $this->query .= ' ' . implode(' ', $this->join_clauses);
+                    $this->query .= ' ' . $this->prepare_join_clause($this->join_clauses);
                 }
 
                 $this->query .= ' SET ';
@@ -1128,13 +1329,13 @@ class QueryBuilder
                         ? implode(',', $this->delete_clauses)
                         : $this->delete_clauses;
 
-                    $this->query = 'DELETE ' . $delete_clauses . ' FROM ' . $this->table;
+                    $this->query = 'DELETE ' . $delete_clauses . ' FROM ' . $this->table_identifier($this->table);
                 } else {
-                    $this->query = 'DELETE FROM ' . $this->table;
+                    $this->query = 'DELETE FROM ' . $this->table_identifier($this->table);
                 }
 
                 if (!empty($this->join_clauses)) {
-                    $this->query .= ' ' . implode(' ', $this->join_clauses);
+                    $this->query .= ' ' . $this->prepare_join_clause($this->join_clauses);
                 }
 
                 break;

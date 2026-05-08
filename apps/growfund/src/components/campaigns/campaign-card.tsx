@@ -64,11 +64,13 @@ const CampaignCard = React.forwardRef<HTMLDivElement, CampaignCardProps>(
             {campaign.title}
           </div>
           <div className="growfund-flex growfund-items-center growfund-gap-2">
-            {isDefined(campaign.created_by) && (
+            {isDefined(campaign.author) && (
               <>
                 <div className="growfund-text-fg-secondary growfund-flex growfund-items-center growfund-gap-1 growfund-flex-shrink-0">
                   <span>{__('by', 'growfund')}</span>
-                  <span className="growfund-text-fg-success growfund-capitalize">{campaign.created_by}</span>
+                  <span className="growfund-text-fg-success growfund-capitalize">
+                    {campaign.author.display_name}
+                  </span>
                 </div>
                 <DotSeparator />
               </>

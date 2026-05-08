@@ -25,6 +25,7 @@ use Growfund\Menu\Menu;
 use Growfund\Menu\Tags;
 use Growfund\Menu\Themes;
 use Exception;
+use Growfund\Menu\WithdrawalRequest;
 
 class RegisterAdminMenu extends BaseHook
 {
@@ -76,6 +77,7 @@ class RegisterAdminMenu extends BaseHook
             Tags::class,
             Separator::class,
             Themes::class,
+            WithdrawalRequest::class,
             Settings::class,
         ];
     }

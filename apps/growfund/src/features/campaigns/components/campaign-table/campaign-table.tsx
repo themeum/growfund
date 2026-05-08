@@ -71,6 +71,7 @@ import {
   useCampaignsQuery,
   useEmptyCampaignsTrashMutation,
 } from '@/features/campaigns/services/campaign';
+import { hasCampaignSuperAccess } from '@/features/campaigns/utils/utils';
 import { AppConfigKeys } from '@/features/settings/context/settings-context';
 import { useCurrency } from '@/hooks/use-currency';
 import useCurrentUser from '@/hooks/use-current-user';
@@ -190,12 +191,14 @@ const Status = ({ status, campaign }: { status: CampaignStatus; campaign: Campai
 
   let content = iconMap.get(status);
 
-  if (campaign.is_ended) {
-    content = iconMap.get('ended');
-  } else if (campaign.is_hidden) {
-    content = iconMap.get('hidden');
-  } else if (campaign.is_paused) {
-    content = iconMap.get('paused');
+  if (status !== 'completed') {
+    if (campaign.is_ended) {
+      content = iconMap.get('ended');
+    } else if (campaign.is_hidden) {
+      content = iconMap.get('hidden');
+    } else if (campaign.is_paused) {
+      content = iconMap.get('paused');
+    }
   }
 
   if (!content) {
@@ -214,7 +217,7 @@ const Status = ({ status, campaign }: { status: CampaignStatus; campaign: Campai
 
 const CampaignTable = ({ fundraiserId }: { fundraiserId?: string }) => {
   const { appConfig } = useAppConfig();
-  const { isFundraiser } = useCurrentUser();
+  const { isFundraiser, isCollaborator, currentUser } = useCurrentUser();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [selectedCampaignIds, setSelectedCampaignIds] = useState<string[]>([]);
   const { isDonationMode } = useAppConfig();
@@ -274,10 +277,33 @@ const CampaignTable = ({ fundraiserId }: { fundraiserId?: string }) => {
 
   const isTrashCampaigns = params.status === 'trashed';
 
-  const handleMoveToTrash = useCallback((selectedRows: string[]) => {
-    setSelectedCampaignIds(selectedRows);
-    setOpenDeleteDialog(true);
-  }, []);
+  const getSelectedCampaignIds = useCallback(
+    (selectedRows: string[]) => {
+      if (!campaignsQuery.data || selectedRows.length === 0) {
+        return [];
+      }
+
+      const campaignIds = campaignsQuery.data.results
+        .filter((campaign) => {
+          return selectedRows.includes(campaign.id);
+        })
+        .filter((campaign) => {
+          return hasCampaignSuperAccess(campaign, currentUser);
+        })
+        .map((campaign) => campaign.id);
+
+      return campaignIds;
+    },
+    [campaignsQuery.data, currentUser],
+  );
+
+  const handleMoveToTrash = useCallback(
+    (selectedRows: string[]) => {
+      setSelectedCampaignIds(getSelectedCampaignIds(selectedRows));
+      setOpenDeleteDialog(true);
+    },
+    [getSelectedCampaignIds],
+  );
 
   const handleDeletePermanently = useCallback(
     (selectedRows: string[]) => {
@@ -292,7 +318,7 @@ const CampaignTable = ({ fundraiserId }: { fundraiserId?: string }) => {
         declineText: __('Keep', 'growfund'),
         onConfirm: async (closeDialog) => {
           await campaignBulkActionsMutation.mutateAsync({
-            ids: selectedRows,
+            ids: getSelectedCampaignIds(selectedRows),
             action: 'delete',
           });
           closeDialog();
@@ -300,14 +326,14 @@ const CampaignTable = ({ fundraiserId }: { fundraiserId?: string }) => {
         },
       });
     },
-    [campaignBulkActionsMutation, openDialog],
+    [campaignBulkActionsMutation, getSelectedCampaignIds, openDialog],
   );
 
   const handleRestore = useCallback(
     (selectedRows: string[]) => {
       campaignBulkActionsMutation.mutate(
         {
-          ids: selectedRows,
+          ids: getSelectedCampaignIds(selectedRows),
           action: 'restore',
         },
         {
@@ -317,7 +343,7 @@ const CampaignTable = ({ fundraiserId }: { fundraiserId?: string }) => {
         },
       );
     },
-    [campaignBulkActionsMutation],
+    [campaignBulkActionsMutation, getSelectedCampaignIds],
   );
 
   const handleEmptyTrash = useCallback(() => {
@@ -393,6 +419,7 @@ const CampaignTable = ({ fundraiserId }: { fundraiserId?: string }) => {
                 variant="ghost"
                 size="icon"
                 className="growfund-size-6"
+                disabled={!hasCampaignSuperAccess(props.row.original, currentUser)}
                 onClick={() => {
                   campaignBulkActionsMutation.mutate({
                     ids: [props.row.original.id],
@@ -436,9 +463,10 @@ const CampaignTable = ({ fundraiserId }: { fundraiserId?: string }) => {
         ),
         size: 240,
       }),
-      columnsHelper.accessor('created_by', {
+      columnsHelper.display({
+        id: 'author',
         header: () => __('Creator', 'growfund'),
-        cell: (props) => props.getValue() || emptyCell(),
+        cell: ({ row }) => row.original.author?.display_name || emptyCell(),
         enableHiding: true,
       }),
       columnsHelper.display({
@@ -502,7 +530,7 @@ const CampaignTable = ({ fundraiserId }: { fundraiserId?: string }) => {
           const columnsDisplayNames = new Map([
             ['id', __('ID', 'growfund')],
             ['title', __('Campaign Name', 'growfund')],
-            ['created_by', __('Creator', 'growfund')],
+            ['author', __('Creator', 'growfund')],
             ['goal', __('Goal', 'growfund')],
             [
               'number_of_contributors',
@@ -566,13 +594,14 @@ const CampaignTable = ({ fundraiserId }: { fundraiserId?: string }) => {
       }),
     ] as TableColumnDef<Campaign>[];
   }, [
-    handleDeletePermanently,
-    handleMoveToTrash,
-    handleRestore,
-    isTrashCampaigns,
-    toCurrency,
+    currentUser,
     campaignBulkActionsMutation,
     isDonationMode,
+    toCurrency,
+    isTrashCampaigns,
+    handleMoveToTrash,
+    handleDeletePermanently,
+    handleRestore,
   ]);
 
   const campaignsToDelete = useMemo(() => {
@@ -584,20 +613,27 @@ const CampaignTable = ({ fundraiserId }: { fundraiserId?: string }) => {
       .filter((campaign) => {
         return selectedCampaignIds.includes(campaign.id);
       })
+      .filter((campaign) => {
+        return hasCampaignSuperAccess(campaign, currentUser);
+      })
       .map((campaign) => ({
         id: campaign.id,
         image: campaign.images?.[0]?.url ?? null,
         name: campaign.title,
       }));
-  }, [campaignsQuery.data, selectedCampaignIds]);
+  }, [campaignsQuery.data, currentUser, selectedCampaignIds]);
 
   const canDeletePermanently = useMemo(() => {
     return isFundraiser
       ? appConfig[AppConfigKeys.UserAndPermissions]?.fundraisers_can_delete_campaigns
-      : true;
-  }, [appConfig, isFundraiser]);
+      : !isCollaborator;
+  }, [appConfig, isFundraiser, isCollaborator]);
 
   const actions = useMemo(() => {
+    if (isCollaborator) {
+      return [];
+    }
+
     if (isTrashCampaigns) {
       if (!canDeletePermanently) {
         return [{ label: __('Restore', 'growfund'), value: 'restore' }];
@@ -618,7 +654,7 @@ const CampaignTable = ({ fundraiserId }: { fundraiserId?: string }) => {
       },
       { label: __('Move to trash', 'growfund'), value: 'trash', is_critical: true },
     ];
-  }, [canDeletePermanently, isTrashCampaigns]);
+  }, [canDeletePermanently, isTrashCampaigns, isCollaborator]);
 
   return matchPaginatedQueryStatus(campaignsQuery, {
     Loading: <LoadingSpinnerOverlay />,
@@ -689,6 +725,7 @@ const CampaignTable = ({ fundraiserId }: { fundraiserId?: string }) => {
                           { label: __('Pending', 'growfund'), value: 'pending' },
                           { label: __('Launched', 'growfund'), value: 'launched' },
                           { label: __('Funded', 'growfund'), value: 'funded' },
+                          { label: __('Completed', 'growfund'), value: 'completed' },
                           { label: __('Declined', 'growfund'), value: 'declined' },
                           { label: __('Trashed', 'growfund'), value: 'trashed' },
                         ]}

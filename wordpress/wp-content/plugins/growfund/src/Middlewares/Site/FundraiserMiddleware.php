@@ -4,6 +4,8 @@ namespace Growfund\Middlewares\Site;
 
 defined( 'ABSPATH' ) || exit;
 
+use Growfund\Constants\UserTypes\Collaborator;
+use Growfund\Constants\UserTypes\Fundraiser;
 use Growfund\Contracts\Middleware;
 use Growfund\Contracts\Request;
 
@@ -27,7 +29,10 @@ class FundraiserMiddleware implements Middleware
      */
     public function handle(Request $request, callable $next)
     {
-        if (is_user_logged_in() && growfund_user()->is_fundraiser()) {
+        if (
+            is_user_logged_in() 
+            && (growfund_user()->has_active_role(Fundraiser::ROLE) || growfund_user()->has_active_role(Collaborator::ROLE))
+        ) {
             return $next($request);
         }
 

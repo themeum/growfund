@@ -7,6 +7,7 @@ defined( 'ABSPATH' ) || exit;
 use Growfund\Constants\HookNames;
 use Growfund\Constants\HookTypes;
 use Growfund\Constants\UserTypes\Backer;
+use Growfund\Constants\UserTypes\Collaborator;
 use Growfund\Constants\UserTypes\Donor;
 use Growfund\Constants\UserTypes\Fundraiser;
 use Growfund\Hooks\BaseHook;
@@ -29,8 +30,9 @@ class HideRolesFromWPUserPage extends BaseHook
 
         $hidden_roles = [
             Fundraiser::ROLE,
+            Collaborator::ROLE,
             Backer::ROLE,
-            Donor::ROLE
+            Donor::ROLE,
         ];
 
         foreach ($hidden_roles as $role) {

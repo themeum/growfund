@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { Bell, UserCircle } from 'lucide-react';
+import { Banknote, Bell, UserCircle } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { UserRouteConfig } from '@/dashboards/shared/config/user-route-config';
@@ -41,8 +41,12 @@ const UserSettingsSidebar = () => {
           </AvatarFallback>
         </Avatar>
         <div>
-          <p className="growfund-typo-small growfund-font-medium growfund-text-fg-primary">{user?.display_name}</p>
-          <p className="growfund-typo-tiny growfund-text-fg-secondary">{getUserRoleTitle(CurrentUser)}</p>
+          <p className="growfund-typo-small growfund-font-medium growfund-text-fg-primary">
+            {user?.display_name}
+          </p>
+          <p className="growfund-typo-tiny growfund-text-fg-secondary">
+            {getUserRoleTitle(CurrentUser)}
+          </p>
         </div>
       </div>
       <div className="growfund-p-3 growfund-space-y-2">
@@ -52,6 +56,14 @@ const UserSettingsSidebar = () => {
             route: UserRouteConfig.AccountSettings,
             icon: UserCircle,
             child_routes: [UserRouteConfig.AccountSettings.template],
+          }}
+        />
+        <SidebarItem
+          item={{
+            label: __('Payouts', 'growfund-pro'),
+            route: UserRouteConfig.PayoutSettings,
+            icon: Banknote,
+            child_routes: [UserRouteConfig.PayoutSettings.template],
           }}
         />
         <SidebarItem

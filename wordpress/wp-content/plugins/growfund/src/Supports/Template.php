@@ -7,6 +7,7 @@ defined( 'ABSPATH' ) || exit;
 use Exception;
 use Growfund\Capabilities\CampaignCapabilities;
 use Growfund\Constants\Status\CampaignStatus;
+use Growfund\Constants\UserTypes\Collaborator;
 use Growfund\Core\AppSettings;
 use Growfund\Core\AssetHandler;
 use Growfund\DTO\Campaign\CampaignFiltersDTO;
@@ -95,7 +96,7 @@ class Template
         $campaign_single_page = new CampaignSinglePage();
         $campaign_single_page->campaign = $campaign;
 
-        $campaign_single_page->author = $campaign_service->get_campaign_author($campaign->author_id);
+        $campaign_single_page->fundraiser = $campaign->fundraiser;
         $campaign_single_page->collaborators = $campaign->show_collaborator_list 
             ? $campaign_service->get_collaborator_list_by_id($campaign->id) 
             : [];

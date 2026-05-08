@@ -9,11 +9,11 @@ use Growfund\Constants\Comment\CampaignUpdateVisibility;
 use Growfund\Constants\Comment\CommentVisibility;
 use Growfund\Core\AppSettings;
 use Growfund\DTO\Campaign\CampaignDTO;
-use Growfund\DTO\Fundraiser\CollaboratorDTO;
 use Growfund\View;
 use Growfund\DTO\RewardDTO;
 use Growfund\DTO\Pledge\PledgeDTO;
 use Growfund\DTO\Donation\DonationDTO;
+use Growfund\DTO\User\UserInfoDTO;
 use Growfund\Services\PledgeService;
 use Growfund\Supports\Arr;
 use Growfund\Views\Components\Campaign\Tabs\CampaignContent;
@@ -29,11 +29,11 @@ class CampaignSinglePage extends View {
     /** @var CampaignDTO[] */
     public $recommended_campaigns;
 
-    /** @var CollaboratorDTO[] */
+    /** @var UserInfoDTO[] */
     public $collaborators;
 
-    /** @var CollaboratorDTO */
-    public $author;
+    /** @var UserInfoDTO|null */
+    public $fundraiser;
 
     /** @var RewardDTO[] */
     public $rewards;
@@ -76,8 +76,8 @@ class CampaignSinglePage extends View {
         return [
             'campaign' => CampaignDTO::class,
             'recommended_campaigns.*' => CampaignDTO::class,
-            'collaborators.*' => CollaboratorDTO::class,
-            'author' => CollaboratorDTO::class,
+            'collaborators.*' => UserInfoDTO::class,
+            'author' => UserInfoDTO::class,
             'rewards.*' => RewardDTO::class,
             'pledge' => PledgeDTO::class,
             'donation' => DonationDTO::class

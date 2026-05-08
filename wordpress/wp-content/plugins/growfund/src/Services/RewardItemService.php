@@ -17,6 +17,9 @@ use Growfund\Constants\RewardItem\AssetType;
 use Growfund\Constants\RewardItem\RewardItemType;
 use Growfund\Constants\Status\PaymentStatus;
 use Growfund\Constants\Status\PledgeStatus;
+use Growfund\Constants\UserTypes\Admin;
+use Growfund\Constants\UserTypes\Collaborator;
+use Growfund\Constants\UserTypes\Fundraiser;
 use Growfund\Supports\Date;
 use Growfund\Supports\Option;
 use Growfund\Supports\PostMeta;
@@ -359,16 +362,24 @@ class RewardItemService
             return false;
         }
 
-        if (growfund_user($user_id)->get_id() === $backer_id) {
+        $user = growfund_user($user_id);
+
+        if ($user->get_id() === $backer_id) {
             return true;
         }
 
-        if (growfund_user($user_id)->is_admin()) {
+        if ($user->has_active_role(Admin::ROLE)) {
             return true;
         }
 
-        if (growfund_user($user_id)->is_fundraiser()) {
-            $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
+        if ($user->has_active_role(Fundraiser::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_fundraiser();
+
+            return in_array((int) $reward_item->campaign_id, $campaign_ids, true);
+        }
+
+        if ($user->has_active_role(Collaborator::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_collaborator();
 
             return in_array((int) $reward_item->campaign_id, $campaign_ids, true);
         }

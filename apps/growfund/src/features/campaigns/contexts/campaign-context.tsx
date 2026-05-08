@@ -4,6 +4,7 @@ import {
   type PropsWithChildren,
   type SetStateAction,
   use,
+  useEffect,
   useState,
 } from 'react';
 
@@ -28,6 +29,11 @@ const useCampaign = () => {
 
 const CampaignProvider = ({ children, campaign }: PropsWithChildren<{ campaign: Campaign }>) => {
   const [campaignState, setCampaignState] = useState<Campaign>(campaign);
+
+  useEffect(() => {
+    setCampaignState(campaign);
+  }, [campaign]);
+
   return (
     <CampaignContext value={{ campaign: campaignState, updateCampaign: setCampaignState }}>
       {children}

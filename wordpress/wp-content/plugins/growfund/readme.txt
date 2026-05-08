@@ -5,11 +5,11 @@ Tags: crowdfunding, donation, fundraising, charity, rewards
 Requires at least: 5.9
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.11
+Stable tag: 1.1.0
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A complete crowdfunding and donation plugin for WordPress with dual operation modes, advanced analytics, and a modern user experience.
+A complete crowdfunding and donation plugin for WordPress with crowdfunding or donation modes, advanced analytics, and a modern user experience.
 
 == Description ==
 [Growfund](http://growfund.com/) is a complete WordPress crowdfunding and donation plugin that helps you collect funds directly from your website. It’s perfect for nonprofits, community projects, charities, content creators, and personal causes who want full control over their fundraising system.
@@ -33,19 +33,24 @@ Whether you’re building a charity donation portal or a project funding site, G
 
 Growfund is not just another donation plugin for WordPress. It’s a complete fundraising system for individuals and organizations. Here’s why this free donation plugin stands out from others:
 
-*     **You own your data:** All donor information stays right on your site. Growfund does not collect campaign, donor, or transaction data. Everything stays on your WordPress site.
+*     **You own your data:** All donor information stays right on your site. Growfund does not collect campaign, donor, or transaction data.
+*     **Team-friendly campaign management:** Use fundraiser and collaborator roles to manage campaigns together.
+*     **Built-in payout management:** Fundraisers can manage earnings and withdrawals without third-party tools.
 *     **Scalability:** Accept 10 donations or 10,000, the system scales with you.
 *     **Fast and beautiful:** The frontend is built with React.js and optimized properly to ensure an intuitive design and faster page loading speed.
-*     **Mobile-ready:** Over 60% of donations are made on phones. So, Growfund is designed by keeping responsiveness in mind.
+*     **Mobile-ready:** All of the Growfund pages is designed by keeping responsiveness in mind.
 *     **Effortless payment collection:** Use built-in native eCommerce or WooCommerce for donations and collect funds securely for your campaigns.
 
 == 🌟 Key Features of Growfund ==
 ✅ **Dual fundraising modes** – Run crowdfunding campaigns or collect direct donations.
 👥 **Multi-role user system** – Separate dashboards for admin, fundraisers, donors, and backers.
 🛠️ **Easy campaign creation** – Rich campaign editor with images, videos, goal settings, etc.
-💳 **Payment gateways** – Supports PayPal, Offline payments, and WooCommerce.
+💳 **Payment gateways** – Supports PayPal, Stripe, Offline payments, and WooCommerce.
 🎁 **Reward tiers and pledges** – Offer perks or rewards to backers.
 💰 **Direct donations** – Accept one-time and anonymous donations.
+🧾 **Fundraiser Wallet System** – Let fundraisers track earnings and request withdrawals from their dashboard.
+🤝 **Collaborator role** – Allow team members to help manage campaigns with controlled access.
+⚙️ **Platform fee configuration** – Configure platform earnings and admin commission settings easily.
 📊 **Advanced Analytics and reports** – Track campaign earnings, donations, and top fundraisers.
 📧 **Email notifications** – 40+ automated and customizable email templates with built-in SMTP configuration option.
 🎨 **Brand customization** – Add your own logo, colors, and style.
@@ -92,6 +97,7 @@ Creating a campaign with Growfund is simple and intuitive. The built-in campaign
 *    Write detailed campaign descriptions.
 *    Set campaign goal amount and deadline.
 *    Choose categories and tags to categorize campaigns.
+*    Assign collaborator directly from the Campaign Builder.
 *    Add FAQs so donors or backers understand your cause. (Pro)
 *    Schedule campaigns to start on a future date. (Pro)
 *    Post campaign comments to keep the backers informed. (Pro)
@@ -106,20 +112,21 @@ Growfund comes with a multi-role system, so every user type has its own dashboar
 *    [**Fundraiser:**](https://growfund.com/fundraisers/) Creates and manages their own and assigned crowdfunding campaigns. (Pro)
 *    [**Donor:**](https://growfund.com/donor/) Makes donations and views donation history.
 *    [**Backer:**](https://growfund.com/backer/) Supports crowdfunding projects through pledges.
+*    **Collaborator:** Helps manage assigned campaigns with limited access permissions.
 
-Growfund provides the appropriate access level to each user. Fundraisers only see their own campaigns, donors can track their history, and admins oversee everything from a central dashboard. This system keeps your crowdfunding platform organized, secure, and easy to manage.
+Growfund provides the appropriate access level to each user. Fundraisers only see their own campaigns, donors can track their history, and admins oversee everything from a central dashboard.
 
 == 💳 Native eCommerce with Payment Gateways ==
-Growfund offers a native eCommerce solution with built-in payment gateways. Currently, it supports PayPal, and manual payment. 
+Growfund offers a native eCommerce solution with built-in payment gateways. Currently, it supports PayPal, Stripe, and manual payment. 
 
-Thus, you can accept donations via all major debit and credit cards, as well as PayPal transfers, to process donations or pledges. It also supports offline donations for manual payments, such as bank transfers or checks.
+Thus, you can accept donations via all major debit and credit cards, as well as PayPal and Stripe transfers, to process donations or pledges. It also supports offline donations for manual payments, such as bank transfers or checks.
 
-However, if you prefer to use WooCommerce for donations, you can do so as well. Growfund works seamlessly with WooCommerce and its payment gateways. 
+However, Growfund works seamlessly with WooCommerce and its payment gateways. So, you can use WooCommerce for donations too.
 
 Growfund lets the admin:
 
 *    Track every transaction
-*    Accept donations via PayPal
+*    Accept donations via PayPal or Stripe
 *    Accept offline donations via Native eCommerce
 *    Track payments from the [Analytics dashboard](https://growfund.com/analytics/)
 *    Generate annual receipts (Pro)
@@ -179,6 +186,21 @@ With this feature, the admin can:
 *    Monitor donations collected by each fundraiser
 *    View performance analytics for fundraisers, etc.
 
+== 💰 Fundraiser Wallet & Withdrawal System (Pro) ==
+
+Growfund includes a built-in wallet and withdrawal management system for fundraisers. Fundraisers can track their earnings, monitor available balances, and request withdrawals directly from their dashboard.
+
+Admins can review and manage withdrawal requests while maintaining complete control over payout workflows.
+
+Key features include:
+
+*    Dedicated fundraiser wallet dashboard
+*    Withdrawal request management
+*    Earnings tracking for all campaigns
+*    Admin-controlled payout workflow
+*    Transparent fundraiser balance management
+
+
 == 📊 Reports and Analytics ==
 
 Knowing how your campaigns perform is important for growth. Growfund gives you [built-in analytics](https://growfund.com/analytics/) for clear fundraising insight. Here you can view:
@@ -194,14 +216,14 @@ The analytics are easy to read, so even beginners can understand their fundraisi
 
 == 📧 Email Notifications and Communication ==
 
-Growfund includes 40+ types of email notifications that keep users informed at every step. For example:
+Growfund includes 40+ emails that keep users informed at every step. For example:
 
 *    Donation receipts for donors
 *    Campaign approval notices for fundraisers
 *    Payment confirmation emails
 *    Updates about campaign progress
 
-You can edit each email template to match your brand’s tone and design. Users can also choose which notifications they want to receive. This ensures clear communication and builds trust among donors, fundraisers, and admins.
+You can edit each email template to match your brand’s tone and design. Users can also choose which notifications they want to receive.
 
 == 🎨 Customization and Branding ==
 
@@ -212,15 +234,16 @@ Every organization wants its fundraising platform to look unique, and Growfund m
 *    Customize email appearance (Pro) 
 *    Update email subject and body descriptions, etc.
 
-All front-end templates are responsive, so your fundraising site looks great on phones, tablets, and desktops. This dashboard is built with React.js for a modern and fast interface that makes managing everything smoother.
+All front-end templates are responsive, so your fundraising site looks great on phones, tablets, and desktops.
 
-==🔐 Security and Privacy==
+==🔐 Security and Privacy ==
 
 Growfund is designed with security and data protection in mind. It includes:
 
 *    Spam protection for all forms
 *    Secure communication with payment gateways
 *    Email verification during registration (Pro)
+*    Improved file handling security and validation
 *    Safe handling of user and transaction data, etc.
 
 Admins can also monitor all user activity through logs to ensure transparency across the system.
@@ -233,6 +256,7 @@ The admin dashboard is the heart of Growfund. It gives site owners full control 
 *    Manage users, roles, and permissions
 *    View all transactions and payouts
 *    Set global commission rates
+*    Configure platform fees and earnings
 *    Handle refunds and offline donations
 *    Generate PDF receipts, etc.
 
@@ -240,7 +264,7 @@ It’s designed to keep everything organized and easy to manage — even for lar
 
 == 🌍 Translation Ready ==
 
-Growfund is translation-ready, meaning it works with popular WordPress translation plugins like Loco Translate or WPML. You can run your fundraising website in any language and make it accessible to a global audience. All text strings are translatable, so every message, label, or button can match your preferred language.
+Growfund is translation-ready, meaning it works with popular WordPress translation plugins like Loco Translate or WPML. You can run your fundraising website in any language and make it accessible to a global audience.
 
 == 💬 Communication and Community ==
 
@@ -250,7 +274,7 @@ Also admin can assign fundraisers to manage specific funds. Fundraisers can post
 
 == ✅ Why Choose Growfund ==
 *    🧩 Complete WordPress crowdfunding and donation plugin
-*    💸 Accept payments through PayPal, or WooCommerce
+*    💸 Accept payments through PayPal, Stripe, or WooCommerce
 *    🔄 Run both crowdfunding and direct donation systems
 *    👥 Manage multiple fundraisers, donors, and backers
 *    📊 Access detailed analytics and real-time reports
@@ -308,10 +332,13 @@ Growfund supports both reward-based crowdfunding and direct donation campaigns f
 No, Growfund supports dual modes, but you can use only one mode at a time. You can enable Campaign Mode for pledge-based fundraising and Donation Mode for direct donations.
 
 = Which Payment Gateways are supported by Growfund =
-Growfund natively supports PayPal and Offline payments. If you prefer using WooCommerce, you can accept payments through any WooCommerce-supported payment gateway.
+Growfund natively supports PayPal, Stripe, and Offline payments. If you prefer using WooCommerce, you can accept payments through any WooCommerce-supported payment gateway.
 
 = Are there transaction fees from Growfund? =
 None. The only fees come from your payment processor (like PayPal). You can even set your own optional platform fee if you choose.
+
+= Can fundraisers request withdrawals? =
+Yes. Growfund includes a built-in wallet and withdrawal system that allows fundraisers to track earnings and request payouts directly from their dashboard.
 
 = Can donors get tax receipts? =
 Yes. Every donor automatically receives a professional PDF tax receipt via email after making a donation.
@@ -351,6 +378,19 @@ order details (campaign_id, amount, currency, and transaction ID) to PayPal's AP
 
 
 == Changelog ==
+
+= 1.1.0 - May 8, 2026 =
+* Introduced a Collaborator role for campaign management.
+* Added fundraiser support in the Campaign Builder.
+* Implemented a fundraiser wallet and withdrawal system.
+* Added platform fee configuration for admin earnings.
+* Added an email verification message after user registration.
+* Extended user management options in the WordPress admin panel.
+* Improved security by refactoring file handling.
+* Improved campaign decline message formatting.
+* Improved date picker popover positioning.
+* Fixed an issue where the Campaign Builder reset after adding rewards. (reward mode)
+* Resolved a product update restriction in the WooCommerce payment engine.
 
 = 1.0.11 - April 6, 2026 =
 * Removed Pro restriction on “Allow custom donation amount” in the campaign builder (donation mode)
@@ -409,7 +449,7 @@ order details (campaign_id, amount, currency, and transaction ID) to PayPal's AP
 * Fixed WP Crowdfunding to Growfund migration issues.
 * Resolved the checkout consent issue.
 
-= 1.0.2 - Dec 17, 2025 =
+= 1.0.2 - Dec 18, 2025 =
 * Added attributes in shortcodes
 * Added donor/backer can be assigned as fundraiser
 * Added new DB column in pledges/donations table

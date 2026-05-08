@@ -27,13 +27,15 @@ class MediaController
     public function upload(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'media'              => 'required',
+            'media'              => 'required|array|max:1',
+            'media.*'              => 'file',
         ]);
 
         if ($validator->is_failed()) {
             throw ValidationException::with_errors($validator->get_errors()); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- validation exception intentionally ignored
         }
 
+        
         $media_files = $request->get_array('media');
 
         $attachments = FileuploadService::create()->upload($media_files);

@@ -16,12 +16,6 @@ class CampaignCreatorCard extends View {
     /** @var string */
     public $avatar_class;
 
-    /** @var int */
-    public $total_campaign_created;
-
-    /** @var int */
-    public $total_number_of_contributions;
-
     protected function get_template_dir() {
         return 'site/components/campaign';
     }

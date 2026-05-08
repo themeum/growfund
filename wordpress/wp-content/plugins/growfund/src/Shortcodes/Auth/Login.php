@@ -14,7 +14,7 @@ class Login extends Shortcode
     public function callback($attributes, string $content = '', string $shortcode_tag = '')
     {
         if (growfund_user()->is_logged_in()) {
-            growfund_redirect(site_url());
+            growfund_redirect(growfund_user_dashboard_url());
         }
         
         $login_page = new AuthLogin();

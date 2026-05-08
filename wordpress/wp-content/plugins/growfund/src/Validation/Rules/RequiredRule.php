@@ -18,6 +18,10 @@ class RequiredRule extends BaseRule
      */
     public function validate_rule()
     {
+        if ($this->is_rule_applied('file')) {
+            return !empty($this->value);
+        }
+
         if (is_array($this->value)) {
             return count($this->value) > 0;
         }

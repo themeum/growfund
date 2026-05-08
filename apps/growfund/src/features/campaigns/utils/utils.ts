@@ -1,4 +1,7 @@
+import { Role } from '@/constants/role';
 import { type CampaignBuilderStep } from '@/features/campaigns/contexts/campaign-builder';
+import { type Campaign } from '@/features/campaigns/schemas/campaign';
+import { type User } from '@/features/settings/schemas/settings';
 import { getObjectKeys } from '@/utils';
 
 const checkErrorOn = (errors: Record<string, string[]>) => {
@@ -60,4 +63,12 @@ const checkErrorOn = (errors: Record<string, string[]>) => {
   return errorOnSteps;
 };
 
-export { checkErrorOn };
+const hasCampaignSuperAccess = (campaign: Campaign, currentUser: User) => {
+  return (
+    currentUser.active_role === Role.ADMIN ||
+    campaign.fundraiser?.id === currentUser.id ||
+    campaign.author?.id === currentUser.id
+  );
+};
+
+export { checkErrorOn, hasCampaignSuperAccess };

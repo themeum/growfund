@@ -41,7 +41,7 @@ class EnqueueScriptDashboard extends BaseHook
             Assets::load_vite_client();
         }
 
-        $dashboard_script = GROWFUND_DIR_URL . 'resources/assets/dashboard/scripts/dashboard.js';
+        $dashboard_script = GROWFUND_RESOURCE_URL . 'assets/dashboard/scripts/dashboard.js';
 
         wp_enqueue_script(
             'growfund-dashboard-js',
@@ -57,11 +57,11 @@ class EnqueueScriptDashboard extends BaseHook
         wp_enqueue_media();
         
         // phpcs:ignore -- intentionally ignored enqueue version
-        wp_enqueue_style('growfund-admin-style-extended', GROWFUND_DIR_URL . 'resources/assets/css/admin-style-extended.css');
+        wp_enqueue_style('growfund-admin-style-extended', GROWFUND_RESOURCE_URL . 'assets/css/admin-style-extended.css');
 
         wp_enqueue_style(
             'growfund-rich-text-editor',
-            GROWFUND_DIR_URL . 'resources/assets/css/rich-text-editor.css',
+            GROWFUND_RESOURCE_URL . 'assets/css/rich-text-editor.css',
             ['growfund-admin-style-extended'],
             GROWFUND_VERSION
 		);

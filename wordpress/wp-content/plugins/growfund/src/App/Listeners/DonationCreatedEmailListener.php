@@ -36,6 +36,5 @@ class DonationCreatedEmailListener
                 ->group('growfund_new_offline_donation_mails')
                 ->schedule_email();
         }
-        
     }
 }

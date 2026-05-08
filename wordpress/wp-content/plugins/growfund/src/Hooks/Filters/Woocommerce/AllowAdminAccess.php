@@ -7,9 +7,8 @@ defined( 'ABSPATH' ) || exit;
 use Growfund\Constants\HookNames;
 use Growfund\Constants\HookTypes;
 use Growfund\Hooks\BaseHook;
-use Growfund\Supports\Woocommerce;
 
-class AttachmentUploadAccess extends BaseHook
+class AllowAdminAccess extends BaseHook
 {
     public function get_name()
     {

@@ -44,6 +44,10 @@ class Option
             case AppConfigKeys::EMAIL_AND_NOTIFICATIONS:
                 return static::get_email_and_notifications($option);
             case AppConfigKeys::PAYMENT:
+                if (is_null($option) || $option === '') {
+                    return $default;
+                }
+
                 return static::process_payment_settings($option);
             default:
                 return is_null($option) || $option === '' ? $default : $option;
@@ -214,6 +218,23 @@ class Option
         }
 
         return true;
+    }
+
+    /**
+     * Update the default settings with current settings.
+     *
+     * @return bool
+     */
+    public static function update_default_settings()
+    {
+        $keys = AppConfigKeys::all();
+        $config = [];
+
+        foreach ($keys as $key) {
+            $config[$key] = static::get($key, null);
+        }
+
+        return static::store_default_settings($config);
     }
 
     /**

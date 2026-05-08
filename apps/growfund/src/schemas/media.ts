@@ -33,6 +33,7 @@ const MediaSchema = z.object({
   author: z.string().nullish(),
   authorName: z.string().nullish(),
   date: z.string().nullish(),
+  _file: z.instanceof(File).optional(),
 });
 const GallerySchema = z.array(MediaSchema);
 type GalleryFieldType = z.infer<typeof GallerySchema>;

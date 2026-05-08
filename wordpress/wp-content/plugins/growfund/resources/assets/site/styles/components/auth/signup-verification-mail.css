@@ -1,0 +1,88 @@
+.growfund-signup-verification-mail-card {
+  display: flex;
+  gap: var(--growfund-spacing-6);
+  flex-direction: column;
+  width: 459px;
+  padding: var(--growfund-spacing-4) var(--growfund-spacing-2);
+}
+
+.growfund-signup-verification-mail-header {
+  display: flex;
+  flex-direction: row;
+  gap: calc(var(--growfund-spacing-6) * 2);
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+.growfund-signup-verification-mail-description {
+  text-align: center;
+  font-family: var(--growfund-font-family);
+  font-weight: var(--growfund-font-weight-normal);
+  font-size: var(--growfund-font-size-md);
+  line-height: 21px;
+  color: var(--growfund-text-secondary);
+  padding: auto;
+}
+
+.growfund-signup-verification-mail-close-button-icon {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.growfund-signup-verification-mail-close-button-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.growfund-signup-verification-mail-title {
+  font-family: var(--growfund-font-family);
+  font-weight: var(--growfund-font-weight-semibold);
+  color: var(--growfund-text-primary);
+  font-style: var(--growfund-font-weight-semibold);
+  font-size: var(--growfund-font-size-3xl);
+  line-height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.growfund-signup-verification-mail-footer {
+  width: 100%;
+}
+
+.growfund-signup-verification-mail-close-button-icon {
+  position: absolute;
+  top: var(--growfund-spacing-3);
+  right: var(--growfund-spacing-3);
+  width: 36px !important;
+  height: 36px !important;
+}
+
+.growfund-signup-verification-mail-button {
+  width: 100%;
+  height: 40px;
+  opacity: 1;
+  border-radius: var(--growfund-radius-md);
+  padding: var(--growfund-spacing-2) 32px;
+  font-family: var(--growfund-font-family);
+  font-weight: var(--growfund-font-weight-medium);
+  font-size: var(--growfund-font-size-md);
+  line-height: 22px;
+  letter-spacing: 0%;
+  text-align: center;
+  cursor: pointer;
+}
+
+@media (max-width: 480px) {
+  .growfund-signup-verification-mail-title {
+    font-size: var(--growfund-font-size-4xl);
+  }
+
+  .growfund-signup-verification-mail-card {
+    padding: 25px;
+    width: fit-content;
+  }
+}

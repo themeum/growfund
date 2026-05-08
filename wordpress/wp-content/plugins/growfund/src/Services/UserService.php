@@ -28,7 +28,11 @@ use Growfund\Mails\PasswordResetLinkMail;
 use Growfund\Supports\Arr;
 use Growfund\Supports\User as UserSupport;
 use Exception;
-use Growfund\DTO\Fundraiser\CollaboratorDTO;
+use Growfund\Constants\UserTypes\Admin;
+use Growfund\Constants\UserTypes\Collaborator;
+use Growfund\Constants\UserTypes\Fundraiser;
+use Growfund\Core\User;
+use Growfund\DTO\User\UserInfoDTO;
 use Growfund\PostTypes\Campaign;
 use WP_User;
 
@@ -59,7 +63,7 @@ class UserService
             throw ValidationException::with_errors(['username' => [esc_html__('Username already exists', 'growfund')]], esc_html__('Username already exists', 'growfund'));
         }
 
-        if (!$user) {
+        if (!$user || $user->user_email !== $dto->email) {
             $user = get_user_by('email', $dto->email);
 
             $is_soft_deleted = UserSupport::is_soft_deleted($user->ID ?? null);
@@ -70,9 +74,16 @@ class UserService
         }
 
         if ($user && $is_soft_deleted) {
-            UserMeta::delete($user->ID, UserSupport::SOFT_DELETE_KEY);
+            if ($user->user_login === $dto->username && $user->user_email === $dto->email) {
+                UserMeta::delete($user->ID, UserSupport::SOFT_DELETE_KEY);
+    
+                return $user->ID;
+            }
 
-            return $user->ID;
+            throw ValidationException::with_errors([
+                'email' => [esc_html__('Email already exists', 'growfund')],
+                'username' => [esc_html__('Username already exists', 'growfund')]
+			], esc_html__('Username or Email already exists', 'growfund'));
         }
 
         return $this->create_user($dto);
@@ -171,31 +182,20 @@ class UserService
 
     /**
      * Prepare user DTO
-     * @param \Growfund\Core\User $user
+     * @param User $user
      * 
      * @return UserDTO
      */
-    public function prepare_user_dto(\Growfund\Core\User $user)
+    public function prepare_user_dto(User $user)
     {
         $pledge_service = new PledgeService();
         $donation_service = new DonationService();
+
         $latest_contribution_date = growfund_app()->is_donation_mode()
             ? $donation_service->get_latest_donation_date($user->get_id())
             : $pledge_service->get_latest_pledge_date($user->get_id());
 
         $dto = new UserDTO();
-
-        $shipping_address = $user->get_meta('shipping_address');
-        $shipping_address = !empty($shipping_address)
-            ? maybe_unserialize($shipping_address)
-            : null;
-
-        $billing_address = $user->get_meta('billing_address');
-        $billing_address = !empty($billing_address)
-            ? maybe_unserialize($billing_address)
-            : null;
-
-        $is_billing_address_same = boolval($user->get_meta('is_billing_address_same') ?? false);
 
         $notification_settings = $user->get_meta('notification_settings');
         $notification_settings = !empty($notification_settings)
@@ -208,13 +208,13 @@ class UserService
         $dto->display_name = $user->get_display_name();
         $dto->email = $user->get_email();
         $dto->username = $user->get_username();
-        $dto->image = UserSupport::get_avatar_image($user->get_id());
+        $dto->image = $user->get_avatar();
         $dto->phone = UserSupport::get_phone_number($user->get_id());
         $dto->active_role = $user->get_active_role();
-        $dto->shipping_address = $shipping_address;
-        $dto->billing_address = $is_billing_address_same ? $shipping_address : $billing_address;
+        $dto->shipping_address = UserSupport::get_shipping_address($user->get_id());
+        $dto->is_billing_address_same = UserSupport::is_billing_address_same($user->get_id());
+        $dto->billing_address = UserSupport::get_billing_address($user->get_id());
         $dto->is_soft_deleted = $user->is_soft_deleted();
-        $dto->is_billing_address_same = $is_billing_address_same;
         $dto->notification_settings = $notification_settings;
         $dto->joined_at = $user->get_joined_date();
         $dto->last_contribution_at = $latest_contribution_date;
@@ -237,6 +237,10 @@ class UserService
     {
         $user = growfund_user($user_id);
 
+        if (empty($user)) {
+            throw new Exception(esc_html__('User not found', 'growfund'), (int) Response::NOT_FOUND);
+        }
+
         return $this->prepare_user_dto($user);
     }
 
@@ -248,6 +252,10 @@ class UserService
     public function get_current_user()
     {
         $user = growfund_user();
+
+        if (empty($user)) {
+            throw new Exception(esc_html__('User not found', 'growfund'), (int) Response::NOT_FOUND);
+        }
 
         return $this->prepare_user_dto($user);
     }
@@ -455,19 +463,31 @@ class UserService
     /**
      * Check if user is available for fundraiser
      * 
-     * @param int $id - User id
+     * @param int $user_id - User id
      * 
      * @return bool
      */
-    protected function is_user_accessible_for_fundraiser(int $id)
+    protected function is_user_accessible_for_fundraiser(int $user_id)
     {
-        $user_created_by = UserMeta::get($id, 'created_by');
+        $user_created_by = UserSupport::get_created_by($user_id);
 
         if ((int) $user_created_by === growfund_user()->get_id()) {
             return true;
         }
 
-        $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
+        if (growfund_user()->has_active_role(Admin::ROLE)) {
+            return true;
+        }
+
+        $campaign_ids = [];
+
+        if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_fundraiser();
+        }
+
+        if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_collaborator();
+        }
 
         if (empty($campaign_ids)) {
             return false;
@@ -475,7 +495,7 @@ class UserService
 
         $user = QueryBuilder::query()
             ->table(growfund_app()->is_donation_mode() ? Tables::DONATIONS : Tables::PLEDGES)
-            ->where('user_id', $id)
+            ->where('user_id', $user_id)
             ->where_in('campaign_id', $campaign_ids)
             ->count();
 
@@ -494,8 +514,17 @@ class UserService
         return function ($query) use ($table) {
             $users_table = QueryBuilder::prefix(WP::USERS_TABLE);
             $user_meta_table = QueryBuilder::prefix(WP::USER_META_TABLE);
-            $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
             $created_by_meta_key = growfund_with_prefix('created_by');
+
+            $campaign_ids = [];
+
+            if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+                $campaign_ids = growfund_campaign_ids_by_fundraiser();
+            }
+            
+            if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+                $campaign_ids = growfund_campaign_ids_by_collaborator();
+            }
 
             $query->query_from .= " LEFT JOIN {$user_meta_table} AS user_meta_created_by 
                 ON ({$users_table}.ID = user_meta_created_by.user_id AND user_meta_created_by.meta_key = '$created_by_meta_key') ";
@@ -553,23 +582,21 @@ class UserService
         return (int) count_user_posts($user_id, Campaign::NAME, true);
     }
 
+    /**
+     * @deprecated since 1.1.0
+     */
     public function prepare_collaborator_dto(WP_User $user)
     {
-        $donation_service = new DonationService();
-        $pledge_service = new PledgeService();
+        $dto = new UserInfoDTO();
 
-        $dto = new CollaboratorDTO();
-
-        $dto->id = (string) $user->ID;
-        $dto->display_name = $user->display_name ?? '';
-        $dto->email = $user->email ?? '';
-        $dto->phone = UserSupport::get_phone_number($user->ID);
+        $dto->id = $user->ID;
+        $dto->first_name = $user->first_name;
+        $dto->last_name = $user->last_name;
+        $dto->display_name = $user->display_name;
+        $dto->email = $user->user_email;
+        $dto->username = $user->user_login;
         $dto->image = UserSupport::get_avatar_image($user->ID);
-        $dto->status = UserSupport::get_status($user->ID);
-        $dto->total_campaign_created = $this->get_total_campaigns_created($user->ID);
-        $dto->total_number_of_contributions = growfund_app()->is_donation_mode()
-            ? $donation_service->get_total_number_of_donations($user->ID)
-            : $pledge_service->get_total_number_of_pledges($user->ID);
+        $dto->phone = UserSupport::get_phone_number($user->ID);
 
         return $dto;
     }
