@@ -12,6 +12,9 @@ use Growfund\Constants\UserTypes\Fundraiser;
 use Growfund\Supports\User as UserSupport;
 use Growfund\Supports\UserMeta;
 use Exception;
+use Growfund\Constants\UserTypes\Collaborator;
+use Growfund\DTO\User\UserInfoDTO;
+use Growfund\Supports\MediaAttachment;
 
 /**
  * @method bool can_switch_themes() Check if user can switch themes
@@ -86,6 +89,20 @@ class User
     protected $user = null;
 
     /**
+     * The user meta data with key => value associative array with user id
+     *
+     * @var array
+     */
+    protected $user_meta = [];
+
+    /**
+     * The user avatar data associative array with user id
+     *
+     * @var array
+     */
+    protected $user_avatar = [];
+
+    /**
      * Constructor populates the current user instance
      * 
      * @param int|null $user_id
@@ -124,17 +141,29 @@ class User
         return $this->user;
     }
 
+    /**
+     * Get the current user data
+     * 
+     * @return UserInfoDTO|null
+     */
     public function get_data()
     {
-        return [
-            'id' => $this->get_id(),
-            'email' => $this->get_email(),
-            'first_name' => $this->get_first_name(),
-            'last_name' => $this->get_last_name(),
-            'display_name' => $this->get_display_name(),
-            'avatar' => $this->get_avatar(),
-            'active_role' => $this->get_active_role(),
-        ];
+        if (empty($this->get())) {
+            return null;
+        }
+
+        $dto = new UserInfoDTO();
+
+        $dto->id = $this->get_id();
+        $dto->first_name = $this->get_first_name();
+        $dto->last_name = $this->get_last_name();
+        $dto->display_name = $this->get_display_name();
+        $dto->email = $this->get_email();
+        $dto->username = $this->get_username();
+        $dto->image = $this->get_avatar();
+        $dto->phone = $this->get_meta('phone');
+
+        return $dto;
     }
 
     /**
@@ -180,11 +209,21 @@ class User
     /**
      * Get the current user avatar
      *
-     * @return string
+     * @return array
      */
     public function get_avatar()
     {
-        return \get_avatar_url($this->get_id());
+        if (isset($this->user_avatar[$this->get_id()])) {
+            return $this->user_avatar[$this->get_id()];
+        }
+
+        $image = $this->get_meta('image');
+
+        $avatar = !empty($image) ? MediaAttachment::make((int) $image) : null;
+
+        $this->user_avatar[$this->get_id()] = $avatar;
+
+        return $avatar;
     }
 
     /**
@@ -311,7 +350,17 @@ class User
      */
     public function is_fundraiser()
     {
-        return $this->has_role(Fundraiser::ROLE);
+        return growfund_app()->has_growfund_pro() && $this->has_role(Fundraiser::ROLE);
+    }
+
+    /**
+     * Check if the current user is a collaborator of a campaign
+     *
+     * @return bool
+     */
+    public function is_collaborator()
+    {
+        return $this->has_role(Collaborator::ROLE);
     }
 
     /**
@@ -321,7 +370,7 @@ class User
      */
     public function is_backer()
     {
-        return $this->has_role(Backer::ROLE);
+        return !growfund_app()->is_donation_mode() && $this->has_role(Backer::ROLE);
     }
 
     /**
@@ -331,7 +380,7 @@ class User
      */
     public function is_donor()
     {
-        return $this->has_role(Donor::ROLE);
+        return growfund_app()->is_donation_mode() && $this->has_role(Donor::ROLE);
     }
 
     /**
@@ -359,6 +408,10 @@ class User
             return Fundraiser::ROLE;
         }
 
+        if ($this->is_collaborator()) {
+            return Collaborator::ROLE;
+        }
+
         if ($this->is_donor()) {
             return Donor::ROLE;
         }
@@ -368,6 +421,26 @@ class User
         }
 
         return null;
+    }
+
+    /**
+     * Check if the current user has a specific role
+     *
+     * @param string $role
+     * @return bool
+     */
+    public function has_active_role(string $role)
+    {
+        return $this->get_active_role() === $role;
+    }
+
+    /**
+     * Check if the current user is a valid growfund user
+     * 
+     * @return bool
+     */
+    public function is_valid_user() {
+        return $this->is_admin() || $this->is_fundraiser() || $this->is_collaborator() || $this->is_backer() || $this->is_donor();
     }
 
     /**
@@ -387,7 +460,7 @@ class User
      */
     public function can_contribute()
     {
-        return $this->is_admin() || $this->is_fundraiser() || $this->is_backer() || $this->is_donor();
+        return $this->is_admin() || $this->is_fundraiser() || $this->is_collaborator() || $this->is_backer() || $this->is_donor();
     }
 
     /**
@@ -402,10 +475,15 @@ class User
         if (!$this->get_id()) {
             return $default;
         }
+
+        if (isset($this->user_meta[$this->get_id()]) && isset($this->user_meta[$this->get_id()][$key])) {
+            return !is_null($this->user_meta[$this->get_id()][$key]) ? $this->user_meta[$this->get_id()][$key] : $default;
+        }
         
         $meta = UserMeta::get($this->get_id(), $key);
+        $this->user_meta[$this->get_id()][$key] = $meta;
 
-        return !empty($meta) ? $meta : $default;
+        return !is_null($meta) && $meta !== '' ? $meta : $default;
     }
 
     /**

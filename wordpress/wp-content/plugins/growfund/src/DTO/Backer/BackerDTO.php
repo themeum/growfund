@@ -4,10 +4,10 @@ namespace Growfund\DTO\Backer;
 
 defined( 'ABSPATH' ) || exit;
 
-use Growfund\CastAttributes\ArrayAttribute;
 use Growfund\CastAttributes\BooleanAttribute;
 use Growfund\CastAttributes\DateTimeAttribute;
 use Growfund\CastAttributes\MoneyAttribute;
+use Growfund\DTO\AddressDTO;
 use Growfund\DTO\DTO;
 
 class BackerDTO extends DTO
@@ -21,8 +21,8 @@ class BackerDTO extends DTO
 
     protected $casts = [
         'is_billing_address_same' => BooleanAttribute::class,
-        'shipping_address' => ArrayAttribute::class,
-        'billing_address' => ArrayAttribute::class,
+        'shipping_address' => AddressDTO::class,
+        'billing_address' => AddressDTO::class,
         'total_contributions' => MoneyAttribute::class,
         'latest_pledge_date' => DateTimeAttribute::class,
         'joined_at' => DateTimeAttribute::class,
@@ -61,10 +61,10 @@ class BackerDTO extends DTO
     /** @var string */
     public $joined_at;
 
-    /** @var array */
+    /** @var AddressDTO|null */
     public $shipping_address;
 
-    /** @var array */
+    /** @var AddressDTO|null */
     public $billing_address;
 
     /** @var bool */

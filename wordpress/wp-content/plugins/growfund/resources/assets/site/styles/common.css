@@ -61,7 +61,7 @@
   --growfund-bg-gray-8: hsl(0, 0%, 88%);
   --growfund-bg-gray-9: hsl(0, 0%, 93%);
 
-  --growfund-bg-overlay: hsla(0, 0%, 0%, 0.5);
+  --growfund-bg-overlay: hsla(240, 6%, 10%, 0.64);
   --growfund-video-thumb-shadow: hsl(0, 0%, 28%);
 
   /* border */

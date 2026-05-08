@@ -83,7 +83,12 @@ class OptionKeys
     const DATABASE_MIGRATION_TRACKER = 'growfund_database_migration_tracker';
 
     /**
-     * Installed db version
+     * Installed version
      */
-    const INSTALLED_DB_VERSION = 'growfund_installed_db_version';
+    const INSTALLED_VERSION = 'growfund_installed_version';
+
+    /**
+     * Is sync wallet transaction
+     */
+    const IS_SYNCED_WALLET_TRANSACTION = 'growfund_is_synced_wallet_transaction';
 }

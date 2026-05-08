@@ -6,7 +6,7 @@ import { registry } from '@/lib/registry';
 import { User } from '@/utils/user';
 
 const RootLayout = () => {
-  if (User.isFundraiser()) {
+  if (User.isFundraiser() || User.isCollaborator()) {
     const FundraiserRootLayout = registry.get('FundraiserRootLayout');
     return (
       <DetectRouteChangeProvider>

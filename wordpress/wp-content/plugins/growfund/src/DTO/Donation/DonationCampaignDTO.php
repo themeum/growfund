@@ -7,6 +7,7 @@ defined( 'ABSPATH' ) || exit;
 use Growfund\CastAttributes\DateTimeAttribute;
 use Growfund\CastAttributes\MoneyAttribute;
 use Growfund\DTO\DTO;
+use Growfund\DTO\User\UserInfoDTO;
 use Growfund\Supports\CampaignGoal;
 
 /**
@@ -43,11 +44,11 @@ class DonationCampaignDTO extends DTO
     /** @var string */
     public $start_date;
 
-    /** @var string */
-    public $created_by;
+    /** @var UserInfoDTO|null */
+    public $author;
 
-    /** @var string */
-    public $author_id;
+    /** @var UserInfoDTO|null */
+    public $fundraiser;
 
     /** @var bool */
     public $is_launched;
@@ -59,7 +60,9 @@ class DonationCampaignDTO extends DTO
             'fund_raised' => MoneyAttribute::class,
             'goal_amount' => function () {
                 return CampaignGoal::prepare_goal_for_display($this->goal_type, $this->goal_amount);
-            }
+            },
+            'author' => UserInfoDTO::class,
+            'fundraiser' => UserInfoDTO::class,
         ];
     }
 }

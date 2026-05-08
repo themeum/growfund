@@ -21,34 +21,39 @@ class View {
      * 
      * @var string
      */
-    private $template_dir = '';
+    protected $template_dir = '';
 
     /**
      * Template name
      * 
      * @var string
      */
-    private $template = '';
+    protected $template = '';
 
     /**
      * Script action priority
      */
-    private $script_priority = 30;
+    protected $script_priority = 30;
 
     /**
      * @var bool
      */
-    private $is_admin_script = false;
+    protected $is_admin_script = false;
 
     public function __construct(array $data = []) {
-		foreach ($data as $key => $value) {
-            if (property_exists($this, $key)) {
-                $this->{$key} = $value;
-            }
-        }
+		$this->init($data);
 
         $this->register_assets();
     }
+
+    protected function init(array $data) {
+        foreach ($data as $key => $value) {
+            if (property_exists($this, $key)) {
+                $this->{$key} = $value;
+			}
+		}
+    }
+
 
     /**
      * Get base class name

@@ -131,7 +131,7 @@ class Assets
             'rest_url_base' => esc_url(rest_url() . 'growfund/v1'),
             'ajax_url' => admin_url('admin-ajax.php'),
             'rest_nonce' => esc_attr(wp_create_nonce('wp_rest')),
-            'ajax_nonce' => wp_create_nonce(growfund_with_prefix('ajax_nonce')),
+            'site_nonce' => wp_create_nonce(growfund_with_prefix('site_nonce')),
             'user_role' => growfund_user()->get_active_role(),
             'is_onboarding_completed' => growfund_app()->is_onboarding_completed(),
             'is_woocommerce_installed' => growfund_app()->is_woocommerce_installed(),

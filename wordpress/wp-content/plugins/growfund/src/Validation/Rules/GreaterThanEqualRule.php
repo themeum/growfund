@@ -4,7 +4,6 @@ namespace Growfund\Validation\Rules;
 
 defined( 'ABSPATH' ) || exit;
 
-use Growfund\Supports\Date;
 use Growfund\Supports\Str;
 
 /**

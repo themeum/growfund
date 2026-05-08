@@ -4,6 +4,7 @@ namespace Growfund\Capabilities;
 
 defined( 'ABSPATH' ) || exit;
 
+use Growfund\Constants\UserTypes\Collaborator;
 use Growfund\Constants\UserTypes\Donor;
 use Growfund\Constants\UserTypes\Fundraiser;
 use Growfund\Contracts\Capability;
@@ -33,6 +34,7 @@ class DonorCapabilities implements Capability
 
         switch ($role) {
             case Fundraiser::ROLE:
+            case Collaborator::ROLE:
                 return $this->fundraiser_capabilities();
             case Donor::ROLE:
                 return $this->donor_capabilities();

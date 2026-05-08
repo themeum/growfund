@@ -7,6 +7,7 @@ defined( 'ABSPATH' ) || exit;
 use Growfund\Constants\Campaign\AppreciationType;
 use Growfund\Constants\Status\CampaignSecondaryStatus;
 use Growfund\Constants\Status\CampaignStatus;
+use Growfund\Constants\UserTypes\Collaborator;
 use Growfund\Contracts\Request;
 use Growfund\Core\AppSettings;
 use Growfund\DTO\Campaign\UpdateCampaignDTO;
@@ -104,11 +105,21 @@ class CampaignController
         $filters_dto->end_date = $request->get_date('end_date');
 
         if (!growfund_user()->is_admin()) {
-            $filters_dto->author_id = growfund_user()->get_id();
+            if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+                $filters_dto->collaborator_id = growfund_user()->get_id();
+            } else {
+                $filters_dto->fundraiser_id = growfund_user()->get_id();
+            }
         }
 
-        if (growfund_user()->is_admin() && $request->get_string('fundraiser_id')) {
-            $filters_dto->author_id = $request->get_string('fundraiser_id');
+        if (growfund_user()->is_admin()) {
+            if ($request->get_string('fundraiser_id')) {
+                $filters_dto->fundraiser_id = $request->get_string('fundraiser_id');
+            }
+            
+            if ($request->get_string('collaborator_id')) {
+                $filters_dto->collaborator_id = $request->get_string('collaborator_id');
+            }
         }
 
         return growfund_response()->json([
@@ -186,6 +197,10 @@ class CampaignController
             if ($campaign_dto->status === CampaignStatus::PUBLISHED && !growfund_settings(AppSettings::PERMISSIONS)->fundraisers_can_publish_campaigns()) {
                 $campaign_dto->status = CampaignStatus::PENDING;
             }
+        }
+
+        if ($this->service->is_collaborator(growfund_user()->get_id(), (int) $campaign_dto->id)) {
+            $campaign_dto->status = CampaignStatus::PENDING;
         }
 
         $this->policy->authorize_update($campaign_dto->id, $campaign_dto);
@@ -338,7 +353,7 @@ class CampaignController
      * The available statuses are ended, hidden, visible, pause, resume.
      *
      * @param Request $request
-     * @return void
+     * @return Response
      */
     public function update_secondary_status(Request $request)
     {

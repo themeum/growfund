@@ -31,6 +31,9 @@ const AdminEmailSwitchFields = () => {
   const AdminEmailCampaignPostUpdateSwitchField = registry.get(
     'AdminEmailCampaignPostUpdateSwitchField',
   );
+  const AdminEmailWithdrawalRequestSwitchField = registry.get(
+    'AdminEmailWithdrawalRequestSwitchField',
+  );
 
   return (
     <>
@@ -145,6 +148,18 @@ const AdminEmailSwitchFields = () => {
           allowHoverEffect
         />
       )}
+      <ElementWrapper
+        fallback={
+          <ProSwitchInput
+            label={__('Withdrawal Request', 'growfund')}
+            description={__('Get notified when a withdrawal request is submitted.', 'growfund')}
+            className="growfund-p-2"
+            showProBadge
+          />
+        }
+      >
+        {AdminEmailWithdrawalRequestSwitchField && <AdminEmailWithdrawalRequestSwitchField />}
+      </ElementWrapper>
     </>
   );
 };

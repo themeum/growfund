@@ -4,13 +4,13 @@ import { ProSwitchInput } from '@/components/pro-fallbacks/form/pro-switch-input
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ProBadge } from '@/components/ui/pro-badge';
 
-const PaymentSettingsAdminCommissionFallback = () => {
+const PaymentSettingsPlatformFeeFallback = () => {
   return (
     <Card>
       <CardHeader>
         <div className="growfund-flex growfund-items-center growfund-justify-between">
           <CardTitle>
-            {__(`Admin's Commission`, 'growfund')} <ProBadge />
+            {__(`Platform Fee`, 'growfund')} <ProBadge />
           </CardTitle>
           <ProSwitchInput />
         </div>
@@ -22,4 +22,4 @@ const PaymentSettingsAdminCommissionFallback = () => {
   );
 };
 
-export default PaymentSettingsAdminCommissionFallback;
+export default PaymentSettingsPlatformFeeFallback;

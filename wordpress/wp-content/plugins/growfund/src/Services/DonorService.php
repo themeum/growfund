@@ -204,8 +204,6 @@ class DonorService extends UserService
      */
     protected function format_data($user)
     {
-        $billing_address = UserMeta::get($user->ID, 'billing_address');
-
         return DonorDTO::from_array([
             'id'                            => (string) $user->ID,
             'first_name'                    => $user->first_name ?? '',
@@ -213,7 +211,7 @@ class DonorService extends UserService
             'email'                         => $user->user_email,
             'username'                      => $user->user_login,
             'phone'                         => UserSupport::get_phone_number($user->ID),
-            'billing_address'               => !empty($billing_address) ? maybe_unserialize($billing_address) : null,
+            'billing_address'               => UserSupport::get_billing_address($user->ID),
             'image'                         => UserSupport::get_avatar_image($user->ID),
             'number_of_contributions'       => $this->donation_service->get_total_number_of_donations($user->ID),
             'total_contributions'           => $this->donation_service->get_total_contribution_amount_by_donor($user->ID),
@@ -235,7 +233,7 @@ class DonorService extends UserService
     {
         $user = growfund_user($id);
 
-        if (!$user->is_donor() || (growfund_user()->is_fundraiser() && ! $this->is_user_accessible_for_fundraiser($id))) {
+        if (!$user->is_donor() || !$this->is_user_accessible_for_fundraiser($id)) {
             throw new Exception(esc_html__('Donor not found', 'growfund'), (int) Response::NOT_FOUND);
         }
 

@@ -65,7 +65,7 @@ const columnsHelper = createColumnHelper<Donation>();
 
 const DonationsList = ({ donorId }: { donorId?: string }) => {
   const { appConfig } = useAppConfig();
-  const { isAdmin } = useCurrentUser();
+  const { isAdmin, isDonor } = useCurrentUser();
   const navigate = useNavigate();
   const { toCurrency } = useCurrency();
   const [isOpen, setIsOpen] = useState(false);
@@ -295,6 +295,10 @@ const DonationsList = ({ donorId }: { donorId?: string }) => {
       columnsHelper.accessor('id', {
         header: () => __('ID', 'growfund'),
         cell: (props) => {
+          if (isDonor) {
+            return sprintf('#%s', props.getValue());
+          }
+
           return (
             <Link to={RouteConfig.EditDonation.buildLink({ id: props.getValue() })}>
               {sprintf('#%s', props.getValue())}
@@ -316,6 +320,10 @@ const DonationsList = ({ donorId }: { donorId?: string }) => {
       columnsHelper.accessor('campaign.title', {
         header: 'Campaign',
         cell: (props) => {
+          if (isDonor) {
+            return props.getValue();
+          }
+
           return (
             <Link
               to={RouteConfig.EditDonation.buildLink({ id: props.row.original.id })}
@@ -476,7 +484,7 @@ const DonationsList = ({ donorId }: { donorId?: string }) => {
         size: 108,
       }),
     ].filter(Boolean) as TableColumnDef<Donation>[];
-  }, [toCurrency, handleActionSelect, rowDropdownActions, appConfig]);
+  }, [toCurrency, handleActionSelect, rowDropdownActions, appConfig, isDonor]);
 
   const donationsToDelete = useMemo(() => {
     if (!donationsQuery.data || selectedDonationIds.length === 0) {

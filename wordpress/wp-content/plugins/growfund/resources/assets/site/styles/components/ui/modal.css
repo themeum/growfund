@@ -19,6 +19,7 @@
 .growfund-modal-overlay {
   inset: 0;
   background: var(--growfund-bg-overlay);
+  backdrop-filter: blur(10px);
   position: fixed;
   overflow-y: auto;
 }

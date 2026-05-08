@@ -27,7 +27,10 @@ class CampaignFiltersDTO extends DTO
     public $limit = 10;
 
     /** @var int|null */
-    public $author_id;
+    public $fundraiser_id;
+
+    /** @var int|null */
+    public $collaborator_id;
 
     /** @var array<int> */
     public $post_ids = [];

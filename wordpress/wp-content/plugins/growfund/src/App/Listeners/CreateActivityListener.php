@@ -6,6 +6,8 @@ defined( 'ABSPATH' ) || exit;
 
 use Growfund\App\Events\GoalReachedEvent;
 use Growfund\App\Events\PostUpdateEvent;
+use Growfund\App\Events\CampaignUpdateEvent;
+use Growfund\App\Events\CampaignStatusUpdateEvent;
 use Growfund\Services\ActivityService;
 
 class CreateActivityListener

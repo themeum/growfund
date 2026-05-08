@@ -91,7 +91,7 @@ class CreatePledgeDTO extends DTO
     /** @var PledgeRewardDTO */
     public $reward_info;
 
-    /** @var PledgeBackerDTO */
+    /** @var string */
     public $user_info;
 
     /** @var string|null */

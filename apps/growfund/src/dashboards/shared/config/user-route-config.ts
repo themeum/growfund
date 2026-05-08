@@ -10,6 +10,7 @@ const UserRouteConfig = {
   BackedCampaigns: defineRoute('/backed-campaigns'),
   Settings: defineRoute('/settings'),
   AccountSettings: defineRoute('account'),
+  PayoutSettings: defineRoute('payout'),
   NotificationsSettings: defineRoute('notifications'),
 };
 

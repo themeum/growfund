@@ -102,6 +102,13 @@ class Sanitizer
     const MIME_TYPE = 'mime-type';
 
     /**
+     * Sanitize the value as file type.
+     *
+     * @var string
+     */
+    const FILE = 'file';
+
+    /**
      * Sanitize the value as int.
      *
      * @var string
@@ -358,6 +365,8 @@ class Sanitizer
                 break;
             case static::MIME_TYPE:
                 $value = sanitize_mime_type($value);
+                break;
+            case static::FILE: 
                 break;
             case static::INT:
                 $value = (int) $value;

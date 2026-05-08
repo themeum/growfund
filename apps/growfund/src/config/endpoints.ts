@@ -100,6 +100,15 @@ const endpoints = {
   EMPTY_FUNDRAISERS_TRASH: '/fundraisers/empty-trash',
   FUNDRAISER_OVERVIEW: (id: string) => `/fundraisers/${id}/overview`,
   FUNDRAISER_ACTIVITIES: (id: string) => `/fundraisers/${id}/activities`,
+  FUNDRAISER_WITHDRAWALS: '/fundraisers-withdrawals',
+  FUNDRAISER_PAYOUT_SETTINGS: (id: string) => `/fundraisers/${id}/payout-method`,
+  WITHDRAWALS: '/withdrawals',
+  WITHDRAWALS_WITH_ID: (id: string) => `/withdrawals/${id}`,
+  WALLET: '/wallet',
+
+  // Collaborators endpoints
+  COLLABORATORS: '/collaborators',
+  CAMPAIGN_COLLABORATORS: (id: string) => `/campaigns/${id}/collaborators`,
 
   // Donations endpoints
   DONATIONS: '/donations',
@@ -147,6 +156,9 @@ const endpoints = {
   // manual pages generation endpoints
   MANUAL_PAGES: '/growfund-pages',
   REGENERATE_PAGES: '/growfund-pages',
+
+  // withdrawal requests endpoints
+  WITHDRAWAL_REQUESTS: '/withdrawal-requests',
 } as const;
 
 export { endpoints };

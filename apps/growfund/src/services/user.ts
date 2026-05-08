@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { __ } from '@wordpress/i18n';
 import { toast } from 'sonner';
 
@@ -78,11 +78,29 @@ const useUpdateUserNotificationsMutation = () => {
     },
   });
 };
+const updateUserPayoutSettings = ({ id, formData }: { id: string; formData: FormData }) => {
+  return apiClient.post(endpoints.FUNDRAISER_PAYOUT_SETTINGS(id), formData);
+};
+
+const useUpdateUserPayoutSettingsMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: updateUserPayoutSettings,
+    onSuccess() {
+      toast.success(__('Payout settings updated successfully', 'growfund'));
+      void queryClient.invalidateQueries({ queryKey: ['CurrentUser'] });
+    },
+    onError(error) {
+      toast.error(error.message);
+    },
+  });
+};
 
 export {
   useCurrentUserQuery,
   useSendResetLinkMutation,
   useUpdateUserNotificationsMutation,
+  useUpdateUserPayoutSettingsMutation,
   useValidateUserEmail,
   useValidateUsername,
 };

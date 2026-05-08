@@ -356,7 +356,7 @@ class DonorController
         $this->policy->authorize_annual_receipts();
 
         return growfund_response()->json([
-            'data' => $this->donation_service->get_annual_receipt_detail($request->get_int('year')),
+            'data' => $this->donation_service->get_annual_receipt_detail(growfund_user()->get_id(), $request->get_int('year')),
             'message' => '',
         ]);
     }

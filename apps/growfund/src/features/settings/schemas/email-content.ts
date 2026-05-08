@@ -64,6 +64,11 @@ export const emailTemplates: EmailTemplateConfig[] = [
     optionKey: 'growfund_admin_email_password_reset_request',
     label: __('Password Reset Request', 'growfund'),
   },
+  {
+    key: 'admin_withdrawal_request_received',
+    optionKey: 'growfund_admin_email_withdrawal_request_received',
+    label: __('Withdrawal Request', 'growfund'),
+  },
 
   // Fundraiser Emails
   {
@@ -150,6 +155,16 @@ export const emailTemplates: EmailTemplateConfig[] = [
     key: 'fundraiser_reward_delivered',
     optionKey: 'growfund_fundraiser_email_reward_delivered',
     label: __('Rewards Delivered', 'growfund'),
+  },
+  {
+    key: 'fundraiser_withdrawal_request_accepted',
+    optionKey: 'growfund_fundraiser_email_withdrawal_request_accepted',
+    label: __('Withdrawal Request Accepted', 'growfund'),
+  },
+  {
+    key: 'fundraiser_withdrawal_request_rejected',
+    optionKey: 'growfund_fundraiser_email_withdrawal_request_rejected',
+    label: __('Withdrawal Request Rejected', 'growfund'),
   },
 
   // Backer Emails

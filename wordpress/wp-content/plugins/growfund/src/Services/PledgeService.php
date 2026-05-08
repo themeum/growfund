@@ -49,9 +49,10 @@ use Growfund\Constants\Pledge\DeliveryOption;
 use Growfund\Constants\Reward\RewardType;
 use Growfund\Constants\RewardItem\AssetType;
 use Growfund\Constants\RewardItem\RewardItemType;
+use Growfund\Constants\UserTypes\Collaborator;
+use Growfund\Constants\UserTypes\Fundraiser;
 use Growfund\DTO\RewardItemWithQuantityDTO;
 use Growfund\Supports\Currency;
-use GrowfundPro\Schedules\CampaignSendLocalPickupInstructionSchedule;
 
 class PledgeService
 {
@@ -64,8 +65,14 @@ class PledgeService
 
         $overall_query_conditions = [];
 
-        if ($params->user_id !== growfund_user()->get_id() && growfund_user()->is_fundraiser()) {
-            $overall_query_conditions[] = ['campaign_id', 'IN', growfund_get_all_campaign_ids_by_fundraiser()];
+        if ($params->user_id !== growfund_user()->get_id()) {
+            if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+                $overall_query_conditions[] = ['campaign_id', 'IN', growfund_campaign_ids_by_fundraiser()];
+            }
+
+            if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+                $overall_query_conditions[] = ['campaign_id', 'IN', growfund_campaign_ids_by_collaborator()];
+            }
         }
 
         if (!empty($params->user_id)) {
@@ -95,8 +102,11 @@ class PledgeService
     {
         $payment = PledgePaymentDTO::from_array((array) $record);
         $payment->payment_method = PaymentMethodDTO::from_array(json_decode($record->payment_method ?? "", true) ?? []);
-
         $campaign_images = !empty($record->campaign_images) ? maybe_unserialize($record->campaign_images) : [];
+
+        $campaign_service = new CampaignService();
+        $campaign_author = $campaign_service->get_campaign_author($record->campaign_author_id);
+
         $campaign = PledgeCampaignDTO::from_array([
             'id' => (string) $record->campaign_id,
             'title' => $record->campaign_title,
@@ -107,8 +117,10 @@ class PledgeService
             'goal_amount' => $record->campaign_goal_amount,
             'images' => MediaAttachment::make_many($campaign_images),
             'start_date' => $record->campaign_start_date,
-            'author_id' => $record->campaign_author_id,
-            'created_by' => $record->campaign_created_by,
+            'author' => $campaign_author,
+            'fundraiser' => !empty($record->campaign_fundraiser_id) 
+                ? $campaign_service->get_campaign_fundraiser($record->campaign_fundraiser_id) 
+                : $campaign_author,
             'is_launched' => !empty($record->campaign_start_date) ? Date::is_date_in_past_or_present($record->campaign_start_date) : false,
         ]);
 
@@ -193,7 +205,6 @@ class PledgeService
     {
         $post_table = WP::POSTS_TABLE;
         $postmeta_table = WP::POST_META_TABLE;
-        $user_table = WP::USERS_TABLE;
 
         $query = QueryBuilder::query()
             ->select([
@@ -205,45 +216,70 @@ class PledgeService
                 'campaign_start_date_meta.meta_value as campaign_start_date',
                 'campaign_goal_amount_meta.meta_value as campaign_goal_amount',
                 'campaign_goal_type_meta.meta_value as campaign_goal_type',
-                'campaign_author.display_name as campaign_created_by',
-                'campaign_author.ID as campaign_author_id',
+                'campaign_fundraiser_id_meta.meta_value as campaign_fundraiser_id',
+                'campaigns.post_author as campaign_author_id',
             ])
             ->table(Tables::PLEDGES . ' as pledges')
             ->join("{$post_table} as campaigns", 'pledges.campaign_id', 'campaigns.ID')
             ->join_raw(
                 "{$postmeta_table} as campaign_status_meta",
                 "LEFT",
-                sprintf("pledges.campaign_id = campaign_status_meta.post_id AND campaign_status_meta.meta_key = '%s'", growfund_with_prefix(MetaKeysCampaign::STATUS))
+                "pledges.campaign_id = campaign_status_meta.post_id AND campaign_status_meta.meta_key = :campaign_status_meta_key",
+                [
+                    'campaign_status_meta_key' => growfund_with_prefix(MetaKeysCampaign::STATUS)
+                ]
             )
             ->join_raw(
                 "{$postmeta_table} as campaign_images_meta",
                 "LEFT",
-                sprintf("pledges.campaign_id = campaign_images_meta.post_id AND campaign_images_meta.meta_key = '%s'", growfund_with_prefix(MetaKeysCampaign::IMAGES))
+                "pledges.campaign_id = campaign_images_meta.post_id AND campaign_images_meta.meta_key = :campaign_images_meta_key",
+                [
+                    'campaign_images_meta_key' => growfund_with_prefix(MetaKeysCampaign::IMAGES)
+                ]
             )
             ->join_raw(
                 "{$postmeta_table} as campaign_start_date_meta",
                 "LEFT",
-                sprintf("pledges.campaign_id = campaign_start_date_meta.post_id AND campaign_start_date_meta.meta_key = '%s'", growfund_with_prefix(MetaKeysCampaign::START_DATE))
+                "pledges.campaign_id = campaign_start_date_meta.post_id AND campaign_start_date_meta.meta_key = :campaign_start_date_meta_key",
+                [
+                    'campaign_start_date_meta_key' => growfund_with_prefix(MetaKeysCampaign::START_DATE)
+                ]
             )
             ->join_raw(
                 "{$postmeta_table} as campaign_goal_amount_meta",
                 "LEFT",
-                sprintf("pledges.campaign_id = campaign_goal_amount_meta.post_id AND campaign_goal_amount_meta.meta_key = '%s'", growfund_with_prefix(MetaKeysCampaign::GOAL_AMOUNT))
+                "pledges.campaign_id = campaign_goal_amount_meta.post_id AND campaign_goal_amount_meta.meta_key = :campaign_goal_amount_meta_key",
+                [
+                    'campaign_goal_amount_meta_key' => growfund_with_prefix(MetaKeysCampaign::GOAL_AMOUNT)
+                ]
             )
             ->join_raw(
                 "{$postmeta_table} as campaign_goal_type_meta",
                 "LEFT",
-                sprintf("pledges.campaign_id = campaign_goal_type_meta.post_id AND campaign_goal_type_meta.meta_key = '%s'", growfund_with_prefix(MetaKeysCampaign::GOAL_TYPE))
+                "pledges.campaign_id = campaign_goal_type_meta.post_id AND campaign_goal_type_meta.meta_key = :campaign_goal_type_meta_key",
+                [
+                    'campaign_goal_type_meta_key' => growfund_with_prefix(MetaKeysCampaign::GOAL_TYPE)
+                ]
             )
             ->join_raw(
-                "{$user_table} as campaign_author",
+                "{$postmeta_table} as campaign_fundraiser_id_meta",
                 "LEFT",
-                sprintf("campaigns.post_author = campaign_author.ID")
+                "pledges.campaign_id = campaign_fundraiser_id_meta.post_id AND campaign_fundraiser_id_meta.meta_key = :campaign_fundraiser_id_meta_key",
+                [
+                    'campaign_fundraiser_id_meta_key' => growfund_with_prefix(MetaKeysCampaign::FUNDRAISER_ID)
+                ]
             );
 
-        if (!empty($params->user_id) && $params->user_id !== growfund_user()->get_id() && growfund_user()->is_fundraiser()) {
-            $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
-            $query->where_in('pledges.campaign_id', $campaign_ids);
+        if (!empty($params->user_id) && $params->user_id !== growfund_user()->get_id()) {
+            if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+                $campaign_ids = growfund_campaign_ids_by_fundraiser();
+                $query->where_in('pledges.campaign_id', $campaign_ids);
+            }
+            
+            if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+                $campaign_ids = growfund_campaign_ids_by_collaborator();
+                $query->where_in('pledges.campaign_id', $campaign_ids);
+            }
         }
 
         if (!empty($params->user_id)) {
@@ -347,10 +383,15 @@ class PledgeService
                 [PledgeStatus::BACKED, PledgeStatus::COMPLETED]
             );
 
-        if (growfund_user()->is_fundraiser()) {
-            $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
+        if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_fundraiser();
             $query->where_in('campaign_id', $campaign_ids);
-        }
+		}
+            
+		if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+			$campaign_ids = growfund_campaign_ids_by_collaborator();
+			$query->where_in('campaign_id', $campaign_ids);
+		}
 
         if (!empty($campaign_id)) {
             $query->where('campaign_id', $campaign_id);
@@ -390,10 +431,15 @@ class PledgeService
                 [PledgeStatus::BACKED, PledgeStatus::COMPLETED]
             );
 
-        if (growfund_user()->is_fundraiser()) {
-            $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
+        if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_fundraiser();
             $query->where_in('campaign_id', $campaign_ids);
-        }
+		}
+            
+		if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+			$campaign_ids = growfund_campaign_ids_by_collaborator();
+			$query->where_in('campaign_id', $campaign_ids);
+		}
 
         if (!empty($campaign_id)) {
             $query->where('campaign_id', $campaign_id);
@@ -433,10 +479,15 @@ class PledgeService
                 [PledgeStatus::BACKED, PledgeStatus::COMPLETED]
             );
 
-        if (growfund_user()->is_fundraiser()) {
-            $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
+        if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_fundraiser();
             $query->where_in('campaign_id', $campaign_ids);
-        }
+		}
+            
+		if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+			$campaign_ids = growfund_campaign_ids_by_collaborator();
+			$query->where_in('campaign_id', $campaign_ids);
+		}
 
         if (!empty($campaign_id)) {
             $query->where('campaign_id', $campaign_id);
@@ -814,13 +865,21 @@ class PledgeService
         }
 
         if ($campaign->status !== CampaignStatus::FUNDED && CampaignGoal::is_reached($campaign, $dto)) {
-            $campaign_service->update_status($campaign->id, CampaignStatus::FUNDED);
-            growfund_event(new GoalReachedEvent($campaign));
+            $is_campaign_funded = $campaign_service->update_status($campaign->id, CampaignStatus::FUNDED);
+
+            if ($is_campaign_funded) {
+                $campaign->status = CampaignStatus::FUNDED;
+                growfund_event(new GoalReachedEvent($campaign));
+            }
+            
         }
 
         if (!$campaign->is_half_goal_achieved_already && CampaignGoal::is_half_goal_achieved($campaign, $dto)) {
-            $campaign_service->marked_as_half_goal_achieved($campaign->id);
-            growfund_event(new CampaignHalfMilestoneReachedEvent($campaign->id));
+            $is_marked_as_half_goal_achieved = $campaign_service->marked_as_half_goal_achieved($campaign->id);
+            
+            if ($is_marked_as_half_goal_achieved) {
+                growfund_event(new CampaignHalfMilestoneReachedEvent($campaign->id));
+            }
         }
 
         return $pledge_id;
@@ -1263,10 +1322,15 @@ class PledgeService
                 [PledgeStatus::PENDING, PledgeStatus::IN_PROGRESS, PledgeStatus::BACKED, PledgeStatus::COMPLETED]
             );
 
-        if (growfund_user()->is_fundraiser()) {
-            $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
+        if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_fundraiser();
             $query->where_in('campaign_id', $campaign_ids);
-        }
+		}
+            
+		if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+			$campaign_ids = growfund_campaign_ids_by_collaborator();
+			$query->where_in('campaign_id', $campaign_ids);
+		}
 
         if (!empty($campaign_id)) {
             $query->where('campaign_id', $campaign_id);
@@ -1301,10 +1365,15 @@ class PledgeService
         $query = QueryBuilder::query()->table(Tables::PLEDGES)
             ->where_in('status', [PledgeStatus::PENDING, PledgeStatus::IN_PROGRESS, PledgeStatus::COMPLETED, PledgeStatus::BACKED]);
 
-        if (growfund_user()->is_fundraiser()) {
-            $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
+        if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_fundraiser();
             $query->where_in('campaign_id', $campaign_ids);
-        }
+		}
+            
+		if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+			$campaign_ids = growfund_campaign_ids_by_collaborator();
+			$query->where_in('campaign_id', $campaign_ids);
+		}
 
         if (!empty($campaign_id)) {
             $query->where('campaign_id', $campaign_id);
@@ -1469,16 +1538,26 @@ class PledgeService
         $received_amount = QueryBuilder::query()
             ->table(Tables::PLEDGES . ' as pledges')
             ->inner_join(WP::POSTS_TABLE . ' as campaigns', 'campaigns.ID', 'pledges.campaign_id')
+            ->join_raw(
+                WP::POST_META_TABLE . ' as campaign_fundraiser_meta', 
+                'LEFT', 
+                sprintf(
+                    "campaigns.ID = campaign_fundraiser_meta.post_id AND campaign_fundraiser_meta.meta_key = '%s'",
+                    growfund_with_prefix('fundraiser_id')
+                )
+            )
             ->where_in(
                 'pledges.status',
                 [PledgeStatus::COMPLETED, PledgeStatus::BACKED]
             )
             ->where_raw(sprintf(
-                "(campaigns.post_author = %s OR EXISTS ( SELECT 1 FROM `%s` AS collaborators WHERE collaborators.campaign_id = pledges.campaign_id AND collaborators.collaborator_id = %s))",
-                $fundraiser_id,
+                "(campaigns.post_author = :post_author OR campaign_fundraiser_meta.meta_value = :fundraiser_id OR EXISTS ( SELECT 1 FROM `%s` AS collaborators WHERE collaborators.campaign_id = pledges.campaign_id AND collaborators.collaborator_id = :collaborator_id))",
                 $campaign_collaborators_table,
-                $fundraiser_id
-            ))
+            ), [
+                'post_author' => $fundraiser_id,
+                'fundraiser_id' => (string) $fundraiser_id,
+                'collaborator_id' => $fundraiser_id
+            ])
             ->sum('amount + bonus_support_amount + shipping_cost');
 
         return $received_amount;
@@ -1692,5 +1771,25 @@ class PledgeService
         }
 
         return '';
+    }
+
+    /**
+     * Get the total received amount by a campaign.
+     *
+     * @param int $campaign_id
+     * @return int
+     */
+    public function get_total_received_amount_by_campaign(int $campaign_id)
+    {
+        $received_amount = QueryBuilder::query()
+            ->table(Tables::PLEDGES . ' as pledges')
+            ->where('pledges.campaign_id', $campaign_id)
+            ->where_in(
+                'pledges.status',
+                [PledgeStatus::COMPLETED, PledgeStatus::BACKED]
+            )
+            ->sum('amount + bonus_support_amount + shipping_cost');
+
+        return (int) $received_amount;
     }
 }

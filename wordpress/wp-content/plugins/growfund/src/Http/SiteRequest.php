@@ -7,12 +7,20 @@ defined( 'ABSPATH' ) || exit;
 use Growfund\Contracts\Request;
 use Growfund\Sanitizer;
 use Growfund\Supports\Arr;
-use Growfund\Supports\RequestInput;
+use Growfund\Supports\FileHandler;
 
 class SiteRequest implements Request
 {
+    protected $request_nonce;
+    protected $nonce_action;
     protected $attributes = [];
     protected $headers = [];
+
+    public function __construct($request_nonce = null, $nonce_action = null)
+    {
+        $this->request_nonce = $request_nonce;
+        $this->nonce_action = $nonce_action;
+    }
 
     public function __get(string $name)
     {
@@ -28,9 +36,9 @@ class SiteRequest implements Request
         $this->attributes = $attributes;
     }
 
-    public static function instance()
+    public static function instance($request_nonce = null, $nonce_action = null)
     {
-        return new static();
+        return new static($request_nonce, $nonce_action);
     }
 
     public function get_method()
@@ -46,7 +54,7 @@ class SiteRequest implements Request
     public function get_headers()
     {
         if (empty($this->headers)) {
-            $this->headers = getallheaders();
+            $this->headers = array_change_key_case(getallheaders());
         }
 
         return $this->headers;
@@ -69,13 +77,44 @@ class SiteRequest implements Request
         return array_diff_key($this->all(), array_flip($attributes));
     }
 
+    protected function maybe_request_contains_files() {
+        $headers = $this->get_headers();
+
+        return isset($headers['content-type']) && strpos($headers['content-type'], 'multipart/form-data') !== false;
+    }
+
     public function input(string $key, $type = null)
     {
         if (isset($this->attributes[$key])) {
             return $this->attributes[$key];
         }
 
-        $this->attributes[$key] = growfund_input_get($key, null, $type) ?? growfund_input_post($key, null, $type) ?? null;
+        $input = null;
+
+        if ($type !== Sanitizer::FILE) {
+            $input = growfund_input_get($key, null, $type) ?? growfund_input_post($key, null, $type);
+        }
+
+        /**
+         * @todo: need to improve input file if needed for wildcard keys with '.' and '*' when working on site.
+         */
+        if ($this->maybe_request_contains_files()) {
+            if (is_null($input)) {
+                $input = $this->get_file($key);
+            }
+
+            if ($type === Sanitizer::ARRAY && is_array($input)) {
+                $file = $this->get_file($key) ?? [];
+
+                $input = array_merge($input, $file);
+            }
+
+            if ($input === '') {
+                $input = null;
+            }
+        }
+
+        $this->attributes[$key] = $input;
 
         return $this->attributes[$key];
     }
@@ -106,7 +145,7 @@ class SiteRequest implements Request
         return $attributes;
     }
 
-    protected function is_array_attribute($key_collection, $current_attribute_name, $is_associative) {
+    protected function is_array_attribute(Arr $key_collection, string $current_attribute_name, bool $is_associative) {
         $is_array = $key_collection->some(function ($key_value, $key_index) use ($current_attribute_name, $is_associative) {
 			if ($is_associative) {
 				if ($key_index === $current_attribute_name) {
@@ -152,6 +191,7 @@ class SiteRequest implements Request
 
     public function get(string $key, string $type, $default = null)
     {
+
         $value = $this->input($key) ?? $default;
         $type = $type ? $type : Sanitizer::TEXT;
 
@@ -222,7 +262,7 @@ class SiteRequest implements Request
     }
 
     /**
-     * Get a text with sanitization applied.
+     * Get a text with textarea sanitization applied.
      *
      * @since 1.0.0
      *
@@ -232,7 +272,7 @@ class SiteRequest implements Request
      */
     public function get_text(string $key, $default = null)
     {
-        return $this->get_string($key, $default);
+        return $this->get($key, Sanitizer::TEXTAREA, $default);
     }
 
     /**
@@ -246,7 +286,7 @@ class SiteRequest implements Request
      */
     public function get_html(string $key, $default = null)
     {
-        return $this->get($key, Sanitizer::TEXTAREA, $default);
+        return $this->get($key, Sanitizer::RICH_TEXT, $default);
     }
 
     /**
@@ -303,6 +343,34 @@ class SiteRequest implements Request
     public function get_title(string $key, $default = null)
     {
         return $this->get($key, Sanitizer::TITLE, $default);
+    }
+
+    /**
+     * Get a file.
+     *
+     * @since 1.1.0
+     *
+     * @param string $key     The key to retrieve.
+     * @return array|null
+     */
+    public function get_file(string $key)
+    {   
+        if (
+            !wp_verify_nonce(
+                $this->request_nonce ?? wp_unslash(growfund_input_post('_wpnonce') ?? growfund_input_get('_wpnonce') ?? ''), 
+                $this->nonce_action  ?? growfund_with_prefix('site_nonce')
+            )
+        ) {
+            return null;
+        }
+
+        $files = FileHandler::format_files_form_request($_FILES);
+
+        if (!isset($files[$key])) {
+            return null;
+        }
+
+        return $files[$key];
     }
 
     /**

@@ -18,7 +18,7 @@ class NewUserRegistered extends BaseHook
 {
     public function get_name()
     {
-        return HookNames::USER_REGISTER;
+        return HookNames::WP_USER_REGISTER;
     }
 
     public function get_type()
@@ -42,6 +42,10 @@ class NewUserRegistered extends BaseHook
             return;
         }
 
+        if ($user->is_admin() || $user->is_collaborator()) {
+            return;
+        }
+
         if (UserSupport::is_guest($user_id)) {
             return;
         }
@@ -54,6 +58,9 @@ class NewUserRegistered extends BaseHook
         if ($user->is_backer() || $user->is_donor()) {
             $this->schedule_user_emails($user);
         }
+
+        growfund_flash_set_message('is_verification_email_sent', true);
+        growfund_flash_set_message('verification_email', $user->get_email());
     }
 
     protected function schedule_verification_emails($user_id, $token)

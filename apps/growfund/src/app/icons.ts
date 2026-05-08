@@ -1,3 +1,4 @@
+import BankTransferIcon from '@/assets/icons/bank-transfer.svg?react';
 import BrandWhiteIcon from '@/assets/icons/brand-white.svg?react';
 import BrandIcon from '@/assets/icons/brand.svg?react';
 import BridgeIcon from '@/assets/icons/bridge.svg?react';
@@ -17,6 +18,8 @@ import RewardItemEmptyStateIcon from '@/assets/icons/empty-state/reward-item.svg
 import RewardEmptyStateIcon from '@/assets/icons/empty-state/reward.svg?react';
 import TagEmptyStateIcon from '@/assets/icons/empty-state/tag.svg?react';
 import EmptyThemesIcon from '@/assets/icons/empty-state/themes.svg?react';
+import EmptyWithdawalRequestIcon from '@/assets/icons/empty-state/withdrawal-request.svg?react';
+import WithdrawalEmptyStateIcon from '@/assets/icons/empty-state/withdrawal.svg?react';
 import EndFlagIcon from '@/assets/icons/end-flag.svg?react';
 import { default as EmptySearchIcon2, default as ErrorIcon } from '@/assets/icons/error.svg?react';
 import GiftPackIcon from '@/assets/icons/gift-pack.svg?react';
@@ -25,6 +28,8 @@ import ItemsColorful from '@/assets/icons/items-colorful.svg?react';
 import SpecialTributeIcon from '@/assets/icons/mdi_flower.svg?react';
 import NativePaymentIcon from '@/assets/icons/onboarding/native-payment.svg?react';
 import WooCommercePaymentIcon from '@/assets/icons/onboarding/woo-commerce.svg?react';
+import PaypalGatewayIcon from '@/assets/icons/paypal-gateway.svg?react';
+import PayPal from '@/assets/icons/paypal.svg?react';
 import FlowerIcon from '@/assets/icons/pepicon.svg?react';
 import RocketIcon from '@/assets/icons/rocket.svg?react';
 import SettingsWindowIcon from '@/assets/icons/settings-window.svg?react';
@@ -43,6 +48,7 @@ import WhiteLabelIcon from '@/assets/icons/white-label.svg?react';
 
 export {
   BackerEmptyStateIcon,
+  BankTransferIcon,
   BrandIcon,
   BrandWhiteIcon,
   BridgeIcon,
@@ -57,6 +63,7 @@ export {
   EmptySearchIcon,
   EmptySearchIcon2,
   EmptyThemesIcon,
+  EmptyWithdawalRequestIcon,
   EndFlagIcon,
   ErrorIcon,
   FacebookSocialIcon,
@@ -69,6 +76,8 @@ export {
   LinkedinSocialIcon,
   MessagesEmptyStateIcon,
   NativePaymentIcon,
+  PayPal,
+  PaypalGatewayIcon,
   PledgeEmptyStateIcon,
   RewardEmptyStateIcon,
   RewardItemEmptyStateIcon,
@@ -84,5 +93,6 @@ export {
   TwitterXSocialIcon,
   WhatsappSocialIcon,
   WhiteLabelIcon,
+  WithdrawalEmptyStateIcon,
   WooCommercePaymentIcon,
 };

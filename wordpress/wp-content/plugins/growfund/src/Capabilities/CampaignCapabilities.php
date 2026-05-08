@@ -5,11 +5,13 @@ namespace Growfund\Capabilities;
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Constants\UserTypes\Backer;
+use Growfund\Constants\UserTypes\Collaborator;
 use Growfund\Constants\UserTypes\Donor;
 use Growfund\Constants\UserTypes\Fundraiser;
 use Growfund\Contracts\Capability;
 use Growfund\PostTypes\Campaign;
 use Growfund\Services\CampaignService;
+use Growfund\Supports\PostMeta;
 use Growfund\Traits\HasConstants;
 
 class CampaignCapabilities implements Capability
@@ -44,6 +46,8 @@ class CampaignCapabilities implements Capability
         switch ($role) {
             case Fundraiser::ROLE:
                 return $this->fundraiser_capabilities();
+            case Collaborator::ROLE:
+                return $this->collaborator_capabilities();
             case Donor::ROLE:
             case Backer::ROLE:
                 return $this->contributor_capabilities();
@@ -75,6 +79,15 @@ class CampaignCapabilities implements Capability
             static::DELETE,
         ];
     }
+
+    protected function collaborator_capabilities()
+    {
+        return [
+            static::READ,
+            static::EDIT,
+        ];
+    }
+
     protected function contributor_capabilities()
     {
         return [
@@ -91,6 +104,12 @@ class CampaignCapabilities implements Capability
         }
 
         if ((int) $campaign->post_author === $user_id) {
+            return ['exist'];
+        }
+
+        $fundraiser_id = PostMeta::get($campaign_id, 'fundraiser_id');
+
+        if ((int) $fundraiser_id === $user_id) {
             return ['exist'];
         }
 
@@ -112,6 +131,12 @@ class CampaignCapabilities implements Capability
         if (
             (int) $campaign->post_author === $user_id
         ) {
+            return ['exist'];
+        }
+
+        $fundraiser_id = PostMeta::get($campaign_id, 'fundraiser_id');
+
+        if ((int) $fundraiser_id === $user_id) {
             return ['exist'];
         }
 

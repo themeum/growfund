@@ -18,12 +18,8 @@ use Growfund\Supports\Option;
  */
 abstract class BaseMigration implements Migration
 {
+    /** @var string */
     protected $table_name;
-
-    /**
-     * The plugin version number at which the migration becomes available. 
-     */
-    protected $is_available_at = '0.0.1';
 
     /**
      * Create a new instance of the migration class.
@@ -112,16 +108,12 @@ abstract class BaseMigration implements Migration
         return $table_name;
     }
 
-    protected function is_available_for_current_version() {
-        return version_compare(growfund_app()->installed_db_version(), $this->is_available_at, '<') ;
-    }
-
     abstract public function up();
 
     abstract public function down();
 
     public function handle_up() {
-        if (!$this->is_available_for_current_version() || $this->is_already_migrated()) {
+        if ($this->is_already_migrated()) {
             return;
         }
 

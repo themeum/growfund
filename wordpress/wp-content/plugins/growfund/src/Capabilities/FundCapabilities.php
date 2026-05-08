@@ -4,6 +4,7 @@ namespace Growfund\Capabilities;
 
 defined( 'ABSPATH' ) || exit;
 
+use Growfund\Constants\UserTypes\Collaborator;
 use Growfund\Constants\UserTypes\Fundraiser;
 use Growfund\Contracts\Capability;
 use Growfund\Services\FundService;
@@ -39,6 +40,8 @@ class FundCapabilities implements Capability
         switch ($role) {
             case Fundraiser::ROLE:
                 return $this->fundraiser_capabilities();
+            case Collaborator::ROLE:
+                return $this->collaborator_capabilities();
             default:
                 return [];
         }
@@ -65,6 +68,13 @@ class FundCapabilities implements Capability
             static::READ,
             static::EDIT,
             static::DELETE,
+        ];
+    }
+
+    protected function collaborator_capabilities()
+    {
+        return [
+            static::READ,
         ];
     }
 

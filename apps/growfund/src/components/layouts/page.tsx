@@ -11,7 +11,11 @@ const Page = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElemen
   ({ children, className, ...props }, ref) => {
     return (
       <Suspense fallback={<LoadingSpinnerOverlay />}>
-        <div ref={ref} className={cn('growfund-mb-16 growfund-@container/page', className)} {...props}>
+        <div
+          ref={ref}
+          className={cn('growfund-mb-16 growfund-@container/page', className)}
+          {...props}
+        >
           {children}
         </div>
       </Suspense>
@@ -28,7 +32,8 @@ const headerVariants = cva(
         fluid: 'growfund-max-w-full growfund-px-8 @5xl/page:growfund-px-8',
       },
       size: {
-        default: 'growfund-min-h-[var(--growfund-topbar-height)] growfund-max-h-[var(--growfund-topbar-height)]',
+        default:
+          'growfund-min-h-[var(--growfund-topbar-height)] growfund-max-h-[var(--growfund-topbar-height)]',
         lg: 'growfund-min-h-[calc(var(--growfund-topbar-height)_+_12px)] growfund-max-h-[calc(var(--growfund-topbar-height)_+_12px)]',
         sm: 'growfund-min-h-[var(--growfund-topbar-height)] growfund-max-w-[var(--growfund-container-width-sm)]',
       },
@@ -41,8 +46,7 @@ const headerVariants = cva(
 );
 
 interface PageHeaderProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof headerVariants> {
+  extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof headerVariants> {
   name?: string | React.ReactNode;
   icon?: React.ReactNode;
   action?: React.ReactNode;
@@ -58,7 +62,8 @@ const PageHeader = React.forwardRef<HTMLDivElement, PageHeaderProps>(
         data-page-header-container
         className={cn(
           'growfund-w-full growfund-sticky growfund-z-header growfund-border-b growfund-border-b-border growfund-bg-background-surface-secondary growfund-max-h-[var(--growfund-topbar-height)] growfund-min-h-[var(--growfund-topbar-height)]',
-          variant === 'fluid' || [User.isFundraiser(), User.isBacker()].includes(true)
+          variant === 'fluid' ||
+            [User.isFundraiser(), User.isCollaborator(), User.isBacker()].includes(true)
             ? 'growfund-top-0'
             : 'growfund-top-[var(--growfund-wp-topbar-height)]',
           className,

@@ -4,7 +4,21 @@ import {
   BackerEmailSettingsSchema,
   DonorEmailSettingsSchema,
   FundraiserEmailSettingsSchema,
+  UserSchema,
 } from '@/features/settings/schemas/settings';
+
+const UserBasicSchema = UserSchema.pick({
+  id: true,
+  email: true,
+  username: true,
+  display_name: true,
+  first_name: true,
+  last_name: true,
+  image: true,
+  phone: true,
+});
+
+type UserBasic = z.infer<typeof UserBasicSchema>;
 
 const BackerNotificationsFormSchema = BackerEmailSettingsSchema.pick({
   is_enabled_backer_email_campaign_post_update: true,
@@ -47,10 +61,12 @@ export {
   BackerNotificationsFormSchema,
   DonorNotificationsFormSchema,
   FundraiserNotificationsFormSchema,
+  UserBasicSchema,
   type BackerNotificationsForm,
   type BackerNotificationsPayload,
   type DonorNotificationsForm,
   type DonorNotificationsPayload,
   type FundraiserNotificationsForm,
   type FundraiserNotificationsPayload,
+  type UserBasic,
 };

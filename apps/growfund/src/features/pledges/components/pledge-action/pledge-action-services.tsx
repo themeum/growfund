@@ -8,7 +8,7 @@ import {
 } from '@/features/pledges/components/pledge-action/pledge-action-types';
 import { type Pledge } from '@/features/pledges/schemas/pledge';
 
-function prepareActionOptions(pledge: Pledge) {
+function prepareActionOptions({ pledge, isAdmin }: { pledge: Pledge; isAdmin: boolean }) {
   return [
     {
       label: __('Charge Backer', 'growfund'),
@@ -20,7 +20,7 @@ function prepareActionOptions(pledge: Pledge) {
           ['funded', 'completed'].includes(pledge.campaign.status) &&
           pledge.payment.payment_method.type === 'online-payment'
         ) {
-          return true;
+          return isAdmin;
         }
         return false;
       },

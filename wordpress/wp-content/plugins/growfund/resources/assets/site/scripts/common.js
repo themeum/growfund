@@ -2,7 +2,7 @@
   const growfundAjaxClient = () => {
     const baseUrl = growfund.ajax_url ?? '';
 
-    const _nonce = growfund.ajax_nonce ?? '';
+    const _nonce = growfund.site_nonce ?? '';
 
     const normalizeRequestData = (data) => {
       if (data instanceof URLSearchParams) {

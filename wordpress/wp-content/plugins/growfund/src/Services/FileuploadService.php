@@ -7,6 +7,7 @@ defined( 'ABSPATH' ) || exit;
 use Growfund\Contracts\Uploader;
 use Growfund\Supports\MediaAttachment;
 use Exception;
+use Growfund\Supports\Arr;
 
 /**
  * File upload service class
@@ -37,20 +38,23 @@ class FileuploadService implements Uploader
      */
     public function upload(array $files, int $parent_post_id = 0)
     {
-        if (!isset($files['name'], $files['tmp_name'], $files['type'], $files['size'], $files['error'])) {
+        $is_valid_files = Arr::make($files)->every(function ($file) {
+            return isset($file['name'], $file['tmp_name'], $file['type'], $file['size'], $file['error']);
+        });
+
+        if (!$is_valid_files) {
             throw new Exception('Invalid file upload array structure.');
         }
 
-        $formatted_files = $this->format_files($files);
         $attachments = [];
 
         if (!function_exists('wp_handle_upload')) {
             require_once ABSPATH . 'wp-admin/includes/file.php';
         }
 
-        $author_id = get_current_user_id();
+        $post_author = get_current_user_id();
 
-        foreach ($formatted_files as $file) {
+        foreach ($files as $file) {
             $upload = wp_handle_upload($file, ['test_form' => false]);
 
             if (isset($upload['error'])) {
@@ -66,7 +70,7 @@ class FileuploadService implements Uploader
                     'post_title' => sanitize_file_name($file['name']),
                     'post_content' => '',
                     'post_status' => 'inherit',
-                    'post_author'    => $author_id,
+                    'post_author'    => $post_author,
                     'guid'           => $file_url
                 ];
 
@@ -86,29 +90,5 @@ class FileuploadService implements Uploader
         }
 
         return $attachments;
-    }
-
-    /**
-     * Formats the uploaded files array into a more accessible structure.
-     * 
-     * @param array $files The array of files from the $_FILES superglobal.
-     * 
-     * @return array An array of formatted files, where each file is an associative array
-     *               containing its properties.
-     */
-
-    private function format_files(array $files)
-    {
-        $formatted_files = [];
-        $file_count = count($files['name']);
-        $file_keys = array_keys($files);
-
-        for ($index = 0; $index < $file_count; $index++) {
-            foreach ($file_keys as $key) {
-                $formatted_files[$index][$key] = $files[$key][$index];
-            }
-        }
-
-        return $formatted_files;
     }
 }

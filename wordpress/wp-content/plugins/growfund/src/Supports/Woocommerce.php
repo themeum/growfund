@@ -95,8 +95,8 @@ class Woocommerce
 
         if (!empty(static::$product_id) && function_exists('wc_get_product')) {
             $product = wc_get_product(static::$product_id);
-
-            if (empty($product) || $product->get_slug() !== static::get_growfund_product_slug()) {
+            
+            if (empty($product)) {
                 static::$product_id = 0;
                 Option::delete(OptionKeys::WC_PRODUCT_ID);
             }
@@ -105,17 +105,12 @@ class Woocommerce
         return (int) static::$product_id;
     }
 
-    public static function get_growfund_product_slug()
-    {
-        return 'growfund-internal';
-    }
-
     /**
      * @return \WC_Product|false|null
      */
-    public static function get_product_by_slug()
+    public static function get_growfund_product()
     {
-        return wc_get_product(get_page_by_path(static::get_growfund_product_slug(), OBJECT, 'product')->ID);
+        return wc_get_product(static::get_growfund_product_id());
     }
 
     /**
@@ -128,12 +123,12 @@ class Woocommerce
             return false;
         }
 
-        $product = static::get_product_by_slug();
+        $product = static::get_growfund_product();
 
         if (!$product) {
             $product = new WC_Product_Simple();
 
-            $product->set_slug(static::get_growfund_product_slug());
+            $product->set_slug('growfund-internal');
             $product->set_name(__('Growfund (internal)', 'growfund'));
             $product->set_status('publish');
             $product->set_price(0);
@@ -289,7 +284,7 @@ class Woocommerce
 
         return Arr::make($cart_items)->every(function ($item) {
             $product = $item['data'];
-            return $product->get_id() === static::get_growfund_product_id() && $product->get_slug() === static::get_growfund_product_slug();
+            return $product->get_id() === static::get_growfund_product_id();
         });
     }
 
@@ -323,7 +318,7 @@ class Woocommerce
         
         return Arr::make($items)->every(function ($item) {
             $product = $item->get_product();
-            return $product->get_id() === static::get_growfund_product_id() && $product->get_slug() === static::get_growfund_product_slug();
+            return $product->get_id() === static::get_growfund_product_id();
         });
     }
 
@@ -430,7 +425,7 @@ class Woocommerce
 			}
         }
         
-        return $product->get_id() === static::get_growfund_product_id() && $product->get_slug() === static::get_growfund_product_slug();
+        return $product->get_id() === static::get_growfund_product_id();
     }
 
     /**

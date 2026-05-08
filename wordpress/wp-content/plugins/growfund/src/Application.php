@@ -15,9 +15,8 @@ use Growfund\Providers\HookServiceProvider;
 use Growfund\Providers\PaymentServiceProvider;
 use Growfund\Traits\Macroable;
 use Exception;
-use Growfund\Constants\OptionKeys;
 use Growfund\Core\AssetHandler;
-use Growfund\Supports\Option;
+use Growfund\Managers\MigrationManager;
 use InvalidArgumentException;
 
 /**
@@ -28,7 +27,6 @@ use InvalidArgumentException;
  * @method bool is_woocommerce_installed()
  * @method bool is_onboarding_completed()
  * @method bool is_migration_available_from_crowdfunding()
- * @method string installed_db_version()
  * @method bool has_growfund_pro()
  */
 class Application extends Container
@@ -404,26 +402,7 @@ class Application extends Container
     {
         $migrations = $this->tagged('app.migrations');
 
-        if (empty($migrations)) {
-            return;
-        }
-
-        foreach ($migrations as $migration) {
-            if (!$migration instanceof Migration) {
-                throw new Exception(
-                    sprintf(
-                        /* translators: 1: Migration class name, 2: Migration interface name */
-                        esc_html__('Class %1$s must implement %2$s.', 'growfund'),
-                        esc_html(get_class($migration)),
-                        Migration::class
-                    )
-                );
-            }
-
-            $migration->handle_up();
-        }
-
-        Option::update(OptionKeys::INSTALLED_DB_VERSION, GROWFUND_VERSION);
+        MigrationManager::run($migrations);
     }
 
     /**

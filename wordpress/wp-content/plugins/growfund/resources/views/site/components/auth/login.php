@@ -4,11 +4,13 @@
 
 use Growfund\Core\AppSettings;
 use Growfund\Supports\Utils;
+use Growfund\Views\Components\Auth\SignupVerificationMail;
 use Growfund\Views\Components\Form\Button;
 use Growfund\Views\Components\Form\PasswordField;
 use Growfund\Views\Components\Form\TextField;
 use Growfund\Views\Components\UI\Badge;
 use Growfund\Views\Components\UI\Image;
+use Growfund\Views\Components\UI\Modal;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -100,3 +102,21 @@ defined( 'ABSPATH' ) || exit;
 
     </form>
 </div>
+
+<?php 
+if ($login->is_verfication_mail_sent) {
+    $growfund_signup_verification_mail = new SignupVerificationMail();
+    $growfund_signup_verification_mail->email = $login->verification_email;
+
+	$growfund_signup_verification_toaster = new Modal();
+	$growfund_signup_verification_toaster->classname = 'is-active';
+	$growfund_signup_verification_toaster->id = "growfund-signup-verification-modal";
+	$growfund_signup_verification_toaster->show_footer = false;
+	$growfund_signup_verification_toaster->show_header = false;
+    $growfund_signup_verification_toaster->show_header_icon = true;
+    $growfund_signup_verification_toaster->header_icon = 'assets/site/icon/cross.svg';
+
+	$growfund_signup_verification_toaster->body_content = growfund_get_html($growfund_signup_verification_mail);
+	growfund_render($growfund_signup_verification_toaster);
+}
+?>

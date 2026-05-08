@@ -53,15 +53,6 @@ Application::macro('is_migration_available_from_crowdfunding', function () {
 });
 
 /**
- * Register a macro to get the installed database version.
- * 
- * @return string
- */
-Application::macro('installed_db_version', function () {
-    return Option::get(OptionKeys::INSTALLED_DB_VERSION, '0.0.0');
-});
-
-/**
  * Register a macro to get if the pro plugin is activated.
  * 
  * @return string

@@ -1,19 +1,15 @@
-// @todo: All commented codes will be uncommented when the feature is ready
-
 import { zodResolver } from '@hookform/resolvers/zod';
 import { __ } from '@wordpress/i18n';
 import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import ElementWrapper from '@/components/element-wrapper';
-// import { CheckboxField } from '@/components/form/checkbox-field';
 import { ComboBoxField } from '@/components/form/combobox-field';
 import { SelectField } from '@/components/form/select-field';
-// import { SwitchField } from '@/components/form/switch-field';
 import { TextField } from '@/components/form/text-field';
-// import PaymentSettingsAdminCommissionFallback from '@/components/pro-fallbacks/settings/payment/admin-commission-fallback';
+import PaymentSettingsDigitalWalletFallback from '@/components/pro-fallbacks/settings/payment/digital-wallet-fallback';
 import PaymentSettingsGuestCheckoutFallback from '@/components/pro-fallbacks/settings/payment/guest-checkout-fallback';
-// import { Box, BoxContent } from '@/components/ui/box';
+import PaymentSettingsPlatformFeeFallback from '@/components/pro-fallbacks/settings/payment/platform-fee-fallback';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
 import { growfundConfig } from '@/config/growfund';
@@ -22,10 +18,9 @@ import { AppConfigKeys, useSettingsContext } from '@/features/settings/context/s
 import PaymentMethodsCard from '@/features/settings/features/payments/components/payment-methods-card';
 import { useUpdateDirtyState } from '@/features/settings/hooks/use-update-dirty-state';
 import {
-  PaymentSettingsSchema,
+  PaymentSettingsFormSchema,
   type PaymentSettingsForm,
 } from '@/features/settings/schemas/settings';
-// import { useCurrency } from '@/hooks/use-currency';
 import { useRouteBlockerGuard } from '@/hooks/use-route-blocker-guard';
 import { registry } from '@/lib/registry';
 import { getDefaults } from '@/lib/zod';
@@ -33,15 +28,17 @@ import { currenciesAsOptions } from '@/utils/currencies';
 
 const PaymentSettingsPage = () => {
   const { appConfig, isDonationMode } = useAppConfig();
-  // const { toCurrency } = useCurrency();
 
   const form = useForm<PaymentSettingsForm>({
-    resolver: zodResolver(PaymentSettingsSchema),
+    resolver: zodResolver(PaymentSettingsFormSchema),
   });
 
   useEffect(() => {
     const paymentSettings = appConfig[AppConfigKeys.Payment];
-    form.reset.call(null, { ...getDefaults(PaymentSettingsSchema), ...paymentSettings });
+    form.reset.call(null, {
+      ...getDefaults(PaymentSettingsFormSchema._def.schema),
+      ...paymentSettings,
+    });
   }, [appConfig, form.reset]);
 
   const { registerForm, isCurrentFormDirty } = useSettingsContext<PaymentSettingsForm>();
@@ -57,19 +54,10 @@ const PaymentSettingsPage = () => {
   useUpdateDirtyState(form);
   useRouteBlockerGuard({ isDirty: isCurrentFormDirty });
 
-  // const enableWallet = useWatch({ control: form.control, name: 'enable_wallet' });
   const eCommerceEngine = useWatch({ control: form.control, name: 'e_commerce_engine' });
 
-  // const limitOnRevenueWithdrawal = useWatch({
-  //   control: form.control,
-  //   name: 'put_limit_on_revenue_withdrawal',
-  // });
-  // const revenueWithdrawalType = useWatch({
-  //   control: form.control,
-  //   name: 'revenue_withdrawal_type',
-  // });
-
-  // const PaymentSettingsAdminCommission = registry.get('PaymentSettingsAdminCommission');
+  const PaymentSettingsPlatformFee = registry.get('PaymentSettingsPlatformFee');
+  const PaymentSettingsDigitalWallet = registry.get('PaymentSettingsDigitalWallet');
   const PaymentSettingsGuestCheckout = registry.get('PaymentSettingsGuestCheckout');
 
   return (
@@ -168,92 +156,15 @@ const PaymentSettingsPage = () => {
           </>
         )}
 
-        {/* Admin commission */}
-        {/* <ElementWrapper
-          feature="settings.payment.admin_commission"
-          fallback={<PaymentSettingsAdminCommissionFallback />}
-        >
-          {PaymentSettingsAdminCommission && <PaymentSettingsAdminCommission />}
-        </ElementWrapper> */}
+        {/* Platform Fee */}
+        <ElementWrapper fallback={<PaymentSettingsPlatformFeeFallback />}>
+          {PaymentSettingsPlatformFee && <PaymentSettingsPlatformFee />}
+        </ElementWrapper>
 
         {/* Wallet settings */}
-        {/* <Card>
-          <CardHeader>
-            <div className="growfund-flex growfund-items-center growfund-justify-between">
-              <CardTitle>{__('Wallet', 'growfund')}</CardTitle>
-              <SwitchField control={form.control} name="enable_wallet" />
-            </div>
-            <CardDescription>{__('Manage user wallet settings.', 'growfund')}</CardDescription>
-          </CardHeader>
-          {enableWallet && (
-            <CardContent className="growfund-space-y-4">
-              <CheckboxField
-                control={form.control}
-                name="put_limit_on_revenue_withdrawal"
-                label={__('Put limit on revenue withdrawal request', 'growfund')}
-              />
-
-              {limitOnRevenueWithdrawal && (
-                <Box>
-                  <BoxContent className="growfund-space-y-4">
-                    <SelectField
-                      control={form.control}
-                      name="revenue_withdrawal_type"
-                      options={[
-                        { label: __('Anytime', 'growfund'), value: 'anytime' },
-                        {
-                          label: __('After a certain percentage of gaol is reached', 'growfund'),
-                          value: 'after-certain-goal-reached',
-                        },
-                        {
-                          label: __('After campaign completion', 'growfund'),
-                          value: 'after-completion',
-                        },
-                      ]}
-                      label={__('Withdrawal type', 'growfund')}
-                      placeholder={__('Select withdrawal type', 'growfund')}
-                      description={__(
-                        'Specify when fundraisers can request withdrawal.',
-                        'growfund',
-                      )}
-                    />
-
-                    {revenueWithdrawalType === 'after-certain-goal-reached' && (
-                      <TextField
-                        control={form.control}
-                        name="goal_percentage"
-                        type="number"
-                        label={__('% of goal reached', 'growfund')}
-                        placeholder={__('e.g. 80%', 'growfund')}
-                      />
-                    )}
-
-                    <TextField
-                      control={form.control}
-                      name="minimum_balance_to_request_withdrawal"
-                      label={__('Minimum balance to request withdrawal', 'growfund')}
-                      type="number"
-                      placeholder={`e.g. ${toCurrency(20)}`}
-                    />
-                  </BoxContent>
-                </Box>
-              )}
-              <SwitchField
-                control={form.control}
-                name="enable_wallet_deposit_for_contributors"
-                label={
-                  isDonationMode
-                    ? __('Enable wallet deposit for donors', 'growfund')
-                    : __('Enable wallet deposit for backers', 'growfund')
-                }
-                description={__(
-                  'Allow users to deposit money to contribute later from their wallet balance.',
-                  'growfund',
-                )}
-              />
-            </CardContent>
-          )}
-        </Card> */}
+        <ElementWrapper fallback={<PaymentSettingsDigitalWalletFallback />}>
+          {PaymentSettingsDigitalWallet && <PaymentSettingsDigitalWallet />}
+        </ElementWrapper>
 
         {isDonationMode && (
           <ElementWrapper fallback={<PaymentSettingsGuestCheckoutFallback />}>

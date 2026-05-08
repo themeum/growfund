@@ -31,11 +31,17 @@ class HookNames
     const SHOW_ADMIN_BAR = 'show_admin_bar';
     const STYLE_LOADER_SRC = 'style_loader_src';
     const WP_AUTHENTICATE_USER = 'wp_authenticate_user';
-    const USER_REGISTER = 'user_register';
+    const WP_USER_REGISTER = 'user_register';
     const PLUGIN_ROW_META = 'plugin_row_meta';
     const REST_REQUEST_AFTER_CALLBACKS = 'rest_request_after_callbacks';
     const WP_LOADED = 'wp_loaded';
-    const APPLY_ONBOARDING_FROM_CROWDFUNDING  = 'growfund_apply_onboarding_from_wp_crowdfunding';
+    const WP_NEW_USER_FORM = 'user_new_form';
+    const WP_EDIT_USER_FORM = 'edit_user_profile';
+    const WP_UPDATE_USER = 'edit_user_profile_update';
+    const WP_EDIT_PROFILE_FORM = 'show_user_profile';
+    const WP_UPDATE_PROFILE = 'personal_options_update';
+    const WP_USER_ROW_ACTIONS = 'user_row_actions';
+    const WP_GET_SAMPLE_PERMALINK_HTML = 'get_sample_permalink_html';
     
     // Woocommerce hooks
     const WC_PRODUCT_GET_NAME = 'woocommerce_product_get_name';
@@ -68,12 +74,15 @@ class HookNames
     const STOP_SCHEDULED_RECURRING = 'growfund_stop_scheduled_recurring';
 
     // Growfund Hooks
+    const APPLY_ONBOARDING_FROM_CROWDFUNDING  = 'growfund_apply_onboarding_from_wp_crowdfunding';
     /** @deprecated since 1.0.2 */
     const GROWFUND_FILTER_PRO_FEATURES = 'growfund/features'; // @todo: deprecated since 1.0.2. keep it just because of backward compatibility - will be removed in 1.1.0.
     /** @deprecated since 1.0.2 */
     const GROWFUND_FILTER_FEATURES = 'growfund/features'; // @todo: deprecated since 1.0.2. keep it just because of backward compatibility - will be removed in 1.1.0.
     const GROWFUND_ROUTE_BEFORE_INIT_ACTION = 'growfund/route/before_init';
     const GROWFUND_CAMPAIGN_AFTER_SAVE_ACTION = 'growfund/campaign/after_save';
+    const GROWFUND_CAMPAIGN_PUBLISHED = 'growfund/campaign/published';
+    const GROWFUND_CAMPAIGN_COMPLETED = 'growfund/campaign/completed';
     const GROWFUND_CAMPAIGN_AFTER_PERMANENT_DELETE_ACTION = 'growfund/campaign/after_permanent_delete';
     const GROWFUND_CAMPAIGN_UPDATE_VALIDATION_RULES_FILTER = 'growfund/campaign/update_validation_rules';
     /** @deprecated since 1.0.3 */
@@ -82,6 +91,7 @@ class HookNames
     const GROWFUND_BACKER_OVERVIEW_FILTER = 'growfund/backer/overview';
     const GROWFUND_DONOR_OVERVIEW_FILTER = 'growfund/donor/overview';
     const GROWFUND_BEFORE_REGISTER_SITE_ROUTES_ACTION = 'growfund/route/before_register_site_routes';
+    const GROWFUND_APP_PAYMENT_CONFIG_FILTER = 'growfund/app_payment_config';
     const GROWFUND_BEFORE_APP_CONFIG_UPDATE_FILTER = 'growfund/app_config/before_update';
     const GROWFUND_BEFORE_OPTION_UPDATE_FILTER = 'growfund/option/before_update';
     const GROWFUND_ALLOW_CAMPAIGN_COMMENTS_FILTER = 'growfund/campaign/allow-comments';
@@ -95,11 +105,16 @@ class HookNames
     const GROWFUND_ALLOW_EMAIL_VERIFICATION = 'growfund/enable_email_verification';
     const GROWFUND_IS_APPLY_EMAIL_VERIFICATION = 'growfund/apply_email_verification';
     const GROWFUND_COLLABORATOR_LIST_FILTER = 'growfund/collaborator/list';
+    const GROWFUND_COLLABORATOR_CAMPAIGN_IDS_FILTER = 'growfund/collaborator/campaign-ids';
+    const GROWFUND_FUNDRAISER_CAMPAIGN_IDS_QUERY_FILTER = 'growfund/fundraiser/campaign-ids-query';
     const GROWFUND_FUND_LIST_FILTER = 'growfund/fund/list';
     const GROWFUND_CAMPAIGN_MIGRATION_BATCH_SIZE_FILTER = 'growfund/campaign_migration/batch_size';
     const GROWFUND_DONATION_MIGRATION_BATCH_SIZE_FILTER = 'growfund/donation_migration/batch_size';
     const GROWFUND_PLEDGE_MIGRATION_BATCH_SIZE_FILTER = 'growfund/pledge_migration/batch_size';
     const GROWFUND_CURRENT_USER_FILTER = 'growfund/current_user';
+    const GROWFUND_PLEDGE_AFTER_BACKED_ACTION = 'growfund/pledge/after_backed';
+    const GROWFUND_DONATION_AFTER_COMPLETED_ACTION = 'growfund/donation/after_completed';
+    const GROWFUND_WALLET_TRANSACTION_SYNC_ACTION = 'growfund/wallet/transactions/sync';
 
     const WP_CROWDFUNDING_DEACTIVATE = 'wp_crowdfunding_deactivate';
 }

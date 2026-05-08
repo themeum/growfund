@@ -60,6 +60,7 @@
     --growfund-yellow-3: 45 100% 51%;
     --growfund-yellow-4: 54 99% 31%;
     --growfund-yellow-5: 49 100% 88%;
+    --growfund-yellow-6: 42, 100%, 29%;
     --growfund-orange-1: 37 100% 92%;
     --growfund-orange-2: 42 100% 18%;
     --growfund-orange-3: 19 100% 94%;
@@ -280,10 +281,12 @@
   }
 
   .growfund-pro-badge {
-    background: conic-gradient(from 28.54deg at 57.25% 59.25%,
-        #ffb413 0deg,
-        #fff9bf 360deg,
-        #ffb413 360deg);
+    background: conic-gradient(
+      from 28.54deg at 57.25% 59.25%,
+      #ffb413 0deg,
+      #fff9bf 360deg,
+      #ffb413 360deg
+    );
     border: 1px solid hsla(44, 100%, 51%, 1);
     @apply growfund-inline growfund-typo-tiny growfund-text-fg-primary growfund-px-3 growfund-py-px growfund-rounded-full;
   }
@@ -301,11 +304,11 @@
   @apply growfund-mt-[2px];
 }
 
-.wp-editor-tabs>button {
+.wp-editor-tabs > button {
   @apply growfund-rounded-tl-md growfund-rounded-tr-md growfund-bg-background-surface;
 }
 
-.wp-media-buttons>button.insert-media {
+.wp-media-buttons > button.insert-media {
   @apply growfund-inline-flex growfund-items-center growfund-justify-center growfund-gap-2 growfund-typo-small growfund-font-medium growfund-leading-[1] growfund-whitespace-nowrap growfund-bg-background-surface growfund-border-border growfund-rounded-md growfund-transition-colors hover:growfund-text-fg-primary hover:growfund-border-border hover:growfund-bg-background-fill-hover focus-visible:growfund-outline-none focus-visible:growfund-ring-2 focus-visible:growfund-ring-ring focus-visible:growfund-ring-offset-2 disabled:growfund-pointer-events-none disabled:growfund-opacity-50 [&_span]:growfund-text-icon-primary [&_span]:growfund-pointer-events-none [&_span]:growfund-size-4 [&_span]:growfund-shrink-0 growfund-relative growfund-text-fg-primary growfund-h-8 growfund-px-3 growfund-typo-tiny;
 }
 
@@ -317,7 +320,7 @@
   @apply growfund-shadow-none;
 }
 
-.wp-editor-container .mce-top-part>div {
+.wp-editor-container .mce-top-part > div {
   @apply growfund-border-solid growfund-border-b growfund-border-b-border;
 }
 
@@ -337,7 +340,7 @@
   @apply growfund-rounded-sm growfund-border-solid !growfund-border !growfund-border-border;
 }
 
-.wp-editor-container .mce-toolbar .mce-btn-group>div:has(.mce-btn) {
+.wp-editor-container .mce-toolbar .mce-btn-group > div:has(.mce-btn) {
   @apply growfund-flex growfund-items-center growfund-gap-1;
 }
 

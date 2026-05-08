@@ -41,16 +41,19 @@ class Pagination
     /**
      * Get the overall user record count for a specific user role.
      *
-     * @param string $role
+     * @param string|null $role
      * @return int
      */
-    public static function get_overall_user_count(string $role)
+    public static function get_overall_user_count(?string $role = null)
     {
         $args = [
             'count_total' => true,
             'number' => -1,
-            'role' => $role,
         ];
+
+        if (!is_null($role)) {
+            $args['role'] = $role;
+        }
 
         if ($role === Fundraiser::ROLE && growfund_user()->is_fundraiser()) {
             $args['exclude'] = [growfund_user()->get_id()]; // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude

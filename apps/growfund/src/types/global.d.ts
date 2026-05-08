@@ -16,8 +16,8 @@ declare global {
       rest_url_base: string;
       ajax_url: string;
       rest_nonce: string;
-      ajax_nonce: string;
-      user_role: 'administrator' | 'fundraiser' | 'donor' | 'backer';
+      site_nonce: string;
+      user_role: 'administrator' | 'fundraiser' | 'donor' | 'backer' | 'collaborator';
       is_onboarding_completed: boolean;
       is_woocommerce_installed: boolean;
       is_donation_mode: boolean;

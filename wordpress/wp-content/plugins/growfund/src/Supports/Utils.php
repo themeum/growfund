@@ -6,6 +6,11 @@ defined( 'ABSPATH' ) || exit;
 
 use Growfund\Constants\AppConfigKeys;
 use Growfund\Constants\OptionKeys;
+use Growfund\Constants\UserTypes\Admin;
+use Growfund\Constants\UserTypes\Backer;
+use Growfund\Constants\UserTypes\Collaborator;
+use Growfund\Constants\UserTypes\Donor;
+use Growfund\Constants\UserTypes\Fundraiser;
 use Growfund\Core\AppSettings;
 use Growfund\Supports\Option;
 use Growfund\SiteRouter;
@@ -179,7 +184,7 @@ class Utils
      */
     public static function is_checkout_page()
     {
-        if (growfund_settings(AppSettings::PAYMENT)->get_checkout_page_id() === get_the_ID()) {
+        if (growfund_settings(AppSettings::PAGES)->get_checkout_page_id() === get_the_ID()) {
             return true;
         }
 
@@ -321,5 +326,26 @@ class Utils
 		);
 
         return static::get_site_url("pledges/$pledge_uid/reward-items/$reward_item_id/download?signature=$signature&expires=$expires&user=" . growfund_user()->get_id());
+    }
+
+    /**
+     * Get all roles of growfund
+     * 
+     * @return array
+     */
+    public static function get_growfund_roles() {
+        $growfund_roles = [
+            Admin::ROLE => Admin::NAME, 
+            Fundraiser::ROLE => Fundraiser::NAME, 
+            Collaborator::ROLE => Collaborator::NAME,
+        ];
+
+        if (growfund_app()->is_donation_mode()) {
+            $growfund_roles[Donor::ROLE] = Donor::NAME;
+        } else {
+            $growfund_roles[Backer::ROLE] = Backer::NAME;
+        }
+
+        return $growfund_roles;
     }
 }

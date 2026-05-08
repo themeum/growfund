@@ -6,21 +6,41 @@ defined( 'ABSPATH' ) || exit;
 
 class AdminUser
 {
+    /**
+     * @var static
+     */
+    protected static $instance;
 
+    /**
+     * @var \WP_User|null
+     */
+    protected $admin;
+
+    public function __construct() {
+        $admin_email = get_option('admin_email');
+
+        $this->admin = get_user_by('email', $admin_email);
+    }
+
+    public static function make_instance() {
+        if (empty(static::$instance)) {
+            static::$instance = new static();
+        }
+
+        return static::$instance;
+    }
     /**
      * Get admin user
      * 
      * @return \WP_User|null
      */
-    public static function get()
+    public function get()
     {
-        $admin = get_user_by('email', static::get_email());
-
-        if (!$admin) {
+        if (!$this->admin) {
             return null;
         }
 
-        return $admin;
+        return $this->admin;
     }
 
     /**
@@ -30,11 +50,15 @@ class AdminUser
      */
     public static function get_id()
     {
-        return static::get()->ID ?? 0;
+        $instance = static::make_instance();
+
+        return $instance->get()->ID ?? 0;
     }
 
     public static function get_email()
     {
-        return get_option('admin_email');
+        $instance = static::make_instance();
+
+        return $instance->admin->user_email ?? '';
     }
 }

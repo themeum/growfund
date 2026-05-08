@@ -21,11 +21,11 @@ import { SelectField } from '@/components/form/select-field';
 import { TextField } from '@/components/form/text-field';
 import { LoadingSpinnerOverlay } from '@/components/layouts/loading-spinner';
 import {
-    DataTable,
-    DataTableContent,
-    DataTablePagination,
-    DataTableWrapper,
-    DataTableWrapperHeader,
+  DataTable,
+  DataTableContent,
+  DataTablePagination,
+  DataTableWrapper,
+  DataTableWrapperHeader,
 } from '@/components/table/data-table';
 import ThreeDotsOptions from '@/components/three-dots-options';
 import { Badge, type BadgeProps } from '@/components/ui/badge';
@@ -37,17 +37,18 @@ import { RouteConfig } from '@/config/route-config';
 import { useConsentDialog } from '@/features/campaigns/contexts/consent-dialog-context';
 import { usePledgeFilters } from '@/features/pledges/hooks/use-pledge-filters';
 import {
-    type Pledge,
-    type PledgeStatus,
-    PledgeStatusSchema,
+  type Pledge,
+  type PledgeStatus,
+  PledgeStatusSchema,
 } from '@/features/pledges/schemas/pledge';
 import { type PledgeFilter, PledgeFilterSchema } from '@/features/pledges/schemas/pledges-filter';
 import {
-    useEmptyPledgesTrashMutation,
-    usePledgesBulkActionsMutation,
-    usePledgesQuery,
+  useEmptyPledgesTrashMutation,
+  usePledgesBulkActionsMutation,
+  usePledgesQuery,
 } from '@/features/pledges/services/pledges';
 import { useCurrency } from '@/hooks/use-currency';
+import useCurrentUser from '@/hooks/use-current-user';
 import { useFormQuerySync } from '@/hooks/use-form-query-sync';
 import { DATE_FORMATS } from '@/lib/date';
 import { type TableColumnDef } from '@/types';
@@ -63,6 +64,7 @@ const PledgeList = ({ backerId }: { backerId?: string }) => {
   const navigate = useNavigate();
   const { toCurrency } = useCurrency();
   const { openDialog } = useConsentDialog();
+  const { isBacker } = useCurrentUser();
 
   const form = useForm<PledgeFilter>({
     resolver: zodResolver(PledgeFilterSchema),
@@ -298,20 +300,30 @@ const PledgeList = ({ backerId }: { backerId?: string }) => {
 
       columnsHelper.accessor('id', {
         header: () => __('ID', 'growfund'),
-        cell: (props) => (
-          <Link
-            className="group-hover/row:growfund-text-fg-emphasis hover/row:growfund-underline"
-            to={RouteConfig.EditPledge.buildLink({ id: props.getValue() })}
-          >
-            {sprintf('#%s', props.getValue())}
-          </Link>
-        ),
+        cell: (props) => {
+          if (isBacker) {
+            return sprintf('#%s', props.getValue());
+          }
+
+          return (
+            <Link
+              className="group-hover/row:growfund-text-fg-emphasis hover/row:growfund-underline"
+              to={RouteConfig.EditPledge.buildLink({ id: props.getValue() })}
+            >
+              {sprintf('#%s', props.getValue())}
+            </Link>
+          );
+        },
         size: 60,
       }),
 
       columnsHelper.accessor('campaign.title', {
         header: 'Campaign Name',
         cell: (props) => {
+          if (isBacker) {
+            return props.getValue();
+          }
+
           return (
             <Link
               to={RouteConfig.EditPledge.buildLink({ id: props.row.original.id })}
@@ -428,7 +440,7 @@ const PledgeList = ({ backerId }: { backerId?: string }) => {
         size: 80,
       }),
     ] as TableColumnDef<Pledge>[];
-  }, [toCurrency, rowDropdownActions, handleActionSelect]);
+  }, [toCurrency, rowDropdownActions, handleActionSelect, isBacker]);
 
   return matchPaginatedQueryStatus(pledgesQuery, {
     Loading: <LoadingSpinnerOverlay />,

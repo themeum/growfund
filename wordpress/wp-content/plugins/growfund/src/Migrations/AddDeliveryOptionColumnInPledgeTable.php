@@ -21,8 +21,6 @@ class AddDeliveryOptionColumnInPledgeTable extends BaseMigration
      */
     protected $table_name = Tables::PLEDGES;
 
-    protected $is_available_at = '1.0.9';
-
     /**
      * Run the migration.
      *

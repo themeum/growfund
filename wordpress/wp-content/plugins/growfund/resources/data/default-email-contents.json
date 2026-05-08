@@ -460,6 +460,29 @@
       }
     ]
   },
+  "growfund_admin_email_withdrawal_request_received": {
+    "subject": "New withdrawal request!",
+    "heading": "New withdrawal request!",
+    "message": "<p>Dear <strong>{admin_name}</strong>!</p><br /><p>A new withdrawal request has been submitted by Fundraiser <strong>{fundraiser_name}</strong>. Please review the details.</p><br /><p>{withdrawal_details_table}</p><br /><p>{pay_now_button}</p>",
+    "shortcodes": [
+      {
+        "label": "Withdrawal Details Table",
+        "value": "{withdrawal_details_table}"
+      },
+      {
+        "label": "Admin Name",
+        "value": "{admin_name}"
+      },
+      {
+        "label": "Fundraiser Name",
+        "value": "{fundraiser_name}"
+      },
+      {
+        "label": "Pay Now Button",
+        "value": "{pay_now_button}"
+      }
+    ]
+  },
   "growfund_fundraiser_email_donation_amount_charged": {
     "subject": "Donation Charged!",
     "heading": "Donation Charged!",
@@ -1204,6 +1227,60 @@
       {
         "label": "Payment ID",
         "value": "{payment_id}"
+      }
+    ]
+  },
+  "growfund_fundraiser_email_withdrawal_request_accepted": {
+    "subject": "Withdrawal request accepted",
+    "heading": "Withdrawal request accepted",
+    "message": "<p>Hi <strong>{fundraiser_name}</strong>!</p><br /><p>Your withdrawal request has been successfully processed.</p><br /><p>{withdrawal_accepted_card}</p><br /><p>{check_it_out_button}</p><br /><p>Request received on: {request_date}</p>",
+    "shortcodes": [
+      {
+        "label": "Withdrawal Accepted Card",
+        "value": "{withdrawal_accepted_card}"
+      },
+      {
+        "label": "Fundraiser Name",
+        "value": "{fundraiser_name}"
+      },
+      {
+        "label": "Check It Out Button",
+        "value": "{check_it_out_button}"
+      },
+      {
+        "label": "Request Date",
+        "value": "{request_date}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
+      }
+    ]
+  },
+  "growfund_fundraiser_email_withdrawal_request_rejected": {
+    "subject": "Your withdrawal request was rejected",
+    "heading": "Your withdrawal request was rejected",
+    "message": "<p>Hi <strong>{fundraiser_name}</strong>!</p><br /><p>Your withdrawal request has been declined.</p><br />{withdrawal_rejected_card}<br /><p>If you have any questions about your donation, please contact us at {support_email}.</p><p>With gratitude,<br />The {organization_name} Team</p>",
+    "shortcodes": [
+      {
+        "label": "Withdrawal Rejected Feedback",
+        "value": "{withdrawal_rejected_card}"
+      },
+      {
+        "label": "Fundraiser Name",
+        "value": "{fundraiser_name}"
+      },
+      {
+        "label": "Support Email",
+        "value": "{support_email}"
+      },
+      {
+        "label": "Organization Name",
+        "value": "{organization_name}"
       }
     ]
   },
@@ -2150,7 +2227,7 @@
   "growfund_email_verification": {
     "subject": "Email Verification",
     "heading": "Email Verification",
-    "message": "<p>Hi <strong>{first_name} {last_name}</strong>,</p><p>Please confirm that you would like to use this email address for your {site_name} donor account.</p><p> </p><p>{verification_link_button}</p><p> </p><p>Or paste this link into your browser:</p><p>{verification_link}</p>",
+    "message": "<p>Hi <strong>{first_name} {last_name}</strong>,</p><p>Please confirm that you would like to use this email address for your {site_name} donor account.</p><p> </p>{verification_link_button}<p> </p><p>Or paste this link into your browser:</p><br/>{verification_link}",
     "shortcodes": [
       {
         "label": "First Name",

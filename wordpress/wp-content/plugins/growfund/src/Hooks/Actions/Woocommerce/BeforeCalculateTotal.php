@@ -4,6 +4,7 @@ namespace Growfund\Hooks\Actions\Woocommerce;
 
 defined( 'ABSPATH' ) || exit;
 
+use Exception;
 use Growfund\Constants\HookNames;
 use Growfund\Constants\HookTypes;
 use Growfund\Hooks\BaseHook;
@@ -51,7 +52,11 @@ class BeforeCalculateTotal extends BaseHook
             }
 
             if (growfund_app()->is_donation_mode()) {
-                $donation = (new DonationService())->get_by_id($contribution_id)->get_values();
+                try {
+                    $donation = (new DonationService())->get_by_id($contribution_id)->get_values();
+                } catch (Exception $_) {
+                    continue;
+                }
 				$product->set_price($donation->amount);
 				$product->set_sale_price($donation->amount);
                 $product->set_regular_price($donation->amount);
@@ -72,7 +77,12 @@ class BeforeCalculateTotal extends BaseHook
                 break;
             }
 
-            $pledge = (new PledgeService())->get_by_id($contribution_id)->get_values();
+            try {
+                $pledge = (new PledgeService())->get_by_id($contribution_id)->get_values();
+            } catch (Exception $_) {
+                continue;
+            }
+            
             $product->set_price($pledge->payment->amount);
             $product->set_sale_price($pledge->payment->amount);
             $product->set_regular_price($pledge->payment->amount);

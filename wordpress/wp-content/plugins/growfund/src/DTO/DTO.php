@@ -24,10 +24,6 @@ class DTO implements JsonSerializable
      */
     protected static $base_fields = ['id', 'title', 'description', 'slug'];
 
-
-    
-
-
     /**
      * Fields to exclude from public attributes.
      *
@@ -49,11 +45,15 @@ class DTO implements JsonSerializable
      */
     public function __construct(array $data = [])
     {
+        $this->init($data);
+    }
+
+    protected function init(array $data) {
         foreach ($data as $key => $value) {
             if (property_exists($this, $key)) {
                 $this->{$key} = $value;
-            }
-        }
+			}
+		}
     }
 
     /**
@@ -114,14 +114,25 @@ class DTO implements JsonSerializable
     public function to_array()
     {
         if (!empty($this->excluded_keys)) {
-            return $this->except($this->excluded_keys);
+            return $this->prepare_to_array($this->except($this->excluded_keys));
         }
 
         if (!empty($this->picked_keys)) {
-            return $this->only($this->picked_keys);
+            return $this->prepare_to_array($this->only($this->picked_keys));
         }
 
-        return $this->all();
+        return $this->prepare_to_array($this->all());
+    }
+
+    protected function prepare_to_array(array $data)
+    {
+        foreach ($data as $key => $value) {
+            if ($value instanceof DTO) {
+                $data[$key] = $this->prepare_to_array($value->to_array());
+            }
+        }
+
+        return $data;
     }
 
     /**

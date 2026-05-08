@@ -6,6 +6,9 @@ defined( 'ABSPATH' ) || exit;
 
 use Growfund\DTO\DTO;
 
+/**
+ * @deprecated since 1.1.0
+ */
 class CollaboratorDTO extends DTO
 {
     /**

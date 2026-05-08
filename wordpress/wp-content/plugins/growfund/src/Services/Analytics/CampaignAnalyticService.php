@@ -20,6 +20,8 @@ use Growfund\Supports\MediaAttachment;
 use Growfund\Supports\Money;
 use Growfund\Supports\Utils;
 use DateTime;
+use Growfund\Constants\UserTypes\Collaborator;
+use Growfund\Constants\UserTypes\Fundraiser;
 
 /**
  * Class CampaignAnalyticService
@@ -134,8 +136,13 @@ class CampaignAnalyticService
                 "SUM(amount + bonus_support_amount + shipping_cost) AS total_contributions",
             ]);
 
-        if (growfund_user()->is_fundraiser()) {
-            $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
+        if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_fundraiser();
+            $query->where_in('campaign_id', $campaign_ids);
+        }
+
+        if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_collaborator();
             $query->where_in('campaign_id', $campaign_ids);
         }
 
@@ -223,8 +230,13 @@ class CampaignAnalyticService
                 [CampaignStatus::PUBLISHED, CampaignStatus::FUNDED, CampaignStatus::COMPLETED]
             )->where_between('DATE(pledges.created_at)', $start_date, $end_date);
 
-        if (growfund_user()->is_fundraiser()) {
-            $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
+        if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_fundraiser();
+            $query->where_in('pledges.campaign_id', $campaign_ids);
+        }
+
+        if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_collaborator();
             $query->where_in('pledges.campaign_id', $campaign_ids);
         }
 
@@ -313,8 +325,13 @@ class CampaignAnalyticService
             ->where_in('pledges.status', [PledgeStatus::PENDING, PledgeStatus::IN_PROGRESS, PledgeStatus::BACKED, PledgeStatus::COMPLETED])
             ->where_between('DATE(pledges.created_at)', $start_date->format(DateTimeFormats::DB_DATE), $end_date->format(DateTimeFormats::DB_DATE));
 
-        if (growfund_user()->is_fundraiser()) {
-            $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
+        if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_fundraiser();
+            $query->where_in('pledges.campaign_id', $campaign_ids);
+        }
+
+        if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_collaborator();
             $query->where_in('pledges.campaign_id', $campaign_ids);
         }
 
@@ -366,9 +383,14 @@ class CampaignAnalyticService
                 'SUM(processing_fee) as total_processing_fee'
             ]);
 
-        if (growfund_user()->is_fundraiser()) {
-            $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
-            $query->where_in('campaign_id', $campaign_ids);
+        if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_fundraiser();
+            $query->where_in('pledges.campaign_id', $campaign_ids);
+        }
+
+        if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_collaborator();
+            $query->where_in('pledges.campaign_id', $campaign_ids);
         }
 
         if (!empty($campaign_id)) {
@@ -415,8 +437,16 @@ class CampaignAnalyticService
 
         $fundraiser_where = '';
 
-        if (growfund_user()->is_fundraiser()) {
-            $campaign_ids = implode(',', array_map('intval', growfund_get_all_campaign_ids_by_fundraiser()));
+        if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+            $campaign_ids = implode(',', array_map('intval', growfund_campaign_ids_by_fundraiser()));
+            
+            if (!empty($campaign_ids)) {
+                $fundraiser_where = "AND d.campaign_id IN ($campaign_ids)";
+            }
+        }
+
+        if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+            $campaign_ids = implode(',', array_map('intval', growfund_campaign_ids_by_collaborator()));
             
             if (!empty($campaign_ids)) {
                 $fundraiser_where = "AND d.campaign_id IN ($campaign_ids)";

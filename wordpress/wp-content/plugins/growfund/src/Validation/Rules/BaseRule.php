@@ -4,6 +4,8 @@ namespace Growfund\Validation\Rules;
 
 defined( 'ABSPATH' ) || exit;
 
+use Exception;
+use Growfund\Constants\Validation;
 use Growfund\Contracts\Rule;
 
 /**
@@ -155,5 +157,31 @@ abstract class BaseRule implements Rule
     {
         /* translators: %s: field name */
         return sprintf(__('The value provided for %s is invalid.', 'growfund'), str_replace(['_', '.'], ' ', $this->key));
+    }
+
+    /**
+     * Check if the rule is applied to the value.
+     * 
+     * @param string $rule Rule name 
+     * @return bool
+     */
+    protected function is_rule_applied(string $rule)
+    {
+        if (!array_key_exists($rule, Validation::RULE_MAP)) {
+            throw new Exception(esc_html__('Rule not found', 'growfund'));
+        }
+
+        $rules = array_map(function ($rule) {
+            if (is_string($rule)) {
+                $rule_name_value_array = explode(':', $rule, 2);
+                $rule_name = $rule_name_value_array[0];
+                return $rule_name;
+            }
+
+            return $rule;
+        }, $this->all_applied_rules);
+
+        return in_array($rule, $rules, true) 
+            || in_array(Validation::RULE_MAP[$rule], $rules, true);
     }
 }

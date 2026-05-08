@@ -21,6 +21,7 @@ export const RouteConfig = {
   FundraiserSettings: defineRoute('/profile-settings'),
   FundraiserAccount: defineRoute('account'),
   FundraiserNotifications: defineRoute('notifications'),
+  FundraiserPayouts: defineRoute('payout'),
 
   Tools: defineRoute('/tools'),
   License: defineRoute('/license'),
@@ -37,6 +38,9 @@ export const RouteConfig = {
   Donations: defineRoute('/donations'),
   CreateDonation: defineRoute('/donations/create'),
   EditDonation: defineRoute('/donations/:id'),
+
+  //Withdrawal Request routes
+  WithdrawalRequest: defineRoute('/withdrawal-request'),
 
   // Setting routes
   PaymentSettings: defineRoute('payment'),
@@ -90,7 +94,7 @@ export const RouteConfig = {
   FundraiserDetailsOverview: defineRoute('overview'),
   FundraiserDetailsCampaigns: defineRoute('campaigns'),
   FundraisersOverview: defineRoute('/fundraisers/:id/overview'),
-
+  FundraiserWallet: defineRoute('/wallet'),
   FundraiserBookmarks: defineRoute('/bookmarks'),
   FundraiserMyDonations: defineRoute('/my-donations'),
   FundraiserMyPledges: defineRoute('/my-pledges'),

@@ -1,16 +1,17 @@
 import { GearIcon } from '@radix-ui/react-icons';
 import { __ } from '@wordpress/i18n';
 import {
-    Bookmark,
-    FileHeart,
-    FileText,
-    HeartHandshake,
-    HelpingHand,
-    Home,
-    Receipt,
-    Undo2,
-    User,
-    Users2,
+  Bookmark,
+  CreditCard,
+  FileHeart,
+  FileText,
+  HeartHandshake,
+  HelpingHand,
+  Home,
+  Receipt,
+  Undo2,
+  User,
+  Users2,
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router';
 
@@ -25,6 +26,8 @@ import SidebarItem from '@/dashboards/shared/sidebar-item';
 import { type SidebarItem as SidebarItemType } from '@/dashboards/types/types';
 import { AppConfigKeys } from '@/features/settings/context/settings-context';
 import { cn } from '@/lib/utils';
+import { isDefined } from '@/utils';
+import { User as CurrentUser } from '@/utils/user';
 
 const sidebarItems: SidebarItemType[] = [
   {
@@ -62,6 +65,13 @@ const sidebarItems: SidebarItemType[] = [
     icon: FileText,
     route: RouteConfig.Analytics,
     child_routes: [],
+  },
+  {
+    label: __('Wallet', 'growfund-pro'),
+    icon: CreditCard,
+    route: RouteConfig.FundraiserWallet,
+    child_routes: [],
+    hidden: CurrentUser.isCollaborator(),
   },
   {
     label: __('Profile', 'growfund'),
@@ -107,6 +117,13 @@ const sidebarItemsDonationsMode: SidebarItem[] = [
     icon: FileText,
     route: RouteConfig.Analytics,
     child_routes: [],
+  },
+  {
+    label: __('Wallet', 'growfund-pro'),
+    icon: CreditCard,
+    route: RouteConfig.FundraiserWallet,
+    child_routes: [],
+    hidden: CurrentUser.isCollaborator(),
   },
   {
     label: __('Profile', 'growfund'),
@@ -211,9 +228,11 @@ const FundraiserSidebar = () => {
         <div className="growfund-flex growfund-flex-col growfund-justify-between growfund-h-full">
           <div className="growfund-space-y-4 growfund-overflow-auto growfund-flex-1">
             <div className="growfund-py-4 growfund-flex growfund-flex-col growfund-gap-2">
-              {items.map((item, index) => {
-                return <SidebarItem key={index} item={item} />;
-              })}
+              {items
+                .filter((item) => !isDefined(item.hidden) || !item.hidden)
+                .map((item, index) => {
+                  return <SidebarItem key={index} item={item} />;
+                })}
 
               <div className="growfund-px-3">
                 <Link

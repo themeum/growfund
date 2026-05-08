@@ -39,7 +39,7 @@ class CampaignEndedMail extends Mailer
 
         $campaign = [
             'campaign_title' => $campaign_dto->title,
-            'campaign_creator' => $campaign_dto->created_by,
+            'campaign_creator' => $campaign_dto->author->display_name ?? '',
             'campaign_start_date' => Date::format($campaign_dto->start_date, DateTimeFormats::HUMAN_READABLE_DATE),
             'funded_percent' => CampaignGoal::goal_achieved_percentage($campaign_dto),
             'campaign_goal' => CampaignGoal::prepare_goal_for_display($campaign_dto->goal_type, $campaign_dto->goal_amount),

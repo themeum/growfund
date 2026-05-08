@@ -31,6 +31,6 @@ class GuestMiddleware implements Middleware
             return $next($request);
         }
 
-        growfund_redirect(site_url());
+        growfund_redirect(growfund_user_dashboard_url());
     }
 }

@@ -8,6 +8,7 @@ use Growfund\Exceptions\ValidationException;
 use Growfund\Http\Response;
 use Growfund\Http\SiteRequest;
 use Exception;
+use Growfund\Exceptions\InvalidRoutActionException;
 
 class AjaxRouter
 {
@@ -65,23 +66,26 @@ class AjaxRouter
                 throw new Exception(esc_html__('Invalid ajax callback handler', 'growfund'));
             }
 
-            if (!class_exists($route->callback[0])) {
+            $controller_name = $route->callback[0];
+
+            if (!class_exists($controller_name)) {
                 /* translators: %s: Controller name */
-                throw new Exception(sprintf(esc_html__('Controller %s not found', 'growfund'), esc_html($route->callback[0])));
+                throw new Exception(sprintf(esc_html__('Controller %s not found', 'growfund'), esc_html($controller_name)));
             }
 
-            if (!method_exists($route->callback[0], $route->callback[1])) {
-                /* translators: %s: Method name */
-                throw new Exception(sprintf(esc_html__('Method %s not found', 'growfund'), esc_html($route->callback[1])));
+            $controller = SiteRouter::make($controller_name);
+            $method_name = $route->callback[1];
+
+            if (!method_exists($controller, $method_name)) {
+                /* translators: 1: Method name, 2: Controller class */
+                throw new InvalidRoutActionException(sprintf(esc_html__('The method %1$s is missing in the controller %2$s', 'growfund'), esc_html($method_name), esc_html($controller_name)));
             }
 
-            $controller = new $route->callback[0]();
-
-            $callback = function () use ($controller, $route) {
+            $callback = function () use ($controller, $method_name, $route) {
                 // Perform nonce verification if required
                 if ($route->needs_nonce_check) {
                     $request_nonce = wp_unslash(growfund_input_post('_wpnonce') ?? growfund_input_get('_wpnonce') ?? '');
-                    $nonce_action = $route->nonce_action ?? growfund_with_prefix('ajax_nonce');
+                    $nonce_action = $route->nonce_action ?? growfund_with_prefix('site_nonce');
 
                     if (!wp_verify_nonce($request_nonce, $nonce_action)) {
                         wp_send_json_error(__('Security check failed', 'growfund'), 403);
@@ -90,7 +94,12 @@ class AjaxRouter
                 }
 
                 try {
-                    return $controller->{$route->callback[1]}(static::get_request_instance());
+                    $request = static::get_request_instance(
+                        $request_nonce ?? null, 
+                        $nonce_action ?? null
+                    );
+
+                    return $controller->{$method_name}($request);
                 } catch (Exception $error) {
                     return static::send_error_response($error);
                 }
@@ -136,7 +145,7 @@ class AjaxRouter
     public function with_nonce($nonce_action = null)
     {
         $this->needs_nonce_check = true;
-        $this->nonce_action = $nonce_action ?? growfund_with_prefix('ajax_nonce');
+        $this->nonce_action = $nonce_action ?? growfund_with_prefix('site_nonce');
 
         return $this;
     }
@@ -154,9 +163,9 @@ class AjaxRouter
     /**
      * Get the SiteRequest instance.
      */
-    protected static function get_request_instance()
+    protected static function get_request_instance($request_nonce, $nonce_action)
     {
-        return SiteRequest::instance();
+        return SiteRequest::instance($request_nonce, $nonce_action);
     }
 
     /**

@@ -53,7 +53,7 @@ class SendLocalPickupInstructionMail extends Mailer
         $campaign = [
             'campaign_title' => $campaign_dto->title,
             'campaign_url' => growfund_campaign_url(get_post_field('post_name', $campaign_dto->id)),
-            'campaign_creator' => $campaign_dto->created_by,
+            'campaign_creator' => $campaign_dto->author->display_name ?? '',
             'campaign_start_date' => Date::format($campaign_dto->start_date, DateTimeFormats::HUMAN_READABLE_DATE),
             'campaign_end_date' => Date::format($campaign_dto->end_date, DateTimeFormats::HUMAN_READABLE_DATE),
             'funded_percent' => CampaignGoal::goal_achieved_percentage($campaign_dto),

@@ -43,7 +43,9 @@ use Exception;
 use Growfund\Constants\Campaign\FundSelectionType;
 use Growfund\Constants\Campaign\TributeNotificationPreference;
 use Growfund\Constants\Campaign\TributeRequirement;
+use Growfund\Constants\UserTypes\Collaborator;
 use Growfund\Constants\UserTypes\Donor;
+use Growfund\Constants\UserTypes\Fundraiser;
 use Growfund\DTO\Donation\DonationDonorDTO;
 use Growfund\Supports\Payment;
 
@@ -62,8 +64,14 @@ class DonationService
 
         $overall_query_conditions = [];
 
-        if ($params->user_id !== growfund_user()->get_id() && growfund_user()->is_fundraiser()) {
-            $overall_query_conditions[] = ['campaign_id', 'IN', growfund_get_all_campaign_ids_by_fundraiser()];
+        if ($params->user_id !== growfund_user()->get_id()) {
+            if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+                $overall_query_conditions[] = ['campaign_id', 'IN', growfund_campaign_ids_by_fundraiser()];
+            }
+
+            if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+                $overall_query_conditions[] = ['campaign_id', 'IN', growfund_campaign_ids_by_collaborator()];
+            }
         }
 
         if (!empty($params->user_id)) {
@@ -92,7 +100,6 @@ class DonationService
      * ordered by creation date in descending order. Limits the number of results if specified.
      *
      * @param DonationFilterParamsDTO $params_dto The parameters to filter the donations.
-     * @param int|null $limit Optional. The maximum number of donations to retrieve.
      * 
      * @return DonationDTO[] An array of formatted donation list items.
      */
@@ -136,7 +143,7 @@ class DonationService
 
     /**
      * Prepare donation dto
-     * @param $donation
+     * @param object $donation
      * @return DonationDTO
      */
     protected function prepare_donation_dto($donation)
@@ -170,28 +177,34 @@ class DonationService
 
     /**
      * Prepare donation campaign list item dto
-     * @param $donation
+     * @param object $donation
      * @return DonationCampaignDTO
      */
     protected function prepare_donation_campaign_dto($donation)
     {
         $images = !empty($donation->campaign_images) ? maybe_unserialize($donation->campaign_images) : [];
 
-        $donation_campaign = new DonationCampaignDTO();
-        $donation_campaign->id = $donation->campaign_id;
-        $donation_campaign->slug = $donation->campaign_slug;
-        $donation_campaign->title = $donation->campaign_name;
-        $donation_campaign->status = $donation->campaign_status;
-        $donation_campaign->fund_raised = $this->get_total_donated_amount($donation->campaign_id);
-        $donation_campaign->goal_type = $donation->campaign_goal_type;
-        $donation_campaign->goal_amount = $donation->campaign_goal_amount;
-        $donation_campaign->images =  MediaAttachment::make_many($images);
-        $donation_campaign->start_date = $donation->campaign_start_date;
-        $donation_campaign->created_by = $donation->campaign_created_by;
-        $donation_campaign->author_id = $donation->campaign_author_id;
-        $donation_campaign->is_launched = !empty($donation->campaign_start_date) ? Date::is_date_in_past_or_present($donation->campaign_start_date) : false;
+        $campaign_service = new CampaignService();
 
-        return $donation_campaign;
+        $campaign = new DonationCampaignDTO();
+        $campaign->id = $donation->campaign_id;
+        $campaign->slug = $donation->campaign_slug;
+        $campaign->title = $donation->campaign_name;
+        $campaign->status = $donation->campaign_status;
+        $campaign->fund_raised = $this->get_total_donated_amount($donation->campaign_id);
+        $campaign->goal_type = $donation->campaign_goal_type;
+        $campaign->goal_amount = $donation->campaign_goal_amount;
+        $campaign->images =  MediaAttachment::make_many($images);
+        $campaign->start_date = $donation->campaign_start_date;
+        $campaign->author = $campaign_service->get_campaign_author($donation->campaign_author_id);
+        $campaign->fundraiser = !empty($donation->campaign_fundraiser_id) 
+            ? $campaign_service->get_campaign_fundraiser($donation->campaign_fundraiser_id) 
+            : $campaign->author;
+        $campaign->is_launched = !empty($donation->campaign_start_date) 
+            ? Date::is_date_in_past_or_present($donation->campaign_start_date) 
+            : false;
+
+        return $campaign;
     }
 
 
@@ -317,8 +330,12 @@ class DonationService
         }
 
         if ($campaign->status !== CampaignStatus::FUNDED && CampaignGoal::is_reached($campaign, $dto)) {
-            $campaign_service->update_status($campaign->id, CampaignStatus::FUNDED);
-            growfund_event(new GoalReachedEvent($campaign));
+            $is_campaign_funded =$campaign_service->update_status($campaign->id, CampaignStatus::FUNDED);
+
+            if ($is_campaign_funded) {
+                $campaign->status = CampaignStatus::FUNDED;
+                growfund_event(new GoalReachedEvent($campaign));
+            }
         }
 
         if (!$campaign->is_half_goal_achieved_already && CampaignGoal::is_half_goal_achieved($campaign, $dto)) {
@@ -336,6 +353,12 @@ class DonationService
         return $donation_id;
     }
 
+    /**
+     * Get payment status
+     * 
+     * @param string $status
+     * @return string
+     */
     protected function get_payment_status($status) {
         if ($status === DonationStatus::COMPLETED) {
             return PaymentStatus::PAID;
@@ -510,12 +533,15 @@ class DonationService
     /**
      * Partial update a donation.
      *
+     * @param int $id The ID of the donation to update.
      * @param array $data An array of data to update.
      * @return bool True if successfully updated the donation or false.
      * @throws Exception If the data could not be updated.
      */
     public function partial_update($id, array $data)
     {
+        $donation = $this->get_by_id($id);
+        
         $data['updated_at'] = Date::current_sql_safe();
         $data['updated_by'] = growfund_user()->get_id();
 
@@ -526,7 +552,6 @@ class DonationService
         }
 
         if (isset($data['status'])) {
-            $donation = $this->get_by_id($id);
             growfund_event(new DonationStatusUpdateEvent($donation, $data['status']));
         }
 
@@ -793,7 +818,6 @@ class DonationService
     protected function get_query(DonationFilterParamsDTO $params)
     {
         $postmeta_table = WP::POST_META_TABLE;
-        $user_table = WP::USERS_TABLE;
 
         $query = QueryBuilder::query()
             ->select([
@@ -805,9 +829,9 @@ class DonationService
                 'campaign_images_meta.meta_value as campaign_images',
                 'campaign_goal_amount_meta.meta_value as campaign_goal_amount',
                 'campaign_goal_type_meta.meta_value as campaign_goal_type',
+                'campaign_fundraiser_id_meta.meta_value as campaign_fundraiser_id',
                 'funds.title as fund_title',
-                'campaign_author.ID as campaign_author_id',
-                'campaign_author.display_name as campaign_created_by',
+                'campaigns.post_author as campaign_author_id',
             ])
             ->table(Tables::DONATIONS . ' as donations')
             ->left_join(
@@ -818,32 +842,50 @@ class DonationService
             ->join_raw(
                 "{$postmeta_table} as campaign_status_meta",
                 "LEFT",
-                sprintf("campaigns.ID = campaign_status_meta.post_id AND campaign_status_meta.meta_key = '%s'", growfund_with_prefix(Campaign::STATUS))
+                "campaigns.ID = campaign_status_meta.post_id AND campaign_status_meta.meta_key = :campaign_status_meta_key",
+                [
+                    'campaign_status_meta_key' => growfund_with_prefix(Campaign::STATUS)
+                ]
             )
             ->join_raw(
                 "{$postmeta_table} as campaign_start_date_meta",
                 "LEFT",
-                sprintf("donations.campaign_id = campaign_start_date_meta.post_id AND campaign_start_date_meta.meta_key = '%s'", growfund_with_prefix(Campaign::START_DATE))
+                "donations.campaign_id = campaign_start_date_meta.post_id AND campaign_start_date_meta.meta_key = :campaign_start_date_meta_key",
+                [
+                    'campaign_start_date_meta_key' => growfund_with_prefix(Campaign::START_DATE)
+                ]
             )
             ->join_raw(
                 "{$postmeta_table} as campaign_images_meta",
                 "LEFT",
-                sprintf("campaigns.ID = campaign_images_meta.post_id AND campaign_images_meta.meta_key = '%s'", growfund_with_prefix(Campaign::IMAGES))
+                "campaigns.ID = campaign_images_meta.post_id AND campaign_images_meta.meta_key = :campaign_images_meta_key",
+                [
+                    'campaign_images_meta_key' => growfund_with_prefix(Campaign::IMAGES)
+                ]
             )
             ->join_raw(
                 "{$postmeta_table} as campaign_goal_amount_meta",
                 "LEFT",
-                sprintf("campaigns.ID = campaign_goal_amount_meta.post_id AND campaign_goal_amount_meta.meta_key = '%s'", growfund_with_prefix(Campaign::GOAL_AMOUNT))
+                "campaigns.ID = campaign_goal_amount_meta.post_id AND campaign_goal_amount_meta.meta_key = :campaign_goal_amount_meta_key",
+                [
+                    'campaign_goal_amount_meta_key' => growfund_with_prefix(Campaign::GOAL_AMOUNT)
+                ]
             )
             ->join_raw(
                 "{$postmeta_table} as campaign_goal_type_meta",
                 "LEFT",
-                sprintf("campaigns.ID = campaign_goal_type_meta.post_id AND campaign_goal_type_meta.meta_key = '%s'", growfund_with_prefix(Campaign::GOAL_TYPE))
+                "campaigns.ID = campaign_goal_type_meta.post_id AND campaign_goal_type_meta.meta_key = :campaign_goal_type_meta_key",
+                [
+                    'campaign_goal_type_meta_key' => growfund_with_prefix(Campaign::GOAL_TYPE)
+                ]
             )
             ->join_raw(
-                "{$user_table} as campaign_author",
+                "{$postmeta_table} as campaign_fundraiser_id_meta",
                 "LEFT",
-                sprintf("campaigns.post_author = campaign_author.ID")
+                "donations.campaign_id = campaign_fundraiser_id_meta.post_id AND campaign_fundraiser_id_meta.meta_key = :campaign_fundraiser_id_meta_key",
+                [
+                    'campaign_fundraiser_id_meta_key' => growfund_with_prefix(Campaign::FUNDRAISER_ID)
+                ]
             )
             ->left_join(
                 Tables::FUNDS . ' as funds',
@@ -851,9 +893,14 @@ class DonationService
                 'funds.ID'
             );
 
-        if (!empty($params->user_id) && $params->user_id !== growfund_user()->get_id() && growfund_user()->is_fundraiser()) {
-            $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
-            $query->where_in('donations.campaign_id', $campaign_ids);
+        if (!empty($params->user_id) && $params->user_id !== growfund_user()->get_id()) {
+            if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+                $query->where_in('donations.campaign_id', growfund_campaign_ids_by_fundraiser());
+            }
+
+            if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+                $query->where_in('donations.campaign_id', growfund_campaign_ids_by_collaborator());
+            }
         }
 
         if ($params->user_id) {
@@ -900,8 +947,13 @@ class DonationService
 
         $query = QueryBuilder::query()->table(Tables::DONATIONS)->where('status', '=', DonationStatus::COMPLETED);
 
-        if (growfund_user()->is_fundraiser()) {
-            $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
+        if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_fundraiser();
+            $query->where_in('campaign_id', $campaign_ids);
+        }
+
+        if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_collaborator();
             $query->where_in('campaign_id', $campaign_ids);
         }
 
@@ -936,11 +988,15 @@ class DonationService
 
         $query = QueryBuilder::query()->table(Tables::DONATIONS)->where('status', '=', DonationStatus::COMPLETED);
 
-        if (growfund_user()->is_fundraiser()) {
-            $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
+        if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_fundraiser();
             $query->where_in('campaign_id', $campaign_ids);
         }
 
+        if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_collaborator();
+            $query->where_in('campaign_id', $campaign_ids);
+        }
 
         if (!empty($campaign_id)) {
             $query->where('campaign_id', $campaign_id);
@@ -973,11 +1029,15 @@ class DonationService
 
         $query = QueryBuilder::query()->table(Tables::DONATIONS)->where('status', '=', DonationStatus::COMPLETED);
 
-        if (growfund_user()->is_fundraiser()) {
-            $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
+        if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_fundraiser();
             $query->where_in('campaign_id', $campaign_ids);
         }
 
+        if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_collaborator();
+            $query->where_in('campaign_id', $campaign_ids);
+        }
 
         if (!empty($campaign_id)) {
             $query->where('campaign_id', $campaign_id);
@@ -1011,8 +1071,13 @@ class DonationService
 
         $query = QueryBuilder::query()->table(Tables::DONATIONS)->where('status', DonationStatus::COMPLETED);
 
-        if (growfund_user()->is_fundraiser()) {
-            $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
+        if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_fundraiser();
+            $query->where_in('campaign_id', $campaign_ids);
+        }
+
+        if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_collaborator();
             $query->where_in('campaign_id', $campaign_ids);
         }
 
@@ -1059,8 +1124,13 @@ class DonationService
 
         $query = QueryBuilder::query()->table(Tables::DONATIONS)->where('status', '=', DonationStatus::REFUNDED);
 
-        if (growfund_user()->is_fundraiser()) {
-            $campaign_ids = growfund_get_all_campaign_ids_by_fundraiser();
+        if (growfund_user()->has_active_role(Fundraiser::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_fundraiser();
+            $query->where_in('campaign_id', $campaign_ids);
+        }
+
+        if (growfund_user()->has_active_role(Collaborator::ROLE)) {
+            $campaign_ids = growfund_campaign_ids_by_collaborator();
             $query->where_in('campaign_id', $campaign_ids);
         }
 
@@ -1245,13 +1315,23 @@ class DonationService
         $received_amount = QueryBuilder::query()
             ->table(Tables::DONATIONS . ' as donations')
             ->inner_join(WP::POSTS_TABLE . ' as campaigns', 'campaigns.ID', 'donations.campaign_id')
+            ->join_raw(
+                WP::POST_META_TABLE . ' as campaign_fundraiser_meta', 
+                'LEFT', 
+                sprintf(
+                    "campaigns.ID = campaign_fundraiser_meta.post_id AND campaign_fundraiser_meta.meta_key = '%s'",
+                    growfund_with_prefix('fundraiser_id')
+                )
+            )
             ->where('donations.status', DonationStatus::COMPLETED)
             ->where_raw(sprintf(
-                "(campaigns.post_author = %s OR EXISTS ( SELECT 1 FROM `%s` AS collaborators WHERE collaborators.campaign_id = donations.campaign_id AND collaborators.collaborator_id = %s))",
-                $fundraiser_id,
+                "(campaigns.post_author = :post_author OR campaign_fundraiser_meta.meta_value = :fundraiser_id OR EXISTS ( SELECT 1 FROM `%s` AS collaborators WHERE collaborators.campaign_id = donations.campaign_id AND collaborators.collaborator_id = :collaborator_id))",
                 $campaign_collaborators_table,
-                $fundraiser_id
-            ))
+            ), [
+                'post_author' => $fundraiser_id,
+                'fundraiser_id' => (string) $fundraiser_id,
+                'collaborator_id' => $fundraiser_id
+            ])
             ->sum('amount');
 
         return $received_amount;
@@ -1329,10 +1409,8 @@ class DonationService
      * @param int $year
      * @return AnnualReceiptDTO
      */
-    public function get_annual_receipt_detail(int $year)
+    public function get_annual_receipt_detail(int $donor_id, int $year)
     {
-        $donor_id = growfund_user()->get_id();
-
         $donations = QueryBuilder::query()->table(Tables::DONATIONS)
             ->where('user_id', $donor_id)
             ->where('status', DonationStatus::COMPLETED)
@@ -1368,5 +1446,22 @@ class DonationService
             ->where('status', DonationStatus::COMPLETED)
             ->where('payment_status', PaymentStatus::PAID)
             ->count() > 0;
+    }
+
+    /**
+     * Get the total received amount by a campaign.
+     *
+     * @param int $campaign_id
+     * @return int
+     */
+    public function get_total_received_amount_by_campaign(int $campaign_id)
+    {
+        $received_amount = QueryBuilder::query()
+            ->table(Tables::DONATIONS . ' as donations')
+            ->where('donations.campaign_id', $campaign_id)
+            ->where('donations.status', DonationStatus::COMPLETED)
+            ->sum('amount');
+
+        return (int) $received_amount;
     }
 }

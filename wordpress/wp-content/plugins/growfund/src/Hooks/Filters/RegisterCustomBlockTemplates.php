@@ -47,7 +47,7 @@ class RegisterCustomBlockTemplates extends BaseHook
             $slug = sprintf('archive-%s', Campaign::NAME);
         } elseif (SiteRouter::is_valid_route()) {
             $template_name = growfund_is_react_site() ? 'react-page-template' : 'custom-page-template';
-            $slug = 'growfund-page-' . str_replace(['.', '_'], '-', SiteRouter::get_current_route_name());
+            $slug = 'growfund-page-' . str_replace(['.', '_'], '-', SiteRouter::get_current_route_name() ?? '');
         }
 
         if (!$template_name) {

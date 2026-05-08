@@ -14,6 +14,7 @@ use Growfund\Validation\Rules\DateTimeRule;
 use Growfund\Validation\Rules\EmailRule;
 use Growfund\Validation\Rules\EmailUniqueRule;
 use Growfund\Validation\Rules\ExistsRule;
+use Growfund\Validation\Rules\FileRule;
 use Growfund\Validation\Rules\FloatRule;
 use Growfund\Validation\Rules\GreaterThanEqualRule;
 use Growfund\Validation\Rules\GreaterThanRule;
@@ -87,5 +88,6 @@ class Validation
         'gte' => GreaterThanEqualRule::class,
         'lt' => LessThanRule::class,
         'lte' => LessThanEqualRule::class,
+        'file' => FileRule::class,
     ];
 }

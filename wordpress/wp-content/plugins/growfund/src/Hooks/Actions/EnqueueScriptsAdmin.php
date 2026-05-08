@@ -34,9 +34,14 @@ class EnqueueScriptsAdmin extends BaseHook
     public function handle(...$args)
     {
         if (!growfund_is_plugin_menu()) {
-            wp_enqueue_style('growfund-global-style-extended', GROWFUND_DIR_URL . 'resources/assets/css/global-style-extended.css', [], GROWFUND_VERSION);
+            wp_enqueue_style(
+                'growfund-global-style-extended', 
+                GROWFUND_RESOURCE_URL . 'assets/css/global-style-extended.css', 
+                [], 
+                GROWFUND_VERSION
+            );
             
-            $global_script = GROWFUND_DIR_URL . 'resources/assets/js/growfund-global-script.js';
+            $global_script = GROWFUND_RESOURCE_URL . 'assets/js/growfund-global-script.js';
 			wp_enqueue_script(
                 'growfund-global-js',
                 $global_script,
@@ -52,7 +57,7 @@ class EnqueueScriptsAdmin extends BaseHook
             Assets::load_vite_client();
         }
 
-        $dashboard_script = GROWFUND_DIR_URL . 'resources/assets/dashboard/scripts/dashboard.js';
+        $dashboard_script = GROWFUND_RESOURCE_URL . 'assets/dashboard/scripts/dashboard.js';
 
         wp_enqueue_script(
             'growfund-dashboard-js',
@@ -68,11 +73,11 @@ class EnqueueScriptsAdmin extends BaseHook
         wp_enqueue_media();
         
         // phpcs:ignore -- intentionally ignored enqueue version
-        wp_enqueue_style('growfund-admin-style-extended', GROWFUND_DIR_URL . 'resources/assets/css/admin-style-extended.css');
+        wp_enqueue_style('growfund-admin-style-extended', GROWFUND_RESOURCE_URL . 'assets/css/admin-style-extended.css');
 
         wp_enqueue_style(
             'growfund-rich-text-editor',
-            GROWFUND_DIR_URL . 'resources/assets/css/rich-text-editor.css',
+            GROWFUND_RESOURCE_URL . 'assets/css/rich-text-editor.css',
             ['growfund-admin-style-extended'],
             GROWFUND_VERSION
 		);

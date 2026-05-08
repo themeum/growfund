@@ -115,9 +115,6 @@ class CampaignRawDTO extends DTO
     /** @var float|null */
     public $max_pledge_amount;
 
-    /** @var string|null */
-    public $created_by;
-
     /** @var bool|null */
     public $allow_custom_donation;
 

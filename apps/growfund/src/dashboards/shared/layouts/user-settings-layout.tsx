@@ -11,7 +11,7 @@ import { registry } from '@/lib/registry';
 import { User } from '@/utils/user';
 
 const UserSettingsLayout = () => {
-  if (User.isFundraiser()) {
+  if (User.isFundraiser() || User.isCollaborator()) {
     const FundraiserSettingsLayout = registry.get('FundraiserSettingsLayout');
     return (
       <DetectRouteChangeProvider>

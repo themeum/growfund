@@ -27,6 +27,10 @@ class MailConfig
 
     public function is_enabled(string $key, $user_notifications = [])
     {
+        if (!is_array($user_notifications)) {
+            $user_notifications = [];
+        }
+        
         $notifications = array_merge($this->email_and_notifications ?? [], $user_notifications);
 
         return !empty($notifications[$this->enabled_key($key)]);

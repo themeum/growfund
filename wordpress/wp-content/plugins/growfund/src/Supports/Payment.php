@@ -81,11 +81,13 @@ class Payment
         $installed_payment_methods = static::get_installed_payment_methods();
 
         return Arr::make($installed_payment_methods)->filter(function ($method) use ($type) {
-            if (!empty($type)) {
-                return $method->type === $type && $method->is_enabled;
+            $is_active = $method->is_installed && $method->is_enabled;
+
+            if (!empty($type) && in_array($type, [PaymentGatewayType::MANUAL, PaymentGatewayType::ONLINE], true)) {
+                return $method->type === $type && $is_active;
             }
 
-            return $method->is_enabled;
+            return $is_active;
         })->toArray();
     }
 

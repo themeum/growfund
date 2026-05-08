@@ -39,7 +39,7 @@ const PdfReceiptPreview = ({ pdfReceipt }: { pdfReceipt: PdfReceiptTemplate }) =
         )}
         <div className="growfund-flex growfund-items-center growfund-justify-center">
           <h3 className="growfund-typo-h3" style={{ color: pdfReceipt.colors?.primary_text ?? '' }}>
-            {__('DONATION RECEIPT', 'growfund')}
+            {isDonationMode ? __('DONATION RECEIPT', 'growfund') : __('PLEDGE RECEIPT', 'growfund')}
           </h3>
         </div>
       </div>
@@ -50,28 +50,46 @@ const PdfReceiptPreview = ({ pdfReceipt }: { pdfReceipt: PdfReceiptTemplate }) =
         )}
         <div className="growfund-bg-secondary growfund-rounded-lg growfund-p-4 growfund-flex growfund-items-center growfund-justify-between">
           <div>
-            <p className="growfund-typo-tiny" style={{ color: pdfReceipt.colors?.secondary_text ?? '' }}>
+            <p
+              className="growfund-typo-tiny"
+              style={{ color: pdfReceipt.colors?.secondary_text ?? '' }}
+            >
               {__('Donation Amount', 'growfund')}
             </p>
-            <h3 className="growfund-typo-h3" style={{ color: pdfReceipt.colors?.primary_text ?? '' }}>
+            <h3
+              className="growfund-typo-h3"
+              style={{ color: pdfReceipt.colors?.primary_text ?? '' }}
+            >
               {toCurrency(300)}
             </h3>
           </div>
           <div>
-            <p className="growfund-typo-tiny" style={{ color: pdfReceipt.colors?.secondary_text ?? '' }}>
+            <p
+              className="growfund-typo-tiny"
+              style={{ color: pdfReceipt.colors?.secondary_text ?? '' }}
+            >
               {__('Date & Time', 'growfund')}
             </p>
-            <p className="growfund-typo-small" style={{ color: pdfReceipt.colors?.primary_text ?? '' }}>
+            <p
+              className="growfund-typo-small"
+              style={{ color: pdfReceipt.colors?.primary_text ?? '' }}
+            >
               {format(new Date(), DATE_FORMATS.LOCALIZED_DATE_TIME)}
             </p>
           </div>
         </div>
         <div className="growfund-space-y-4">
-          <p className="growfund-typo-small" style={{ color: pdfReceipt.colors?.primary_text ?? '' }}>
+          <p
+            className="growfund-typo-small"
+            style={{ color: pdfReceipt.colors?.primary_text ?? '' }}
+          >
             {__('Donation Details', 'growfund')}
           </p>
           <div className="growfund-space-y-1">
-            <p className="growfund-typo-small" style={{ color: pdfReceipt.colors?.secondary_text ?? '' }}>
+            <p
+              className="growfund-typo-small"
+              style={{ color: pdfReceipt.colors?.secondary_text ?? '' }}
+            >
               {__('Donor Name', 'growfund')}
             </p>
             <p
@@ -82,7 +100,10 @@ const PdfReceiptPreview = ({ pdfReceipt }: { pdfReceipt: PdfReceiptTemplate }) =
             </p>
           </div>
           <div className="growfund-space-y-1">
-            <p className="growfund-typo-small" style={{ color: pdfReceipt.colors?.secondary_text ?? '' }}>
+            <p
+              className="growfund-typo-small"
+              style={{ color: pdfReceipt.colors?.secondary_text ?? '' }}
+            >
               {__('Donation To', 'growfund')}
             </p>
             <p
@@ -148,7 +169,10 @@ const PdfReceiptPreview = ({ pdfReceipt }: { pdfReceipt: PdfReceiptTemplate }) =
           isDefined(pdfReceipt.content.signature) &&
           pdfReceipt.content.signature.is_available && (
             <div className="growfund-space-y-2">
-              <p className="growfund-typo-small" style={{ color: pdfReceipt.colors?.primary_text ?? '' }}>
+              <p
+                className="growfund-typo-small"
+                style={{ color: pdfReceipt.colors?.primary_text ?? '' }}
+              >
                 {__('Sincerely', 'growfund')}
               </p>
               {pdfReceipt.content.signature.image?.url && (

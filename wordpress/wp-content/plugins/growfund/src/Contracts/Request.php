@@ -148,7 +148,7 @@ interface Request
     public function get_datetime(string $key, $default = null);
 
     /**
-     * Get a text with sanitization applied.
+     * Get a text with textarea sanitization applied.
      *
      * @since 1.0.0
      *
@@ -212,6 +212,16 @@ interface Request
      * @return string|null
      */
     public function get_title(string $key, $default = null);
+
+    /**
+     * Get a file.
+     *
+     * @since 1.1.0
+     *
+     * @param string $key     The key to retrieve.
+     * @return array|null
+     */
+    public function get_file(string $key);
 
     /**
      * Get a file name with sanitization applied.

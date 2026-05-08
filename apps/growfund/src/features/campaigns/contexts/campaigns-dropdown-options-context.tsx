@@ -6,12 +6,14 @@ import {
   use,
 } from 'react';
 
+import { type UserBasic } from '@/dashboards/shared/schemas/user';
+
 interface CampaignsDropdownOptionsContextType {
   campaign: {
     id: string;
     title: string;
     image?: string | null;
-    created_by?: string | null;
+    author?: UserBasic | null;
   };
   setIsDropdownOpen: Dispatch<SetStateAction<boolean>>;
 }

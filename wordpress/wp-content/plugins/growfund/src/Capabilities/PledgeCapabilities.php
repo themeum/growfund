@@ -5,6 +5,7 @@ namespace Growfund\Capabilities;
 defined( 'ABSPATH' ) || exit;
 
 use Growfund\Constants\UserTypes\Backer;
+use Growfund\Constants\UserTypes\Collaborator;
 use Growfund\Constants\UserTypes\Fundraiser;
 use Growfund\Contracts\Capability;
 use Growfund\Services\CampaignService;
@@ -43,6 +44,8 @@ class PledgeCapabilities implements Capability
         switch ($role) {
             case Fundraiser::ROLE:
                 return $this->fundraiser_capabilities();
+            case Collaborator::ROLE:
+                return $this->collaborator_capabilities();
             case Backer::ROLE:
                 return $this->backer_capabilities();
             default:
@@ -50,7 +53,7 @@ class PledgeCapabilities implements Capability
         }
     }
 
-    public function filter_capability(array $caps, string $cap, int $user_id, array $args): array
+    public function filter_capability(array $caps, string $cap, int $user_id, array $args)
     {
         $capability_map = [
             static::READ   => [$this, 'can_read'],
@@ -76,6 +79,16 @@ class PledgeCapabilities implements Capability
         ];
     }
 
+    protected function collaborator_capabilities()
+    {
+        return [
+            static::CREATE,
+            static::READ,
+            static::EDIT,
+            static::DELETE,
+        ];
+    }
+
     protected function backer_capabilities()
     {
         return [
@@ -83,7 +96,7 @@ class PledgeCapabilities implements Capability
         ];
     }
 
-    protected function can_read(int $user_id, $pledge_id = null): array
+    protected function can_read(int $user_id, $pledge_id = null)
     {
         if (empty($pledge_id)) {
             return [static::READ];
@@ -95,32 +108,47 @@ class PledgeCapabilities implements Capability
             return ['do_not_allow'];
         }
 
-        $campaign_id        = $pledge->campaign->id;
-        $campaign_author_id = $this->campaign_service->get_author_id($campaign_id);
+        $campaign_id        = (int) $pledge->campaign->id;
+        $campaign_author_id = (int) $pledge->campaign->author->id ?? 0;
+        $campaign_fundraiser_id = (int) $pledge->campaign->fundraiser->id ?? 0;
 
         if ((int) $pledge->backer->id === $user_id) {
             return ['exist'];
         }
 
-        if ((int) $campaign_author_id === $user_id || $this->campaign_service->is_collaborator($user_id, $campaign_id)) {
+        if (
+            $campaign_author_id === $user_id 
+            || $campaign_fundraiser_id === $user_id 
+            || $this->campaign_service->is_collaborator($user_id, $campaign_id)
+        ) {
             return ['exist'];
         }
 
         return ['do_not_allow'];
     }
 
-    protected function can_create(int $user_id, int $campaign_id): array
+    protected function can_create(int $user_id, int $campaign_id)
     {
         $is_creator = $this->campaign_service->get_author_id($campaign_id) === $user_id;
 
-        if ($is_creator || $this->campaign_service->is_collaborator($user_id, $campaign_id)) {
+        if ($is_creator) {
+            return ['exist'];
+        }
+
+        $is_fundraiser = $this->campaign_service->get_fundraiser_id($campaign_id) === $user_id;
+
+        if ($is_fundraiser) {
+            return ['exist'];
+        }
+
+        if ($this->campaign_service->is_collaborator($user_id, $campaign_id)) {
             return ['exist'];
         }
 
         return ['do_not_allow'];
     }
 
-    protected function can_edit(int $user_id, int $pledge_id): array
+    protected function can_edit(int $user_id, int $pledge_id)
     {
         $pledge = $this->pledge_service->get_by_id($pledge_id);
 
@@ -128,21 +156,26 @@ class PledgeCapabilities implements Capability
             return ['do_not_allow'];
         }
 
-        $campaign_id        = $pledge->campaign->id;
-        $campaign_author_id = $this->campaign_service->get_author_id($campaign_id);
+        $campaign_id        = (int) $pledge->campaign->id;
+        $campaign_author_id = (int) $pledge->campaign->author->id ?? 0;
+        $campaign_fundraiser_id = (int) $pledge->campaign->fundraiser->id ?? 0;
 
         if ((int) $pledge->backer->id === $user_id) {
             return ['exist'];
         }
 
-        if ((int) $campaign_author_id === $user_id || $this->campaign_service->is_collaborator($user_id, $campaign_id)) {
+        if (
+            $campaign_author_id === $user_id 
+            || $campaign_fundraiser_id === $user_id 
+            || $this->campaign_service->is_collaborator($user_id, $campaign_id)
+        ) {
             return ['exist'];
         }
 
         return ['do_not_allow'];
     }
 
-    protected function can_delete(int $user_id, $pledge_id = null): array
+    protected function can_delete(int $user_id, $pledge_id = null)
     {
         if (empty($pledge_id)) {
             return [static::DELETE];
@@ -154,10 +187,14 @@ class PledgeCapabilities implements Capability
             return ['do_not_allow'];
         }
 
-        $campaign_id        = $pledge->campaign->id;
-        $campaign_author_id = $this->campaign_service->get_author_id($campaign_id);
+        $campaign_author_id = (int) $pledge->campaign->author->id ?? 0;
+        $campaign_fundraiser_id = (int) $pledge->campaign->fundraiser->id ?? 0;
 
-        if ((int) $campaign_author_id === $user_id) {
+        if ($campaign_author_id === $user_id) {
+            return ['exist'];
+        }
+
+        if ($campaign_fundraiser_id === $user_id) {
             return ['exist'];
         }
 

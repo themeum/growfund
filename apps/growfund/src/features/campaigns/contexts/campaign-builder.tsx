@@ -119,7 +119,7 @@ const CampaignBuilderContextProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     if (campaign) {
-      form.reset.call(null, campaign);
+      form.reset.call(null, { ...campaign, fundraiser_id: campaign.fundraiser?.id });
     }
   }, [campaign, form.reset]);
 
@@ -253,13 +253,15 @@ const CampaignBuilderContextProvider = ({ children }: PropsWithChildren) => {
         </EmptyStateDescription>
       </EmptyState>
     ),
-    Success: (response) => (
-      <CampaignBuilderContext value={value}>
-        <CampaignProvider campaign={response.data}>
-          <Form {...form}>{children}</Form>
-        </CampaignProvider>
-      </CampaignBuilderContext>
-    ),
+    Success: (response) => {
+      return (
+        <CampaignBuilderContext value={value}>
+          <CampaignProvider campaign={response.data}>
+            <Form {...form}>{children}</Form>
+          </CampaignProvider>
+        </CampaignBuilderContext>
+      );
+    },
   });
 };
 

@@ -8,12 +8,12 @@ import { type FieldValues } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import {
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from '@/components/ui/form';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import CalendarPresets from '@/features/campaigns/components/additional/calender-presets';
@@ -26,6 +26,7 @@ interface DatePickerFieldProps<T extends FieldValues> extends ControllerField<T>
   type?: 'single' | 'range';
   clearable?: boolean;
   showRangePresets?: boolean;
+  popoverSide?: 'top' | 'bottom' | 'left' | 'right';
 }
 
 function DatePickerField<T extends FieldValues>({
@@ -39,6 +40,7 @@ function DatePickerField<T extends FieldValues>({
   className,
   clearable = false,
   showRangePresets = false,
+  popoverSide,
 }: DatePickerFieldProps<T>) {
   const [open, setOpen] = useState(false);
   const [activeRangeItem, setActiveRangeItem] = useState<string>();
@@ -130,7 +132,12 @@ function DatePickerField<T extends FieldValues>({
                     {getDisplayText()}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="growfund-w-auto growfund-p-0" align="center">
+                <PopoverContent
+                  className="growfund-w-auto growfund-p-0"
+                  align="center"
+                  side={popoverSide}
+                  avoidCollisions={false}
+                >
                   <div className="growfund-flex growfund-gap-1">
                     {showRangePresets && type === 'range' && (
                       <CalendarPresets
@@ -186,7 +193,8 @@ function DatePickerField<T extends FieldValues>({
                           day_range_end: '[&]:growfund-text-fg-light',
                           day_range_middle:
                             '[&]:growfund-text-fg-light aria-selected:growfund-bg-accent aria-selected:growfund-text-fg-accent hover:[&]:growfund-text-fg-primary',
-                          day_selected: '[&]:growfund-bg-background-fill-brand [&]:growfund-text-fg-light',
+                          day_selected:
+                            '[&]:growfund-bg-background-fill-brand [&]:growfund-text-fg-light',
                           nav: 'growfund-w-full growfund-flex growfund-gap-2 growfund-items-center growfund-justify-end',
                         }}
                         initialFocus

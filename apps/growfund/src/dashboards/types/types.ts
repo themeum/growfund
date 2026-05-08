@@ -8,6 +8,7 @@ interface SidebarItem {
   icon: ForwardRefExoticComponent<IconProps & RefAttributes<SVGSVGElement>>;
   route: RouteDefinition<string>;
   child_routes: string[];
+  hidden?: boolean;
 }
 
 interface TopbarContent {

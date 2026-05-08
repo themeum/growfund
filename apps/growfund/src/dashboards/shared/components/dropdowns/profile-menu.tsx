@@ -28,7 +28,7 @@ const roleMap = new Map<Role, string>([
 ]);
 
 const ProfileMenu = ({ className }: { className?: string }) => {
-  const { currentUser: user, isFundraiser } = useCurrentUser();
+  const { currentUser: user, isFundraiser, isCollaborator } = useCurrentUser();
 
   const logoutMutation = useLogoutMutation();
 
@@ -73,7 +73,7 @@ const ProfileMenu = ({ className }: { className?: string }) => {
           <DropdownMenuItem asChild>
             <Link
               to={
-                isFundraiser
+                isFundraiser || isCollaborator
                   ? RouteConfig.FundraiserProfile.buildLink()
                   : UserRouteConfig.Profile.buildLink()
               }
@@ -89,7 +89,7 @@ const ProfileMenu = ({ className }: { className?: string }) => {
           <DropdownMenuItem asChild>
             <Link
               to={
-                isFundraiser
+                isFundraiser || isCollaborator
                   ? RouteConfig.FundraiserSettings.buildLink()
                   : UserRouteConfig.Settings.buildLink()
               }

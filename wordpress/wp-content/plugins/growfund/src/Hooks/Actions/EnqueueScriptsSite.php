@@ -47,7 +47,7 @@ class EnqueueScriptsSite extends BaseHook
             'ajax_url' => admin_url('admin-ajax.php'),
             'rest_url' => esc_url_raw(rest_url()),
             'rest_nonce' => wp_create_nonce('wp_rest'),
-            'ajax_nonce' => wp_create_nonce(growfund_with_prefix('ajax_nonce')),
+            'site_nonce' => wp_create_nonce(growfund_with_prefix('site_nonce')),
             'site_url' => esc_url(site_url()),
             'login_url' => esc_url(growfund_login_url()),
             'forget_password_url' => esc_url(growfund_forget_password_url()),
@@ -61,16 +61,14 @@ class EnqueueScriptsSite extends BaseHook
 
         wp_enqueue_style('growfund-main-styles', $main_styles_url, [], GROWFUND_VERSION);
 
-        $rich_text_editor_styles_url = GROWFUND_RESOURCE_PATH . 'assets/site/styles/rich-text-editor.css';
+        $rich_text_editor_styles_url = GROWFUND_RESOURCE_URL . 'assets/site/styles/rich-text-editor.css';
 
-        if (growfund_is_valid_file($rich_text_editor_styles_url)) {
-            wp_enqueue_style(
-                'growfund-rich-text-editor-styles',
-                $rich_text_editor_styles_url,
-                ['growfund-main-styles'],
-                GROWFUND_VERSION
-            );
-        }
+        wp_enqueue_style(
+            'growfund-rich-text-editor-styles',
+            $rich_text_editor_styles_url,
+            ['growfund-main-styles'],
+            GROWFUND_VERSION
+        );
 
         $this->load_woocommerce_assets();
     }

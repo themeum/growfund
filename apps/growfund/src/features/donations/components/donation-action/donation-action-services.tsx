@@ -8,7 +8,7 @@ import {
   type MessageKey,
 } from '@/features/pledges/components/pledge-action/pledge-action-types';
 
-function prepareActionOptions(donation: Donation) {
+function prepareActionOptions({ donation, isAdmin }: { donation: Donation; isAdmin: boolean }) {
   return [
     {
       label: __('Mark as Completed', 'growfund'),
@@ -16,7 +16,7 @@ function prepareActionOptions(donation: Donation) {
       icon: <CheckCircle />,
       proceed: () => {
         if (donation.status === 'pending') {
-          return true;
+          return isAdmin;
         }
         return false;
       },

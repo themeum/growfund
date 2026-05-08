@@ -8,9 +8,11 @@ import { Button } from '@/components/ui/button';
 import { RouteConfig } from '@/config/route-config';
 import CampaignTable from '@/features/campaigns/components/campaign-table/campaign-table';
 import { useCreateCampaignMutation } from '@/features/campaigns/services/campaign';
+import useCurrentUser from '@/hooks/use-current-user';
 
 const CampaignsPage = () => {
   const navigate = useNavigate();
+  const { isAdmin, isFundraiser } = useCurrentUser();
   const createCampaignMutation = useCreateCampaignMutation();
 
   return (
@@ -18,7 +20,7 @@ const CampaignsPage = () => {
       <PageHeader
         name={__('Campaigns', 'growfund')}
         action={
-          <>
+          (isAdmin || isFundraiser) && (
             <Button
               onClick={async () => {
                 const response = await createCampaignMutation.mutateAsync();
@@ -29,7 +31,7 @@ const CampaignsPage = () => {
               <Plus />
               {__('New Campaign', 'growfund')}
             </Button>
-          </>
+          )
         }
       />
 

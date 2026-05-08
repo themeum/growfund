@@ -75,6 +75,9 @@ class UpdateCampaignDTO extends DTO
     /** @var array|null */
     public $tags;
 
+    /** @var int|null */
+    public $fundraiser_id;
+
     /** @var array|null */
     public $collaborators;
 
@@ -125,9 +128,6 @@ class UpdateCampaignDTO extends DTO
 
     /** @var float|null */
     public $max_pledge_amount;
-
-    /** @var string|null */
-    public $created_by;
 
     /** @var bool|null */
     public $allow_custom_donation;
@@ -241,6 +241,23 @@ class UpdateCampaignDTO extends DTO
                 'confirmation_description' => 'string',
                 'provide_confirmation_pdf_receipt' => 'boolean',
                 'faqs' => 'prohibited',
+                'fundraiser_id' => [
+                    'string',
+                    function ($value, $key, $data) {
+                        $fundraiser_id = (int) $value;
+
+                        if (
+                            $data['status'] === CampaignStatus::PUBLISHED 
+                            && !empty($fundraiser_id) 
+                            && !growfund_user($fundraiser_id)->is_admin() 
+                            && !growfund_user($fundraiser_id)->is_fundraiser()
+                        ) {
+                            return __('The user cannot be a fundraiser.', 'growfund');
+                        }
+
+                        return true;
+                    }
+                ],
             ], growfund_app()->is_donation_mode() ? array_merge(
                     [
                         'suggested_option_type' => 'in:' . implode(',', SuggestedOptionType::get_constant_values()),
@@ -474,6 +491,7 @@ class UpdateCampaignDTO extends DTO
             'faqs' => Sanitizer::ARRAY ,
             'faqs.*.question' => Sanitizer::TEXT,
             'faqs.*.answer' => Sanitizer::TEXTAREA,
+            'fundraiser_id' => Sanitizer::INT,
         ], growfund_app()->is_donation_mode() ? array_merge(
                 [
                     'suggested_option_type' => Sanitizer::TEXT,

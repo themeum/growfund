@@ -21,11 +21,11 @@ import { SelectField } from '@/components/form/select-field';
 import { TextField } from '@/components/form/text-field';
 import { LoadingSpinnerOverlay } from '@/components/layouts/loading-spinner';
 import {
-    DataTable,
-    DataTableContent,
-    DataTablePagination,
-    DataTableWrapper,
-    DataTableWrapperHeader,
+  DataTable,
+  DataTableContent,
+  DataTablePagination,
+  DataTableWrapper,
+  DataTableWrapperHeader,
 } from '@/components/table/data-table';
 import ThreeDotsOptions from '@/components/three-dots-options';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -36,13 +36,13 @@ import { RouteConfig } from '@/config/route-config';
 import { useBackerFilters } from '@/features/backers/hooks/use-backer-filters';
 import { type Backer } from '@/features/backers/schemas/backer';
 import {
-    type BackerFilterForm,
-    BackerFilterFormSchema,
+  type BackerFilterForm,
+  BackerFilterFormSchema,
 } from '@/features/backers/schemas/backer-filter';
 import {
-    useBackerBulkActionsMutation,
-    useBackersQuery,
-    useEmptyBackersTrashMutation,
+  useBackerBulkActionsMutation,
+  useBackersQuery,
+  useEmptyBackersTrashMutation,
 } from '@/features/backers/services/backer';
 import { useConsentDialog } from '@/features/campaigns/contexts/consent-dialog-context';
 import ManageBackerDialog from '@/features/pledges/components/dialogs/manage-backer-dialog';
@@ -61,7 +61,7 @@ const BackersTable = () => {
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedBackerIds, setSelectedBackerIds] = useState<string[]>([]);
   const { openDialog } = useConsentDialog();
-  const { isFundraiser, currentUser } = useCurrentUser();
+  const { isCollaborator, currentUser } = useCurrentUser();
   const backerBulkActionsMutation = useBackerBulkActionsMutation();
   const emptyBackersTrashMutation = useEmptyBackersTrashMutation();
 
@@ -192,7 +192,7 @@ const BackersTable = () => {
 
   const getRowDropdownActions = useCallback(
     (backer: Backer) => {
-      const hasEditPermission = isFundraiser ? backer.created_by === currentUser.id : true;
+      const hasEditPermission = isCollaborator ? backer.created_by === currentUser.id : true;
 
       if (isTrashBackers) {
         return [
@@ -234,7 +234,7 @@ const BackersTable = () => {
         },
       ];
     },
-    [currentUser.id, isFundraiser, isTrashBackers],
+    [currentUser.id, isCollaborator, isTrashBackers],
   );
 
   const handleActionSelect = useCallback(
@@ -329,7 +329,9 @@ const BackersTable = () => {
       }),
       columnsHelper.accessor('total_contributions', {
         header: __('Total Given', 'growfund'),
-        cell: (props) => <span className="growfund-text-right">{toCurrency(props.getValue())}</span>,
+        cell: (props) => (
+          <span className="growfund-text-right">{toCurrency(props.getValue())}</span>
+        ),
         size: 128,
       }),
       columnsHelper.display({

@@ -10,6 +10,7 @@ use Growfund\Http\SiteRequest;
 use Exception;
 use Growfund\Constants\HookNames;
 use Growfund\Core\AssetHandler;
+use Growfund\Exceptions\InvalidRoutActionException;
 
 /**
  * Custom site router for handling front-end routes using rewrite rules.
@@ -81,6 +82,14 @@ class SiteRouter
      * @var string|null
      */
     protected $nonce_action = null;
+
+    /**
+     * Array of class instances.
+     *
+     * @since 1.1.0
+     * @var array
+     */
+    protected static $instances = [];
 
 
     public function __construct()
@@ -266,22 +275,36 @@ class SiteRouter
 			}
 		}
 
+        $controller_name = $route->action[0];
+        
+        if (!class_exists($controller_name)) {
+            /* translators: %s: Controller class */
+            throw new InvalidRoutActionException(sprintf(esc_html__('Controller %s not found', 'growfund'), esc_html($controller_name)));
+        }
+
+        $controller = static::make($controller_name);
+        $method_name = $route->action[1];
+
+        if (!method_exists($controller, $method_name)) {
+            /* translators: 1: Method name, 2: Controller class */
+            throw new InvalidRoutActionException(sprintf(esc_html__('The method %1$s is missing in the controller %2$s', 'growfund'), esc_html($method_name), esc_html($controller_name)));
+        }
+
+        $request = static::get_request_instance(
+            $request_nonce ?? null, 
+            $nonce_action ?? null
+        );
+
+        $params = static::extract_params($route->pattern);
+
+        $request->set_attributes($params);
+        $params = array_values($params);
+
+        array_unshift($params, $request);
+
+        $request_method = wp_unslash(growfund_input_server('REQUEST_METHOD', ''));
 
         try {
-            $controller_name = $route->action[0];
-            $controller = new $controller_name();
-            $method_name = $route->action[1];
-            $request = static::get_request_instance();
-
-            $params = static::extract_params($route->pattern);
-
-            $request->set_attributes($params);
-            $params = array_values($params);
-
-            array_unshift($params, $request);
-
-            $request_method = wp_unslash(growfund_input_server('REQUEST_METHOD', ''));
-
             if ($request_method === $route->method) {
                 $final_callback = function () use ($controller, $method_name, $params) {
                     return call_user_func_array([$controller, $method_name], $params);
@@ -326,6 +349,120 @@ class SiteRouter
         }
 
         wp_die(esc_html__('Method not allowed.', 'growfund'));
+    }
+
+    /**
+     * Cache a class instance.
+     *
+     * @since 1.1.0
+     *
+     * @param string $abstract The class name to bind
+     * @param object $instance The instance of the class
+     * @return void
+     */
+    protected static function cache(string $abstract, $instance)
+    {
+        static::$instances[$abstract] = $instance;
+    }
+
+    /**
+     * Check if a class instance is cached.
+     *
+     * @since 1.1.0
+     *
+     * @param string $abstract The class name to check
+     * @return bool
+     */
+    protected static function is_cached(string $abstract)
+    {
+        return isset(static::$instances[$abstract]);
+    }
+
+    /**
+     * Get a cached class instance.
+     *
+     * @since 1.1.0
+     *
+     * @param string $abstract The class name to get
+     * @return object
+     */
+    protected static function get_cached(string $abstract)
+    {
+        return static::$instances[$abstract];
+    }
+
+    /**
+     * Resolve a class and its dependencies.
+     *
+     * @param string $abstract The class name to resolve
+     * @param array $resolving Stack of classes being resolved (for 
+     * circular dependency detection)
+     *
+     * @return object The resolved instance
+     * @throws Exception When class doesn't exist, has circular dependencies, or other resolution errors
+     *
+     * @example
+     * $instance = static::make(MyClass::class);
+     */
+    public static function make(string $abstract, array $resolving = [])
+    {
+        if (static::is_cached($abstract)) {
+            return static::get_cached($abstract);
+        }
+
+        if (in_array($abstract, $resolving, true)) {
+            /* translators: %s: Class name */
+            throw new Exception(sprintf(esc_html__('Circular dependency detected for class "%s".', 'growfund'), esc_html($abstract)));
+        }
+
+        if (!class_exists($abstract)) {
+            /* translators: %s: Class name */
+            throw new Exception(sprintf(esc_html__('Class "%s" does not exist.', 'growfund'), esc_html($abstract)));
+        }
+
+        $reflector = new \ReflectionClass($abstract);
+
+        if ($reflector->isAbstract()) {
+            /* translators: %s: Class name */
+            throw new Exception(sprintf(esc_html__('Class "%s" is abstract and cannot be instantiated.', 'growfund'), esc_html($abstract)));
+        }
+
+        $constructor = $reflector->getConstructor();
+
+        if (!$constructor) {
+            return new $abstract();
+        }
+
+        if (!$constructor->isPublic()) {
+            /* translators: %s: Class name */
+            throw new Exception(sprintf(esc_html__('Class "%s" has a non-public constructor and cannot be instantiated.', 'growfund'), esc_html($abstract)));
+        }
+
+        $dependencies = [];
+        $resolving[] = $abstract;
+
+        foreach ($constructor->getParameters() as $parameter) {
+            $type = $parameter->getType();
+
+            if (!$type) {
+                /* translators: %s: Parameter name */
+                throw new Exception(sprintf(esc_html__('Parameter "%s" is missing a type hint in the constructor. Please add a class type hint.', 'growfund'), esc_html($parameter->getName())));
+            }
+
+            if ($type->isBuiltin()) {
+                /* translators: %s: Parameter name */
+                throw new Exception(sprintf(esc_html__('Parameter "%s" must be a class type, not a built-in type. Please specify a valid class dependency.', 'growfund'), esc_html($parameter->getName())));
+            }
+
+            $dependencies[] = static::is_cached($type->getName())
+                ? static::get_cached($type->getName())
+                : static::make($type->getName(), $resolving);
+        }
+
+        $instance = $reflector->newInstanceArgs($dependencies);
+        static::cache($abstract, $instance);
+
+        return $instance;
     }
 
     /**
@@ -434,8 +571,8 @@ class SiteRouter
     /**
      * Get the SiteRequest instance.
      */
-    protected static function get_request_instance()
+    protected static function get_request_instance($request_nonce, $nonce_action)
     {
-        return SiteRequest::instance();
+        return SiteRequest::instance($request_nonce, $nonce_action);
     }
 }

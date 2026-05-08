@@ -188,8 +188,10 @@ class AppConfigController
                 break;
             case AppConfigKeys::PAYMENT:
                 $new_data = array_merge($new_data, [
-                    'enable_admin_commission' => false,
+                    'enable_platform_fee' => false,
                     'enable_guest_checkout' => false,
+                    'minimum_balance_to_request_withdrawal' => null,
+                    'fundraiser_withdrawal_options' => null,
                 ]);
                 break;
             case AppConfigKeys::PDF_RECEIPT:

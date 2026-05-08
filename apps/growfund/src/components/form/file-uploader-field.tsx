@@ -22,6 +22,7 @@ interface FileFieldProps<T extends FieldValues> extends Omit<
   uploadButtonLabel: string;
   maxSize?: number;
   accept?: MediaType[];
+  isInline?: boolean;
 }
 
 function FileUploaderField<T extends FieldValues>({
@@ -34,6 +35,7 @@ function FileUploaderField<T extends FieldValues>({
   uploadButtonLabel,
   accept = [MediaType.DOCUMENTS, MediaType.ZIP, MediaType.IMAGES],
   maxSize,
+  isInline = false,
 }: FileFieldProps<T>) {
   const form = useFormContext<T>();
 
@@ -50,6 +52,7 @@ function FileUploaderField<T extends FieldValues>({
 
             <FormControl>
               <FileUploader
+                isInline={isInline}
                 value={field.value}
                 onChange={field.onChange}
                 disabled={disabled}
