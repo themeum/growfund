@@ -117,7 +117,7 @@ const BasicStep = () => {
 
   return (
     <Container>
-      <div className="growfund-grid growfund-grid-cols-[auto_25rem] growfund-gap-6">
+      <div className="growfund-grid growfund-grid-cols-1 xl:growfund-grid-cols-[auto_25rem] growfund-gap-6">
         <div className="growfund-h-fit growfund-flex growfund-flex-col growfund-gap-4">
           <div className="growfund-bg-background-surface growfund-p-4 growfund-rounded-md growfund-shadow-sm growfund-space-y-4">
             <div>
@@ -131,7 +131,7 @@ const BasicStep = () => {
                 control={form.control}
                 name="slug"
                 placeholder={__('e.g. save-the-blooms', 'growfund')}
-                className="growfund-w-52 growfund-h-8 growfund-rounded-md growfund-py-2 growfund-px-3"
+                className="growfund-mt-2 growfund-h-8 growfund-w-full sm:growfund-w-52 growfund-rounded-md growfund-px-3 growfund-py-2"
                 permalinkUrl={permalinkUrl}
               />
             </div>

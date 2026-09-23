@@ -73,7 +73,7 @@ const PresetItem = ({
                 </div>
               )}
             </div>
-            <div className="growfund-absolute growfund-top-3 growfund-right-4 growfund-h-9 growfund-w-[5.25rem] growfund-items-center growfund-justify-center growfund-p-1 growfund-shadow-md growfund-border growfund-rounded-md growfund-hidden group-hover:growfund-flex">
+            <div className="growfund-absolute growfund-top-3 growfund-right-4 growfund-h-9 growfund-w-[5.25rem] growfund-items-center growfund-justify-center growfund-p-1 growfund-shadow-md growfund-border growfund-rounded-md growfund-flex sm:growfund-hidden sm:group-hover:growfund-flex">
               <Button
                 variant="ghost"
                 size="icon"
@@ -171,6 +171,7 @@ const PresetItem = ({
                   'We truly appreciate your generous support! Your contributions make...',
                   'growfund',
                 )}
+                rows={4}
               />
             )}
           </div>

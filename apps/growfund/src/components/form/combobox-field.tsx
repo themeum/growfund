@@ -3,12 +3,12 @@ import { type FieldValues } from 'react-hook-form';
 
 import Combobox from '@/components/ui/combobox';
 import {
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from '@/components/ui/form';
 import { type Option } from '@/types';
 import { type ControllerField } from '@/types/form';
@@ -40,11 +40,24 @@ function ComboBoxField<T extends FieldValues>({
       name={name}
       render={({ field, fieldState }) => {
         return (
-          <FormItem className="growfund-w-full growfund-space-y-2">
+          <FormItem className="growfund-w-full growfund-space-y-2 growfund-min-w-0">
             {isDefined(label) && (
-              <div className="growfund-space-y-2">
-                {isDefined(label) && <FormLabel className="growfund-flex-shrink-0">{label}</FormLabel>}
-                {isDefined(description) && <FormDescription>{description}</FormDescription>}
+              <div className="growfund-space-y-2 growfund-min-w-0">
+                {isDefined(label) && (
+                  <FormLabel
+                    className="
+                      growfund-flex-shrink-0
+                      growfund-break-words
+                    "
+                  >
+                    {label}
+                  </FormLabel>
+                )}
+                {isDefined(description) && (
+                  <FormDescription className="growfund-break-words growfund-text-xs growfund-leading-5">
+                    {description}
+                  </FormDescription>
+                )}
               </div>
             )}
             <FormControl>

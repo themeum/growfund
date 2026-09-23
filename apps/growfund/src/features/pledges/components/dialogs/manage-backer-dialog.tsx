@@ -8,33 +8,33 @@ import { useForm } from 'react-hook-form';
 import { Container } from '@/components/layouts/container';
 import { Button } from '@/components/ui/button';
 import {
-    Dialog,
-    DialogCloseButton,
-    DialogContent,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogCloseButton,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
-    UserForm,
-    UserFormAddress,
-    UserFormBasics,
-    UserFormCard,
-    UserFormCardContent,
-    UserFormCardHeader,
-    UserFormPassword,
+  UserForm,
+  UserFormAddress,
+  UserFormBasics,
+  UserFormCard,
+  UserFormCardContent,
+  UserFormCardHeader,
+  UserFormPassword,
 } from '@/components/user-form/user-form';
 import {
-    type Backer,
-    type BackerForm,
-    BackerFormSchema,
-    type BackerInfo,
+  type Backer,
+  type BackerForm,
+  BackerFormSchema,
+  type BackerInfo,
 } from '@/features/backers/schemas/backer';
 import {
-    useCreateBackerMutation,
-    useUpdateBackerMutation,
+  useCreateBackerMutation,
+  useUpdateBackerMutation,
 } from '@/features/backers/services/backer';
 import { useFormErrorHandler } from '@/hooks/use-form-error-handler';
 import { useDialogCloseMiddleware } from '@/hooks/use-wp-media';
@@ -86,7 +86,7 @@ const ManageBackerDialog = ({
           </DialogTitle>
           <DialogCloseButton />
         </DialogHeader>
-        <ScrollArea>
+        <ScrollArea className="growfund-flex-1">
           <Container size="xs" className="growfund-mt-3 growfund-max-h-[calc(100svh-17.5rem)]">
             <UserForm
               ref={formRef}

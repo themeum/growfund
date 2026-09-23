@@ -32,11 +32,15 @@ const PreviewCard = React.forwardRef<HTMLDivElement, PreviewCardProps>(
         />
         <div className="growfund-flex growfund-items-center growfund-justify-between growfund-gap-2">
           <div className="growfund-flex growfund-flex-col growfund-gap-2">
-            <h3 className="growfund-typo-small growfund-font-medium growfund-text-fg-primary">{title}</h3>
-            {subtitle && <div className="growfund-typo-tiny growfund-text-fg-secondary">{subtitle}</div>}
+            <h3 className="growfund-typo-small growfund-font-medium growfund-text-fg-primary">
+              {title}
+            </h3>
+            {subtitle && (
+              <div className="growfund-typo-tiny growfund-text-fg-secondary">{subtitle}</div>
+            )}
           </div>
           {action && (
-            <div className="growfund-flex growfund-items-end growfund-justify-end growfund-opacity-0 group-hover/preview-card:growfund-opacity-100 growfund-transition-opacity">
+            <div className="growfund-flex growfund-items-end growfund-justify-end growfund-opacity-100 sm:growfund-opacity-0 sm:group-hover/preview-card:growfund-opacity-100 growfund-transition-opacity">
               {action}
             </div>
           )}

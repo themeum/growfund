@@ -26,7 +26,7 @@ const PledgeDetails = ({ pledge }: PledgeDetailsProps) => {
   });
 
   return (
-    <div className="growfund-grid growfund-grid-cols-[auto_20rem] growfund-gap-4">
+    <div className="growfund-grid growfund-grid-cols-1 lg:growfund-grid-cols-[minmax(0,1fr)_20rem] growfund-gap-4">
       <div>
         <CampaignCard campaign={pledge.campaign} mode="view" />
         {isDefined(pledge.reward) && <PledgeRewardPreview mode="view" reward={pledge.reward} />}
@@ -50,7 +50,9 @@ const PledgeDetails = ({ pledge }: PledgeDetailsProps) => {
         <div className="growfund-space-y-4">
           <PledgeAction pledge={pledge} />
           <UserPreviewCard user={pledge.backer as Backer} title={__('Backer', 'growfund')} />
-          {isDefined(pledge.reward) && <ShippingMethodCard reward={pledge.reward} deliveryOption={pledge.delivery_option} />}
+          {isDefined(pledge.reward) && (
+            <ShippingMethodCard reward={pledge.reward} deliveryOption={pledge.delivery_option} />
+          )}
           <Box>
             <BoxContent>
               <h6 className="growfund-typo-h6 growfund-text-fg-primary">

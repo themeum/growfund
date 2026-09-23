@@ -13,13 +13,13 @@ import { Badge } from '@/components/ui/badge';
 import { Box, BoxContent } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import {
-    Dialog,
-    DialogCloseButton,
-    DialogContent,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogCloseButton,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Image } from '@/components/ui/image';
 import { OptionKeys } from '@/constants/option-keys';
@@ -143,19 +143,26 @@ const DonationDetailsDialog = ({
                   <p className="growfund-typo-small growfund-text-fg-secondary">
                     {__('Donation Amount', 'growfund')}
                   </p>
-                  <div className="growfund-typo-h3 growfund-text-fg-primary">{toCurrency(donation.amount)}</div>
+                  <div className="growfund-typo-h3 growfund-text-fg-primary">
+                    {toCurrency(donation.amount)}
+                  </div>
                   {isDefined(donation.tribute_type) && (
-                    <div className="growfund-w-full growfund-flex growfund-items-center growfund-gap-1">
+                    <div className="growfund-w-full growfund-flex growfund-items-start growfund-gap-1 growfund-min-w-0">
                       <SpecialTributeIcon className="growfund-size-4" />
-                      <span className="growfund-typo-tiny growfund-text-fg-special">
-                        {sprintf(
-                          /* translators: 1: Tribute type 2: Tribute salutation 3: Tribute to */
-                          __('Tribute %1$s %2$s %3$s', 'growfund'),
-                          donation.tribute_type,
-                          donation.tribute_salutation,
-                          donation.tribute_to,
-                        )}
-                      </span>
+                      <>
+                        <span className="sm:growfund-hidden growfund-typo-tiny growfund-text-fg-special">
+                          {sprintf(__('Tribute for %s', 'growfund'), donation.tribute_to)}
+                        </span>
+
+                        <span className="growfund-hidden sm:growfund-inline growfund-typo-tiny growfund-text-fg-special">
+                          {sprintf(
+                            __('Tribute %1$s %2$s %3$s', 'growfund'),
+                            donation.tribute_type,
+                            donation.tribute_salutation,
+                            donation.tribute_to,
+                          )}
+                        </span>
+                      </>
                     </div>
                   )}
                 </div>
@@ -164,19 +171,25 @@ const DonationDetailsDialog = ({
                     <p className="growfund-typo-small growfund-text-fg-secondary">
                       {__('Tribute Card Recipient', 'growfund')}
                     </p>
-                    <div className="growfund-type-h6">{donation.tribute_notification_recipient_name}</div>
-                    <div className="growfund-flex growfund-items-center growfund-gap-1">
+                    <div className="">{donation.tribute_notification_recipient_name}</div>
+                    <div className="growfund-flex growfund-flex-wrap growfund-items-center growfund-gap-1">
                       <div>{__('via', 'growfund')}</div>
                       {(donation.tribute_notification_type === 'send-ecard' ||
                         donation.tribute_notification_type === 'send-ecard-and-post-mail') && (
-                        <Badge variant={'secondary'} className="growfund-bg-background-fill-secondary">
+                        <Badge
+                          variant={'secondary'}
+                          className="growfund-bg-background-fill-secondary"
+                        >
                           {__('e-card', 'growfund')}
                         </Badge>
                       )}
 
                       {(donation.tribute_notification_type === 'send-post-mail' ||
                         donation.tribute_notification_type === 'send-ecard-and-post-mail') && (
-                        <Badge variant={'secondary'} className="growfund-bg-background-fill-secondary">
+                        <Badge
+                          variant={'secondary'}
+                          className="growfund-bg-background-fill-secondary"
+                        >
                           {__('post mail', 'growfund')}
                         </Badge>
                       )}
@@ -189,7 +202,9 @@ const DonationDetailsDialog = ({
             <Box className="growfund-border-border-secondary growfund-shadow-none growfund-mb-10">
               <BoxContent className="growfund-space-y-3">
                 <div className="growfund-flex growfund-items-center growfund-justify-between">
-                  <h6 className="growfund-typo-h6 growfund-text-fg-primary">{__('Payment', 'growfund')}</h6>
+                  <h6 className="growfund-typo-h6 growfund-text-fg-primary">
+                    {__('Payment', 'growfund')}
+                  </h6>
                   <PaymentStatusBadge status={donation.payment_status ?? 'unpaid'} />
                 </div>
 

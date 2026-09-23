@@ -67,7 +67,7 @@ const RewardItems = ({ onEdit }: { onEdit: (item: RewardItem) => void }) => {
                   )}
                 </p>
               </div>
-              <div className="growfund-flex growfund-items-center growfund-border growfund-border-border growfund-p-1 growfund-rounded-sm growfund-absolute growfund-top-[50%] growfund-right-4 growfund-translate-y-[-50%] growfund-opacity-0 group-hover/reward-item:growfund-opacity-100 growfund-transition-opacity growfund-duration-200">
+              <div className="growfund-flex growfund-items-center growfund-border growfund-border-border growfund-p-1 growfund-rounded-sm growfund-absolute growfund-top-[50%] growfund-right-4 growfund-translate-y-[-50%] growfund-transition-opacity growfund-duration-200 growfund-opacity-100 sm:growfund-opacity-0 sm:group-hover/reward-item:growfund-opacity-100">
                 <Button
                   variant="ghost"
                   size="icon"

@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { UserRouteConfig } from '@/dashboards/shared/config/user-route-config';
 import { useUserSettingsContext } from '@/dashboards/shared/contexts/user-settings-context';
 import SidebarItem from '@/dashboards/shared/sidebar-item';
+import { cn } from '@/lib/utils';
 import { createAcronym } from '@/utils';
 import { User as CurrentUser } from '@/utils/user';
 
@@ -32,7 +33,12 @@ const UserSettingsSidebar = () => {
   };
 
   return (
-    <div className="growfund-max-w-[13.25rem] growfund-w-full growfund-bg-background-surface growfund-border growfund-border-border growfund-rounded-md growfund-shadow-sm growfund-sticky growfund-top-[72px]  growfund-overflow-hidden growfund-h-fit">
+    <div
+      className={cn(
+        'growfund-bg-background-surface growfund-border growfund-border-border growfund-rounded-md growfund-shadow-sm growfund-overflow-hidden growfund-h-fit',
+        'growfund-w-full sm:growfund-max-w-[13.25rem] sm:growfund-w-full sm:growfund-sticky sm:growfund-top-[72px]',
+      )}
+    >
       <div className="growfund-p-4 growfund-flex growfund-items-center growfund-gap-2 growfund-border-b growfund-border-b-muted growfund-bg-background-surface-alt">
         <Avatar>
           <AvatarImage src={user?.image?.url ?? undefined} />

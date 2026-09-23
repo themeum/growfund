@@ -15,7 +15,7 @@ const DonorDetailsOverviewPage = () => {
       <ElementWrapper fallback={<DonorMetricsFallback />}>
         {DonorOverviewMetrics && <DonorOverviewMetrics />}
       </ElementWrapper>
-      <div className="growfund-grid growfund-grid-cols-[320px_auto] growfund-gap-4">
+      <div className="growfund-grid growfund-grid-cols-1 lg:growfund-grid-cols-[320px_minmax(0,1fr)] growfund-gap-4">
         <UserPreviewCard user={donor.profile} hideHeader />
         <ElementWrapper fallback={<ActivityLogFallback />}>
           {DonorActivityLogCard && <DonorActivityLogCard />}

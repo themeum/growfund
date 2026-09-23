@@ -8,7 +8,7 @@ function createLoader() {
         </div>
         `;
 
-  content.style.display = 'none';
+  content.style.visibility = 'hidden';
   document.body.insertAdjacentHTML('beforeend', loaderContent);
 }
 
@@ -24,7 +24,7 @@ createLoader();
 window.addEventListener('OnGrowfundAppLoaded', () => {
   const content = document.getElementById('wpwrap');
   if (content) {
-    content.style.display = 'block';
+    content.style.visibility = 'visible';
   }
   removeLoader();
 });

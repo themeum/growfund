@@ -6,12 +6,12 @@ import { useController, type FieldValues } from 'react-hook-form';
 import ManageEditorShortCodes from '@/components/editor/manage-editor-shortcodes';
 import { Button } from '@/components/ui/button';
 import {
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
@@ -96,7 +96,9 @@ function TextField<T extends FieldValues>({
             <FormItem
               className={cn(
                 'growfund-w-full',
-                inline ? 'growfund-flex growfund-items-baseline growfund-gap-4' : 'growfund-space-y-2',
+                inline
+                  ? 'growfund-flex growfund-flex-col sm:growfund-flex-row sm:growfund-items-start growfund-gap-2 sm:growfund-gap-4'
+                  : 'growfund-space-y-2',
               )}
             >
               {(isDefined(label) || isDefined(shortCodes)) && (

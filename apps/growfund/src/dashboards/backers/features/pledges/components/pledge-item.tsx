@@ -9,10 +9,10 @@ import { Box, BoxContent } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import { DotSeparator } from '@/components/ui/dot-separator';
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Image } from '@/components/ui/image';
 import { Separator } from '@/components/ui/separator';
@@ -42,7 +42,7 @@ const PledgeItem = ({ pledge }: PledgeItemProps) => {
   return (
     <Box className="growfund-border-none growfund-shadow-none">
       <BoxContent>
-        <div className="growfund-grid growfund-grid-cols-[5.5rem_auto_12rem] growfund-gap-3">
+        <div className="growfund-grid growfund-grid-cols-1 sm:growfund-grid-cols-[5.5rem_auto_12rem] growfund-gap-3">
           <Image
             src={pledge.campaign.images?.[0]?.url ?? null}
             alt={pledge.campaign.title}
@@ -75,32 +75,53 @@ const PledgeItem = ({ pledge }: PledgeItemProps) => {
 
               {isDefined(pledge.reward) && (
                 <>
-                  <Separator orientation="vertical" className="growfund-h-4 growfund-bg-fg-muted" />
+                  <Separator
+                    orientation="vertical"
+                    className="growfund-hidden sm:growfund-block growfund-h-4 growfund-bg-fg-muted"
+                  />
+
                   <div className="growfund-flex growfund-items-center growfund-gap-1">
-                    <Gift className="growfund-size-4 growfund-text-icon-emphasis" />
-                    <span
-                      title={pledge.reward.title}
-                      className="growfund-typo-small growfund-text-fg-emphasis growfund-truncate growfund-max-w-48"
-                    >
-                      {pledge.reward.title}
-                    </span>
-                    <DotSeparator className="growfund-bg-fg-emphasis growfund-mx-1" />
-                    <span className="growfund-typo-small growfund-text-fg-emphasis growfund-shrink-0">
+                    <Gift className="growfund-size-4 growfund-text-icon-emphasis growfund-shrink-0" />
+
+                    <span className="growfund-typo-small growfund-text-fg-emphasis sm:growfund-hidden">
                       {sprintf(
                         /* translators: %d: number of reward items */
                         _n('%d item', '%d items', pledge.reward.items.length, 'growfund'),
                         pledge.reward.items.length,
                       )}
                     </span>
+
+                    <div className="growfund-hidden sm:growfund-flex sm:growfund-items-center sm:growfund-gap-1">
+                      <span
+                        title={pledge.reward.title}
+                        className="growfund-typo-small growfund-text-fg-emphasis growfund-truncate growfund-max-w-48"
+                      >
+                        {pledge.reward.title}
+                      </span>
+
+                      <DotSeparator className="growfund-bg-fg-emphasis growfund-mx-1" />
+
+                      <span className="growfund-typo-small growfund-text-fg-emphasis growfund-shrink-0">
+                        {sprintf(
+                          /* translators: %d: number of reward items */
+                          _n('%d item', '%d items', pledge.reward.items.length, 'growfund'),
+                          pledge.reward.items.length,
+                        )}
+                      </span>
+                    </div>
                   </div>
                 </>
               )}
             </div>
           </div>
-          <div className="growfund-flex growfund-flex-col growfund-justify-between growfund-items-end">
+          <div className="growfund-flex growfund-flex-row sm:growfund-flex-col growfund-justify-between growfund-items-center sm:growfund-items-end growfund-gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="secondary" size="icon" className="growfund-shrink-0 growfund-size-8">
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="growfund-shrink-0 growfund-size-8"
+                >
                   <DotsVerticalIcon />
                 </Button>
               </DropdownMenuTrigger>
@@ -114,7 +135,10 @@ const PledgeItem = ({ pledge }: PledgeItemProps) => {
                   {__('View Details', 'growfund')}
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  className={cn('growfund-text-fg-critical', !isCancellable && 'growfund-text-fg-subdued')}
+                  className={cn(
+                    'growfund-text-fg-critical',
+                    !isCancellable && 'growfund-text-fg-subdued',
+                  )}
                   disabled={!isCancellable}
                   onClick={() => {
                     openDialog({

@@ -56,10 +56,25 @@ const CampaignRewards = () => {
               className="growfund-bg-background-surface growfund-rounded-md growfund-group/reward-item"
               key={reward.id}
             >
-              <div className="growfund-grid growfund-grid-cols-[1fr_1.5fr_2fr_1fr] growfund-gap-8 growfund-p-4">
-                <h6 className="growfund-typo-h6 growfund-text-fg-primary">{toCurrency(reward.amount)}</h6>
+              <div className="growfund-grid growfund-grid-cols-1 growfund-gap-4 growfund-p-4 lg:growfund-grid-cols-[1fr_1.5fr_2fr_1fr] lg:growfund-gap-8">
+                <div className="growfund-flex  growfund-flex-row-reverse growfund-items-center growfund-justify-between lg:growfund-block">
+                  <h6 className="growfund-typo-h6 growfund-text-fg-primary">
+                    {toCurrency(reward.amount)}
+                  </h6>
+
+                  <div className="growfund-block lg:growfund-hidden growfund-w-16 growfund-h-16 growfund-shrink-0">
+                    <Image
+                      src={reward.image?.url ?? null}
+                      alt={reward.title}
+                      aspectRatio="square"
+                    />
+                  </div>
+                </div>
+
                 <div className="growfund-grid growfund-gap-2 growfund-h-fit">
-                  <p className="growfund-typo-small growfund-font-medium growfund-text-fg-primary">{reward.title}</p>
+                  <p className="growfund-typo-small growfund-font-medium growfund-text-fg-primary">
+                    {reward.title}
+                  </p>
                   {!!reward.estimated_delivery_date && (
                     <div className="growfund-flex growfund-gap-2">
                       <ShippingFastIcon className="growfund-text-icon-secondary growfund-size-3 growfund-mt-[2px]" />
@@ -117,10 +132,14 @@ const CampaignRewards = () => {
                   )}
                 </div>
 
-                <Image src={reward.image?.url ?? null} alt={reward.title} aspectRatio="square" />
+                <div className="growfund-hidden lg:growfund-block">
+                  <Image src={reward.image?.url ?? null} alt={reward.title} aspectRatio="square" />
+                </div>
               </div>
+
               <Separator />
-              <div className="growfund-px-3 growfund-py-1 growfund-flex growfund-items-center growfund-justify-between">
+
+              <div className="growfund-px-3 growfund-py-2 growfund-flex growfund-flex-wrap growfund-items-center growfund-justify-between growfund-gap-2">
                 <div className="growfund-text-fg-secondary growfund-flex growfund-items-center growfund-gap-2 growfund-typo-tiny">
                   <Users className="growfund-text-icon-secondary growfund-w-4 growfund-h-4" />
                   <span>

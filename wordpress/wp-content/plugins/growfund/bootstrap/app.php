@@ -4,8 +4,6 @@ defined( 'ABSPATH' ) || exit;
 
 use Growfund\Application;
 use Growfund\Constants\AppConfigKeys;
-use Growfund\Constants\OptionKeys;
-use Growfund\Supports\Option;
 use Growfund\Supports\Utils;
 
 if (!defined('ABSPATH')) {

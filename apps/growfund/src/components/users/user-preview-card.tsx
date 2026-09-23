@@ -54,7 +54,7 @@ const UserPreviewCard = ({ user, title, onRemove, onEdit, hideHeader = false }: 
             <h6 className="growfund-typo-h6 growfund-font-medium growfund-text-fg-primary">
               {title ?? __('User', 'growfund')}
             </h6>
-            <div className="growfund-opacity-0 group-hover/user-card:growfund-opacity-100 growfund-transition-opacity">
+            <div className="growfund-opacity-100 sm:growfund-opacity-0 sm:group-hover/user-card:growfund-opacity-100 growfund-transition-opacity">
               {onRemove && (
                 <Button
                   variant="ghost"

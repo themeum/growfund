@@ -1,19 +1,25 @@
 import { __ } from '@wordpress/i18n';
-import { SquareArrowOutUpRight } from 'lucide-react';
+import { EllipsisVertical, FileText, SquareArrowOutUpRight } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Outlet, useNavigate } from 'react-router';
 
 import { Page, PageContent, PageHeader } from '@/components/layouts/page';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { RouteConfig } from '@/config/route-config';
 import { useAppConfig } from '@/contexts/app-config';
 import CampaignNavigation from '@/features/campaigns/components/campaign-navigation';
 import CampaignPublishedDialog from '@/features/campaigns/components/dialogs/campaign-published-dialog';
 import CampaignSubmittedForReviewDialog from '@/features/campaigns/components/dialogs/campaign-submitted-for-review-dialog';
 import {
-    CampaignBuilderContextProvider,
-    useCampaignBuilderContext,
+  CampaignBuilderContextProvider,
+  useCampaignBuilderContext,
 } from '@/features/campaigns/contexts/campaign-builder';
 import { useCampaign } from '@/features/campaigns/contexts/campaign-context';
 import { type CampaignBuilderForm } from '@/features/campaigns/schemas/campaign';
@@ -91,43 +97,90 @@ const CampaignBuilderLayoutContent = () => {
     <Page>
       <div>
         <PageHeader
-          name={__('Edit Campaign', 'growfund')}
+          name={
+            <span className="growfund-hidden lg:growfund-inline">
+              {__('Edit Campaign', 'growfund')}
+            </span>
+          }
           onGoBack={() => void navigate(RouteConfig.Campaigns.buildLink())}
           variant="fluid"
           action={
-            <div className="growfund-flex growfund-items-center growfund-gap-3">
-              {campaign.preview_url && (
-                <Button
-                  variant="ghost"
-                  onClick={() => {
-                    if (campaign.preview_url) {
-                      window.open(campaign.preview_url, '_blank');
-                    }
-                  }}
-                >
-                  {__('Preview', 'growfund')}
-                  <SquareArrowOutUpRight />
-                </Button>
-              )}
+            <div className="growfund-flex growfund-items-center growfund-gap-2">
+              <div className="lg:growfund-hidden">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="icon">
+                      <EllipsisVertical className="growfund-size-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
 
-              {!isCampaignActive && (
-                <Button
-                  variant="outline"
-                  onClick={form.handleSubmit(
-                    (values) => {
-                      setClickedOn('draft');
-                      onSubmit(values, 'draft');
-                    },
-                    (error) => {
-                      console.error(error);
-                    },
-                  )}
-                  disabled={updateCampaignMutation.isPending}
-                  loading={updateCampaignMutation.isPending && clickedOn === 'draft'}
-                >
-                  {__('Save as Draft', 'growfund')}
-                </Button>
-              )}
+                  <DropdownMenuContent align="end">
+                    {campaign.preview_url && (
+                      <DropdownMenuItem
+                        onClick={() => {
+                          if (campaign.preview_url) {
+                            window.open(campaign.preview_url, '_blank');
+                          }
+                        }}
+                      >
+                        <SquareArrowOutUpRight className="growfund-size-4" />
+                        {__('Preview', 'growfund')}
+                      </DropdownMenuItem>
+                    )}
+
+                    {!isCampaignActive && (
+                      <DropdownMenuItem
+                        onClick={form.handleSubmit(
+                          (values) => {
+                            setClickedOn('draft');
+                            onSubmit(values, 'draft');
+                          },
+                          (error) => {
+                            console.error(error);
+                          },
+                        )}
+                      >
+                        <FileText className="growfund-size-4" />
+                        {__('Save as Draft', 'growfund')}
+                      </DropdownMenuItem>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+              <div className="growfund-hidden lg:growfund-flex growfund-items-center growfund-gap-3">
+                {campaign.preview_url && (
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      if (campaign.preview_url) {
+                        window.open(campaign.preview_url, '_blank');
+                      }
+                    }}
+                  >
+                    {__('Preview', 'growfund')}
+                    <SquareArrowOutUpRight />
+                  </Button>
+                )}
+
+                {!isCampaignActive && (
+                  <Button
+                    variant="outline"
+                    onClick={form.handleSubmit(
+                      (values) => {
+                        setClickedOn('draft');
+                        onSubmit(values, 'draft');
+                      },
+                      (error) => {
+                        console.error(error);
+                      },
+                    )}
+                    disabled={updateCampaignMutation.isPending}
+                    loading={updateCampaignMutation.isPending && clickedOn === 'draft'}
+                  >
+                    {__('Save as Draft', 'growfund')}
+                  </Button>
+                )}
+              </div>
               <Button
                 onClick={form.handleSubmit(
                   (values) => {

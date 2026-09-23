@@ -53,7 +53,7 @@ const TopContributors = ({ users, loading }: TopContributorsProps) => {
   return (
     <Box className="growfund-rounded-3xl">
       <BoxContent className="growfund-py-4 growfund-px-6">
-        <BoxTitle className="growfund-justify-between [&>span>[data-type=tooltip]]:growfund-opacity-0 group-hover/box:[&>span>[data-type=tooltip]]:growfund-opacity-100">
+        <BoxTitle className="growfund-justify-between [&>span>[data-type=tooltip]]:growfund-opacity-100 lg:[&>span>[data-type=tooltip]]:growfund-opacity-0 lg:group-hover/box:[&>span>[data-type=tooltip]]:growfund-opacity-100">
           <span>
             {isDonationMode ? __('Top Donors', 'growfund') : __('Top Backers', 'growfund')}
             <InfoTooltip>
@@ -71,7 +71,7 @@ const TopContributors = ({ users, loading }: TopContributorsProps) => {
           <Button
             variant="ghost"
             size="sm"
-            className="growfund-opacity-0 group-hover/box:growfund-opacity-100"
+            className="lg:growfund-opacity-0 lg:group-hover/box:growfund-opacity-100"
             onClick={() => {
               if (isDonationMode) {
                 void navigate(RouteConfig.Donors.buildLink());
@@ -107,13 +107,17 @@ const TopContributors = ({ users, loading }: TopContributorsProps) => {
                     <DotSeparator />
                     <div className="growfund-flex growfund-items-center growfund-gap-1">
                       <HeartHandshake className="growfund-size-3 growfund-text-icon-primary" />
-                      <span className="growfund-typo-tiny growfund-font-medium growfund-text-fg-secondary">
-                        {isDonationMode
-                          ? /* translators: %s: number of donations */
-                            sprintf(__('%s donations', 'growfund'), user.number_of_contributions)
-                          : /* translators: %s: number of pledges */
-                            sprintf(__('%s pledges', 'growfund'), user.number_of_contributions)}
-                      </span>
+                      <div className="growfund-typo-tiny growfund-font-medium growfund-text-fg-secondary">
+                        <span className="sm:growfund-hidden">{user.number_of_contributions}</span>
+
+                        <span className="growfund-hidden sm:growfund-inline">
+                          {isDonationMode
+                            ? /* translators: %s: number of donations */
+                              sprintf(__('%s donations', 'growfund'), user.number_of_contributions)
+                            : /* translators: %s: number of pledges */
+                              sprintf(__('%s pledges', 'growfund'), user.number_of_contributions)}
+                        </span>
+                      </div>
                     </div>
                   </div>
                   <Badge variant={badges[Math.floor(Math.random() * badges.length + 1)]}>

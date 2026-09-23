@@ -9,7 +9,7 @@ const RewardModeOverview = () => {
     <div className="growfund-mt-4 growfund-space-y-7">
       <CampaignInformationMetrics />
       <AnalyticsRevenueChart />
-      <div className="growfund-grid growfund-grid-cols-[23.75rem_auto] growfund-gap-7">
+      <div className="growfund-grid growfund-grid-cols-1 xl:growfund-grid-cols-[23.75rem_auto] growfund-gap-7">
         <div className="growfund-space-y-7">
           <RecentPledges />
           <TopBackers />

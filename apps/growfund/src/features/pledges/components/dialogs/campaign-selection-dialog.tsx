@@ -4,12 +4,12 @@ import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
-    Dialog,
-    DialogCloseButton,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogCloseButton,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import PreviewCard from '@/components/ui/preview-card';
@@ -47,7 +47,7 @@ const SelectCampaignDialog = ({ open, onOpenChange, onSelect }: SelectCampaignDi
           {__('Select Campaign', 'growfund')}
         </Button>
       </DialogTrigger>
-      <DialogContent className="growfund-max-w-[32rem] growfund-w-full">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle className="growfund-flex growfund-items-center growfund-gap-2">
             <PackageOpen className="growfund-size-5 growfund-text-icon-primary" />
@@ -55,7 +55,7 @@ const SelectCampaignDialog = ({ open, onOpenChange, onSelect }: SelectCampaignDi
           </DialogTitle>
           <DialogCloseButton />
         </DialogHeader>
-        <div className="growfund-p-4 growfund-pt-0 growfund-bg-background-surface-secondary">
+        <div className="growfund-p-4 growfund-pt-4 sm:growfund-pt-0 growfund-bg-background-surface-secondary">
           <div className="growfund-flex growfund-items-center growfund-gap-2 growfund-mb-3">
             <Input
               placeholder={__('Search campaigns...', 'growfund')}

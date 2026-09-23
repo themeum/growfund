@@ -43,7 +43,7 @@ const SelectExistingItem = ({
         name="id"
         placeholder={__('Select an item', 'growfund')}
         options={options}
-        className="growfund-w-[414px] growfund-overflow-hidden"
+        className="growfund-w-full growfund-overflow-hidden"
       />
       <TextField
         control={form.control}

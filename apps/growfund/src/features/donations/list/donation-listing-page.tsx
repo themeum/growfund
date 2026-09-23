@@ -444,7 +444,7 @@ const DonationsList = ({ donorId }: { donorId?: string }) => {
           const donationId = props.row.original.id;
           const status = props.row.original.status;
           return (
-            <div className="growfund-flex growfund-gap-2 growfund-opacity-0 group-hover/row:growfund-opacity-100">
+            <div className="growfund-flex growfund-gap-2 growfund-opacity-100 lg:growfund-opacity-0 lg:group-hover/row:growfund-opacity-100">
               <ThreeDotsOptions
                 options={rowDropdownActions
                   .filter((action) => {
@@ -465,7 +465,7 @@ const DonationsList = ({ donorId }: { donorId?: string }) => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="growfund-size-6 growfund-opacity-0 group-hover/row:growfund-opacity-100"
+                  className="growfund-size-6 growfund-opacity-100 lg:growfund-opacity-0 lg:group-hover/row:growfund-opacity-100"
                 >
                   <DotsVerticalIcon />
                 </Button>
@@ -616,9 +616,9 @@ const DonationsList = ({ donorId }: { donorId?: string }) => {
               >
                 <Form {...form}>
                   <div className="growfund-w-full growfund-space-y-4">
-                    <div className="growfund-flex growfund-justify-between growfund-items-center growfund-w-full">
-                      <div className="growfund-w-full growfund-flex growfund-items-center growfund-gap-2">
-                        <div className="growfund-w-[8.1875rem]">
+                    <div className="growfund-flex growfund-flex-col growfund-gap-4 lg:growfund-flex-row lg:growfund-items-center lg:growfund-justify-between growfund-w-full">
+                      <div className="growfund-flex growfund-flex-col sm:growfund-flex-row growfund-gap-3 growfund-w-full lg:growfund-flex-1">
+                        <div className="growfund-w-full sm:growfund-w-[8.1875rem]">
                           <SelectField
                             className="growfund-bg-background-white"
                             control={form.control}
@@ -633,40 +633,51 @@ const DonationsList = ({ donorId }: { donorId?: string }) => {
                             ]}
                           />
                         </div>
+
                         <CampaignField control={form.control} name="campaign_id" />
+
                         {appConfig[AppConfigKeys.Campaign]?.allow_fund && FundSelectionField && (
-                          <div className="growfund-w-[9.375rem]">
+                          <div className="growfund-w-full sm:growfund-w-[9.375rem]">
                             <FundSelectionField />
                           </div>
                         )}
+
                         {isTrashDonations && (
-                          <Button variant="ghost" onClick={handleEmptyTrash}>
+                          <Button
+                            variant="ghost"
+                            onClick={handleEmptyTrash}
+                            className="growfund-w-full sm:growfund-w-auto"
+                          >
                             <Trash />
                             {__('Empty Trash', 'growfund')}
                           </Button>
                         )}
                       </div>
 
-                      <div className="growfund-flex growfund-items-center growfund-gap-3">
+                      <div className="growfund-flex growfund-flex-col sm:growfund-flex-row growfund-gap-3 growfund-w-full lg:growfund-w-auto">
                         <TextField
                           control={form.control}
                           type="search"
                           name="search"
                           placeholder={__('Search...', 'growfund')}
-                          className="growfund-w-40"
+                          className="growfund-w-full sm:growfund-w-40"
                         />
+
                         {!isTrashDonations && (
-                          <DatePickerField
-                            control={form.control}
-                            name="date_range"
-                            type="range"
-                            showRangePresets
-                            clearable
-                            placeholder={__('Date Range', 'growfund')}
-                          />
+                          <div className="growfund-w-full sm:growfund-w-auto">
+                            <DatePickerField
+                              control={form.control}
+                              name="date_range"
+                              type="range"
+                              showRangePresets
+                              clearable
+                              placeholder={__('Date Range', 'growfund')}
+                            />
+                          </div>
                         )}
                       </div>
                     </div>
+
                     <ActiveFilters
                       params={params}
                       onClear={handleClearFilter}

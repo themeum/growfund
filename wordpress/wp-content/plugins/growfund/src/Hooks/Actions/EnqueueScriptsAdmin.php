@@ -74,6 +74,7 @@ class EnqueueScriptsAdmin extends BaseHook
         
         // phpcs:ignore -- intentionally ignored enqueue version
         wp_enqueue_style('growfund-admin-style-extended', GROWFUND_RESOURCE_URL . 'assets/css/admin-style-extended.css');
+        wp_enqueue_style('growfund-media-extended', GROWFUND_RESOURCE_URL . 'assets/css/wp-media-extended.css', ['growfund-admin-style-extended'], GROWFUND_VERSION);
 
         wp_enqueue_style(
             'growfund-rich-text-editor',

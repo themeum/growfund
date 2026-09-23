@@ -37,7 +37,7 @@ const DonorInformationMetrics = () => {
   }, [toCurrencyCompact, donorStatsQuery.data]);
 
   return (
-    <div className="growfund-grid growfund-grid-cols-4 growfund-gap-4">
+    <div className="growfund-grid growfund-grid-cols-1 sm:growfund-grid-cols-2 xl:growfund-grid-cols-4 growfund-gap-4">
       {metrics.map((metric, index) => {
         return (
           <LoadingSkeleton
