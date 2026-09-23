@@ -31,6 +31,7 @@ import {
 import { useRouteBlockerGuard } from '@/hooks/use-route-blocker-guard';
 import { type WPPage } from '@/schemas/wp-page';
 import { type TableColumnDef } from '@/types';
+import { isDefined } from '@/utils';
 import { matchQueryStatus } from '@/utils/match-query-status';
 
 const columnHelper = createColumnHelper<WPPage>();
@@ -89,35 +90,23 @@ const ManualPagesGenerationSettingspage = () => {
 
   const wordpressPagesQuery = useWordPressPagesQuery();
 
-  const wordpressPages = useMemo(() => {
-    if (!wordpressPagesQuery.data) {
+  const pagesOptions = useMemo(() => {
+    if (!isDefined(wordpressPagesQuery.data)) {
       return [];
     }
-    return wordpressPagesQuery.data;
+
+    return wordpressPagesQuery.data.map((page) => ({ label: page.name, value: page.id }));
   }, [wordpressPagesQuery.data]);
 
-  const pagesOptions = useMemo(() => {
-    return wordpressPages.map((page) => ({ label: page.name, value: page.id }));
-  }, [wordpressPages]);
-
   const growfundPagesQuery = useGetManualPagesQuery();
-
-  const formValues = form.watch();
 
   const growfundPages = useMemo(() => {
     if (!growfundPagesQuery.data) {
       return [];
     }
-    return growfundPagesQuery.data.map((page) => {
-      const pageKey = page.page_key as Path<PageSettingsSchemaForm>;
-      const id = formValues[pageKey];
-      if (id !== page.id) {
-        const newPage = wordpressPages.find((wpPage) => wpPage.id === id) ?? page;
-        return { ...newPage, page_key: pageKey };
-      }
-      return page;
-    });
-  }, [growfundPagesQuery.data, formValues, wordpressPages]);
+
+    return growfundPagesQuery.data;
+  }, [growfundPagesQuery.data]);
 
   const generateManualPagesMutation = useRegeneratePagesMutation();
 
@@ -126,9 +115,9 @@ const ManualPagesGenerationSettingspage = () => {
   }, [generateManualPagesMutation]);
 
   const isNotAllPublished = useMemo(() => {
-    if (!growfundPagesQuery.data) return true;
-    return growfundPagesQuery.data.some((page) => page.status !== 'published');
-  }, [growfundPagesQuery.data]);
+    if (growfundPages.length === 0) return true;
+    return growfundPages.some((page) => page.status !== 'published');
+  }, [growfundPages]);
 
   const columns = useMemo(() => {
     return [
@@ -143,12 +132,12 @@ const ManualPagesGenerationSettingspage = () => {
           const { slug, url, page_key } = props.row.original;
           const displayTitle = TITLE_MAP[page_key ?? ''] || slug || '--';
           return (
-            <div className="growfund-flex growfund-items-center growfund-gap-2 growfund-group growfund-w-[250px] growfund-overflow-hidden">
-              <span className="growfund-truncate growfund-transition-opacity growfund-duration-200 group-hover:growfund-hidden">
+            <div className="growfund-flex growfund-items-center growfund-gap-2 growfund-group/row growfund-w-[250px] growfund-overflow-hidden">
+              <span className="growfund-truncate growfund-transition-opacity growfund-duration-200 group-hover/row:growfund-hidden">
                 {displayTitle}
               </span>
 
-              <span className="growfund-hidden group-hover:growfund-flex growfund-gap-2">
+              <span className="growfund-hidden group-hover/row:growfund-flex growfund-gap-2">
                 <span className="growfund-text-fg-secondary growfund-truncate">
                   {slug ? slug : '--'}
                 </span>
@@ -182,20 +171,19 @@ const ManualPagesGenerationSettingspage = () => {
           const selectedOption = pagesOptions.find(
             (option) => String(option.value) === String(currentValue || row.id),
           );
-
           const displayValue = selectedOption ? selectedOption.label : row.name || '--';
 
           return (
-            <div className="growfund-group growfund-relative growfund-h-[36px] growfund-flex growfund-items-center growfund-w-full">
-              <div className="growfund-w-full growfund-h-full growfund-leading-9 growfund-truncate growfund-cursor-pointer group-hover:growfund-invisible growfund-absolute growfund-left-0 growfund-top-0">
+            <div className="growfund-group/row growfund-relative growfund-h-[36px] growfund-flex growfund-items-center growfund-w-full">
+              <div className="growfund-w-full growfund-h-full growfund-leading-9 growfund-truncate growfund-cursor-pointer group-hover/row:growfund-invisible growfund-absolute growfund-left-0 growfund-top-0">
                 {displayValue}
               </div>
-              <div className="growfund-absolute growfund-left-[-12px] growfund-top-0 growfund-invisible group-hover:growfund-visible growfund-max-w-48 growfund-w-full growfund-z-20 group-hover:growfund-opacity-100 focus-within:growfund-opacity-100">
+              <div className="growfund-absolute growfund-left-[-12px] growfund-top-0 growfund-invisible group-hover/row:growfund-visible growfund-max-w-48 growfund-w-full growfund-z-20 group-hover/row:growfund-opacity-100 focus-within:growfund-opacity-100">
                 <SelectField
                   control={form.control}
                   name={fieldKey}
                   options={pagesOptions}
-                  placeholder={__('Change page', 'growfund')}
+                  placeholder={__('Select page', 'growfund')}
                 />
               </div>
             </div>
@@ -238,17 +226,16 @@ const ManualPagesGenerationSettingspage = () => {
           <CardHeader>
             <CardTitle className="growfund-flex growfund-items-center growfund-justify-between">
               <BrandIcon className="growfund-w-[100px] growfund-h-5 growfund-flex-shrink-0" />
-
-              <Button
-                variant="primary"
-                disabled={generateManualPagesMutation.isPending || !isNotAllPublished}
-                loading={generateManualPagesMutation.isPending}
-                className="disabled:growfund-opacity-50"
-                onClick={handleRegenerate}
-              >
-                <HammerIcon className="growfund-size-4" />
-                {__('Run Fix', 'growfund')}
-              </Button>
+              {isNotAllPublished && (
+                <Button
+                  variant="primary"
+                  loading={generateManualPagesMutation.isPending}
+                  onClick={handleRegenerate}
+                >
+                  <HammerIcon className="growfund-size-4" />
+                  {__('Run Fix', 'growfund')}
+                </Button>
+              )}
             </CardTitle>
           </CardHeader>
           <CardContent className="growfund-space-y-4">

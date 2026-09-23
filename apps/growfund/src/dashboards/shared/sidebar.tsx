@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { Settings, Undo2 } from 'lucide-react';
+import { Settings, Undo2, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router';
 
 import { BrandIcon } from '@/app/icons';
@@ -8,21 +8,42 @@ import { Image } from '@/components/ui/image';
 import { useAppConfig } from '@/contexts/app-config';
 import ProfileMenu from '@/dashboards/shared/components/dropdowns/profile-menu';
 import { UserRouteConfig } from '@/dashboards/shared/config/user-route-config';
+import { useSidebarContext } from '@/dashboards/shared/contexts/sidebar-context';
 import SidebarItem from '@/dashboards/shared/sidebar-item';
 import { AppConfigKeys } from '@/features/settings/context/settings-context';
 import { cn } from '@/lib/utils';
 
-const Sidebar = ({ items }: { items: SidebarItem[] }) => {
+interface SidebarProps {
+  items: SidebarItem[];
+}
+
+const Sidebar = ({ items }: SidebarProps) => {
   const { pathname } = useLocation();
   const { appConfig } = useAppConfig();
 
   const brandLogo = appConfig[AppConfigKeys.Branding]?.logo?.url;
+  const { isOpenSidebar, setOpenSidebar } = useSidebarContext();
 
   return (
-    <div className="growfund-fixed growfund-h-full growfund-w-[var(--growfund-sidebar-width)] growfund-bg-background-surface-alt growfund-border-r growfund-border-r-border growfund-overflow-hidden">
+    <div
+      className={cn(
+        'growfund-fixed growfund-h-full growfund-w-[var(--growfund-sidebar-width)]',
+        'growfund-bg-background-surface-alt growfund-border-r growfund-border-r-border',
+        'growfund-overflow-hidden growfund-z-50',
+        'growfund-transition-transform growfund-duration-300 growfund-ease-in-out',
+        'lg:growfund-translate-x-0',
+        isOpenSidebar ? 'growfund-translate-x-0' : 'growfund--translate-x-full',
+      )}
+    >
       {/* topbar */}
-      <div className="growfund-h-[var(--growfund-topbar-height)] growfund-flex growfund-items-center growfund-px-4 growfund-border-b growfund-border-b-border growfund-group/sidebar-logo growfund-relative">
-        <div className="growfund-flex growfund-items-center growfund-gap-2 growfund-absolute growfund-left-4 growfund-transition-all growfund-duration-300 group-hover/sidebar-logo:growfund-left-[12.5rem] group-hover/sidebar-logo:growfund-opacity-0">
+      <div
+        className={cn(
+          'growfund-flex growfund-items-center growfund-px-4 growfund-border-b growfund-border-b-border growfund-group/sidebar-logo growfund-relative',
+          'growfund-h-[var(--growfund-topbar-height)]',
+          'growfund-py-3 lg:growfund-py-0',
+        )}
+      >
+        <div className=" growfund-hidden lg:growfund-flex growfund-items-center growfund-gap-2 growfund-absolute growfund-left-4 growfund-transition-all growfund-duration-300 group-hover/sidebar-logo:growfund-left-[12.5rem] group-hover/sidebar-logo:growfund-opacity-0">
           {brandLogo ? (
             <Image
               src={brandLogo}
@@ -34,15 +55,31 @@ const Sidebar = ({ items }: { items: SidebarItem[] }) => {
             <BrandIcon className="growfund-h-5" />
           )}
         </div>
+
         <Button
           variant="secondary"
-          className="growfund-absolute growfund-opacity-0 growfund-transition-all growfund-left-[-12.5rem] group-hover/sidebar-logo:growfund-left-4 group-hover/sidebar-logo:growfund-opacity-100"
+          className={cn(
+            'growfund-absolute growfund-transition-all',
+            'lg:growfund-opacity-0 lg:growfund-left-[-12.5rem] lg:group-hover/sidebar-logo:growfund-left-4 lg:group-hover/sidebar-logo:growfund-opacity-100',
+            'growfund-left-4 growfund-opacity-100',
+          )}
           onClick={() => {
             window.location.href = '/';
           }}
         >
           <Undo2 />
           {__('Back to site', 'growfund')}
+        </Button>
+
+        <Button
+          onClick={() => {
+            setOpenSidebar(false);
+          }}
+          variant="ghost"
+          className="lg:growfund-hidden growfund-absolute growfund-right-4 growfund-p-1 growfund-rounded-md hover:growfund-bg-background-secondary"
+          aria-label="Close menu"
+        >
+          <X />
         </Button>
       </div>
 
@@ -57,6 +94,9 @@ const Sidebar = ({ items }: { items: SidebarItem[] }) => {
               <div className="growfund-px-3">
                 <Link
                   to={UserRouteConfig.Settings.buildLink()}
+                  onClick={() => {
+                    setOpenSidebar(false);
+                  }}
                   className={cn(
                     'growfund-w-full growfund-flex growfund-items-center growfund-gap-2 growfund-typo-small growfund-font-medium growfund-text-fg-secondary growfund-min-h-8 growfund-px-3 growfund-py-2 growfund-rounded-lg growfund-relative growfund-group/sidebar-item hover:growfund-bg-background-secondary hover:growfund-text-fg-secondary',
                     pathname.startsWith(UserRouteConfig.Settings.template) &&
@@ -73,7 +113,7 @@ const Sidebar = ({ items }: { items: SidebarItem[] }) => {
             </div>
           </div>
 
-          <div className="growfund-w-full growfund-min-h-32  growfund-p-4 growfund-border-t growfund-border-t-border growfund-bg-background-surface">
+          <div className="growfund-w-full growfund-min-h-32 growfund-p-4 growfund-border-t growfund-border-t-border growfund-bg-background-surface">
             <ProfileMenu className="growfund-px-2" />
           </div>
         </div>

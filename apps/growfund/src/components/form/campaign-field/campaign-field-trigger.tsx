@@ -19,8 +19,9 @@ const CampaignFieldTrigger = ({ placeholder }: { placeholder?: string }) => {
           variant="outline"
           title={label}
           className={cn(
-            'growfund-max-w-40 growfund-min-w-[12.5rem] growfund-justify-between growfund-pe-3 focus-visible:growfund-ring-0',
-            isDefined(selectedCampaign) && 'growfund-rounded-none growfund-rounded-tl-lg growfund-rounded-bl-lg',
+            'growfund-max-w-40 md:growfund-min-w-[12.5rem] growfund-min-w-0 growfund-justify-between growfund-pe-3 focus-visible:growfund-ring-0',
+            isDefined(selectedCampaign) &&
+              'growfund-rounded-none growfund-rounded-tl-lg growfund-rounded-bl-lg growfund-outline-none focus:growfund-outline-none focus:growfund-ring-0',
           )}
         >
           <span className="growfund-typo-small growfund-truncate">{label}</span>
@@ -34,7 +35,7 @@ const CampaignFieldTrigger = ({ placeholder }: { placeholder?: string }) => {
             field.onChange(null);
           }}
           variant="outline"
-          className="growfund-rounded-none growfund-rounded-tr-lg growfund-rounded-br-lg growfund-border-l-0 focus-visible:growfund-ring-0"
+          className="growfund-h-10 md:growfund-h-9 growfund-rounded-none growfund-rounded-tr-lg growfund-rounded-br-lg growfund-border-l-0 focus-visible:growfund-ring-0"
           size="icon"
         >
           <Cross2Icon />

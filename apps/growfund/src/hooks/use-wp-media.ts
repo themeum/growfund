@@ -2,6 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { wordpress } from '@/config/growfund';
+import { useBreakpoint } from '@/hooks/use-breakpoint';
 import { type MediaAttachment } from '@/schemas/media';
 import { type AcceptedMediaTypes } from '@/types/media';
 import { isDefined } from '@/utils';
@@ -121,6 +122,8 @@ const useWordpressMedia = () => {
 
 const useDialogCloseMiddleware = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [hasMedia, setHasMedia] = useState(false);
+  const breakPoint = useBreakpoint();
 
   useEffect(() => {
     const handler = (event: Event) => {
@@ -128,6 +131,7 @@ const useDialogCloseMiddleware = () => {
       if (!isDefined(detail) || !isDefined(detail.isOpen)) {
         return;
       }
+      setHasMedia(true);
       setIsOpen(detail.isOpen);
     };
 
@@ -141,13 +145,13 @@ const useDialogCloseMiddleware = () => {
   const applyMiddleware = useCallback(
     (callback: (status: boolean) => void) => {
       return (status: boolean) => {
-        if (!status && isOpen) {
+        if (!status && (isOpen || (breakPoint === 'sm' && hasMedia))) {
           return;
         }
         callback(status);
       };
     },
-    [isOpen],
+    [isOpen, hasMedia, breakPoint],
   );
 
   return { applyMiddleware };

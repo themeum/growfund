@@ -6,18 +6,18 @@ import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
 import {
-    UserForm,
-    UserFormAddress,
-    UserFormBasics,
-    UserFormCard,
-    UserFormCardContent,
-    UserFormCardHeader,
+  UserForm,
+  UserFormAddress,
+  UserFormBasics,
+  UserFormCard,
+  UserFormCardContent,
+  UserFormCardHeader,
 } from '@/components/user-form/user-form';
 import DeleteUserAccount from '@/dashboards/shared/components/delete-user-account';
 import UserResetPasswordDialog from '@/dashboards/shared/components/dialogs/user-reset-password-dialog';
 import {
-    FormKeys,
-    useUserSettingsContext,
+  FormKeys,
+  useUserSettingsContext,
 } from '@/dashboards/shared/contexts/user-settings-context';
 import { type BackerForm, BackerFormSchema } from '@/features/backers/schemas/backer';
 import { User as CurrentUser } from '@/utils/user';
@@ -59,7 +59,6 @@ const UserAccountSettingsPage = () => {
       <p className="growfund-typo-small growfund-font-semibold growfund-text-fg-primary growfund-mt-2">
         {__('Account', 'growfund')}
       </p>
-
       <UserForm form={form}>
         <UserFormCard>
           <UserFormCardHeader />
@@ -67,7 +66,7 @@ const UserAccountSettingsPage = () => {
             <UserFormBasics />
 
             <UserResetPasswordDialog user={user}>
-              <Button variant="secondary" className="growfund-w-full">
+              <Button variant="secondary" className="growfund-w-full sm:growfund-w-auto">
                 <KeyRound />
                 {__('Reset Password', 'growfund')}
               </Button>
@@ -96,6 +95,7 @@ const UserAccountSettingsPage = () => {
           </UserFormCardContent>
         </UserFormCard>
       </UserForm>
+
       <DeleteUserAccount />
     </div>
   );

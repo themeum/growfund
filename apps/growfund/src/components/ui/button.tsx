@@ -15,7 +15,8 @@ const buttonVariants = cva(
         destructive:
           'growfund-bg-background-fill-critical growfund-text-fg-light hover:growfund-bg-background-fill-critical/90',
         'primary-soft': 'growfund-bg-background-fill-success-secondary growfund-text-fg-success',
-        'destructive-soft': 'growfund-bg-background-fill-critical-secondary growfund-text-fg-critical',
+        'destructive-soft':
+          'growfund-bg-background-fill-critical-secondary growfund-text-fg-critical',
         outline:
           'growfund-border growfund-border-border growfund-bg-background-fill hover:growfund-bg-background-fill-hover hover:growfund-text-fg-primary',
         secondary:
@@ -24,7 +25,9 @@ const buttonVariants = cva(
         link: 'growfund-text-fg-primary growfund-underline-offset-4 hover:growfund-underline',
       },
       size: {
-        default: 'growfund-h-9 growfund-px-4 growfund-py-2',
+        default: `
+       growfund-h-10 growfund-px-2 growfund-py-2 growfund-text-sm
+       sm:growfund-h-9 sm:growfund-px-4 sm:growfund-py-2`,
         sm: 'growfund-h-8 growfund-rounded-md growfund-px-3 growfund-typo-tiny',
         lg: 'growfund-h-10 growfund-rounded-md growfund-px-8',
         icon: 'growfund-h-9 growfund-w-9',
@@ -40,8 +43,7 @@ const buttonVariants = cva(
 export type ButtonVariants = VariantProps<typeof buttonVariants>['variant'];
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   type?: 'button' | 'submit' | 'reset';
   loading?: boolean;

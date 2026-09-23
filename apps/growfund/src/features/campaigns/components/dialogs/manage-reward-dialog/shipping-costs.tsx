@@ -68,7 +68,7 @@ const ShippingCosts = () => {
       >
         <Table wrapperClassname="growfund-overflow-visible">
           <TableHeader>
-            <TableRow>
+            <TableRow className="growfund-hidden sm:growfund-table-row">
               <TableHead className="growfund-border-r growfund-border-r-border">
                 {__('Location', 'growfund')}
               </TableHead>
@@ -79,15 +79,19 @@ const ShippingCosts = () => {
           <TableBody>
             {fields.map((field, index) => {
               return (
-                <TableRow key={field.id}>
-                  <TableCell className="growfund-border-r growfund-border-r-border growfund-w-[12.125rem]">
+                <TableRow
+                  key={field.id}
+                  className="growfund-flex growfund-flex-col growfund-gap-2 growfund-p-3 growfund-border-b sm:growfund-table-row sm:growfund-p-0"
+                >
+                  <TableCell className="growfund-border-r-0 sm:growfund-border-r sm:growfund-border-r-border sm:growfund-w-[12.125rem] growfund-p-0 sm:growfund-p-2">
+                    <span className="growfund-typo-tiny growfund-text-fg-muted growfund-mb-1 growfund-block sm:growfund-hidden">
+                      {__('Location', 'growfund')}
+                    </span>
                     <div className="growfund-flex growfund-items-center growfund-gap-2">
                       <ComboBoxField
                         control={form.control}
                         name={`shipping_costs.${index}.location` as 'shipping_costs.0.location'}
-                        className={
-                          'growfund-border-transparent hover:growfund-border-border focus-visible:growfund-border-border'
-                        }
+                        className="growfund-border-transparent hover:growfund-border-border focus-visible:growfund-border-border growfund-w-full"
                         options={[
                           {
                             label: __('Rest of the world', 'growfund'),
@@ -99,23 +103,29 @@ const ShippingCosts = () => {
                       />
                     </div>
                   </TableCell>
-                  <TableCell className="growfund-w-[12.125rem] growfund-group">
+
+                  <TableCell className="sm:growfund-w-[12.125rem] growfund-group growfund-p-0 sm:growfund-p-2">
+                    <span className="growfund-typo-tiny growfund-text-fg-muted growfund-mb-1 growfund-block sm:growfund-hidden">
+                      {__('Cost', 'growfund')}
+                    </span>
+
                     <TextField
                       control={form.control}
                       name={`shipping_costs.${index}.cost` as `shipping_costs.0.cost`}
                       type="number"
                       placeholder={__('e.g. 50.00', 'growfund')}
                       data-name="input"
-                      className="growfund-hidden group-hover:growfund-flex"
+                      className="growfund-flex sm:growfund-hidden sm:group-hover:growfund-flex"
                     />
                     <span
-                      className="growfund-typo-small growfund-text-fg-primary growfund-font-medium growfund-ms-2 group-hover:growfund-hidden"
+                      className="growfund-typo-small growfund-text-fg-primary growfund-font-medium growfund-ms-2 growfund-hidden sm:growfund-block sm:group-hover:growfund-hidden"
                       data-name="label"
                     >
                       {field.cost ? toCurrency(field.cost) : __('Free', 'growfund')}
                     </span>
                   </TableCell>
-                  <TableCell>
+
+                  <TableCell className="growfund-p-0 sm:growfund-p-2 growfund-flex growfund-justify-end sm:growfund-table-cell">
                     <Button
                       variant="ghost"
                       size="icon"
@@ -132,16 +142,17 @@ const ShippingCosts = () => {
             })}
           </TableBody>
         </Table>
+
         <div className="growfund-border-t growfund-border-t-border growfund-h-12 growfund-flex growfund-items-center">
           <Button
             variant="ghost"
-            className="hover:growfund-bg-transparent hover:growfund-text-fg-brand"
+            className="hover:growfund-bg-transparent hover:growfund-text-fg-brand growfund-w-full sm:growfund-w-auto"
             onClick={() => {
               fieldArray.append({ location: '', cost: 0 });
             }}
           >
             <Plus />
-            {__('Add Another Destination', 'growfund')}
+            <span className="growfund-truncate">{__('Add Another Destination', 'growfund')}</span>
           </Button>
         </div>
       </Box>

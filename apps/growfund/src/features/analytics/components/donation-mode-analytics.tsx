@@ -57,11 +57,12 @@ const DonationAnalytics = () => {
   return (
     <CampaignIdProvider>
       <Form {...form}>
-        <div className="growfund-flex growfund-items-center growfund-justify-between">
+        <div className="growfund-flex growfund-flex-col sm:growfund-flex-row sm:growfund-items-center growfund-gap-3 sm:growfund-justify-between">
           <h4 className="growfund-typo-h4 growfund-font-semibold growfund-text-fg-primary">
             {__('Overview', 'growfund')}
           </h4>
-          <div>
+
+          <div className="growfund-w-full sm:growfund-w-auto">
             <DatePickerField
               control={form.control}
               name="date_range"
@@ -75,24 +76,30 @@ const DonationAnalytics = () => {
 
         <div className="growfund-mt-4 growfund-space-y-7">
           <InformationMetrics />
+
           <AnalyticsRevenueChart />
-          <div className="growfund-grid growfund-grid-cols-[auto_25rem] growfund-gap-7">
+
+          <div className="growfund-grid growfund-grid-cols-1 xl:growfund-grid-cols-[minmax(0,1fr)_25rem] growfund-gap-7">
             <TopCampaigns />
             <DonorOverTimeChart />
           </div>
-          <div className="growfund-grid growfund-grid-cols-2 growfund-gap-7">
+
+          <div className="growfund-grid growfund-grid-cols-1 lg:growfund-grid-cols-2 growfund-gap-7">
             <TopDonors />
             <RecentDonations />
           </div>
+
           <div
             className={cn(
-              'growfund-grid growfund-gap-7',
-              appConfig[AppConfigKeys.Campaign]?.allow_fund && 'growfund-grid-cols-[38rem_auto]',
+              'growfund-grid growfund-grid-cols-1 growfund-gap-7',
+              appConfig[AppConfigKeys.Campaign]?.allow_fund &&
+                'xl:growfund-grid-cols-[38rem_minmax(0,1fr)]',
             )}
           >
             <ElementWrapper fallback={<RevenueBreakdownFallback />}>
               {AnalyticsRevenueBreakdownTable && <AnalyticsRevenueBreakdownTable />}
             </ElementWrapper>
+
             {appConfig[AppConfigKeys.Campaign]?.allow_fund && <TopFundsByRevenue />}
           </div>
         </div>

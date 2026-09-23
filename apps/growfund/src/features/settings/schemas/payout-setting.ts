@@ -6,7 +6,7 @@ import { isDefined } from '@/utils';
 const FundraiserPayoutTypeSchema = z.enum(['iban', 'usd', 'cad', 'aud', 'beftn', 'gbp']);
 const FundraiserPayoutPaymentMethodSchema = z.enum(['bank', 'paypal', 'others']);
 const FundraiserPayoutSettingsSchema = z.object({
-  payment_method: FundraiserPayoutPaymentMethodSchema.default('bank'),
+  payment_method: FundraiserPayoutPaymentMethodSchema.nullish(),
   type: FundraiserPayoutTypeSchema.nullish(),
   account_holder_name: z.string().nullish(),
   account_number: z.string().nullish(),

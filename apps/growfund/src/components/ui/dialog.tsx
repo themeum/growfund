@@ -4,7 +4,29 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
-const Dialog = DialogPrimitive.Root;
+const DialogContext = React.createContext<{ isWPMediaOpen: boolean }>({ isWPMediaOpen: false });
+
+const Dialog = ({ ...props }: DialogPrimitive.DialogProps) => {
+  const [isWPMediaOpen, setIsWPMediaOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    const handle = (event: Event) => {
+      const detail = (event as CustomEvent<{ isOpen: boolean }>).detail;
+      setIsWPMediaOpen(detail.isOpen);
+    };
+    window.addEventListener('wp-media-open', handle);
+
+    return () => {
+      window.removeEventListener('wp-media-open', handle);
+    };
+  }, []);
+
+  return (
+    <DialogContext.Provider value={{ isWPMediaOpen }}>
+      <DialogPrimitive.Root {...props} />
+    </DialogContext.Provider>
+  );
+};
 
 const DialogTrigger = DialogPrimitive.Trigger;
 
@@ -31,29 +53,24 @@ const DialogContent = React.forwardRef<
   React.ComponentRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
 >(({ className, children, ...props }, ref) => {
-  const [isWPMediaOpen, setIsWPMediaOpen] = React.useState(false);
-
-  React.useEffect(() => {
-    const handle = (event: Event) => {
-      const detail = (event as CustomEvent<{ isOpen: boolean }>).detail;
-      setIsWPMediaOpen(detail.isOpen);
-    };
-    window.addEventListener('wp-media-open', handle);
-
-    return () => {
-      window.removeEventListener('wp-media-open', handle);
-    };
-  });
-
+  const { isWPMediaOpen } = React.useContext(DialogContext);
   return (
     <DialogPortal container={document.getElementById('growfund-root')}>
-      {!isWPMediaOpen && <DialogOverlay className="growfund-bg-background-dark/80 growfund-backdrop-blur-sm" />}
+      {!isWPMediaOpen && (
+        <DialogOverlay className="growfund-bg-background-dark/80 growfund-backdrop-blur-sm" />
+      )}
 
       <DialogPrimitive.Content
         ref={ref}
         aria-describedby=""
         className={cn(
           'growfund-fixed growfund-left-[50%] growfund-top-[50%] growfund-grid growfund-w-full growfund-max-w-lg growfund-translate-x-[-50%] growfund-translate-y-[-50%] growfund-gap-4 growfund-border growfund-bg-background-secondary growfund-overflow-hidden growfund-z-dialog growfund-shadow-lg growfund-duration-200 data-[state=open]:growfund-animate-in data-[state=closed]:growfund-animate-out data-[state=closed]:growfund-fade-out-0 data-[state=open]:growfund-fade-in-0 data-[state=closed]:growfund-zoom-out-95 data-[state=open]:growfund-zoom-in-95 data-[state=closed]:growfund-slide-out-to-left-1/2 data-[state=closed]:growfund-slide-out-to-top-[48%] data-[state=open]:growfund-slide-in-from-left-1/2 data-[state=open]:growfund-slide-in-from-top-[48%] sm:growfund-rounded-lg',
+
+          // mobile only fixes
+          'growfund-w-[calc(100vw-2rem)]',
+          'growfund-max-h-[calc(100vh-2rem)]',
+          'growfund-rounded-lg',
+
           className,
         )}
         {...props}
@@ -99,7 +116,7 @@ DialogHeader.displayName = 'DialogHeader';
 const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      'growfund-flex growfund-flex-col-reverse growfund-bg-background-white sm:growfund-flex-row sm:growfund-justify-end sm:growfund-space-x-2 growfund-px-4 growfund-py-3 growfund-border-t growfund-border-t-border growfund-relative growfund-z-highest',
+      'growfund-flex growfund-flex-col-reverse sm:growfund-flex-row sm:growfund-justify-end growfund-gap-2 sm:growfund-space-x-2 growfund-bg-background-white growfund-px-4 growfund-py-3 growfund-border-t growfund-border-t-border growfund-relative growfund-z-highest',
       className,
     )}
     {...props}
@@ -135,16 +152,15 @@ const DialogDescription = React.forwardRef<
 DialogDescription.displayName = DialogPrimitive.Description.displayName;
 
 export {
-    Dialog,
-    DialogClose,
-    DialogCloseButton,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogOverlay,
-    DialogPortal,
-    DialogTitle,
-    DialogTrigger
+  Dialog,
+  DialogClose,
+  DialogCloseButton,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogOverlay,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger,
 };
-

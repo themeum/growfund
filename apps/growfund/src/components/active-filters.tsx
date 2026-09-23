@@ -29,41 +29,43 @@ const ActiveFilters = React.forwardRef<HTMLDivElement, ActiveFiltersProps>(
       <div
         ref={ref}
         className={cn(
-          'growfund-bg-background-surface-secondary/60 growfund-rounded-md growfund-px-4 growfund-py-2 growfund-flex growfund-items-center growfund-gap-2',
+          'growfund-bg-background-surface-secondary/60 growfund-rounded-md growfund-px-4 growfund-py-2 growfund-flex growfund-flex-col sm:growfund-flex-row growfund-items-start sm:growfund-items-center growfund-gap-2',
           className,
         )}
         {...props}
       >
-        <div className="growfund-flex growfund-items-center growfund-gap-2 growfund-shrink-0">
-          <ListFilter className="growfund-size-4 growfund-text-icon-secondary" />
-          <span className="growfund-typo-small growfund-text-fg-secondary">
-            {__('Active filters:', 'growfund')}
-          </span>
-        </div>
+        <div className="growfund-flex growfund-items-center growfund-gap-2">
+          <div className="growfund-flex growfund-items-center growfund-gap-2 growfund-shrink-0">
+            <ListFilter className="growfund-size-4 growfund-text-icon-secondary" />
+            <span className="growfund-typo-small growfund-text-fg-secondary">
+              {__('Active filters:', 'growfund')}
+            </span>
+          </div>
 
-        <div className="growfund-flex growfund-items-center growfund-gap-2 growfund-flex-wrap">
-          {appliedFilters.map((filter, index) => {
-            return (
-              <Badge variant="secondary" key={index}>
-                <span
-                  className="growfund-max-w-40 growfund-truncate"
-                  title={sprintf('%s: %s', filter.key_label, filter.value)}
-                >
-                  {sprintf('%s: %s', filter.key_label, filter.value)}
-                </span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="growfund-size-4 growfund-text-icon-secondary"
-                  onClick={() => {
-                    onClear(filter.key);
-                  }}
-                >
-                  <X />
-                </Button>
-              </Badge>
-            );
-          })}
+          <div className="growfund-flex growfund-items-center growfund-gap-2 growfund-flex-wrap growfund-w-full">
+            {appliedFilters.map((filter, index) => {
+              return (
+                <Badge variant="secondary" key={index}>
+                  <span
+                    className="growfund-max-w-40 growfund-truncate"
+                    title={sprintf('%s: %s', filter.key_label, filter.value)}
+                  >
+                    {sprintf('%s: %s', filter.key_label, filter.value)}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="growfund-size-4 growfund-text-icon-secondary"
+                    onClick={() => {
+                      onClear(filter.key);
+                    }}
+                  >
+                    <X />
+                  </Button>
+                </Badge>
+              );
+            })}
+          </div>
         </div>
 
         <Button

@@ -50,7 +50,7 @@ const DonationView = ({ donation }: { donation: Donation }) => {
     Success: ({ data: campaign }) => {
       return (
         <Form {...form}>
-          <div className="growfund-grid growfund-grid-cols-[auto_20rem] growfund-gap-4">
+          <div className="growfund-grid growfund-grid-cols-1 lg:growfund-grid-cols-[minmax(0,1fr)_20rem] growfund-gap-4 lg:growfund-gap-6">
             <div>
               <CampaignCard campaign={campaign} mode="view" />
               <div className="growfund-flex growfund-flex-col growfund-gap-4 growfund-mt-4">
@@ -66,8 +66,8 @@ const DonationView = ({ donation }: { donation: Donation }) => {
 
             <div className="growfund-space-y-4">
               <DonationAction donation={donation} />
-              <UserPreviewCard user={donation.donor} title={__('Donor', 'growfund')} />
 
+              <UserPreviewCard user={donation.donor} title={__('Donor', 'growfund')} />
               {hasTribute && (
                 <Box>
                   <BoxContent>
@@ -75,7 +75,6 @@ const DonationView = ({ donation }: { donation: Donation }) => {
                   </BoxContent>
                 </Box>
               )}
-
               <Box>
                 <BoxContent>
                   <h6 className="growfund-typo-h6 growfund-text-fg-primary">

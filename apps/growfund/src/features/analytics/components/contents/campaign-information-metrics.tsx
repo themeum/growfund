@@ -5,9 +5,9 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { LoadingSkeleton } from '@/components/layouts/loading-skeleton';
 import { RouteConfig } from '@/config/route-config';
 import {
-    type AnalyticsFilter,
-    AnalyticType,
-    type CampaignInformationMetrics as InformationMetricsType,
+  type AnalyticsFilter,
+  AnalyticType,
+  type CampaignInformationMetrics as InformationMetricsType,
 } from '@/features/analytics/schemas/analytics';
 import { useAnalyticsQuery } from '@/features/analytics/services/analytics';
 import { MetricsCard } from '@/features/overview/components/ui/metrics-card';
@@ -135,7 +135,7 @@ const CampaignInformationMetrics = ({
   }, [metricAnalyticsQuery.data, currentPath, toCurrencyCompact, hasNoColor, invisibleGrowth]);
 
   return (
-    <div className="growfund-grid growfund-grid-cols-2 lg:growfund-grid-cols-4 growfund-items-center growfund-gap-8">
+    <div className="growfund-grid growfund-grid-cols-2 lg:growfund-grid-cols-4 growfund-items-center growfund-gap-2 lg:growfund-gap-8">
       {metrics.map((metric, index) => {
         const { className, ...data } = metric;
         return (

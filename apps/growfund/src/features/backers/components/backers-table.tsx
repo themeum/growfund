@@ -371,7 +371,7 @@ const BackersTable = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="growfund-size-6 growfund-opacity-0 group-hover/row:growfund-opacity-100"
+                className="growfund-size-6 growfund-opacity-100 lg:growfund-opacity-0 lg:group-hover/row:growfund-opacity-100"
               >
                 <DotsVerticalIcon />
               </Button>
@@ -453,50 +453,53 @@ const BackersTable = () => {
                 }}
               >
                 <Form {...form}>
-                  <div className="growfund-w-full growfund-space-y-4">
-                    <div className="growfund-grid growfund-grid-cols-[8rem_auto] growfund-items-center growfund-justify-between growfund-w-full">
-                      <div className="growfund-flex growfund-items-center growfund-gap-2">
-                        <CampaignField control={form.control} name="campaign_id" />
-                        <SelectField
-                          className="growfund-bg-background-white"
-                          control={form.control}
-                          name="status"
-                          placeholder={__('All', 'growfund')}
-                          options={[{ value: 'trashed', label: __('Trashed', 'growfund') }]}
-                        />
-                        {isTrashBackers && (
-                          <Button variant="ghost" onClick={handleEmptyTrash}>
-                            <Trash />
-                            {__('Empty Trash', 'growfund')}
-                          </Button>
-                        )}
+                  <Form {...form}>
+                    <div className="growfund-w-full growfund-space-y-3">
+                      <div className="growfund-flex growfund-flex-col growfund-gap-2 sm:growfund-grid sm:growfund-grid-cols-[8rem_auto] sm:growfund-items-center sm:growfund-justify-between sm:growfund-w-full">
+                        <div className="growfund-flex growfund-items-center growfund-gap-2">
+                          <CampaignField control={form.control} name="campaign_id" />
+                          <SelectField
+                            className="growfund-bg-background-white"
+                            control={form.control}
+                            name="status"
+                            placeholder={__('All', 'growfund')}
+                            options={[{ value: 'trashed', label: __('Trashed', 'growfund') }]}
+                          />
+                          {isTrashBackers && (
+                            <Button variant="ghost" onClick={handleEmptyTrash}>
+                              <Trash />
+                              <span className="growfund-hidden sm:growfund-inline">
+                                {__('Empty Trash', 'growfund')}
+                              </span>
+                            </Button>
+                          )}
+                        </div>
+                        <div className="growfund-flex growfund-items-center growfund-gap-2 sm:growfund-min-w-96 sm:growfund-ms-auto">
+                          <TextField
+                            control={form.control}
+                            name="search"
+                            type="search"
+                            placeholder={__('Search...', 'growfund')}
+                            className="growfund-flex-1 sm:growfund-w-full"
+                          />
+                          <DatePickerField
+                            control={form.control}
+                            name="date_range"
+                            type="range"
+                            showRangePresets
+                            clearable
+                          />
+                        </div>
                       </div>
-
-                      <div className="growfund-flex growfund-items-center growfund-gap-3 growfund-min-w-96 growfund-ms-auto">
-                        <TextField
-                          control={form.control}
-                          name="search"
-                          type="search"
-                          placeholder={__('Search...', 'growfund')}
-                          className="growfund-w-full"
-                        />
-                        <DatePickerField
-                          control={form.control}
-                          name="date_range"
-                          type="range"
-                          showRangePresets
-                          clearable
-                        />
-                      </div>
+                      <ActiveFilters
+                        params={params}
+                        onClear={handleClearFilter}
+                        onClearAll={handleClearAllFilters}
+                        keyMap={keyMap}
+                        valueMap={valueMap}
+                      />
                     </div>
-                    <ActiveFilters
-                      params={params}
-                      onClear={handleClearFilter}
-                      onClearAll={handleClearAllFilters}
-                      keyMap={keyMap}
-                      valueMap={valueMap}
-                    />
-                  </div>
+                  </Form>
                 </Form>
               </DataTableWrapperHeader>
               <DataTableContent />

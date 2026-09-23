@@ -100,7 +100,9 @@ const GoodiesTab = () => {
                   <ManageRewardDialog>
                     <Button variant="outline">
                       <Plus className="growfund-text-icon-primary growfund-w-4 growfund-h-4" />
-                      {__('Add Reward', 'growfund')}
+                      <span className="growfund-hidden sm:growfund-inline">
+                        {__('Add Reward', 'growfund')}
+                      </span>
                     </Button>
                   </ManageRewardDialog>
                 </ElementWrapper>
@@ -125,7 +127,9 @@ const GoodiesTab = () => {
                     <DropdownMenuTrigger asChild>
                       <Button variant="outline">
                         <Plus className="growfund-text-icon-primary growfund-w-4 growfund-h-4" />
-                        {__('Add Item', 'growfund')}
+                        <span className="growfund-hidden sm:growfund-inline">
+                          {__('Add Item', 'growfund')}
+                        </span>
                       </Button>
                     </DropdownMenuTrigger>
 

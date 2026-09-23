@@ -54,7 +54,7 @@ const PdfReceiptPreview = ({ pdfReceipt }: { pdfReceipt: PdfReceiptTemplate }) =
               className="growfund-typo-tiny"
               style={{ color: pdfReceipt.colors?.secondary_text ?? '' }}
             >
-              {__('Donation Amount', 'growfund')}
+              {isDonationMode ? __('Donation Amount', 'growfund') : __('Pledge Amount', 'growfund')}
             </p>
             <h3
               className="growfund-typo-h3"
@@ -83,14 +83,14 @@ const PdfReceiptPreview = ({ pdfReceipt }: { pdfReceipt: PdfReceiptTemplate }) =
             className="growfund-typo-small"
             style={{ color: pdfReceipt.colors?.primary_text ?? '' }}
           >
-            {__('Donation Details', 'growfund')}
+            {isDonationMode ? __('Donation Details', 'growfund') : __('Pledge Details', 'growfund')}
           </p>
           <div className="growfund-space-y-1">
             <p
               className="growfund-typo-small"
               style={{ color: pdfReceipt.colors?.secondary_text ?? '' }}
             >
-              {__('Donor Name', 'growfund')}
+              {isDonationMode ? __('Donor Name', 'growfund') : __('Backer Name', 'growfund')}
             </p>
             <p
               className="growfund-typo-small growfund-font-semibold"
@@ -104,7 +104,7 @@ const PdfReceiptPreview = ({ pdfReceipt }: { pdfReceipt: PdfReceiptTemplate }) =
               className="growfund-typo-small"
               style={{ color: pdfReceipt.colors?.secondary_text ?? '' }}
             >
-              {__('Donation To', 'growfund')}
+              {isDonationMode ? __('Donation To', 'growfund') : __('Pledge To', 'growfund')}
             </p>
             <p
               className="growfund-typo-small growfund-font-semibold"

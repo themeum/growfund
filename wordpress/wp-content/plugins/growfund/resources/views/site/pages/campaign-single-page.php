@@ -7,7 +7,6 @@ defined( 'ABSPATH' ) || exit;
 
 use Growfund\App\Settings\CampaignSettings;
 use Growfund\Constants\Campaign\ReachingAction;
-use Growfund\Constants\Contributor\DisplayOptionOrderBy;
 use Growfund\Constants\Status\CampaignStatus;
 use Growfund\Core\AppSettings;
 use Growfund\Supports\Arr;

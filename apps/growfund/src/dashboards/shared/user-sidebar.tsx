@@ -97,10 +97,9 @@ const getSidebarItems = (provider: 'backer' | 'donor' | null, appConfig: AppConf
 
 const UserSidebar = () => {
   const { appConfig } = useAppConfig();
+
   const getSidebarProvider = () => {
-    if (!CurrentUser.isBacker() && !CurrentUser.isDonor()) {
-      return null;
-    }
+    if (!CurrentUser.isBacker() && !CurrentUser.isDonor()) return null;
     return CurrentUser.isBacker() ? 'backer' : 'donor';
   };
 

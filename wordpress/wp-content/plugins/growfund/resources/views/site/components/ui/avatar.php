@@ -5,14 +5,14 @@
 
 defined('ABSPATH') || exit;
 
-$growfund_avatar_src = ! empty( $avatar->src )
+$growfund_avatar_src = !empty( $avatar->src )
     ? $avatar->src
     : growfund_user_avatar();
 $growfund_acronym = ucfirst(substr($avatar->avatar_name ?? '', 0, 1));
 ?>
 
 <div class="growfund-avatar-image-wrapper <?php echo esc_attr($avatar->classname ?? ''); ?>" >
-    <?php if (!empty($avatar->src) && !$avatar->use_acronym) : ?>
+    <?php if (!empty($avatar->src) || empty($growfund_acronym)) : ?>
     <img
         src="<?php echo esc_url($growfund_avatar_src); ?>"
         alt="<?php echo esc_attr($avatar->avatar_name ?? __('Avatar', 'growfund')); ?>"

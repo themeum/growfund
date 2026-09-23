@@ -15,7 +15,7 @@ class PaymentGatewayDTO extends DTO
     /** @var string */
     public $download_url = '';
 
-    /** @var string */
+    /** @var string -- 'online-payment' | 'manual-payment' */
     public $type = PaymentGatewayType::ONLINE;
 
     /** @var bool */

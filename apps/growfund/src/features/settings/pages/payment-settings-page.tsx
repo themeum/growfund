@@ -128,7 +128,7 @@ const PaymentSettingsPage = () => {
                   options={[
                     { label: __('. (dot)', 'growfund'), value: '.' },
                     { label: __(', (comma)', 'growfund'), value: ',' },
-                    { label: __('Space', 'growfund'), value: ' ' },
+                    { label: __('Space', 'growfund'), value: '\u00A0' },
                   ]}
                   label={__('Decimal Separator', 'growfund')}
                   placeholder={__('Select a decimal separator', 'growfund')}
@@ -139,7 +139,7 @@ const PaymentSettingsPage = () => {
                   options={[
                     { label: __('. (dot)', 'growfund'), value: '.' },
                     { label: __(', (comma)', 'growfund'), value: ',' },
-                    { label: __('Space', 'growfund'), value: ' ' },
+                    { label: __('Space', 'growfund'), value: '\u00A0' },
                   ]}
                   label={__('Thousand Separator', 'growfund')}
                   placeholder={__('Select a thousand separator', 'growfund')}
