@@ -24,11 +24,10 @@ jobs:
         with:
           php-version: '8.2'
           tools: wp-cli
+          composer-auth: false
 
       - name: Install WP-CLI i18n command
-        run: |
-          composer config --global --unset github-oauth.github.com || true
-          wp package install wp-cli/i18n-command:v2.6.0
+        run: wp package install wp-cli/i18n-command:v2.6.0
 
       - name: Build the plugin
         run: yarn build
