@@ -26,7 +26,9 @@ jobs:
           tools: wp-cli
 
       - name: Install WP-CLI i18n command
-        run: wp package install wp-cli/i18n-command:v2.6.0
+        run: |
+          composer config --global --unset github-oauth.github.com || true
+          wp package install wp-cli/i18n-command:v2.6.0
 
       - name: Build the plugin
         run: yarn build
