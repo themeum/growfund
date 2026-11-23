@@ -60,7 +60,7 @@ export const MessageForm = ({ defaultData, onRemove, onSave, onCancel }: Message
   return (
     <Form {...form}>
       <div className="growfund-flex growfund-flex-col growfund-gap-3">
-        <div className="growfund-flex growfund-gap-2 growfund-items-center growfund-justify-center">
+        <div className="growfund-flex growfund-flex-col sm:growfund-flex-row growfund-gap-2 sm:growfund-items-center sm:growfund-justify-center">
           <TextField
             className="growfund-mt-4"
             control={form.control}
@@ -70,9 +70,11 @@ export const MessageForm = ({ defaultData, onRemove, onSave, onCancel }: Message
             type="number"
             description={__('Min Value', 'growfund')}
           />
-          <span className="growfund-text-fg-secondary growfund-items-center">{__('-', 'growfund')}</span>
+          <span className="growfund-hidden sm:growfund-flex growfund-text-fg-secondary growfund-items-center">
+            {__('-', 'growfund')}
+          </span>
           <TextField
-            className="growfund-mt-8"
+            className="growfund-mt-0 sm:growfund-mt-8"
             control={form.control}
             name="to"
             placeholder={__('e.g. 50.00', 'growfund')}

@@ -45,90 +45,98 @@ const CampaignCard = React.forwardRef<HTMLDivElement, CampaignCardProps>(
     return (
       <Box
         className={cn(
-          'growfund-flex growfund-gap-6 growfund-p-4 growfund-items-center growfund-relative growfund-group/campaign-card',
+          'growfund-relative growfund-group/campaign-card growfund-flex growfund-items-start growfund-justify-between growfund-gap-4 growfund-p-4',
           className,
         )}
         {...props}
         ref={ref}
       >
-        <Image
-          src={campaign.images?.[0]?.url ?? null}
-          alt={campaign.title}
-          aspectRatio="square"
-          className="growfund-w-[6.25rem]"
-          fit="cover"
-        />
+        <div className="growfund-flex growfund-flex-col sm:growfund-flex-row growfund-gap-4 sm:growfund-gap-6 growfund-flex-1">
+          <Image
+            src={campaign.images?.[0]?.url ?? null}
+            alt={campaign.title}
+            aspectRatio="square"
+            className="growfund-w-full sm:growfund-w-[6.25rem] growfund-rounded-md"
+            fit="cover"
+          />
 
-        <div className="growfund-grid growfund-gap-1 growfund-flex-1">
-          <div className="growfund-typo-paragraph growfund-font-medium growfund-text-fg-primary">
-            {campaign.title}
-          </div>
-          <div className="growfund-flex growfund-items-center growfund-gap-2">
-            {isDefined(campaign.author) && (
-              <>
-                <div className="growfund-text-fg-secondary growfund-flex growfund-items-center growfund-gap-1 growfund-flex-shrink-0">
-                  <span>{__('by', 'growfund')}</span>
-                  <span className="growfund-text-fg-success growfund-capitalize">
-                    {campaign.author.display_name}
+          <div className="growfund-grid growfund-gap-1 growfund-flex-1">
+            <div className="growfund-typo-paragraph growfund-font-medium growfund-text-fg-primary">
+              {campaign.title}
+            </div>
+            <div className="growfund-flex growfund-flex-col sm:growfund-flex-row growfund-gap-2 sm:growfund-items-center">
+              {isDefined(campaign.author) && (
+                <>
+                  <div className="growfund-text-fg-secondary growfund-flex growfund-items-center growfund-gap-1 growfund-flex-shrink-0">
+                    <span>{__('by', 'growfund')}</span>
+                    <span className="growfund-text-fg-success growfund-capitalize">
+                      {campaign.author.display_name}
+                    </span>
+                  </div>
+
+                  <DotSeparator className="growfund-hidden sm:growfund-inline-flex" />
+                </>
+              )}
+
+              {campaign.start_date && (
+                <div className="growfund-flex growfund-items-center growfund-gap-2 growfund-typo-small growfund-text-fg-secondary">
+                  <TimerIcon className="growfund-w-4 growfund-h-4 growfund-text-icon-primary" />
+                  <span>
+                    {sprintf(
+                      /* translators: %s: campaign start date */
+                      __('Starts from %s', 'growfund'),
+                      format(new Date(campaign.start_date), DATE_FORMATS.HUMAN_READABLE_V2),
+                    )}
                   </span>
                 </div>
-                <DotSeparator />
+              )}
+            </div>
+            {campaign.has_goal && isDefined(goalInfo) ? (
+              <>
+                <div className="growfund-w-full sm:growfund-max-w-[20rem]">
+                  <Progress value={goalInfo.progress_percentage} className="growfund-mt-1" />
+                </div>
+                <div className="growfund-typo-paragraph growfund-font-medium growfund-text-fg-secondary">
+                  <span
+                    className="growfund-text-primary"
+                    dangerouslySetInnerHTML={{ __html: goalInfo.goal_label }}
+                  />
+                </div>
               </>
-            )}
-
-            {campaign.start_date && (
-              <div className="growfund-flex growfund-items-center growfund-gap-2 growfund-typo-small growfund-text-fg-secondary">
-                <TimerIcon className="growfund-w-4 growfund-h-4 growfund-text-icon-primary" />
-                <span>
+            ) : (
+              <div className="growfund-typo-paragraph growfund-font-medium growfund-text-fg-secondary growfund-flex growfund-items-center growfund-gap-2">
+                <span className="growfund-text-primary">
+                  {/* translators: %s: Raised amount. */}
+                  {sprintf('%s raised', toCurrency(campaign.fund_raised ?? 0))}
+                </span>
+                <DotSeparator />
+                <Users className="growfund-size-3" />
+                <span className="growfund-typo-small">
                   {sprintf(
-                    /* translators: %s: campaign start date */
-                    __('Starts from %s', 'growfund'),
-                    format(new Date(campaign.start_date), DATE_FORMATS.HUMAN_READABLE_V2),
+                    isDonationMode
+                      ? /* translators: %s: number of donors */
+                        _n(
+                          '%s donor',
+                          '%s donors',
+                          campaign.number_of_contributors ?? 0,
+                          'growfund',
+                        )
+                      : /* translators: %s: number of backers */
+                        _n(
+                          '%s backer',
+                          '%s backers',
+                          campaign.number_of_contributors ?? 0,
+                          'growfund',
+                        ),
+                    campaign.number_of_contributors ?? 0,
                   )}
                 </span>
               </div>
             )}
           </div>
-          {campaign.has_goal && isDefined(goalInfo) ? (
-            <>
-              <div className="growfund-w-full growfund-max-w-[20rem]">
-                <Progress value={goalInfo.progress_percentage} className="growfund-mt-1" />
-              </div>
-              <div className="growfund-typo-paragraph growfund-font-medium growfund-text-fg-secondary">
-                <span
-                  className="growfund-text-primary"
-                  dangerouslySetInnerHTML={{ __html: goalInfo.goal_label }}
-                />
-              </div>
-            </>
-          ) : (
-            <div className="growfund-typo-paragraph growfund-font-medium  growfund-text-fg-secondary growfund-flex growfund-items-center growfund-gap-2">
-              <span className="growfund-text-primary">
-                {/* translators: %s: Raised amount. */}
-                {sprintf('%s raised', toCurrency(campaign.fund_raised ?? 0))}
-              </span>
-              <DotSeparator />
-              <Users className="growfund-size-3" />
-              <span className="growfund-typo-small">
-                {sprintf(
-                  isDonationMode
-                    ? /* translators: %s: number of donors */
-                      _n('%s donor', '%s donors', campaign.number_of_contributors ?? 0, 'growfund')
-                    : /* translators: %s: number of backers */
-                      _n(
-                        '%s backer',
-                        '%s backers',
-                        campaign.number_of_contributors ?? 0,
-                        'growfund',
-                      ),
-                  campaign.number_of_contributors ?? 0,
-                )}
-              </span>
-            </div>
-          )}
         </div>
 
-        <div className="growfund-ms-auto growfund-opacity-0 growfund-transition-opacity group-hover/campaign-card:growfund-opacity-100">
+        <div className="growfund-ms-auto growfund-opacity-100 sm:growfund-opacity-0 sm:group-hover/campaign-card:growfund-opacity-100 growfund-transition-opacity">
           {mode === 'bookmark' && (
             <div className="growfund-flex growfund-flex-col growfund-gap-2">
               <Button variant="secondary" size="icon" className="" onClick={onRemoveBookmark}>

@@ -1,21 +1,30 @@
 import { Link } from 'react-router';
 
+import { useSidebarContext } from '@/dashboards/shared/contexts/sidebar-context';
 import { type SidebarItem } from '@/dashboards/types/types';
 import { useCurrentPath } from '@/hooks/use-current-path';
 import { cn } from '@/lib/utils';
 import { isDefined } from '@/utils';
 
-const SidebarItem = ({ item }: { item: SidebarItem }) => {
+interface SidebarItemProps {
+  item: SidebarItem;
+}
+
+const SidebarItem = ({ item }: SidebarItemProps) => {
   const currentPath = useCurrentPath();
   const isActive = !isDefined(currentPath)
     ? false
     : currentPath === item.route.template || item.child_routes.includes(currentPath);
 
   const IconComp = item.icon;
+  const { setOpenSidebar } = useSidebarContext();
   return (
     <div className="growfund-px-3">
       <Link
         to={item.route.buildLink()}
+        onClick={() => {
+          setOpenSidebar(false);
+        }}
         className={cn(
           'growfund-flex growfund-items-center growfund-gap-2 growfund-typo-small growfund-text-fg-secondary growfund-min-h-8 growfund-px-3 growfund-py-2 growfund-rounded-lg growfund-relative growfund-group/sidebar-item',
           isActive

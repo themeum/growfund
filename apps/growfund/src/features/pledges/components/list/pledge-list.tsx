@@ -419,7 +419,7 @@ const PledgeList = ({ backerId }: { backerId?: string }) => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="growfund-size-6 growfund-opacity-0 group-hover/row:growfund-opacity-100"
+                    className="growfund-size-6 growfund-opacity-100 lg:growfund-opacity-0 lg:group-hover/row:growfund-opacity-100"
                   >
                     <DotsVerticalIcon />
                   </Button>
@@ -485,15 +485,14 @@ const PledgeList = ({ backerId }: { backerId?: string }) => {
               }}
             >
               <Form {...form}>
-                <div className="growfund-w-full growfund-space-y-4">
-                  <div className="growfund-flex growfund-items-center growfund-justify-between growfund-w-full growfund-gap-2">
-                    <div className="growfund-flex growfund-items-center growfund-gap-3">
-                      <div className="growfund-flex growfund-items-center growfund-gap-2">
+                <div className="growfund-w-full growfund-space-y-3">
+                  <div className="growfund-flex growfund-flex-col growfund-gap-2 sm:growfund-flex-row sm:growfund-items-center sm:growfund-justify-between sm:growfund-w-full">
+                    <div className="growfund-flex growfund-items-center growfund-gap-2 growfund-w-full">
+                      <div className="growfund-w-40">
                         <SelectField
                           control={form.control}
                           name="status"
                           placeholder={__('All', 'growfund')}
-                          className="growfund-w-40"
                           options={[
                             { value: 'pending', label: __('Pending', 'growfund') },
                             { value: 'in-progress', label: __('In Progress', 'growfund') },
@@ -505,20 +504,23 @@ const PledgeList = ({ backerId }: { backerId?: string }) => {
                           ]}
                         />
                       </div>
+
                       <CampaignField control={form.control} name="campaign_id" />
                       {isTrashPledges && (
                         <Button variant="ghost" onClick={handleEmptyTrash}>
                           <Trash />
-                          {__('Empty Trash', 'growfund')}
+                          <span className="growfund-hidden sm:growfund-inline">
+                            {__('Empty Trash', 'growfund')}
+                          </span>
                         </Button>
                       )}
                     </div>
+
                     <div className="growfund-flex growfund-items-center growfund-gap-2">
                       <TextField
                         control={form.control}
                         type="search"
                         name="search"
-                        className="growfund-w-40"
                         placeholder={__('Search...', 'growfund')}
                       />
                       <DatePickerField

@@ -57,8 +57,8 @@ const RecentContributions = ({ contributions, title, loading }: RecentContributi
   return (
     <Box className="growfund-rounded-3xl">
       <BoxContent className="growfund-py-4 growfund-px-6">
-        <BoxTitle className="growfund-justify-between [&>span>[data-type=tooltip]]:growfund-opacity-0 group-hover/box:[&>span>[data-type=tooltip]]:growfund-opacity-100">
-          <span>
+        <BoxTitle className="growfund-justify-between growfund-flex-wrap lg:growfund-flex-nowrap [&>span>[data-type=tooltip]]:growfund-opacity-100 lg:[&>span>[data-type=tooltip]]:growfund-opacity-0 lg:group-hover/box:[&>span>[data-type=tooltip]]:growfund-opacity-100">
+          <span className="growfund-flex growfund-items-center growfund-gap-1 growfund-min-w-0">
             {title}
             <InfoTooltip>
               {isDonationMode
@@ -75,7 +75,7 @@ const RecentContributions = ({ contributions, title, loading }: RecentContributi
           <Button
             variant="ghost"
             size="sm"
-            className="growfund-opacity-0 group-hover/box:growfund-opacity-100"
+            className="lg:growfund-opacity-0 lg:group-hover/box:growfund-opacity-100"
             onClick={() => {
               if (isDonationMode) {
                 void navigate(RouteConfig.Donations.buildLink());

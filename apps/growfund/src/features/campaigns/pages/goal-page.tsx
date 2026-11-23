@@ -117,7 +117,7 @@ const GoalStep = () => {
 
               {hasCampaignGoal && (
                 <div className="growfund-space-y-4">
-                  <div className="growfund-flex growfund-gap-4 growfund-items-start">
+                  <div className="growfund-flex growfund-flex-col growfund-gap-4 sm:growfund-flex-row sm:growfund-items-start">
                     <SelectField
                       control={form.control}
                       name="goal_type"

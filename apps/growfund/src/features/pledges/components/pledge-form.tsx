@@ -72,7 +72,7 @@ const PledgeForm = () => {
 
   return (
     <Container className="growfund-py-10">
-      <div className="growfund-grid growfund-grid-cols-[auto_20rem] growfund-gap-4">
+      <div className="growfund-grid growfund-grid-cols-1 lg:growfund-grid-cols-[auto_20rem] growfund-gap-4">
         <div className="growfund-space-y-4">
           {isDefined(campaign) ? (
             <div className="growfund-space-y-2">
@@ -128,6 +128,7 @@ const PledgeForm = () => {
             reward?.reward_type === 'physical-and-digital-goods') && (
             <ShippingMethodCard form={form} reward={reward} deliveryOption={deliveryOption} />
           )}
+
           <PledgeNotesCard
             value={notes ?? null}
             onChange={(value) => {

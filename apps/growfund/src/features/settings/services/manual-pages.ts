@@ -36,6 +36,7 @@ export const useRegeneratePagesMutation = () => {
       toast.success('Pages re-generated successfully');
       void queryClient.invalidateQueries({ queryKey: ['ManualPages'] });
       void queryClient.invalidateQueries({ queryKey: ['AppConfig'] });
+      void queryClient.refetchQueries({ queryKey: ['WordPressPages'] });
     },
     onError: (error) => {
       toast.error(error.message);

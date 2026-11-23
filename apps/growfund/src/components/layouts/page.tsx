@@ -29,7 +29,7 @@ const headerVariants = cva(
     variants: {
       variant: {
         default: 'growfund-mx-auto',
-        fluid: 'growfund-max-w-full growfund-px-8 @5xl/page:growfund-px-8',
+        fluid: 'growfund-max-w-full growfund-px-4 sm:growfund-px-8 @5xl/page:growfund-px-8',
       },
       size: {
         default:

@@ -44,7 +44,7 @@ const BackerActivityLogCard = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                className="growfund-transition-opacity growfund-opacity-0 group-hover/activity-logs:growfund-opacity-100"
+                className=" growfund-opacity-100 sm:growfund-opacity-0 sm:group-hover/activity-logs:growfund-opacity-100 growfund-transition-opacity"
               >
                 <FileText />
                 {__('See All Logs', 'growfund')}

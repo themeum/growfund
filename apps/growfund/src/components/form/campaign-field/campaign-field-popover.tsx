@@ -3,13 +3,18 @@ import CampaignFieldList from '@/components/form/campaign-field/campaign-field-l
 import CampaignFieldSearch from '@/components/form/campaign-field/campaign-field-search';
 import CampaignFieldTrigger from '@/components/form/campaign-field/campaign-field-trigger';
 import { Popover, PopoverContent } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
 
 const CampaignFieldPopover = ({ placeholder }: { placeholder?: string }) => {
   const { open, onOpenChange } = useCampaignFieldContext();
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       <CampaignFieldTrigger placeholder={placeholder} />
-      <PopoverContent className="growfund-p-0 growfund-w-96" align="start">
+      <PopoverContent
+        className={cn('growfund-p-0', 'growfund-w-[calc(100vw-2rem)] sm:growfund-w-96')}
+        align="start"
+        collisionPadding={16}
+      >
         <div className="growfund-space-y-3">
           <CampaignFieldSearch />
           <CampaignFieldList />

@@ -20,7 +20,10 @@ const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDiv
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn('growfund-relative growfund-flex growfund-flex-col growfund-space-y-1.5 growfund-p-4', className)}
+      className={cn(
+        'growfund-relative growfund-flex growfund-flex-col growfund-space-y-1.5 growfund-p-4',
+        className,
+      )}
       {...props}
     />
   ),
@@ -32,7 +35,7 @@ const CardTitle = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivE
     <div
       ref={ref}
       className={cn(
-        'growfund-typo-h6 growfund-text-fg-primary growfund-font-semibold growfund-leading-none growfund-tracking-tight growfund-w-full growfund-flex growfund-items-center growfund-gap-2 [&>[data-type=tooltip]]:growfund-opacity-0 group-hover/card:[&>[data-type=tooltip]]:growfund-opacity-100 growfund-transition-opacity',
+        'growfund-typo-h6 growfund-text-fg-primary growfund-font-semibold growfund-leading-none growfund-tracking-tight growfund-w-full growfund-flex growfund-items-center growfund-gap-2 [&>[data-type=tooltip]]:growfund-opacity-100 sm:[&>[data-type=tooltip]]:growfund-opacity-0 sm:group-hover/card:[&>[data-type=tooltip]]:growfund-opacity-100 growfund-transition-opacity',
         className,
       )}
       {...props}
@@ -43,7 +46,11 @@ CardTitle.displayName = 'CardTitle';
 
 const CardDescription = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn('growfund-typo-small growfund-text-fg-muted', className)} {...props} />
+    <div
+      ref={ref}
+      className={cn('growfund-typo-small growfund-text-fg-muted', className)}
+      {...props}
+    />
   ),
 );
 CardDescription.displayName = 'CardDescription';
@@ -57,7 +64,11 @@ CardContent.displayName = 'CardContent';
 
 const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn('growfund-flex growfund-items-center growfund-p-6 growfund-pt-0', className)} {...props} />
+    <div
+      ref={ref}
+      className={cn('growfund-flex growfund-items-center growfund-p-6 growfund-pt-0', className)}
+      {...props}
+    />
   ),
 );
 CardFooter.displayName = 'CardFooter';

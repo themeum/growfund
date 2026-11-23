@@ -7,11 +7,13 @@ import {
 } from 'react';
 
 import { type UserBasic } from '@/dashboards/shared/schemas/user';
+import { type CampaignStatus } from '@/features/campaigns/schemas/campaign';
 
 interface CampaignsDropdownOptionsContextType {
   campaign: {
     id: string;
     title: string;
+    status: CampaignStatus;
     image?: string | null;
     author?: UserBasic | null;
   };

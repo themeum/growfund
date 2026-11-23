@@ -12,6 +12,7 @@ import {
   Undo2,
   User,
   Users2,
+  X,
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router';
 
@@ -22,6 +23,7 @@ import { Separator } from '@/components/ui/separator';
 import { RouteConfig } from '@/config/route-config';
 import { useAppConfig } from '@/contexts/app-config';
 import ProfileMenu from '@/dashboards/shared/components/dropdowns/profile-menu';
+import { useSidebarContext } from '@/dashboards/shared/contexts/sidebar-context';
 import SidebarItem from '@/dashboards/shared/sidebar-item';
 import { type SidebarItem as SidebarItemType } from '@/dashboards/types/types';
 import { AppConfigKeys } from '@/features/settings/context/settings-context';
@@ -186,13 +188,23 @@ const FundraiserSidebar = () => {
   const brandLogo = appConfig[AppConfigKeys.Branding]?.logo?.url;
   const brandLogoHeight = appConfig[AppConfigKeys.Branding]?.logo_height ?? 28;
 
+  const { isOpenSidebar, setOpenSidebar } = useSidebarContext();
+
   return (
     <div
       id="fundraiser-sidebar"
-      className="growfund-fixed growfund-h-full growfund-w-[var(--growfund-sidebar-width)] growfund-bg-background-surface-alt growfund-border-r growfund-border-r-border growfund-overflow-hidden"
+      className={cn(
+        'growfund-fixed growfund-h-full growfund-w-[var(--growfund-sidebar-width)]',
+        'growfund-bg-background-surface-alt growfund-border-r growfund-border-r-border',
+        'growfund-overflow-hidden growfund-z-50',
+        'growfund-transition-transform growfund-duration-300 growfund-ease-in-out',
+        'lg:growfund-translate-x-0',
+
+        isOpenSidebar ? 'growfund-translate-x-0' : 'growfund--translate-x-full',
+      )}
     >
       {/* topbar */}
-      <div className="growfund-h-[var(--growfund-topbar-height)] growfund-flex growfund-items-center growfund-px-4 growfund-border-b growfund-border-b-border growfund-group/sidebar-logo growfund-relative">
+      <div className="growfund-h-[var(--growfund-topbar-height)] growfund-flex growfund-items-center growfund-px-4 growfund-border-b growfund-border-b-border lg:growfund-group/sidebar-logo growfund-relative">
         <div
           className="growfund-flex growfund-items-center growfund-gap-2 growfund-absolute growfund-left-4 growfund-transition-all growfund-duration-300 group-hover/sidebar-logo:growfund-left-[12.5rem] group-hover/sidebar-logo:growfund-opacity-0"
           style={{ '--growfund-brand-logo-height': `${brandLogoHeight}px` } as React.CSSProperties}
@@ -211,6 +223,26 @@ const FundraiserSidebar = () => {
             <BrandIcon className="growfund-h-5" />
           )}
         </div>
+        <Button
+          variant="ghost"
+          className="lg:growfund-hidden growfund-absolute growfund-right-12 growfund-p-1 growfund-rounded-md hover:growfund-bg-background-secondary"
+          onClick={() => {
+            window.location.href = '/';
+          }}
+          aria-label="Back to site"
+        >
+          <Undo2 />
+        </Button>
+        <Button
+          onClick={() => {
+            setOpenSidebar(false);
+          }}
+          variant="ghost"
+          className="lg:growfund-hidden growfund-absolute growfund-right-4 growfund-p-1 growfund-rounded-md hover:growfund-bg-background-secondary"
+          aria-label="Close menu"
+        >
+          <X />
+        </Button>
         <Button
           variant="secondary"
           className="growfund-absolute growfund-opacity-0 growfund-transition-all growfund-left-[-12.5rem] group-hover/sidebar-logo:growfund-left-4 group-hover/sidebar-logo:growfund-opacity-100"
@@ -236,6 +268,9 @@ const FundraiserSidebar = () => {
 
               <div className="growfund-px-3">
                 <Link
+                  onClick={() => {
+                    setOpenSidebar(false);
+                  }}
                   to={RouteConfig.FundraiserSettings.buildLink()}
                   className={cn(
                     'growfund-w-full growfund-flex growfund-items-center growfund-gap-2 growfund-typo-small growfund-font-medium growfund-text-fg-secondary growfund-min-h-8 growfund-px-3 growfund-py-2 growfund-rounded-lg growfund-relative growfund-group/sidebar-item',

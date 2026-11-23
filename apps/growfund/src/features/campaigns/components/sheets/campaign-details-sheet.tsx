@@ -56,9 +56,9 @@ const CampaignDetailsSheet = ({ campaign, open, onOpenChange }: CampaignDetailsS
         <ScrollArea>
           <Container className="growfund-my-7 growfund-space-y-5 growfund-min-h-[calc(100svh-10rem)]">
             <Form {...form}>
-              <div className="growfund-flex growfund-items-center growfund-justify-between">
-                <h4 className="growfund-typo-h4 growfund-text-fg-brand ">{campaign.title}</h4>
-                <div>
+              <div className="growfund-flex growfund-flex-col growfund-gap-2 md:growfund-flex-row md:growfund-items-center md:growfund-justify-between">
+                <h4 className="growfund-typo-h4 growfund-text-fg-brand">{campaign.title}</h4>
+                <div className="md:growfund-w-auto">
                   <DatePickerField
                     control={form.control}
                     name="date_range"
@@ -66,7 +66,7 @@ const CampaignDetailsSheet = ({ campaign, open, onOpenChange }: CampaignDetailsS
                     type="range"
                     showRangePresets
                     clearable
-                    className="growfund-w-64"
+                    className="growfund-w-full md:growfund-w-64"
                   />
                 </div>
               </div>

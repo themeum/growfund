@@ -575,7 +575,7 @@ const CampaignTable = ({ fundraiserId }: { fundraiserId?: string }) => {
         cell: ({ row }) => {
           return (
             <CampaignTableDropdownMenu
-              className="growfund-opacity-0 group-hover/row:growfund-opacity-100"
+              className="growfund-opacity-100 lg:growfund-opacity-0 lg:group-hover/row:growfund-opacity-100"
               row={row}
               isTrashCampaigns={isTrashCampaigns}
               onMoveToTrash={() => {
@@ -713,7 +713,7 @@ const CampaignTable = ({ fundraiserId }: { fundraiserId?: string }) => {
             >
               <Form {...form}>
                 <div className="growfund-w-full growfund-space-y-4">
-                  <div className="growfund-grid growfund-grid-cols-[8rem_auto] growfund-items-center growfund-justify-between growfund-w-full">
+                  <div className="growfund-flex growfund-flex-col growfund-gap-2 sm:growfund-grid sm:growfund-grid-cols-[8rem_auto] sm:growfund-items-center sm:growfund-justify-between sm:growfund-w-full">
                     <div className="growfund-flex growfund-items-center growfund-gap-2">
                       <SelectField
                         control={form.control}

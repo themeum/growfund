@@ -4,7 +4,6 @@ namespace Growfund\DTO\Donation;
 
 defined( 'ABSPATH' ) || exit;
 
-use Elementor\App\App;
 use Growfund\Constants\Campaign\FundSelectionType;
 use Growfund\Constants\Campaign\TributeNotificationPreference;
 use Growfund\Constants\Status\DonationStatus;

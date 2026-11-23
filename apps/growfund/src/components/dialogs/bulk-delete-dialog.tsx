@@ -5,13 +5,13 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import {
-    Dialog,
-    DialogClose,
-    DialogCloseButton,
-    DialogContent,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogClose,
+  DialogCloseButton,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { Image } from '@/components/ui/image';
 import { useCurrency } from '@/hooks/use-currency';
@@ -73,7 +73,9 @@ const BulkDeleteDialog = ({
               <span className="growfund-truncate">{item.name}</span>
             </div>
             <div>
-              {item.amount && <span className="growfund-font-medium">{toCurrency(item.amount)}</span>}
+              {item.amount && (
+                <span className="growfund-font-medium">{toCurrency(item.amount)}</span>
+              )}
             </div>
           </>
         );
@@ -100,7 +102,10 @@ const BulkDeleteDialog = ({
                   />
                 ))}
             </div>
-            <div className="growfund-max-w-60 growfund-flex growfund-flex-col growfund-gap-1" title={item.name}>
+            <div
+              className="growfund-max-w-60 growfund-flex growfund-flex-col growfund-gap-1"
+              title={item.name}
+            >
               <span className="growfund-truncate">{item.name}</span>
             </div>
           </>
@@ -129,7 +134,10 @@ const BulkDeleteDialog = ({
                   />
                 ))}
             </div>
-            <div className="growfund-flex growfund-flex-col growfund-gap-1 growfund-max-w-60" title={item.name}>
+            <div
+              className="growfund-flex growfund-flex-col growfund-gap-1 growfund-max-w-60"
+              title={item.name}
+            >
               <span className="growfund-truncate">{item.name}</span>
               {item.email && <span className="growfund-truncate">{item.email}</span>}
             </div>
@@ -156,7 +164,10 @@ const BulkDeleteDialog = ({
                 ))}
             </div>
 
-            <div className="growfund-flex growfund-flex-col growfund-gap-1 growfund-max-w-60" title={item.name}>
+            <div
+              className="growfund-flex growfund-flex-col growfund-gap-1 growfund-max-w-60"
+              title={item.name}
+            >
               <span className="growfund-truncate">{item.name}</span>
             </div>
           </div>
@@ -173,9 +184,13 @@ const BulkDeleteDialog = ({
         return (
           <>
             {/* translators: %s: contribution ID (pledge ID or donation ID) */}
-            <div className="growfund-shrink-0 growfund-my-3">{sprintf(__('ID #%s', 'growfund'), item.id)}</div>
+            <div className="growfund-shrink-0 growfund-my-3">
+              {sprintf(__('ID #%s', 'growfund'), item.id)}
+            </div>
             {item.amount && (
-              <div className="growfund-shrink-0 growfund-font-medium">{toCurrency(item.amount)}</div>
+              <div className="growfund-shrink-0 growfund-font-medium">
+                {toCurrency(item.amount)}
+              </div>
             )}
             <div className="growfund-truncate growfund-text-fg-secondary growfund-max-w-60">
               {/* translators: %s: contributor name (backer name or donor name) */}
@@ -201,7 +216,7 @@ const BulkDeleteDialog = ({
               return (
                 <div
                   key={item.id}
-                  className="growfund-grid growfund-grid-cols-[1fr_1fr_6fr] growfund-items-center growfund-gap-4 growfund-space-x-3 [&:not(:last-of-type)]:growfund-border-b [&:not(:last-of-type)]:growfund-border-b-border growfund-px-6 growfund-py-2 growfund-typo-tiny growfund-text-fg-primary"
+                  className="growfund-grid  growfund-overflow-y-auto growfund-grid-cols-[1fr_1fr_6fr] growfund-items-center growfund-gap-4 growfund-space-x-3 [&:not(:last-of-type)]:growfund-border-b [&:not(:last-of-type)]:growfund-border-b-border growfund-px-6 growfund-py-2 growfund-typo-tiny growfund-text-fg-primary"
                 >
                   {renderItem(item, type)}
                 </div>

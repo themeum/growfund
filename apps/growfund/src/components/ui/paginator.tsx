@@ -1,21 +1,23 @@
 import { __ } from '@wordpress/i18n';
+import { useMemo } from 'react';
 
 import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
 } from '@/components/ui/pagination';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 
 interface PaginationProps {
   currentPage: number;
@@ -105,7 +107,10 @@ function Paginator({ totalItems, onPageChange, itemsPerPage, currentPage }: Pagi
               return (
                 <PaginationItem
                   key={index}
-                  className="[&_>span]:growfund-bg-transparent [&_>span]:growfund-border-none"
+                  className={cn(
+                    '[&_>span]:growfund-bg-transparent [&_>span]:growfund-border-none',
+                    'growfund-hidden sm:growfund-flex',
+                  )}
                 >
                   <PaginationEllipsis />
                 </PaginationItem>
@@ -115,6 +120,11 @@ function Paginator({ totalItems, onPageChange, itemsPerPage, currentPage }: Pagi
             const pageNumber = page as number;
             const isActive = pageNumber === currentPage;
 
+            // eslint-disable-next-line react-hooks/rules-of-hooks
+            const shouldShowOnMobile = useMemo(() => {
+              return pageNumber === currentPage || pageNumber === currentPage + 1;
+            }, [pageNumber]);
+
             return (
               <PaginationItem key={index}>
                 <PaginationLink
@@ -122,6 +132,7 @@ function Paginator({ totalItems, onPageChange, itemsPerPage, currentPage }: Pagi
                     onPageChange(pageNumber);
                   }}
                   isActive={isActive}
+                  className={cn(!shouldShowOnMobile && 'growfund-hidden sm:growfund-flex')}
                 >
                   {pageNumber}
                 </PaginationLink>

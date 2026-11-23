@@ -14,10 +14,7 @@ const ActivityLogFallback = () => {
           <h6 className="growfund-typo-h6 growfund-font-semibold growfund-text-fg-primary">
             {__('Activity Logs', 'growfund')} <ProBadge />
           </h6>
-          <Button
-            variant="ghost"
-            size="sm"
-          >
+          <Button variant="ghost" size="sm">
             <FileText />
             {__('See All Logs', 'growfund')}
           </Button>

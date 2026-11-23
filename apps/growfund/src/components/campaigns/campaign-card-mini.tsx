@@ -41,7 +41,7 @@ const CampaignCardMini = ({ campaign }: CampaignCardMiniProps) => {
           {campaign.title}
         </p>
         {campaign.has_goal && <Progress value={goalInfo?.progress_percentage ?? 0} size="sm" />}
-        <div className="growfund-flex growfund-items-center growfund-gap-2 growfund-typo-small growfund-font-medium growfund-text-fg-subdued">
+        <div className="growfund-flex growfund-flex-wrap growfund-items-center growfund-gap-2 growfund-typo-small growfund-font-medium growfund-text-fg-subdued">
           {campaign.has_goal ? (
             <div dangerouslySetInnerHTML={{ __html: goalInfo?.goal_label ?? '' }} />
           ) : (
@@ -65,7 +65,7 @@ const CampaignCardMini = ({ campaign }: CampaignCardMiniProps) => {
             </span>
           </div>
           <DotSeparator />
-          <div className="growfund-flex growfund-items-center growfund-gap-1">
+          <div className="growfund-w-full growfund-flex growfund-items-center growfund-gap-1">
             <HeartHandshake className="growfund-size-3" />
 
             <span className="growfund-typo-tiny growfund-font-medium growfund-text-fg-primary">

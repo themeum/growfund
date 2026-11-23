@@ -86,7 +86,10 @@ const ManageRewardDialog = ({
   return (
     <Dialog open={open} onOpenChange={applyMiddleware(setOpen)}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="growfund-max-w-[57.5rem] growfund-gap-0" tabIndex={undefined}>
+      <DialogContent
+        className="growfund-max-w-[57.5rem] growfund-gap-0 sm:growfund-max-h-[100vh] growfund-p-0"
+        tabIndex={undefined}
+      >
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(
@@ -151,8 +154,8 @@ const ManageRewardDialog = ({
                 <Button type="submit">{__('Save', 'growfund')}</Button>
               </div>
             </DialogHeader>
-            <div className="growfund-px-12 growfund-py-7">
-              <div className="growfund-grid growfund-grid-cols-[auto_20rem] growfund-gap-5 growfund-h-[calc(100svh-11.25rem)]">
+            <div className="growfund-px-4 sm:growfund-px-12 growfund-py-4 sm:growfund-py-7">
+              <div className="growfund-grid growfund-grid-cols-1 lg:growfund-grid-cols-[minmax(0,1fr)_20rem] growfund-gap-5 growfund-h-[calc(100svh-11.25rem)]">
                 <ScrollArea className="growfund-flex growfund-flex-1">
                   <div className="growfund-grid growfund-gap-4 growfund-w-full">
                     <Box className="growfund-p-4 growfund-space-y-4">
@@ -260,7 +263,6 @@ const ManageRewardDialog = ({
                           name="allow_local_pickup"
                           label={__('Local pickup or event available', 'growfund')}
                         />
-
                         {allowLocalPickup && (
                           <EditorField
                             control={form.control}
@@ -277,10 +279,12 @@ const ManageRewardDialog = ({
                     )}
                   </div>
                 </ScrollArea>
-                <InformationPanel
-                  rewardLeft={rewardLeft}
-                  numberOfContributors={numberOfContributors}
-                />
+                <div className="growfund-hidden lg:growfund-block">
+                  <InformationPanel
+                    rewardLeft={rewardLeft}
+                    numberOfContributors={numberOfContributors}
+                  />
+                </div>
               </div>
             </div>
           </form>

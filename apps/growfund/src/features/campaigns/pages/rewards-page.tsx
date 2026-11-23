@@ -41,13 +41,15 @@ const RewardsStep = () => {
   });
 
   return (
-    <Container size="sm">
-      <Card>
-        <CardHeader>
-          <CardTitle>{__('Create Rewards', 'growfund')}</CardTitle>
+    <Container size="sm" className="growfund-w-full growfund-px-4 sm:growfund-px-6">
+      <Card className="growfund-w-full">
+        <CardHeader className="growfund-px-4 sm:growfund-px-6">
+          <CardTitle className="growfund-text-lg sm:growfund-text-xl">
+            {__('Create Rewards', 'growfund')}
+          </CardTitle>
         </CardHeader>
         <Separator />
-        <CardContent className="growfund-mt-4 growfund-space-y-4">
+        <CardContent className="growfund-mt-4 growfund-space-y-4 growfund-px-4 sm:growfund-px-6">
           <SelectionCardField
             control={form.control}
             name="appreciation_type"
@@ -66,7 +68,7 @@ const RewardsStep = () => {
                     label={__('Allow Pledging Without Rewards', 'growfund')}
                   />
                   {allowPledgingWithoutReward && (
-                    <div className="growfund-flex growfund-gap-4 growfund-items-start growfund-w-full">
+                    <div className="growfund-flex growfund-flex-col sm:growfund-flex-row growfund-gap-4 growfund-items-start growfund-w-full">
                       <TextField
                         control={form.control}
                         type="number"
@@ -91,7 +93,7 @@ const RewardsStep = () => {
           </CampaignRewardProvider>
         </CardContent>
       </Card>
-      <div className="growfund-flex growfund-mt-4 growfund-justify-end">
+      <div className="growfund-flex growfund-mt-4 growfund-justify-end growfund-px-0 sm:growfund-px-0">
         <StepNavigation />
       </div>
     </Container>

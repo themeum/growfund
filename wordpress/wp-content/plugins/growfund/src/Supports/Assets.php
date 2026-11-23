@@ -46,7 +46,7 @@ class Assets
         wp_enqueue_script(
             'growfund-bundle',
             $entrypoint['url'],
-            [],
+            ['wp-i18n'],
             null,  // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- intentionally ignored enqueue version
             true
         );
@@ -58,47 +58,26 @@ class Assets
             return $tag;
         }, 10, 2);
 
-        static::load_js_translations(
-            'growfund',
-            'growfund-bundle'
-        );
+        Translator::load_js_translations('growfund', 'growfund-bundle');
     }
 
+    
     /**
      * Load the JavaScript translations for the growfund plugin.
      *
+     * The translations are written once to a static JS file (uploads/growfund/i18n/{domain}-{locale}.js) and enqueued
+     * as a normal script, so the browser can cache it. The file is rebuilt whenever the .mo file changes.
+     * If the file can't be written, the translations are printed inline instead.
+     *
      * @param string $domain The domain of the translations.
+     * @param string $handle The script handle that needs the translations.
+     * 
+     * @deprecated 1.1.2
      * @return void
      */
     public static function load_js_translations(string $domain = 'growfund', string $handle = 'growfund-bundle')
     {
-        if (!wp_script_is($handle, 'enqueued')) {
-            return;
-        }
-
-        $locale = determine_locale();
-        $translation_file = GROWFUND_DIR_PATH . "languages/{$domain}-{$locale}-*.json";
-        $files = glob($translation_file);
-
-        if (!empty($files)) {
-            foreach ($files as $file) {
-                $translations = file_get_contents($file);
-                $translation_data = json_decode($translations, true);
-
-                if ($translation_data && isset($translation_data['locale_data'][$domain])) {
-                    wp_add_inline_script(
-                        $handle,
-                        sprintf(
-                            'wp.i18n.setLocaleData(%s, "%s")',
-                            wp_json_encode($translation_data['locale_data'][$domain]),
-                            wp_json_encode($domain)
-                        ),
-                        'before'
-                    );
-                }
-
-            }
-        }
+        Translator::load_js_translations($domain, $handle);
     }
 
     /**
@@ -190,11 +169,13 @@ class Assets
 			wp_enqueue_script( // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NotInFooter
                 'growfund-vite-app',
                 'http://localhost:5173/growfund/src/main.tsx',
-                ['growfund-vite-client'],
+                ['growfund-vite-client', 'wp-i18n'],
                 null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 			);
             
 			wp_add_inline_script('growfund-vite-app', $config, 'before');
+
+            Translator::load_js_translations('growfund', 'growfund-vite-app');
 
             add_filter('script_loader_tag', function ($tag, $handle){
 				if (in_array($handle, ['growfund-vite-refresh', 'growfund-vite-client', 'growfund-vite-app'], true)) {

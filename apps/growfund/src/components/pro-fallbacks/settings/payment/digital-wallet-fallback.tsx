@@ -1,8 +1,8 @@
 import { __ } from '@wordpress/i18n';
 import { useFormContext } from 'react-hook-form';
 
-import { CheckboxField } from '@/components/form/checkbox-field';
 import { TextField } from '@/components/form/text-field';
+import ProCheckboxInput from '@/components/pro-fallbacks/form/pro-checkbox-input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { ProBadge } from '@/components/ui/pro-badge';
@@ -36,27 +36,9 @@ const PaymentSettingsDigitalWalletFallback = () => {
         <div className="growfund-space-y-2">
           <Label>{__('Fundraiser withdrawal options', 'growfund-pro')}</Label>
           <div className="growfund-flex growfund-items-center growfund-gap-2 growfund-w-full">
-            <CheckboxField
-              control={form.control}
-              name="fundraiser_withdrawal_options.is_active_paypal"
-              label={__('PayPal', 'growfund-pro')}
-              wrapperClassName="growfund-w-auto"
-              disabled
-            />
-            <CheckboxField
-              control={form.control}
-              name="fundraiser_withdrawal_options.is_active_bank_transfer"
-              label={__('Bank Transfer', 'growfund-pro')}
-              wrapperClassName="growfund-w-auto"
-              disabled
-            />
-            <CheckboxField
-              control={form.control}
-              name="fundraiser_withdrawal_options.is_active_others"
-              label={__('Others', 'growfund-pro')}
-              wrapperClassName="growfund-w-auto"
-              disabled
-            />
+            <ProCheckboxInput label={__('PayPal', 'growfund-pro')} />
+            <ProCheckboxInput label={__('Bank Transfer', 'growfund-pro')} />
+            <ProCheckboxInput label={__('Others', 'growfund-pro')} />
           </div>
         </div>
       </CardContent>

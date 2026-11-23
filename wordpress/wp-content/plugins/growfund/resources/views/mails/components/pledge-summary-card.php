@@ -25,7 +25,7 @@
                                                                 <tr>
                                                                     <td style="padding:12px 16px; border-right:1px solid #f0f0f0; border-bottom:1px solid #f0f0f0; font-weight:500; color:#636363;"><?php echo esc_html__('Campaign', 'growfund'); ?></td>
                                                                     <td style="padding:12px 16px; border-bottom:1px solid #f0f0f0; font-weight:500; color:#333333;">
-                                                                        <a href="https://example.com/campaign/clean-water" style="color:#0055ff; text-decoration:none; font-weight:500;"><?php echo esc_html($pledge['campaign_title']); ?></a>
+                                                                        <a href="<?php echo esc_url($pledge['campaign_url']); ?>" style="color:#0055ff; text-decoration:none; font-weight:500;"><?php echo esc_html($pledge['campaign_title']); ?></a>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>

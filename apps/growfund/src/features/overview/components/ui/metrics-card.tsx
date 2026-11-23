@@ -27,8 +27,7 @@ const metricsCardVariants = cva(
 );
 
 interface MetricsCardProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof metricsCardVariants> {
+  extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof metricsCardVariants> {
   data: {
     label: string;
     amount: string;
@@ -53,7 +52,7 @@ const MetricsCard = React.forwardRef<HTMLDivElement, MetricsCardProps>(
     return (
       <div ref={ref} className={cn(metricsCardVariants({ variant }), className)} {...props}>
         <p
-          className="growfund-typo-small growfund-font-medium growfund-text-fg-secondary growfund-flex growfund-items-center growfund-gap-2 [&>[data-type=tooltip]]:growfund-opacity-0 group-hover/metric-card:[&>[data-type=tooltip]]:growfund-opacity-100 growfund-transition-opacity"
+          className="growfund-typo-small growfund-font-medium growfund-text-fg-secondary growfund-flex growfund-items-center growfund-gap-2 growfund-transition-opacity lg:[&>[data-type=tooltip]]:growfund-opacity-0 lg:group-hover/metric-card:[&>[data-type=tooltip]]:growfund-opacity-100"
           title={data.label}
         >
           <span className="growfund-truncate">

@@ -31,7 +31,7 @@ export const MessageDisplay = ({
         <p className="growfund-typo-tiny growfund-text-fg-secondary">{appreciation_message}</p>
       </div>
 
-      <div className="growfund-absolute growfund-right-0 growfund-h-9 growfund-w-[64px] growfund-items-center growfund-justify-center growfund-border growfund-rounded-md growfund-hidden group-hover:growfund-flex">
+      <div className="growfund-absolute growfund-right-0 growfund-h-9 growfund-w-[64px] growfund-items-center growfund-justify-center growfund-border growfund-rounded-md growfund-flex sm:growfund-hidden sm:group-hover:growfund-flex">
         <Button
           variant="ghost"
           size="icon"

@@ -52,8 +52,8 @@ const TopCampaigns = () => {
   return (
     <Box className="growfund-rounded-3xl">
       <BoxContent className="growfund-px-6 growfund-py-4">
-        <BoxTitle className="growfund-justify-between [&>span>[data-type=tooltip]]:growfund-opacity-0 group-hover/box:[&>span>[data-type=tooltip]]:growfund-opacity-100">
-          <span>
+        <BoxTitle className="growfund-justify-between [&>span>[data-type=tooltip]]:growfund-opacity-100 lg:[&>span>[data-type=tooltip]]:growfund-opacity-0 lg:group-hover/box:[&>span>[data-type=tooltip]]:growfund-opacity-100">
+          <span className="growfund-flex growfund-items-center growfund-gap-1">
             {__('Top Campaigns', 'growfund')}
             <InfoTooltip>
               {__(
@@ -65,7 +65,7 @@ const TopCampaigns = () => {
           <Button
             variant="ghost"
             size="sm"
-            className="growfund-opacity-0 group-hover/box:growfund-opacity-100"
+            className="lg:growfund-opacity-0 lg:group-hover/box:growfund-opacity-100"
             onClick={() => {
               void navigate(RouteConfig.Campaigns.buildLink());
             }}

@@ -87,7 +87,7 @@ export const SingleRewardItem = ({
           </div>
         </div>
       </div>
-      <div className="growfund-flex growfund-transition-opacity growfund-opacity-0 group-hover/item:growfund-opacity-100 growfund-absolute growfund-top-4 growfund-right-4 growfund-border growfund-border-border growfund-p-1 growfund-rounded-md growfund-bg-background-surface">
+      <div className="growfund-flex growfund-transition-opacity growfund-absolute growfund-top-4 growfund-right-4 growfund-border growfund-border-border growfund-p-1 growfund-rounded-md growfund-bg-background-surface growfund-opacity-100 sm:growfund-opacity-0 sm:group-hover/item:growfund-opacity-100">
         <Button
           variant="ghost"
           size="icon"

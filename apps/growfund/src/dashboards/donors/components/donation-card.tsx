@@ -9,10 +9,10 @@ import { Badge, type BadgeProps } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Image } from '@/components/ui/image';
 import DonationDetailsDialog from '@/dashboards/donors/features/donations/components/dialogs/donation-details-dialog';
@@ -50,22 +50,22 @@ const DonationCard = ({ donation }: { donation: Donation }) => {
   return (
     <Card>
       <CardContent className="growfund-pt-4">
-        <div className="growfund-grid growfund-grid-cols-[35rem_auto] growfund-w-full growfund-gap-3">
-          <div className="growfund-w-full growfund-flex growfund-items-center growfund-gap-3">
+        <div className="growfund-flex growfund-flex-col growfund-w-full growfund-gap-3 sm:growfund-flex-row sm:growfund-items-start">
+          <div className="growfund-flex growfund-items-start growfund-gap-3 growfund-flex-1 growfund-min-w-0">
             <Image
               src={donation.campaign.images?.[0]?.url ?? null}
               alt={'image'}
               fit="cover"
               aspectRatio="square"
-              className="growfund-h-24 growfund-w-24 growfund-rounded"
+              className="growfund-h-24 growfund-w-24 growfund-rounded growfund-shrink-0"
             />
-            <div className="growfund-space-y-1">
+            <div className="growfund-space-y-1 growfund-min-w-0 growfund-flex-1">
               {isDefined(donation.tribute_type) && (
                 <div className="growfund-w-full growfund-flex growfund-items-center growfund-gap-1">
-                  <SpecialTributeIcon className="growfund-size-4 growfund-text-fg-special" />
-                  <span className="growfund-typo-tiny growfund-text-fg-special">
+                  <SpecialTributeIcon className="growfund-size-4 growfund-text-fg-special growfund-shrink-0" />
+
+                  <span className="growfund-typo-tiny growfund-text-fg-special growfund-truncate">
                     {sprintf(
-                      /* translators: 1: Tribute Type, 2: Tribute Salutation, 3: Tribute To */
                       __('Tribute %1$s %2$s %3$s', 'growfund'),
                       donation.tribute_type,
                       donation.tribute_salutation,
@@ -76,7 +76,7 @@ const DonationCard = ({ donation }: { donation: Donation }) => {
               )}
 
               <div className="growfund-space-y-2">
-                <div className="growfund-flex growfund-w-full growfund-items-center growfund-gap-2">
+                <div className="growfund-flex growfund-w-full growfund-items-center growfund-gap-2 growfund-flex-wrap">
                   <div className="growfund-typo-h4 growfund-font-semibold growfund-text-primary">
                     {toCurrency(donation.amount)}
                   </div>
@@ -91,18 +91,19 @@ const DonationCard = ({ donation }: { donation: Donation }) => {
                       : donation.status}
                   </Badge>
                 </div>
-                <div className="growfund-w-full growfund-flex growfund-items-center">
-                  <div className="growfund-typo-small growfund-font-medium growfund-text-primary">
+
+                <div className="growfund-w-full growfund-flex growfund-flex-wrap growfund-items-center growfund-gap-x-1">
+                  <div className="growfund-typo-small growfund-font-medium growfund-text-primary growfund-truncate growfund-max-w-full">
                     {donation.campaign.title}
                   </div>
-                  <DotFilledIcon className="growfund-w-4 growfund-h-4" />
-                  <div className="growfund-typo-small growfund-font-medium growfund-text-fg-emphasis">
-                    {/* translators: %s: Fund title */}
+                  <DotFilledIcon className="growfund-w-4 growfund-h-4 growfund-shrink-0" />
+                  <div className="growfund-typo-small growfund-font-medium growfund-text-fg-emphasis growfund-truncate growfund-max-w-full">
                     {sprintf(__('Fund: %s', 'growfund'), donation.fund?.title)}
                   </div>
                 </div>
+
                 <div className="growfund-flex growfund-gap-1 growfund-items-center">
-                  <Clock4Icon className="growfund-text-icon-primary growfund-h-4 growfund-w-4" />
+                  <Clock4Icon className="growfund-text-icon-primary growfund-h-4 growfund-w-4 growfund-shrink-0" />
                   <span className="growfund-typo-small growfund-text-muted-foreground">
                     {format(
                       new Date(donation.created_at),
@@ -113,10 +114,15 @@ const DonationCard = ({ donation }: { donation: Donation }) => {
               </div>
             </div>
           </div>
-          <div className="growfund-flex growfund-flex-col growfund-justify-between growfund-items-end">
+
+          <div className="growfund-flex growfund-flex-row growfund-justify-between growfund-items-center sm:growfund-flex-col sm:growfund-justify-between sm:growfund-items-end sm:growfund-self-stretch">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="secondary" size="icon" className="growfund-shrink-0 growfund-size-8">
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="growfund-shrink-0 growfund-size-8"
+                >
                   <DotsVerticalIcon />
                 </Button>
               </DropdownMenuTrigger>
@@ -130,7 +136,10 @@ const DonationCard = ({ donation }: { donation: Donation }) => {
                   {__('View Details', 'growfund')}
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  className={cn('growfund-text-fg-critical', !isCancellable && 'growfund-text-fg-subdued')}
+                  className={cn(
+                    'growfund-text-fg-critical',
+                    !isCancellable && 'growfund-text-fg-subdued',
+                  )}
                   disabled={!isCancellable}
                   onClick={() => {
                     openDialog({
@@ -159,11 +168,11 @@ const DonationCard = ({ donation }: { donation: Donation }) => {
             </DropdownMenu>
 
             <span className="growfund-typo-tiny growfund-text-fg-muted">
-              {/* translators: %s: Donation ID */}
               {sprintf(__('ID: %s', 'growfund'), donation.id)}
             </span>
           </div>
         </div>
+
         <DonationDetailsDialog
           open={openDetailsDialog}
           onOpenChange={setOpenDetailsDialog}

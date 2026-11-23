@@ -6,7 +6,7 @@ const CampaignNavigation = () => {
   const { steps, activeStep, navigateToStep, errorOn } = useCampaignBuilderContext();
 
   return (
-    <div className="growfund-h-16 growfund-flex growfund-flex-1 growfund-gap-4 growfund-justify-center growfund-items-center">
+    <div className="growfund-h-16 growfund-flex growfund-flex-1 growfund-gap-1 sm:growfund-gap-4 growfund-justify-center growfund-items-center">
       {steps.map((step) => {
         return (
           <Button
@@ -26,7 +26,16 @@ const CampaignNavigation = () => {
               )}
               {step.icon}
             </div>
-            {step.label}
+            <span
+              className={cn(
+                'growfund-text-sm',
+                step.value === activeStep
+                  ? 'growfund-inline'
+                  : 'growfund-hidden sm:growfund-inline',
+              )}
+            >
+              {step.label}
+            </span>
           </Button>
         );
       })}

@@ -3,6 +3,7 @@ import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
+import { useBreakpoint } from '@/hooks/use-breakpoint';
 import { cn } from '@/lib/utils';
 
 const TooltipProvider = TooltipPrimitive.Provider;
@@ -38,11 +39,29 @@ TooltipContent.displayName = TooltipPrimitive.Content.displayName;
 
 const InfoTooltip = React.forwardRef<HTMLDivElement, InfoTooltipProps>(
   ({ children, className, iconClassName = 'growfund-text-icon-primary', ...props }, ref) => {
+    const [open, setOpen] = React.useState(false);
+
+    const breakPoint = useBreakpoint();
     return (
       <TooltipProvider>
-        <Tooltip {...props} delayDuration={0}>
+        <Tooltip
+          {...props}
+          delayDuration={0}
+          open={breakPoint === 'sm' || breakPoint === 'md' ? open : undefined}
+          onOpenChange={breakPoint === 'sm' || breakPoint === 'md' ? setOpen : undefined}
+        >
           <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon" className="growfund-size-6" data-type="tooltip">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="growfund-size-6"
+              data-type="tooltip"
+              onClick={() => {
+                if (breakPoint === 'sm' || breakPoint === 'md') {
+                  setOpen((prev) => !prev);
+                }
+              }}
+            >
               <InfoCircledIcon className={iconClassName} />
             </Button>
           </TooltipTrigger>

@@ -9,11 +9,11 @@ import { type MediaAttachment } from '@/schemas/media';
 import { useMediaUploadMutation } from '@/services/media';
 import { arrayUniqueBy } from '@/utils';
 import {
-    ACCEPT_TYPES,
-    type AcceptType,
-    getAcceptTypes,
-    mb2byte,
-    type MediaType,
+  ACCEPT_TYPES,
+  type AcceptType,
+  getAcceptTypes,
+  mb2byte,
+  type MediaType,
 } from '@/utils/media';
 
 import { Gallery } from './gallery';
@@ -119,7 +119,8 @@ function ImageGallery({
         'growfund-border growfund-border-border growfund-bg-background-surface-secondary growfund-rounded-md',
         isDragActive && 'growfund-border-primary growfund-border-dashed growfund-bg-muted/50',
         disabled && 'growfund-opacity-50 growfund-cursor-not-allowed',
-        isDragReject && 'growfund-border-border-critical growfund-bg-background-fill-critical-secondary/60',
+        isDragReject &&
+          'growfund-border-border-critical growfund-bg-background-fill-critical-secondary/60',
         className,
       )}
     >

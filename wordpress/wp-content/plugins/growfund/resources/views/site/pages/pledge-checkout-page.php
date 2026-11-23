@@ -466,17 +466,19 @@ $growfund_input_amount = growfund_input_get('amount', 0, Sanitizer::FLOAT);
                 </div>
             </div>
 
-            <div class="growfund-pledge-checkout-page-right-section-faq-wrapper">
-                <span class="growfund-pledge-checkout-page-right-section-faq-section-title"><?php esc_html_e('Frequently Asked Questions', 'growfund'); ?></span>
-                <div class="growfund-pledge-checkout-page-right-section-faq-section-list">
-                    <?php 
-                    $growfund_faq_list = new FaqList();
-                    $growfund_faq_list->faqs = $pledge_checkout_page->campaign->faqs ?? [];
-                    
-                    growfund_render($growfund_faq_list);
-                    ?>
+            <?php if (!empty($pledge_checkout_page->campaign->faqs)) : ?>
+                <div class="growfund-pledge-checkout-page-right-section-faq-wrapper">
+                    <span class="growfund-pledge-checkout-page-right-section-faq-section-title"><?php esc_html_e('Frequently Asked Questions', 'growfund'); ?></span>
+                    <div class="growfund-pledge-checkout-page-right-section-faq-section-list">
+                        <?php 
+                        $growfund_faq_list = new FaqList();
+                        $growfund_faq_list->faqs = $pledge_checkout_page->campaign->faqs ?? [];
+                        
+                        growfund_render($growfund_faq_list);
+                        ?>
+                    </div>
                 </div>
-            </div>
+            <?php endif; ?>
         </div>
     </div>
 </form>

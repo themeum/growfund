@@ -113,7 +113,6 @@ const PledgeTimeline = ({ pledgeId }: TimelineProps) => {
             );
           })}
         </TimelineItemWrapper>
-
         <InfiniteQueryScroll query={timelinesQuery} />
       </TimelineContentWrapper>
     </Timeline>

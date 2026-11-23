@@ -75,6 +75,7 @@ const CampaignTableDropdownMenu = forwardRef<HTMLDivElement, CampaignTableDropdo
     const campaign = {
       id: row.original.id,
       title: row.original.title,
+      status: row.original.status,
       image: row.original.images?.[0]?.url ?? null,
       author: row.original.author,
     };

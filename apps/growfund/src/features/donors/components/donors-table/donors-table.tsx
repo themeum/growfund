@@ -21,11 +21,11 @@ import { SelectField } from '@/components/form/select-field';
 import { TextField } from '@/components/form/text-field';
 import { LoadingSpinnerOverlay } from '@/components/layouts/loading-spinner';
 import {
-    DataTable,
-    DataTableContent,
-    DataTablePagination,
-    DataTableWrapper,
-    DataTableWrapperHeader,
+  DataTable,
+  DataTableContent,
+  DataTablePagination,
+  DataTableWrapper,
+  DataTableWrapperHeader,
 } from '@/components/table/data-table';
 import ThreeDotsOptions from '@/components/three-dots-options';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -39,9 +39,9 @@ import { useDonorFilters } from '@/features/donors/hooks/use-donor-filters';
 import { type Donor } from '@/features/donors/schemas/donor';
 import { type DonorFilter, DonorFilterSchema } from '@/features/donors/schemas/donor-filter';
 import {
-    useDonorBulkActionsMutation,
-    useDonorsQuery,
-    useEmptyDonorsTrashMutation,
+  useDonorBulkActionsMutation,
+  useDonorsQuery,
+  useEmptyDonorsTrashMutation,
 } from '@/features/donors/services/donor';
 import { useCurrency } from '@/hooks/use-currency';
 import useCurrentUser from '@/hooks/use-current-user';
@@ -331,7 +331,9 @@ const DonorsTable = () => {
       columnsHelper.accessor('total_contributions', {
         header: __('Total Given', 'growfund'),
         cell: ({ row }) => (
-          <span className="growfund-text-right">{toCurrency(row.original.total_contributions)}</span>
+          <span className="growfund-text-right">
+            {toCurrency(row.original.total_contributions)}
+          </span>
         ),
       }),
       columnsHelper.accessor('latest_donation_date', {
@@ -369,7 +371,7 @@ const DonorsTable = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="growfund-size-6 growfund-opacity-0 group-hover/row:growfund-opacity-100"
+                className="growfund-size-6 growfund-opacity-100 lg:growfund-opacity-0 lg:group-hover/row:growfund-opacity-100"
               >
                 <DotsVerticalIcon />
               </Button>
@@ -451,10 +453,9 @@ const DonorsTable = () => {
               >
                 <Form {...form}>
                   <div className="growfund-w-full growfund-space-y-4">
-                    <div className="growfund-grid growfund-grid-cols-[8rem_auto] growfund-items-center growfund-justify-between growfund-w-full">
-                      <div className="growfund-flex growfund-items-center growfund-gap-2">
+                    <div className="growfund-flex growfund-flex-col growfund-gap-2 sm:growfund-flex-row sm:growfund-items-center sm:growfund-justify-between sm:growfund-w-full">
+                      <div className="growfund-flex growfund-items-center growfund-gap-2 growfund-flex-wrap">
                         <CampaignField control={form.control} name="campaign_id" />
-
                         <SelectField
                           className="growfund-bg-background-white"
                           control={form.control}
@@ -487,6 +488,7 @@ const DonorsTable = () => {
                         />
                       </div>
                     </div>
+
                     <ActiveFilters
                       params={params}
                       onClear={handleClearFilter}

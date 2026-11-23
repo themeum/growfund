@@ -21,13 +21,14 @@ const BackerPledgesPageContent = () => {
 
   return (
     <Form {...form}>
-      <div className="growfund-flex growfund-items-center growfund-justify-between growfund-mb-3">
+      <div className="growfund-flex growfund-flex-col growfund-gap-3 growfund-mb-3 sm:growfund-flex-row sm:growfund-items-center sm:growfund-justify-between">
         <div className="growfund-flex growfund-items-center growfund-gap-1">
           <h5 className="growfund-typo-h5 growfund-font-bold">{__('All Pledges', 'growfund')}</h5>
+
           <h6 className="growfund-typo-h6 growfund-font-bold">{sprintf('(%s)', totalPledges)}</h6>
         </div>
 
-        <div className="growfund-max-w-[25rem] growfund-flex growfund-items-center growfund-gap-2">
+        <div className="growfund-flex growfund-items-center growfund-gap-2 growfund-w-full sm:growfund-max-w-[25rem]">
           <TextField
             control={form.control}
             name="search"

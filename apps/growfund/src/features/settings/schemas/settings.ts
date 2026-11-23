@@ -101,9 +101,9 @@ const PaymentSettingsSchema = z.object({
   minimum_balance_to_request_withdrawal: z.number().nullish(),
   fundraiser_withdrawal_options: z
     .object({
-      is_active_paypal: z.boolean().default(false),
-      is_active_bank_transfer: z.boolean().default(true),
-      is_active_others: z.boolean().default(false),
+      is_active_paypal: z.boolean().default(false).optional(),
+      is_active_bank_transfer: z.boolean().default(true).optional(),
+      is_active_others: z.boolean().default(false).optional(),
     })
     .nullish(),
   enable_guest_checkout: z.boolean().default(false),
@@ -222,7 +222,7 @@ const MailServerSchema = z
     }),
   ])
   .superRefine((data, ctx) => {
-    if (data.mailer === 'smtp' && !!data.enable_authentication) {
+    if (data.mailer === 'smtp' && data.enable_authentication) {
       if (!data.username) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,

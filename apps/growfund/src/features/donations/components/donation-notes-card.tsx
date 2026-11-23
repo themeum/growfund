@@ -44,7 +44,7 @@ const DonationNotesCard = ({ value, onChange }: AddNotesProps) => {
             </h6>
 
             {hasNoteContent && !openForm && (
-              <div className="growfund-flex growfund-items-center growfund-opacity-0 group-hover/notes:growfund-opacity-100 growfund-transition-opacity">
+              <div className="growfund-flex growfund-items-center growfund-transition-opacity growfund-opacity-100 sm:growfund-opacity-0 sm:group-hover/notes:growfund-opacity-100">
                 <Button
                   variant="ghost"
                   size="icon"

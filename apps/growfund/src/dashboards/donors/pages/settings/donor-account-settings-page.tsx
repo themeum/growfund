@@ -6,17 +6,17 @@ import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
 import {
-    UserForm,
-    UserFormAddress,
-    UserFormBasics,
-    UserFormCard,
-    UserFormCardContent,
-    UserFormCardHeader,
+  UserForm,
+  UserFormAddress,
+  UserFormBasics,
+  UserFormCard,
+  UserFormCardContent,
+  UserFormCardHeader,
 } from '@/components/user-form/user-form';
 import UserResetPasswordDialog from '@/dashboards/shared/components/dialogs/user-reset-password-dialog';
 import {
-    FormKeys,
-    useUserSettingsContext,
+  FormKeys,
+  useUserSettingsContext,
 } from '@/dashboards/shared/contexts/user-settings-context';
 import { type DonorForm, DonorFormSchema } from '@/features/donors/schemas/donor';
 

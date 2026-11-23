@@ -22,6 +22,7 @@ use Growfund\Hooks\Actions\EditProfileAdminView;
 use Growfund\Hooks\Actions\EditUserAdminView;
 use Growfund\Hooks\Actions\NewUserForm;
 use Growfund\Hooks\Actions\NewUserSave;
+use Growfund\Hooks\Actions\PageTrashed;
 use Growfund\Hooks\Actions\PluginUpdateAction;
 use Growfund\Hooks\Actions\RegisterAdminMenu;
 use Growfund\Hooks\Actions\RegisterAjaxRouter;
@@ -95,6 +96,7 @@ return [
         RegisterCampaignBlocks::class,
         RegisterAjaxRouter::class,
         OnboardingCompleted::class,
+        PageTrashed::class,
         ApplyOnboardingFromCrowdfunding::class,
         EditUserAdminView::class,
         UpdateUserByAdmin::class,

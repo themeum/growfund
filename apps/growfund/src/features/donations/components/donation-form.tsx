@@ -26,10 +26,10 @@ const DonationForm = () => {
   const [campaign, setCampaign] = useState<Campaign | null>(null);
 
   return (
-    <Container className="growfund-py-10">
+    <Container className="growfund-py-4 sm:growfund-py-6 lg:growfund-py-10">
       <Form {...form}>
-        <div className="growfund-grid growfund-grid-cols-[auto_20rem] growfund-gap-4">
-          <div className="growfund-space-y-4">
+        <div className="growfund-grid growfund-grid-cols-1 lg:growfund-grid-cols-[minmax(0,1fr)_20rem] growfund-gap-4 lg:growfund-gap-6">
+          <div className="growfund-space-y-4 growfund-min-w-0">
             {isDefined(campaign) ? (
               <>
                 <CampaignCard
@@ -41,10 +41,11 @@ const DonationForm = () => {
                 />
 
                 <DonationPaymentCard campaign={campaign} />
+
                 <PaymentView amount={amount ?? 0} donationStatus={status} />
               </>
             ) : (
-              <div>
+              <div className="growfund-w-full">
                 <AddCampaignEmptyState
                   onSelectCampaign={(campaign) => {
                     setCampaign(campaign);
@@ -53,8 +54,10 @@ const DonationForm = () => {
               </div>
             )}
           </div>
-          <div className="growfund-space-y-4">
+
+          <div className="growfund-space-y-4 growfund-w-full">
             <PaymentMethodCard form={form} />
+
             <DonorSelectionCard />
 
             {appConfig[AppConfigKeys.Campaign]?.allow_tribute && campaign?.has_tribute && (

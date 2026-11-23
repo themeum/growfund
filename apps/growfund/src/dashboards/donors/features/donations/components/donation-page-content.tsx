@@ -19,14 +19,14 @@ const DonationPageContent = () => {
   return (
     <Form {...form}>
       {queryMeta.overall > 0 && (
-        <div className="growfund-flex growfund-items-center growfund-justify-between">
+        <div className="growfund-flex growfund-flex-col lg:growfund-flex-row lg:growfund-items-center growfund-gap-3 lg:growfund-justify-between">
           <h4 className="growfund-typo-h5 growfund-font-semibold growfund-text-primary">
             {/* translators: %d: number of donations */}
             {sprintf(__('Donations (%d)', 'growfund'), queryMeta.total)}
           </h4>
-          <div className="growfund-flex growfund-items-center growfund-gap-2">
+          <div className="growfund-flex growfund-flex-col sm:growfund-flex-row growfund-items-stretch sm:growfund-items-center growfund-gap-2 growfund-w-full lg:growfund-w-auto">
             <TextField
-              className="growfund-bg-background-surface"
+              className="growfund-bg-background-surface growfund-w-full sm:growfund-w-48"
               control={form.control}
               type="search"
               name="search"
@@ -34,7 +34,7 @@ const DonationPageContent = () => {
             />
             <SelectField
               control={form.control}
-              className="growfund-bg-background-fill growfund-rounded-md"
+              className="growfund-bg-background-fill growfund-rounded-md growfund-w-full sm:growfund-w-44"
               name="status"
               placeholder={__('All Donations', 'growfund')}
               options={[

@@ -417,10 +417,10 @@ const DataTableWrapperHeader = memo(
         <div className="growfund-min-h-9 growfund-flex growfund-items-center growfund-w-full">
           {totalSelectedRows > 0 ? (
             <Form {...form}>
-              <div className="growfund-flex growfund-items-center growfund-gap-2 growfund-justify-between growfund-w-full">
-                <div className="growfund-flex growfund-items-center growfund-gap-2">
+              <div className="growfund-flex growfund-flex-col sm:growfund-flex-row growfund-gap-2 growfund-w-full">
+                <div className="growfund-flex growfund-items-center growfund-justify-between sm:growfund-justify-start growfund-gap-2">
                   <div className="growfund-flex growfund-items-center">
-                    <span className="growfund-text-fg-secondary">
+                    <span className="growfund-text-fg-secondary growfund-typo-tiny">
                       {
                         /* translators: %d: number of selected items */
                         sprintf(
@@ -448,35 +448,43 @@ const DataTableWrapperHeader = memo(
                     </Button>
                   </div>
 
-                  {actions && actions.length > 0 && (
-                    <div className="growfund-flex growfund-items-center growfund-gap-2">
-                      <SelectField
-                        control={form.control}
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
-                        name={'action' as any}
-                        placeholder={__('Action', 'growfund')}
-                        options={actions}
-                      />
-                      <Button
-                        variant="secondary"
-                        onClick={form.handleSubmit(
-                          (values) => {
-                            onActionChange?.(values.action, selectedRows);
-                            table.resetRowSelection();
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                            form.setValue('action' as any, undefined);
-                          },
-                          (errors) => {
-                            console.error(errors);
-                          },
-                        )}
-                      >
-                        {__('Apply', 'growfund')}
-                      </Button>
-                    </div>
-                  )}
+                  <div className="sm:growfund-hidden">
+                    {isDefined(secondaryActions) && secondaryActions(selectedRows)}
+                  </div>
                 </div>
-                {isDefined(secondaryActions) && secondaryActions(selectedRows)}
+
+                {actions && actions.length > 0 && (
+                  <div className="growfund-flex growfund-items-center growfund-gap-2 growfund-justify-between sm:growfund-justify-start">
+                    <SelectField
+                      control={form.control}
+                      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
+                      name={'action' as any}
+                      placeholder={__('Action', 'growfund')}
+                      options={actions}
+                      className="growfund-flex-1 sm:growfund-flex-none"
+                    />
+                    <Button
+                      variant="secondary"
+                      onClick={form.handleSubmit(
+                        (values) => {
+                          onActionChange?.(values.action, selectedRows);
+                          table.resetRowSelection();
+                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                          form.setValue('action' as any, undefined);
+                        },
+                        (errors) => {
+                          console.error(errors);
+                        },
+                      )}
+                    >
+                      {__('Apply', 'growfund')}
+                    </Button>
+
+                    <div className="growfund-hidden sm:growfund-block">
+                      {isDefined(secondaryActions) && secondaryActions(selectedRows)}
+                    </div>
+                  </div>
+                )}
               </div>
             </Form>
           ) : (

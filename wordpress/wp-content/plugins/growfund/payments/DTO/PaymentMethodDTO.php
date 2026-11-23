@@ -17,7 +17,7 @@ class PaymentMethodDTO extends DTO
     /** @var string|null */
     public $logo;
 
-    /** @var string */
+    /** @var string -- 'online-payment' | 'manual-payment' */
     public $type;
 
     /** @var string|null */

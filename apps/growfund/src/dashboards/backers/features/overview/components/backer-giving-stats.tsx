@@ -43,7 +43,7 @@ const BackerGivingStats = ({ backerId }: { backerId?: string }) => {
           <h5 className="growfund-typo-h5 growfund-text-fg-primary">
             {__('My giving stats', 'growfund')}
           </h5>
-          <div className="growfund-grid growfund-grid-cols-4 growfund-gap-4">
+          <div className="growfund-grid growfund-grid-cols-2 sm:growfund-grid-cols-4 growfund-gap-4">
             <MetricsCard
               data={{
                 label: __('Pledged Amount', 'growfund'),

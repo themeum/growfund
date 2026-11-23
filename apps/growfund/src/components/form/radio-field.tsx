@@ -61,7 +61,8 @@ function RadioField<T extends FieldValues>({
             <FormControl
               className={cn(
                 'growfund-mt-2',
-                inline && 'growfund-flex growfund-items-center growfund-gap-4',
+                inline &&
+                  'growfund-flex growfund-flex-col growfund-gap-2 sm:growfund-flex-row sm:growfund-items-center sm:growfund-gap-4',
               )}
             >
               <RadioGroup

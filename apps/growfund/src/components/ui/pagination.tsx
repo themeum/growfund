@@ -9,7 +9,10 @@ const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => (
   <nav
     role="navigation"
     aria-label="pagination"
-    className={cn('growfund-mx-auto growfund-flex growfund-w-full growfund-justify-center', className)}
+    className={cn(
+      'growfund-mx-auto growfund-flex growfund-w-full growfund-justify-center',
+      className,
+    )}
     {...props}
   />
 );
@@ -19,7 +22,10 @@ const PaginationContent = React.forwardRef<HTMLUListElement, React.ComponentProp
   ({ className, ...props }, ref) => (
     <ul
       ref={ref}
-      className={cn('growfund-flex growfund-flex-row growfund-items-center growfund-gap-1', className)}
+      className={cn(
+        'growfund-flex growfund-flex-row growfund-items-center growfund-gap-1',
+        className,
+      )}
       {...props}
     />
   ),
@@ -107,12 +113,11 @@ const PaginationEllipsis = ({ className, ...props }: React.ComponentProps<'span'
 PaginationEllipsis.displayName = 'PaginationEllipsis';
 
 export {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
 };
-

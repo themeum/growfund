@@ -12,7 +12,7 @@ const BackerDetailsOverviewPage = () => {
   return (
     <div className="growfund-space-y-4 growfund-mt-4">
       <div className="growfund-grid growfund-gap-4">
-        <div className="growfund-flex growfund-items-center growfund-gap-4">
+        <div className="growfund-grid growfund-grid-cols-1 sm:growfund-grid-cols-2 lg:growfund-grid-cols-4 growfund-gap-4">
           <MetricsCard
             data={{
               label: __('Pledged Amount', 'growfund'),
@@ -41,8 +41,9 @@ const BackerDetailsOverviewPage = () => {
         </div>
       </div>
 
-      <div className="growfund-grid growfund-grid-cols-[20rem_auto] growfund-gap-4">
+      <div className="growfund-grid growfund-grid-cols-1 lg:growfund-grid-cols-[18rem_1fr] growfund-gap-4">
         <UserPreviewCard user={backer.backer_information} hideHeader />
+
         <BackerActivityLogCard />
       </div>
     </div>

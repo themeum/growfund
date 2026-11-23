@@ -21,6 +21,7 @@ use Growfund\Supports\Arr;
 use Growfund\Taxonomies\Category;
 use Growfund\Taxonomies\Tag;
 use Exception;
+use Growfund\Constants\UserTypes\Collaborator;
 use Growfund\Supports\Option;
 
 /**
@@ -90,7 +91,7 @@ class CleanupService
                     sprintf(
                         /* translators: 1: Migration class name, 2: Migration interface name */
                         esc_html__('Class %1$s must implement %2$s.', 'growfund'),
-                        $migration::class,
+                        esc_html(get_class($migration)),
                         Migration::class
                     )
                 );
@@ -244,11 +245,37 @@ class CleanupService
     {
         $user_roles = [
             Fundraiser::ROLE,
+            Collaborator::ROLE,
             Backer::ROLE,
             Donor::ROLE,
         ];
 
-        return $this->delete_wp_users($user_roles);
+        $is_deleted = $this->delete_wp_user_meta();
+        $this->remove_growfund_roles_from_user($user_roles);
+        
+        return $is_deleted;
+    }
+
+    /**
+     * Delete the WordPress users
+     *
+     * @return bool
+     * @since 1.0.0
+     */
+    protected function delete_wp_user_meta()
+    {
+        $user_meta_table = QueryBuilder::query()->table(WP::USER_META_TABLE)->get_table_name();
+
+        $meta_sql = sprintf(
+            "DELETE user_meta FROM %s as user_meta 
+            WHERE user_meta.meta_key LIKE '%s'",
+            $user_meta_table,
+            'growfund_%'
+        );
+
+        $meta_result = $this->db->query($meta_sql);
+
+        return $meta_result !== false;
     }
 
     /**
@@ -256,46 +283,40 @@ class CleanupService
      *
      * @param array $user_roles
      * @return bool
-     * @since 1.0.0
+     * @since 1.1.1
      */
-    protected function delete_wp_users(array $user_roles)
+    protected function remove_growfund_roles_from_user(array $user_roles)
     {
-        $users_table = QueryBuilder::query()->table(WP::USERS_TABLE)->get_table_name();
-        $user_meta_table = QueryBuilder::query()->table(WP::USER_META_TABLE)->get_table_name();
-
         $role_conditions = $this->build_role_like_conditions($user_roles);
 
-        $meta_sql = sprintf(
-            "DELETE user_meta FROM %s as user_meta 
-            INNER JOIN %s as users ON user_meta.user_id = users.ID 
-            WHERE users.ID IN (
-                SELECT user_id FROM %s 
-                WHERE meta_key = 'wp_capabilities' 
-                AND (%s)
-            ) AND users.ID != 1",
-            $user_meta_table,
-            $users_table,
-            $user_meta_table,
-            $role_conditions
-        );
+        QueryBuilder::query()
+            ->table(WP::USER_META_TABLE)
+            ->select(['user_id', 'meta_value'])
+            ->where('meta_key', QueryBuilder::prefix('capabilities'))
+            ->where_raw($role_conditions)
+            ->chunk_by_id(1000, function($growfund_user_capabilities) use ($user_roles) {
+                foreach ($growfund_user_capabilities as $user_meta) {
+                    $capabilities = maybe_unserialize($user_meta->meta_value);
 
-        $meta_result = $this->db->query($meta_sql);
+                    if (!is_array($capabilities)) {
+                        continue;
+                    }
 
-        $users_sql = sprintf(
-            "DELETE FROM %s 
-            WHERE ID IN (
-                SELECT user_id FROM %s 
-                WHERE meta_key = 'wp_capabilities' 
-                AND (%s)
-            ) AND ID != 1",
-            $users_table,
-            $user_meta_table,
-            $role_conditions
-        );
+                    foreach ($user_roles as $role) {
+                        if (!isset($capabilities[$role])) {
+                            continue;
+                        }
 
-        $users_result = $this->db->query($users_sql);
+                        unset($capabilities[$role]);
+                    }
 
-        return $meta_result !== false && $users_result !== false;
+                    update_user_meta(
+                        $user_meta->user_id,
+                        QueryBuilder::prefix('capabilities'),
+                        $capabilities
+                    );
+                }
+            }, 'ASC', 'user_id');
     }
 
     /**
