@@ -26,6 +26,9 @@ jobs:
           tools: wp-cli
           composer-auth: false
 
+      - name: Update Composer
+        run: composer self-update
+
       - name: Install WP-CLI i18n command
         run: wp package install wp-cli/i18n-command:v2.6.0
 
