@@ -53,6 +53,16 @@ class RegisterCustomBlockTemplates extends BaseHook
         if (!$template_name) {
             return $templates;
         }
+        
+        if (!empty($query['slug__in']) && !in_array($slug, (array) $query['slug__in'], true)) {
+            return $templates;
+        }
+
+        foreach ($templates as $existing) {
+            if (isset($existing->slug) && $existing->slug === $slug) {
+                return $templates;
+            }
+        }
 
         $file_path = GROWFUND_DIR_PATH . 'resources/views/site/block-templates/' . $template_name . '.html';
 
