@@ -3,9 +3,9 @@ Contributors: themeum
 Donate link: https://growfund.com
 Tags: crowdfunding, donation, fundraising, charity, rewards
 Requires at least: 5.9
-Tested up to: 6.9
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -378,6 +378,10 @@ order details (campaign_id, amount, currency, and transaction ID) to PayPal's AP
 
 
 == Changelog ==
+
+= 1.1.2 - Nov 23, 2026 =
+* Resolved multilingual translation issues.
+* Fixed campaign end date visibility issues on the campaign single page.
 
 = 1.1.1 - Sep 23, 2026 =
 * Improved Fundraiser/Donor/Backer dashboard responsiveness.

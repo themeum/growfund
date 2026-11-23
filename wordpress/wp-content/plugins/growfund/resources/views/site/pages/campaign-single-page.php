@@ -178,7 +178,7 @@ $campaign_settings = new CampaignSettings();
 			<?php endif; ?>
 
             <div class="growfund-campaign-single-page-right-content-info">
-                <?php if ($campaign_single_page->campaign->has_goal && !$campaign_single_page->campaign->is_ended) : ?>
+                <?php if ($campaign_single_page->campaign->has_goal && !$campaign_single_page->campaign->is_ended && !empty($campaign_single_page->campaign->end_date)) : ?>
                     <p class="growfund-campaign-single-page-right-content-funding-type" id="growfund_single_page_notice">
                         <span class="growfund-campaign-single-page-right-content-info-bold">
                             <?php echo esc_html__('All or nothing.', 'growfund'); ?>
@@ -335,7 +335,7 @@ $campaign_settings = new CampaignSettings();
         $growfund_tab_contents->id = "growfund_campaign_single_page_tabs";
 		$growfund_tab_contents->tabs = $campaign_single_page->get_tab_contents();
 
-        if (!$campaign_single_page->campaign->is_ended) {
+        if (!$campaign_single_page->campaign->is_ended && !empty($growfund_campaign_checkout_button)) {
             $growfund_tab_contents->allow_header_button = true;
             $growfund_tab_contents->header_button = $growfund_campaign_checkout_button;
         }

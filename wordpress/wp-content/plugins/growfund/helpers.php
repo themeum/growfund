@@ -1306,6 +1306,28 @@ if (!function_exists('growfund_is_valid_url')) {
     }
 }
 
+if (!function_exists('growfund_get_wp_filesystem')) {
+    /**
+     * Get WP_Filesystem
+     * 
+     * @return WP_Filesystem_Direct|null Null when the site doesn't use direct file access (e.g. FTP/SSH).
+     */
+    function growfund_get_wp_filesystem() {
+        global $wp_filesystem;
+
+        // Initialize once per request: WP_Filesystem() runs a test write in wp-content (or opens an FTP/SSH connection) on every call.
+        if (!$wp_filesystem instanceof WP_Filesystem_Base) {
+            if (!function_exists('WP_Filesystem')) {
+                require_once ABSPATH . 'wp-admin/includes/file.php';
+            }
+
+            WP_Filesystem();
+        }
+
+        return $wp_filesystem instanceof \WP_Filesystem_Direct ? $wp_filesystem : null;
+    }
+}
+
 if (!function_exists('growfund_file_put_contents')) {
     /**
      * Write content to a file.
@@ -1316,25 +1338,19 @@ if (!function_exists('growfund_file_put_contents')) {
      * @return bool
      */
     function growfund_file_put_contents(string $filename, string $content, string $mode = 'write') {
-        if (!function_exists('WP_Filesystem')) {
-            require_once ABSPATH . 'wp-admin/includes/file.php';
+        $filesystem = growfund_get_wp_filesystem();
+
+        if (!$filesystem) {
+            return false;
         }
-
-        WP_Filesystem();
-
-        global $wp_filesystem;
-
-		if (!$wp_filesystem) {
-			return false;
-		}
 
         if ($mode === 'append') {
-            $content = $wp_filesystem->get_contents($filename) . $content;
+            $content = $filesystem->get_contents($filename) . $content;
         } elseif ($mode === 'prepend') {
-            $content = $content . $wp_filesystem->get_contents($filename);
+            $content = $content . $filesystem->get_contents($filename);
         }
 
-        return $wp_filesystem->put_contents($filename, $content, FS_CHMOD_FILE);
+        return $filesystem->put_contents($filename, $content, FS_CHMOD_FILE);
     }
 }
 

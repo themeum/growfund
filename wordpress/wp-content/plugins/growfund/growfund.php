@@ -3,13 +3,13 @@
 * Plugin Name:       Growfund – Ultimate Donation & Crowdfunding Solution
 * Plugin URI:        https://growfund.com
 * Description:       Launch your donation or reward-based WordPress crowdfunding platform with Growfund. It combines native payments, WooCommerce integration, real-time insights, and fully customizable campaigns, making it the ultimate WordPress crowdfunding plugin.
-* Version:           1.1.1
+* Version:           1.1.2
 * Author:            Themeum
 * Author URI:        https://themeum.com
 * Text Domain:       growfund
 * Requires PHP:      7.4
 * Requires at least: 5.9
-* Tested up to:      6.9
+* Tested up to:      7.1
 * License:           GPLv2 or later
 * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
 * Domain Path:       /languages
@@ -27,7 +27,7 @@ use Growfund\Constants\HookNames;
 /**
  * Define plugin version
  */
-define('GROWFUND_VERSION', '1.1.1');
+define('GROWFUND_VERSION', '1.1.2');
 
 /**
  * Define plugin file
